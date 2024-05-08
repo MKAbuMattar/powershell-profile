@@ -323,8 +323,8 @@ function mkcd {
 #------------------------------------------------------
 # Utility function Search through the command history
 #------------------------------------------------------
-function history($searchTerm) {
-  Get-Content (Get-PSReadlineOption).HistorySavePath | Where-Object { $_ -like "*$searchTerm*" }
+function history {
+  param($searchTerm) Get-Content (Get-PSReadlineOption).HistorySavePath | Where-Object { $_ -like "*$searchTerm*" } 
 }
 
 ######################################################
