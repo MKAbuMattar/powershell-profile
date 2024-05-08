@@ -199,3 +199,22 @@ function ff($name) {
     Write-Output "$($_.directory)\$($_)"
   }
 }
+
+#------------------------------------------------------
+# Get the uptime of the system
+#------------------------------------------------------
+function uptime {
+  if ($PSVersionTable.PSVersion.Major -eq 5) {
+    Get-WmiObject win32_operatingsystem | Select-Object @{Name = 'LastBootUpTime'; Expression = { $_.ConverttoDateTime($_.lastbootuptime) } } | Format-Table -HideTableHeaders
+  }
+  else {
+    net statistics workstation | Select-String "since" | ForEach-Object { $_.ToString().Replace('Statistics since ', '') }
+  }
+}
+
+#------------------------------------------------------
+# Get the public IP address
+#------------------------------------------------------
+function reload-profile {
+  & $profile
+}
