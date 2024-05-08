@@ -185,10 +185,14 @@ function Edit-Profile {
 }
 
 #------------------------------------------------------
+# Create a file with no content
 #------------------------------------------------------
-function touch($file) { "" | Out-File $file -Encoding ASCII }
+function touch($file) {
+  "" | Out-File $file -Encoding ASCII
+}
 
 #------------------------------------------------------
+# Find files by name
 #------------------------------------------------------
 function ff($name) {
   Get-ChildItem -recurse -filter "*${name}*" -ErrorAction SilentlyContinue | ForEach-Object {
