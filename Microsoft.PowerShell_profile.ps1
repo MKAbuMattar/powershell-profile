@@ -280,3 +280,26 @@ function pkill($name) {
 function pgrep($name) {
   Get-Process $name
 }
+
+#------------------------------------------------------
+# Utility function to get the top processes
+#------------------------------------------------------
+function head {
+  param($Path, $n = 10)
+  Get-Content $Path -Head $n
+}
+
+#------------------------------------------------------
+# Utility function to get the bottom processes
+#------------------------------------------------------
+function tail {
+  param($Path, $n = 10)
+  Get-Content $Path -Tail $n
+}
+
+#------------------------------------------------------
+# Utility function to create a new directory
+#------------------------------------------------------
+function nf { 
+  param($name) New-Item -ItemType "file" -Path . -Name $name
+}
