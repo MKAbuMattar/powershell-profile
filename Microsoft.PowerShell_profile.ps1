@@ -405,3 +405,10 @@ function la {
 function ll {
   Get-ChildItem -Path . -Force -Hidden | Format-Table -AutoSize 
 }
+
+#------------------------------------------------------
+# Search Through History for a Command
+#------------------------------------------------------
+function history {
+  Get-Content (Get-PSReadlineOption).HistorySavePath | Where-Object { $_ -like '*$args*' }
+}
