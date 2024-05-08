@@ -674,7 +674,7 @@ Searches the command history for occurrences of the term "command".
 #>
 function history {
   param(
-    [Parameter(Position = 0, Mandatory = $true)]
+    [Parameter(Position = 0, Mandatory = $true, ValueFromPipeline = $true)]
     [string]$searchTerm
   )
   
