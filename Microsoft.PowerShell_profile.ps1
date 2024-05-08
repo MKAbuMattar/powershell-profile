@@ -185,14 +185,14 @@ function Edit-Profile {
 }
 
 #------------------------------------------------------
-# Create a file with no content
+# Utility function to Create a new empty file
 #------------------------------------------------------
 function touch($file) {
   "" | Out-File $file -Encoding ASCII
 }
 
 #------------------------------------------------------
-# Find files by name
+# Utility function to find a file
 #------------------------------------------------------
 function ff($name) {
   Get-ChildItem -recurse -filter "*${name}*" -ErrorAction SilentlyContinue | ForEach-Object {
@@ -201,7 +201,7 @@ function ff($name) {
 }
 
 #------------------------------------------------------
-# Get the uptime of the system
+# Utility function to get the uptime
 #------------------------------------------------------
 function uptime {
   if ($PSVersionTable.PSVersion.Major -eq 5) {
@@ -213,8 +213,70 @@ function uptime {
 }
 
 #------------------------------------------------------
-# Get the public IP address
+# Utility function to reload the profile
 #------------------------------------------------------
 function reload-profile {
   & $profile
+}
+
+#------------------------------------------------------
+# Utility function to unzip a file
+#------------------------------------------------------
+function unzip ($file) {
+  Write-Output("Extracting", $file, "to", $pwd)
+  $fullFile = Get-ChildItem -Path $pwd -Filter $file | ForEach-Object { $_.FullName }
+  Expand-Archive -Path $fullFile -DestinationPath $pwd
+}
+
+#------------------------------------------------------
+# Utility function to search for a string in a file
+#------------------------------------------------------
+function grep($regex, $dir) {
+  if ( $dir ) {
+    Get-ChildItem $dir | select-string $regex
+    return
+  }
+  $input | select-string $regex
+}
+
+#------------------------------------------------------
+# Utility function to get the volume information
+#------------------------------------------------------
+function df {
+  get-volume
+}
+
+#------------------------------------------------------
+# Utility function to search for a string in a file
+#------------------------------------------------------
+function sed($file, $find, $replace) {
+  (Get-Content $file).replace("$find", $replace) | Set-Content $file
+}
+
+#------------------------------------------------------
+# Utility function to get the definition of a command
+#------------------------------------------------------
+function which($name) {
+  Get-Command $name | Select-Object -ExpandProperty Definition
+}
+
+#------------------------------------------------------
+# Utility function to export an environment variable
+#------------------------------------------------------
+function export($name, $value) {
+  set-item -force -path "env:$name" -value $value;
+}
+
+#------------------------------------------------------
+# Utility function to kill a process
+#------------------------------------------------------
+function pkill($name) {
+  Get-Process $name -ErrorAction SilentlyContinue | Stop-Process
+}
+
+#------------------------------------------------------
+# Utility function to find a process
+#------------------------------------------------------
+function pgrep($name) {
+  Get-Process $name
 }
