@@ -15,6 +15,10 @@
 # Version: 1.0.0
 #------------------------------------------------------
 
+######################################################
+# Profile Setup
+######################################################
+
 #------------------------------------------------------
 # Set the console encoding to UTF-8
 #------------------------------------------------------
@@ -77,6 +81,7 @@ Invoke-Command -ScriptBlock ${function:Invoke-Starship-TransientFunction} -Error
 Invoke-Expression (&starship init powershell)
 
 #------------------------------------------------------
+# Set Chocolatey Profile
 #------------------------------------------------------
 $ChocolateyProfile = "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
 
@@ -183,6 +188,10 @@ Set-Alias -Name vim -Value $EDITOR
 function Edit-Profile {
   vim $PROFILE.CurrentUserAllHosts
 }
+
+######################################################
+# Utility Functions
+######################################################
 
 #------------------------------------------------------
 # Utility function to Create a new empty file
@@ -298,8 +307,48 @@ function tail {
 }
 
 #------------------------------------------------------
-# Utility function to create a new directory
+# Utility function to create a new file
 #------------------------------------------------------
 function nf { 
   param($name) New-Item -ItemType "file" -Path . -Name $name
+}
+
+#------------------------------------------------------
+# Utility function to create a new directory
+#------------------------------------------------------
+function mkcd { 
+  param($dir) mkdir $dir -Force; Set-Location $dir
+}
+
+######################################################
+# Navigation Shortcuts
+######################################################
+
+#------------------------------------------------------
+# Go to the Documents directory
+#------------------------------------------------------
+function doc {
+  Set-Location -Path $HOME\Documents
+}
+
+
+#------------------------------------------------------
+# Go to the Downloads directory
+#------------------------------------------------------
+function dl {
+  Set-Location -Path $HOME\Downloads
+}
+
+#------------------------------------------------------
+# Go to the Desktop directory
+#------------------------------------------------------
+function dt {
+  Set-Location -Path $HOME\Desktop
+}
+
+#------------------------------------------------------
+# Go to the D:\ directory
+#------------------------------------------------------
+function d {
+  Set-Location -Path "D:\"
 }
