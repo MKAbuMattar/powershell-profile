@@ -1,4 +1,22 @@
 #------------------------------------------------------
+# MKAbuMattar's PowerShell Profile Setup
+#
+# Author: Mohammad Abu Mattar
+#
+# Description:
+#       This script is used to setup the PowerShell
+#       environment by installing required modules
+#       and tools.
+#
+# Created: 2021-09-01
+# Updated: 2024-05-08
+#
+# GitHub: https://github.com/MKAbuMattar/powershell-profile
+#
+# Version: 1.0.0
+#------------------------------------------------------
+
+#------------------------------------------------------
 # Check if the script is running as an Administrator
 #------------------------------------------------------
 if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {

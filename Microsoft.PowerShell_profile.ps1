@@ -1,4 +1,18 @@
 #------------------------------------------------------
+# MKAbuMattar's PowerShell Profile
+#
+# Author: Mohammad Abu Mattar
+#
+# Description:
+#       This profile is used to configure the
+#       PowerShell environment.
+#
+# Created: 2021-09-01
+# Updated: 2024-05-08
+#
+# GitHub: https://github.com/MKAbuMattar/powershell-profile
+#
+# Version: 1.0.0
 #------------------------------------------------------
 
 #------------------------------------------------------
@@ -173,3 +187,11 @@ function Edit-Profile {
 #------------------------------------------------------
 #------------------------------------------------------
 function touch($file) { "" | Out-File $file -Encoding ASCII }
+
+#------------------------------------------------------
+#------------------------------------------------------
+function ff($name) {
+  Get-ChildItem -recurse -filter "*${name}*" -ErrorAction SilentlyContinue | ForEach-Object {
+    Write-Output "$($_.directory)\$($_)"
+  }
+}
