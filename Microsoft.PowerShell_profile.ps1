@@ -140,3 +140,47 @@ function Update-PowerShell {
 # Invoke the PowerShell update function
 #------------------------------------------------------
 Invoke-Command -ScriptBlock ${function:Update-PowerShell} -ErrorAction SilentlyContinue
+
+#------------------------------------------------------
+# Check if the user is an administrator
+#------------------------------------------------------
+$isAdmin = ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+function prompt {
+  if ($isAdmin) { "[" + (Get-Location) + "] # " } else { "[" + (Get-Location) + "] $ " }
+}
+$adminSuffix = if ($isAdmin) { " [ADMIN]" } else { "" }
+$Host.UI.RawUI.WindowTitle = "PowerShell {0}$adminSuffix" -f $PSVersionTable.PSVersion.ToString()
+
+
+#------------------------------------------------------
+# Utility function to check if a command exists
+#------------------------------------------------------
+function Test-CommandExists {
+  param($command)
+  $exists = $null -ne (Get-Command $command -ErrorAction SilentlyContinue)
+  return $exists
+}
+
+#------------------------------------------------------
+# Editor Configuration
+#------------------------------------------------------
+$EDITOR = if (Test-CommandExists nvim) { 'vim' }
+elseif (Test-CommandExists vi) { 'vi' }
+elseif (Test-CommandExists code) { 'code' }
+else { 'notepad' }
+
+#------------------------------------------------------
+# Set the editor alias
+#------------------------------------------------------
+Set-Alias -Name vim -Value $EDITOR
+
+#------------------------------------------------------
+# Edit the profile
+#------------------------------------------------------
+function Edit-Profile {
+  vim $PROFILE.CurrentUserAllHosts
+}
+
+#------------------------------------------------------
+#------------------------------------------------------
+function touch($file) { "" | Out-File $file -Encoding ASCII }
