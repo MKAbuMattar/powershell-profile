@@ -9,11 +9,11 @@
 #       and tools.
 #
 # Created: 2021-09-01
-# Updated: 2024-05-08
+# Updated: 2024-05-09
 #
 # GitHub: https://github.com/MKAbuMattar/powershell-profile
 #
-# Version: 1.0.0
+# Version: 1.5.0
 #------------------------------------------------------
 
 #------------------------------------------------------
