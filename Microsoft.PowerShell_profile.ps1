@@ -323,11 +323,7 @@ function mkcd {
 #------------------------------------------------------
 # Utility function Search through the command history
 #------------------------------------------------------
-function history {
-  param(
-    [string]$searchTerm
-  )
-  
+function history($searchTerm) {
   Get-Content (Get-PSReadlineOption).HistorySavePath | Where-Object { $_ -like "*$searchTerm*" }
 }
 
