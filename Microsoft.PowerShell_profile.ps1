@@ -657,10 +657,10 @@ function mkcd {
 
 <#
 .SYNOPSIS
-Searches through the command history for a specified term.
+Searches through the full command history for occurrences of a specified term.
 
 .DESCRIPTION
-This function searches through the command history for occurrences of the specified term. It retrieves commands that match the search term from the command history.
+This function searches through the full command history for occurrences of the specified term. It retrieves commands that match the search term from the entire command history. The function uses the `-like` operator to perform a wildcard search.
 
 .PARAMETER searchTerm
 Specifies the term to search for in the command history.
@@ -669,16 +669,18 @@ Specifies the term to search for in the command history.
 The commands from the command history that match the search term.
 
 .EXAMPLE
-history "command"
-Searches the command history for occurrences of the term "command".
+hist "command"
+Searches the full command history for occurrences of the term "command".
 #>
-function history {
+function hist { 
   param(
     [Parameter(Position = 0, Mandatory = $true, ValueFromPipeline = $true)]
     [string]$searchTerm
   )
-  
-  Get-Content (Get-PSReadlineOption).HistorySavePath | Where-Object { $_ -like "*$searchTerm*" }
+
+  Write-Host "Finding in full history using {`$_ -like `"*$searchTerm*`"}"
+  Get-Content (Get-PSReadlineOption).HistorySavePath |
+  Where-Object { $_ -like "*$searchTerm*" } | Get-Unique | more
 }
 
 ######################################################
