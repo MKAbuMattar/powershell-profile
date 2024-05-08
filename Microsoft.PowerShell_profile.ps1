@@ -383,3 +383,25 @@ function sysinfo {
 function k9 { 
   Stop-Process -Name $args[0] 
 }
+
+#------------------------------------------------------
+# Flush the DNS cache
+#------------------------------------------------------
+function flushdns { 
+  Clear-DnsClientCache 
+}
+
+
+#------------------------------------------------------
+# List all files and directories
+#------------------------------------------------------
+function la {
+  Get-ChildItem -Path . -Force | Format-Table -AutoSize
+}
+
+#------------------------------------------------------
+# List all files and directories including hidden
+#------------------------------------------------------
+function ll {
+  Get-ChildItem -Path . -Force -Hidden | Format-Table -AutoSize 
+}
