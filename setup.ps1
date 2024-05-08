@@ -24,13 +24,30 @@ if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdenti
   break
 }
 
+<#
+.SYNOPSIS
+Checks if the script has an internet connection by attempting to ping a specified host.
 
-#------------------------------------------------------
-# Check if the script is has internet connection
-#------------------------------------------------------
+.DESCRIPTION
+This function attempts to ping a specified host (by default, www.google.com) to determine if the script has an internet connection. If the ping is successful, it returns $true; otherwise, it returns $false. If no internet connection is available, it displays a warning message.
+
+.PARAMETER HostName
+Specifies the host to ping to check for internet connectivity. Default is www.google.com.
+
+.OUTPUTS
+$true if the internet connection is available; otherwise, $false.
+
+.EXAMPLE
+Test-InternetConnection
+Checks for internet connection using the default host (www.google.com).
+#>
 function Test-InternetConnection {
+  param(
+    [string]$HostName = "www.google.com"
+  )
+
   try {
-    Test-Connection -ComputerName www.google.com -Count 1 -ErrorAction Stop
+    Test-Connection -ComputerName $HostName -Count 1 -ErrorAction Stop | Out-Null
     return $true
   }
   catch {
@@ -38,7 +55,6 @@ function Test-InternetConnection {
     return $false
   }
 }
-
 
 #------------------------------------------------------
 # Check for internet connection before proceeding
@@ -139,6 +155,16 @@ try {
 }
 catch {
   Write-Error "Failed to download or install the Cascadia Code font. Error: $_"
+}
+
+#------------------------------------------------------
+# Check if the setup completed successfully
+#------------------------------------------------------
+if ((Test-Path -Path $PROFILE) -and ($fontFamilies -contains "CaskaydiaCove NF")) {
+  Write-Host "Setup completed successfully. Please restart your PowerShell session to apply changes."
+}
+else {
+  Write-Warning "Setup completed with errors. Please check the error messages above."
 }
 
 #------------------------------------------------------
