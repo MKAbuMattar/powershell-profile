@@ -40,12 +40,21 @@ Import-Module -Name PSReadLine
 Import-Module -Name Posh-Git
 
 #------------------------------------------------------
+# Set the PSReadLine options
+#------------------------------------------------------
+Set-PSReadLineOption -PredictionViewStyle ListView
+Set-PSReadLineOption -PredictionViewStyle InlineView
+
+#------------------------------------------------------
 # Check if Starship is installed
 #------------------------------------------------------
 function Invoke-Starship-TransientFunction {
   &starship module character
 }
 
+#------------------------------------------------------
+# Invoke Starship Transient Function
+#------------------------------------------------------
 Invoke-Command -ScriptBlock ${function:Invoke-Starship-TransientFunction} -ErrorAction SilentlyContinue
 
 #------------------------------------------------------
@@ -88,7 +97,10 @@ function Update-Profile {
   }
 }
 
-Update-Profile
+#------------------------------------------------------
+# Invoke the profile update function
+#------------------------------------------------------
+Invoke-Command -ScriptBlock ${function:Update-Profile} -ErrorAction SilentlyContinue
 
 #------------------------------------------------------
 # Check for PowerShell updates
@@ -124,4 +136,7 @@ function Update-PowerShell {
   }
 }
 
-Update-PowerShell
+#------------------------------------------------------
+# Invoke the PowerShell update function
+#------------------------------------------------------
+Invoke-Command -ScriptBlock ${function:Update-PowerShell} -ErrorAction SilentlyContinue
