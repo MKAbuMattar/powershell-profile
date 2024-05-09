@@ -77,7 +77,9 @@ Set-PSReadLineOption -PredictionSource HistoryAndPlugin
 Set-PSReadLineOption -PredictionViewStyle ListView
 Set-PSReadLineOption -HistoryNoDuplicates
 Set-PSReadLineOption -BellStyle None
-# Set-PSReadLineOption -PredictionViewStyle InlineView
+Set-PSReadLineOption -Colors @{ "Selection" = "`e[7m" }
+Set-PSReadlineKeyHandler -Key Tab -Function MenuComplete
+carapace _carapace | Out-String | Invoke-Expression
 
 <#
 .SYNOPSIS
