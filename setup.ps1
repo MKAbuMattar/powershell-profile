@@ -26,20 +26,20 @@ if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdenti
 
 <#
 .SYNOPSIS
-Checks if the script has an internet connection by attempting to ping a specified host.
+    Checks if the script has an internet connection by attempting to ping a specified host.
 
 .DESCRIPTION
-This function attempts to ping a specified host (by default, www.google.com) to determine if the script has an internet connection. If the ping is successful, it returns $true; otherwise, it returns $false. If no internet connection is available, it displays a warning message.
+    This function attempts to ping a specified host (by default, www.google.com) to determine if the script has an internet connection. If the ping is successful, it returns $true; otherwise, it returns $false. If no internet connection is available, it displays a warning message.
 
 .PARAMETER HostName
-Specifies the host to ping to check for internet connectivity. Default is www.google.com.
+    Specifies the host to ping to check for internet connectivity. Default is www.google.com.
 
 .OUTPUTS
-$true if the internet connection is available; otherwise, $false.
+    $true if the internet connection is available; otherwise, $false.
 
 .EXAMPLE
-Test-InternetConnection
-Checks for internet connection using the default host (www.google.com).
+    Test-InternetConnection
+    Checks for internet connection using the default host (www.google.com).
 #>
 function Test-InternetConnection {
   param(
@@ -205,6 +205,16 @@ try {
 }
 catch {
   Write-Error "Failed to install Posh-Git module. Error: $_"
+}
+
+#------------------------------------------------------
+# Install CompletionPredictor Module
+#------------------------------------------------------
+try {
+  Install-Module -Name CompletionPredictor -Repository PSGallery -Force
+}
+catch {
+  Write-Error "Failed to install CompletionPredictor module. Error: $_"
 }
 
 #------------------------------------------------------
