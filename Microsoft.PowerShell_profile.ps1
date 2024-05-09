@@ -71,7 +71,7 @@ Import-Module -Name PSReadLine
 Import-Module -Name Posh-Git
 
 #------------------------------------------------------
-# Set the PSReadLine options
+# Set the PSReadLine options and key handlers
 #------------------------------------------------------
 Set-PSReadLineOption -PredictionSource HistoryAndPlugin
 Set-PSReadLineOption -PredictionViewStyle ListView
@@ -79,7 +79,6 @@ Set-PSReadLineOption -HistoryNoDuplicates
 Set-PSReadLineOption -BellStyle None
 Set-PSReadLineOption -Colors @{ "Selection" = "`e[7m" }
 Set-PSReadlineKeyHandler -Key Tab -Function MenuComplete
-carapace _carapace | Out-String | Invoke-Expression
 
 <#
 .SYNOPSIS
