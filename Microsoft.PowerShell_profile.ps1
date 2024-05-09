@@ -1336,40 +1336,22 @@ Set-Alias -Name la -Value Get-ChildItemFormatted
     Performs a domain name lookup for "power-shell.com" and returns information.
 #>
 function Private:Get-WhoIs {
-  [CmdletBinding()]
   param (
-    [Parameter(Position = 0, Mandatory, ValueFromPipeline)]
-    [string]$Domain
+    [Parameter(Mandatory = $True,
+      HelpMessage = 'Please enter domain name (e.g. microsoft.com)')]
+    [string]$domain
   )
-  
-  # Validate domain format
-  if ($Domain -notmatch '^[a-zA-Z0-9-]+\.[a-zA-Z]{2,}$') {
-    Write-Error "Please enter a valid domain name (e.g., microsoft.com)." -ForegroundColor Red
-    return
-  }
-
   Write-Host "Connecting to Web Services URL..." -ForegroundColor Green
   try {
-    # Retrieve data from web service WSDL
-    $WhoisService = New-WebServiceProxy -Uri "http://www.webservicex.net/whois.asmx?WSDL"
-    if ($WhoisService) {
-      Write-Host "Connected successfully." -ForegroundColor Green
-    }
-    else {
-      Write-Host "Failed to connect to the web service." -ForegroundColor Red
-      return
-    }
-
-    Write-Host "Gathering information for domain '$Domain'..." -ForegroundColor Green
-      
-    # Perform Whois lookup
-    $WhoisResult = $WhoisService.GetWhoIs("=$Domain").Split("<<<")[0]
-
-    # Output result
-    $WhoisResult
+    #Retrieve the data from web service WSDL
+    If ($whois = New-WebServiceProxy -uri "http://www.webservicex.net/whois.asmx?WSDL") { Write-Host "Ok" -ForegroundColor Green }
+    else { Write-Host "Error" -ForegroundColor Red }
+    Write-Host "Gathering $domain data..." -ForegroundColor Green
+    #Return the data
+  (($whois.getwhois("=$domain")).Split("<<<")[0])
   }
   catch {
-    Write-Error "An error occurred: $_" -ForegroundColor Red
+    Write-Host "Please enter valid domain name (e.g. microsoft.com)." -ForegroundColor Red
   }
 }
 
