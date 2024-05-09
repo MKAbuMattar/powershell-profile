@@ -486,6 +486,7 @@ function unzip {
     grep "pattern" "file.txt"
     Searches for occurrences of the pattern "pattern" in the file "file.txt" and returns matching lines.
 #>
+# [ValidateScript({ Test-Path $_ -PathType Leaf -or Test-Path $_ -PathType Container })]
 function grep {
   [CmdletBinding()]
   param (
@@ -493,6 +494,7 @@ function grep {
     [string]$Pattern,
 
     [Parameter(Position = 1)]
+    [ValidateScript({ Test-Path $_ -PathType Leaf })]
     [string]$Path = $PWD
   )
 
