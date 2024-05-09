@@ -73,11 +73,11 @@ Import-Module -Name Posh-Git
 #------------------------------------------------------
 # Set the PSReadLine options
 #------------------------------------------------------
-Set-PSReadLineOption -PredictionViewStyle ListView
-Set-PSReadLineOption -PredictionViewStyle InlineView
 Set-PSReadLineOption -PredictionSource HistoryAndPlugin
-Set-PSReadLineOption -HistoryNoDuplicates 
+Set-PSReadLineOption -PredictionViewStyle ListView
+Set-PSReadLineOption -HistoryNoDuplicates
 Set-PSReadLineOption -BellStyle None
+# Set-PSReadLineOption -PredictionViewStyle InlineView
 
 <#
 .SYNOPSIS
