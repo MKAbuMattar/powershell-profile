@@ -313,7 +313,6 @@ function touch {
   [CmdletBinding()]
   param (
     [Parameter(Mandatory = $true)]
-    [ValidateScript({ Test-Path $_ -PathType Leaf })]
     [string]$File
   )
 
@@ -451,7 +450,6 @@ function unzip {
   [CmdletBinding()]
   param (
     [Parameter(Mandatory = $true, Position = 0)]
-    [ValidateScript({ Test-Path $_ -PathType Leaf })]
     [string]$File
   )
 
@@ -493,7 +491,6 @@ function grep {
     [string]$Pattern,
 
     [Parameter(Position = 1)]
-    [ValidateScript({ Test-Path $_ -PathType Leaf })]
     [string]$Path = $PWD
   )
 
@@ -578,7 +575,6 @@ function sed {
   [CmdletBinding()]
   param (
     [Parameter(Mandatory = $true)]
-    [ValidateScript({ Test-Path $_ -PathType Leaf })]
     [string]$file,
 
     [Parameter(Mandatory = $true)]
@@ -762,7 +758,6 @@ function head {
   [CmdletBinding()]
   param (
     [Parameter(Position = 0, Mandatory = $true, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
-    [ValidateScript({ Test-Path $_ -PathType Leaf })]
     [string]$Path,
 
     [Parameter(Position = 1)]
@@ -802,7 +797,6 @@ function tail {
   [CmdletBinding()]
   param (
     [Parameter(Position = 0, Mandatory = $true, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
-    [ValidateScript({ Test-Path $_ -PathType Leaf })]
     [string]$Path,
 
     [Parameter(Position = 1)]
@@ -839,7 +833,6 @@ function nf {
   [CmdletBinding()]
   param (
     [Parameter(Position = 0, Mandatory = $true)]
-    [ValidateScript({ Test-Path $_ -PathType Leaf })]
     [string]$name
   )
 
