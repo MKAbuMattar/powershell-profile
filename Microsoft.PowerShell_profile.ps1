@@ -486,7 +486,6 @@ function unzip {
     grep "pattern" "file.txt"
     Searches for occurrences of the pattern "pattern" in the file "file.txt" and returns matching lines.
 #>
-# [ValidateScript({ Test-Path $_ -PathType Leaf -or Test-Path $_ -PathType Container })]
 function grep {
   [CmdletBinding()]
   param (
@@ -615,8 +614,25 @@ function sed {
     which "ls"
     Retrieves the definition of the "ls" command.
 #>
-function which($name) {
-  Get-Command $name | Select-Object -ExpandProperty Definition
+function which {
+  [CmdletBinding()]
+  param (
+    [Parameter(Mandatory = $true)]
+    [string]$name
+  )
+
+  try {
+    $definition = Get-Command $name -ErrorAction Stop | Select-Object -ExpandProperty Definition
+    if ($definition) {
+      Write-Output $definition
+    }
+    else {
+      Write-Warning "Command '$name' not found."
+    }
+  }
+  catch {
+    Write-Error "An error occurred while retrieving the definition of '$name': $_"
+  }
 }
 
 <#
@@ -639,8 +655,22 @@ function which($name) {
     export "name" "value"
     Exports an environment variable named "name" with the value "value".
 #>
-function export($name, $value) {
-  Set-Item -Force -Path "env:$name" -Value $value;
+function export {
+  [CmdletBinding()]
+  param (
+    [Parameter(Mandatory = $true)]
+    [string]$name,
+
+    [Parameter(Mandatory = $true)]
+    [string]$value
+  )
+
+  try {
+    Set-Item -Force -Path "env:$name" -Value $value -ErrorAction Stop
+  }
+  catch {
+    Write-Error "Failed to export environment variable '$name': $_"
+  }
 }
 
 <#
@@ -660,8 +690,20 @@ function export($name, $value) {
     pkill "process"
     Terminates the process named "process".
 #>
-function pkill($name) {
-  Get-Process $name -ErrorAction SilentlyContinue | Stop-Process
+function pkill {
+  [CmdletBinding()]
+  param (
+    [Parameter(Mandatory = $true)]
+    [string]$name
+  )
+
+  $process = Get-Process $name -ErrorAction SilentlyContinue
+  if ($process) {
+    $process | Stop-Process -Force
+  }
+  else {
+    Write-Warning "No process with the name '$name' found."
+  }
 }
 
 <#
@@ -681,8 +723,19 @@ function pkill($name) {
     pgrep "process"
     Retrieves information about the process named "process".
 #>
-function pgrep($name) {
-  Get-Process $name
+function pgrep {
+  [CmdletBinding()]
+  param (
+    [Parameter(Mandatory = $true)]
+    [string]$name
+  )
+
+  try {
+    Get-Process $name -ErrorAction Stop
+  }
+  catch {
+    Write-Warning "No process with the name '$name' found."
+  }
 }
 
 <#
@@ -708,12 +761,21 @@ function pgrep($name) {
 function head {
   [CmdletBinding()]
   param (
-    [Parameter(Position = 0, Mandatory = $true)]
+    [Parameter(Position = 0, Mandatory = $true, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [ValidateScript({ Test-Path $_ -PathType Leaf })]
     [string]$Path,
+
+    [Parameter(Position = 1)]
+    [ValidateRange(1, [int]::MaxValue)]
     [int]$n = 10
   )
-  
-  Get-Content $Path -Head $n
+
+  try {
+    Get-Content -Path $Path -TotalCount $n -ErrorAction Stop
+  }
+  catch {
+    Write-Warning "Failed to retrieve the top $n lines of '$Path'. Error: $_"
+  }
 }
 
 <#
@@ -739,12 +801,21 @@ function head {
 function tail {
   [CmdletBinding()]
   param (
-    [Parameter(Position = 0, Mandatory = $true)]
+    [Parameter(Position = 0, Mandatory = $true, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [ValidateScript({ Test-Path $_ -PathType Leaf })]
     [string]$Path,
+
+    [Parameter(Position = 1)]
+    [ValidateRange(1, [int]::MaxValue)]
     [int]$n = 10
   )
-  
-  Get-Content $Path -Tail $n
+
+  try {
+    Get-Content -Path $Path -Tail $n -ErrorAction Stop
+  }
+  catch {
+    Write-Warning "Failed to retrieve the last $n lines of '$Path'. Error: $_"
+  }
 }
 
 <#
@@ -766,7 +837,18 @@ function tail {
 #>
 function nf { 
   [CmdletBinding()]
-  param ($name) New-Item -ItemType "file" -Path . -Name $name
+  param (
+    [Parameter(Position = 0, Mandatory = $true)]
+    [ValidateScript({ Test-Path $_ -PathType Leaf })]
+    [string]$name
+  )
+
+  try {
+    New-Item -ItemType File -Path $PWD -Name $name -ErrorAction Stop | Out-Null
+  }
+  catch {
+    Write-Warning "Failed to create file '$name'. Error: $_"
+  }
 }
 
 <#
