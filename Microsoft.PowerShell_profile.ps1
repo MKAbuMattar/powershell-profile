@@ -98,7 +98,12 @@ Set-PSReadlineKeyHandler -Key Tab -Function MenuComplete
     Invokes the Starship module transiently to load the Starship prompt.
 #>
 function Invoke-Starship-TransientFunction {
-  & starship module character
+  [CmdletBinding()]
+  param (
+    # This function does not accept any parameters
+  )
+
+  &starship module character
 }
 
 #------------------------------------------------------
@@ -141,6 +146,11 @@ if (Test-Path $ChocolateyProfile) {
     Checks for updates to the PowerShell profile and updates the local profile if changes are detected.
 #>
 function Update-Profile {
+  [CmdletBinding()]
+  param (
+    # This function does not accept any parameters
+  )
+
   if (-not $global:canConnectToGitHub) {
     Write-Host "Skipping profile update check due to GitHub.com not responding within 1 second." -ForegroundColor Yellow
     return
@@ -187,6 +197,11 @@ Invoke-Command -ScriptBlock ${function:Update-Profile} -ErrorAction SilentlyCont
     Checks for updates to PowerShell and upgrades to the latest version if available.
 #>
 function Update-PowerShell {
+  [CmdletBinding()]
+  param (
+    # This function does not accept any parameters
+  )
+
   if (-not $global:canConnectToGitHub) {
     Write-Host "Skipping PowerShell update check due to GitHub.com not responding within 1 second." -ForegroundColor Yellow
     return
@@ -281,6 +296,11 @@ Set-Alias -Name vim -Value $EDITOR
     Opens the current user's PowerShell profile in the configured text editor.
 #>
 function Edit-Profile {
+  [CmdletBinding()]
+  param (
+    # This function does not accept any parameters
+  )
+
   vim $PROFILE.CurrentUserAllHosts
 }
 
@@ -901,9 +921,14 @@ function hist {
     [string]$searchTerm
   )
 
+  if (-not $searchTerm) {
+    Write-Warning "Please provide a search term."
+    return
+  }
+
   Write-Host "Finding in full history using {`$_ -like `"*$searchTerm*`"}"
   Get-Content (Get-PSReadlineOption).HistorySavePath |
-  Where-Object { $_ -like "*$searchTerm*" } | Get-Unique | more
+  Where-Object { $_ -like "*$searchTerm*" } | Select-Object -Unique | more
 }
 
 ######################################################
@@ -928,6 +953,11 @@ function hist {
     Changes the current location to the root directory.
 #>
 function root {
+  [CmdletBinding()]
+  param (
+    # This function does not accept any parameters
+  )
+
   Set-Location -Path $HOME
 }
 
@@ -949,6 +979,11 @@ function root {
     Changes the current location to the Documents directory.
 #>
 function doc {
+  [CmdletBinding()]
+  param (
+    # This function does not accept any parameters
+  )
+
   Set-Location -Path $HOME\Documents
 }
 
@@ -970,6 +1005,11 @@ function doc {
     Changes the current location to the Downloads directory.
 #>
 function dl {
+  [CmdletBinding()]
+  param (
+    # This function does not accept any parameters
+  )
+
   Set-Location -Path $HOME\Downloads
 }
 
@@ -992,6 +1032,11 @@ function dl {
     Changes the current location to the Desktop directory.
 #>
 function dtop {
+  [CmdletBinding()]
+  param (
+    # This function does not accept any parameters
+  )
+
   Set-Location -Path $HOME\Desktop
 }
 
@@ -1013,6 +1058,11 @@ function dtop {
     Changes the current location to the D:\ directory.
 #>
 function dc {
+  [CmdletBinding()]
+  param (
+    # This function does not accept any parameters
+  )
+
   Set-Location -Path "D:\"
 }
 
@@ -1037,7 +1087,12 @@ function dc {
     ep
     Opens the PowerShell profile in the default text editor.
 #>
-function ep { 
+function ep {
+  [CmdletBinding()]
+  param (
+    # This function does not accept any parameters
+  )
+
   $PROFILE | Invoke-Item
 }
 
@@ -1059,6 +1114,11 @@ function ep {
     Retrieves and displays detailed system information.
 #>
 function sysinfo { 
+  [CmdletBinding()]
+  param (
+    # This function does not accept any parameters
+  )
+  
   Get-ComputerInfo 
 }
 
@@ -1107,6 +1167,11 @@ function k9 {
     Flushes the DNS cache on the local machine.
 #>
 function flushdns { 
+  [CmdletBinding()]
+  param (
+    # This function does not accept any parameters
+  )
+  
   Clear-DnsClientCache 
 }
 
