@@ -42,6 +42,13 @@ if (-not (Get-Module -ListAvailable -Name Terminal-Icons)) {
 }
 
 #------------------------------------------------------
+# Check if CompletionPredictor module is installed
+#------------------------------------------------------
+if (-not (Get-Module -ListAvailable -Name CompletionPredictor)) {
+  Install-Module -Name CompletionPredictor -Scope CurrentUser -Force -SkipPublisherCheck
+}
+
+#------------------------------------------------------
 # Check if PSReadLine module is installed
 #------------------------------------------------------
 if (-not (Get-Module -ListAvailable -Name PSReadLine)) {
