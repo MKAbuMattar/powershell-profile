@@ -1313,3 +1313,67 @@ function Private:Get-ChildItemFormatted {
 # Set the alias for Get-ChildItem-Formatted
 #------------------------------------------------------
 Set-Alias -Name la -Value Get-ChildItemFormatted
+
+<#
+.SYNOPSIS
+    Performs a domain name lookup and returns information such as domain availability, ownership, and name servers.
+
+.DESCRIPTION
+    This function performs a domain name lookup using the Whois web service and returns information such as domain availability, creation and expiration date, ownership, and name servers.
+
+.PARAMETER Domain
+    Specifies the domain name to perform the lookup for. Enter the domain name without http:// and www (e.g., "power-shell.com").
+
+.OUTPUTS
+    Domain information including availability, creation and expiration date, ownership, and name servers.
+
+.EXAMPLE
+    Get-WhoIs -Domain "power-shell.com"
+    Performs a domain name lookup for "power-shell.com" and returns information.
+
+.EXAMPLE
+    Get-WhoIs "power-shell.com"
+    Performs a domain name lookup for "power-shell.com" and returns information.
+#>
+function Private:Get-WhoIs {
+  [CmdletBinding()]
+  param (
+    [Parameter(Position = 0, Mandatory, ValueFromPipeline)]
+    [string]$Domain
+  )
+  
+  # Validate domain format
+  if ($Domain -notmatch '^[a-zA-Z0-9-]+\.[a-zA-Z]{2,}$') {
+    Write-Error "Please enter a valid domain name (e.g., microsoft.com)." -ForegroundColor Red
+    return
+  }
+
+  Write-Host "Connecting to Web Services URL..." -ForegroundColor Green
+  try {
+    # Retrieve data from web service WSDL
+    $WhoisService = New-WebServiceProxy -Uri "http://www.webservicex.net/whois.asmx?WSDL"
+    if ($WhoisService) {
+      Write-Host "Connected successfully." -ForegroundColor Green
+    }
+    else {
+      Write-Host "Failed to connect to the web service." -ForegroundColor Red
+      return
+    }
+
+    Write-Host "Gathering information for domain '$Domain'..." -ForegroundColor Green
+      
+    # Perform Whois lookup
+    $WhoisResult = $WhoisService.GetWhoIs("=$Domain").Split("<<<")[0]
+
+    # Output result
+    $WhoisResult
+  }
+  catch {
+    Write-Error "An error occurred: $_" -ForegroundColor Red
+  }
+}
+
+#------------------------------------------------------
+# Set the alias for Get-WhoIs
+#------------------------------------------------------
+Set-Alias -Name whois -Value Get-WhoIs
