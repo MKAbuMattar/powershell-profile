@@ -313,6 +313,7 @@ function touch {
   [CmdletBinding()]
   param (
     [Parameter(Mandatory = $true)]
+    [ValidateScript({ Test-Path $_ -PathType Leaf })]
     [string]$File
   )
 
@@ -378,7 +379,7 @@ function ff {
     uptime
     Retrieves the system uptime.
 #>
-function Get-Uptime {
+function uptime {
   [CmdletBinding()]
   param (
     # This function does not accept any parameters
@@ -414,7 +415,7 @@ function Get-Uptime {
     reload-profile
     Reloads the PowerShell profile.
 #>
-function Reload-Profile {
+function reload-profile {
   [CmdletBinding()]
   param (
     # This function does not accept any parameters
@@ -450,6 +451,7 @@ function unzip {
   [CmdletBinding()]
   param (
     [Parameter(Mandatory = $true, Position = 0)]
+    [ValidateScript({ Test-Path $_ -PathType Leaf })]
     [string]$File
   )
 
@@ -469,33 +471,57 @@ function unzip {
     Searches for a string in a file and returns matching lines.
 
 .DESCRIPTION
-    This function searches for a specified string in a file and returns the lines that contain the string. It is useful for finding occurrences of specific patterns in text files.
+    This function searches for a specified string or regular expression pattern in a file or files within a directory. It returns the lines that contain the matching string or pattern. It is useful for finding occurrences of specific patterns in text files.
 
-.PARAMETER regex
-    Specifies the regular expression pattern to search for.
+.PARAMETER Pattern
+    Specifies the string or regular expression pattern to search for.
 
-.PARAMETER dir
-    Specifies the directory to search in. If not provided, the function searches in the current directory.
+.PARAMETER Path
+    Specifies the path to the file or directory to search in. If not provided, the function searches in the current directory.
 
 .OUTPUTS
-    The lines in the file that match the specified regular expression pattern.
+    The lines in the file(s) that match the specified string or regular expression pattern.
 
 .EXAMPLE
     grep "pattern" "file.txt"
     Searches for occurrences of the pattern "pattern" in the file "file.txt" and returns matching lines.
 #>
-function grep($regex, $dir) {
-  if ($dir) {
-    Get-ChildItem $dir | Select-String $regex
+function grep {
+  [CmdletBinding()]
+  param (
+    [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
+    [string]$Pattern,
+
+    [Parameter(Position = 1)]
+    [string]$Path = $PWD
+  )
+
+  try {
+    if (-not (Test-Path $Path)) {
+      Write-Error "The specified path '$Path' does not exist."
+      return
+    }
+
+    if (Test-Path $Path -PathType Leaf) {
+      Get-Content $Path | Select-String $Pattern
+    }
+    elseif (Test-Path $Path -PathType Container) {
+      Get-ChildItem -Path $Path -File | ForEach-Object {
+        Get-Content $_.FullName | Select-String $Pattern
+      }
+    }
+    else {
+      Write-Error "The specified path '$Path' is neither a file nor a directory."
+    }
   }
-  else {
-    $input | Select-String $regex
+  catch {
+    Write-Error "An error occurred: $_"
   }
 }
 
 <#
 .SYNOPSIS
-    Gets volume information for all available volumes.
+    Retrieves volume information for all available volumes.
 
 .DESCRIPTION
     This function retrieves information about all available volumes on the system. It provides details such as volume label, drive letter, file system, and capacity.
@@ -511,7 +537,17 @@ function grep($regex, $dir) {
     Retrieves volume information for all available volumes.
 #>
 function df {
-  Get-Volume
+  [CmdletBinding()]
+  param(
+    # This function does not accept any parameters
+  )
+
+  try {
+    Get-Volume
+  }
+  catch {
+    Write-Error "An error occurred while retrieving volume information: $_"
+  }
 }
 
 <#
@@ -537,8 +573,27 @@ function df {
     sed "file.txt" "pattern" "replacement"
     Searches for "pattern" in "file.txt" and replaces it with "replacement".
 #>
-function sed($file, $find, $replace) {
-  (Get-Content $file).Replace($find, $replace) | Set-Content $file
+function sed {
+  [CmdletBinding()]
+  param (
+    [Parameter(Mandatory = $true)]
+    [ValidateScript({ Test-Path $_ -PathType Leaf })]
+    [string]$file,
+
+    [Parameter(Mandatory = $true)]
+    [string]$find,
+
+    [Parameter(Mandatory = $true)]
+    [string]$replace
+  )
+
+  try {
+    $content = Get-Content $file -ErrorAction Stop
+    $content -replace $find, $replace | Set-Content $file -ErrorAction Stop
+  }
+  catch {
+    Write-Error "An error occurred while performing text replacement: $_"
+  }
 }
 
 <#
