@@ -931,6 +931,46 @@ function hist {
   Where-Object { $_ -like "*$searchTerm*" } | Select-Object -Unique | more
 }
 
+<#
+.SYNOPSIS
+    Starts a new PowerShell process with elevated privileges.
+
+.DESCRIPTION
+    This function starts a new PowerShell process with elevated privileges (run as administrator). 
+    If arguments are provided, they will be passed to the new PowerShell process.
+
+.PARAMETER Arguments
+    Specifies optional arguments to be passed to the new PowerShell process.
+
+.OUTPUTS
+    None. This function does not return any output.
+
+.EXAMPLE
+    admin
+    Starts a new PowerShell process with elevated privileges.
+
+.EXAMPLE
+    admin "Get-Service"
+    Starts a new PowerShell process with elevated privileges and executes the "Get-Service" command.
+#>
+function admin {
+  [CmdletBinding()]
+  param (
+    [string]$Arguments
+  )
+
+  $psi = @{
+    FilePath = "$psHome\powershell.exe"
+    Verb     = "runAs"
+  }
+
+  if ($Arguments) {
+    $psi.Add("ArgumentList", "-Command `"$Arguments`"")
+  }
+
+  Start-Process @psi
+}
+
 ######################################################
 # Navigation Shortcuts
 ######################################################
@@ -1205,3 +1245,14 @@ function ll {
 
   Get-ChildItem -Path $Path -Force | Format-Table -AutoSize
 }
+
+
+######################################################
+# Aliases
+######################################################
+
+#------------------------------------------------------
+# Set UNIX-like aliases for common commands
+#------------------------------------------------------
+Set-Alias -Name su -Value admin
+Set-Alias -Name sudo -Value admin
