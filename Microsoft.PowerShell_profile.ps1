@@ -97,7 +97,7 @@ Set-PSReadlineKeyHandler -Key Tab -Function MenuComplete
     Invoke-Starship-TransientFunction
     Invokes the Starship module transiently to load the Starship prompt.
 #>
-function Invoke-Starship-TransientFunction {
+function Private:Invoke-Starship-TransientFunction {
   [CmdletBinding()]
   param (
     # This function does not accept any parameters
@@ -145,7 +145,7 @@ if (Test-Path $ChocolateyProfile) {
     Update-Profile
     Checks for updates to the PowerShell profile and updates the local profile if changes are detected.
 #>
-function Update-Profile {
+function Private:Update-Profile {
   [CmdletBinding()]
   param (
     # This function does not accept any parameters
@@ -196,7 +196,7 @@ Invoke-Command -ScriptBlock ${function:Update-Profile} -ErrorAction SilentlyCont
     Update-PowerShell
     Checks for updates to PowerShell and upgrades to the latest version if available.
 #>
-function Update-PowerShell {
+function Private:Update-PowerShell {
   [CmdletBinding()]
   param (
     # This function does not accept any parameters
@@ -254,7 +254,7 @@ Invoke-Command -ScriptBlock ${function:Update-PowerShell} -ErrorAction SilentlyC
     Test-CommandExists "ls"
     Checks if the "ls" command exists in the current environment.
 #>
-function Test-CommandExists {
+function Private:Test-CommandExists {
   [CmdletBinding()]
   param (
     [Parameter(Position = 0, Mandatory = $true)]
@@ -303,7 +303,7 @@ Set-Alias -Name vim -Value $EDITOR
     Set-FreshFile "existing_file.txt"
     Updates the timestamp of the existing file named "existing_file.txt" without modifying its content.
 #>
-function Set-FreshFile {
+function Private:Set-FreshFile {
   [CmdletBinding()]
   param (
     [Parameter(Mandatory = $true)]
@@ -347,7 +347,7 @@ Set-Alias -Name touch -Value Set-FreshFile
     Find-Files "*.ps1"
     Searches for files with the extension ".ps1" and returns their full paths.
 #>
-function Find-Files {
+function Private:Find-Files {
   [CmdletBinding()]
   param (
     [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
@@ -382,7 +382,7 @@ Set-Alias -Name ff -Value Find-Files
     Get-Uptime
     Retrieves the system uptime.
 #>
-function Get-Uptime {
+function Private:Get-Uptime {
   [CmdletBinding()]
   param (
     # This function does not accept any parameters
@@ -423,7 +423,7 @@ Set-Alias -Name uptime -Value Get-Uptime
     Invoke-ProfileReload
     Reloads the PowerShell profile.
 #>
-function Invoke-ProfileReload {
+function Private:Invoke-ProfileReload {
   [CmdletBinding()]
   param (
     # This function does not accept any parameters
@@ -460,7 +460,7 @@ Set-Alias -Name reload-profile -Value Invoke-ProfileReload
     Expand-File "file.zip"
     Extracts the file "file.zip" to the current directory.
 #>
-function Expand-File {
+function Private:Expand-File {
   [CmdletBinding()]
   param (
     [Parameter(Mandatory = $true, Position = 0)]
@@ -503,7 +503,7 @@ Set-Alias -Name unzip -Value Expand-File
     Get-ContentMatching "pattern" "file.txt"
     Searches for occurrences of the pattern "pattern" in the file "file.txt" and returns matching lines.
 #>
-function Get-ContentMatching {
+function Private:Get-ContentMatching {
   [CmdletBinding()]
   param (
     [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
@@ -558,7 +558,7 @@ Set-Alias -Name grep -Value Get-ContentMatching
     Get-VolumeInfo
     Retrieves volume information for all available volumes.
 #>
-function Get-VolumeInfo {
+function Private:Get-VolumeInfo {
   [CmdletBinding()]
   param(
     # This function does not accept any parameters
@@ -600,7 +600,7 @@ Set-Alias -Name df -Value Get-VolumeInfo
     Set-ContentMatching "file.txt" "pattern" "replacement"
     Searches for "pattern" in "file.txt" and replaces it with "replacement".
 #>
-function Set-ContentMatching {
+function Private:Set-ContentMatching {
   [CmdletBinding()]
   param (
     [Parameter(Mandatory = $true)]
@@ -644,7 +644,7 @@ Set-Alias -Name sed -Value Set-ContentMatching
     Get-CommandDefinition "ls"
     Retrieves the definition of the "ls" command.
 #>
-function Get-CommandDefinition {
+function Private:Get-CommandDefinition {
   [CmdletBinding()]
   param (
     [Parameter(Mandatory = $true)]
@@ -690,7 +690,7 @@ Set-Alias -Name def -Value Get-CommandDefinition
     Set-EnvVar "name" "value"
     Exports an environment variable named "name" with the value "value".
 #>
-function Set-EnvVar {
+function Private:Set-EnvVar {
   [CmdletBinding()]
   param (
     [Parameter(Mandatory = $true)]
@@ -730,7 +730,7 @@ Set-Alias -Name export -Value Set-EnvVar
     Stop-ProcessByName "process"
     Terminates the process named "process".
 #>
-function Stop-ProcessByName {
+function Private:Stop-ProcessByName {
   [CmdletBinding()]
   param (
     [Parameter(Mandatory = $true)]
@@ -768,7 +768,7 @@ Set-Alias -Name pkill -Value Stop-ProcessByName
     Get-ProcessByName "process"
     Retrieves information about the process named "process".
 #>
-function Get-ProcessByName {
+function Private:Get-ProcessByName {
   [CmdletBinding()]
   param (
     [Parameter(Mandatory = $true)]
@@ -808,7 +808,7 @@ Set-Alias -Name pgrep -Value Get-ProcessByName
     Get-HeadContent "file.txt" 10
     Retrieves the first 10 lines of the file "file.txt".
 #>
-function Get-HeadContent {
+function Private:Get-HeadContent {
   [CmdletBinding()]
   param (
     [Parameter(Position = 0, Mandatory = $true, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
@@ -852,7 +852,7 @@ Set-Alias -Name head -Value Get-HeadContent
     Get-TailContent "file.txt" 10
     Retrieves the last 10 lines of the file "file.txt".
 #>
-function Get-TailContent {
+function Private:Get-TailContent {
   [CmdletBinding()]
   param (
     [Parameter(Position = 0, Mandatory = $true, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
@@ -893,7 +893,7 @@ Set-Alias -Name tail -Value Get-TailContent
     New-File "file.txt"
     Creates a new file named "file.txt" in the current directory.
 #>
-function New-File {
+function Private:New-File {
   [CmdletBinding()]
   param (
     [Parameter(Position = 0, Mandatory = $true)]
@@ -930,7 +930,7 @@ Set-Alias -Name nf -Value New-File
     New-Directory "NewDirectory"
     Creates a new directory named "NewDirectory" and changes the current location to it.
 #>
-function New-Directory {
+function Private:New-Directory {
   [CmdletBinding()]
   param (
     [Parameter(Position = 0, Mandatory = $true)]
@@ -968,7 +968,7 @@ Set-Alias -Name mkcd -Value New-Directory
     hist "command"
     Searches the full command history for occurrences of the term "command".
 #>
-function Find-InHistory {
+function Private:Find-InHistory {
   [CmdletBinding()]
   param (
     [Parameter(Position = 0, Mandatory = $true, ValueFromPipeline = $true)]
@@ -1011,7 +1011,7 @@ Set-Alias -Name hist -Value Find-InHistory
     Set-Home
     Changes the current location to the root directory.
 #>
-function Set-Home {
+function Private:Set-Home {
   [CmdletBinding()]
   param (
     # This function does not accept any parameters
@@ -1042,7 +1042,7 @@ Set-Alias -Name root -Value Set-Home
     Set-Documents
     Changes the current location to the Documents directory.
 #>
-function Set-Documents {
+function Private:Set-Documents {
   [CmdletBinding()]
   param (
     # This function does not accept any parameters
@@ -1073,7 +1073,7 @@ Set-Alias -Name doc -Value Set-Documents
     Set-Downloads
     Changes the current location to the Downloads directory.
 #>
-function Set-Downloads {
+function Private:Set-Downloads {
   [CmdletBinding()]
   param (
     # This function does not accept any parameters
@@ -1104,7 +1104,7 @@ Set-Alias -Name dl -Value Set-Downloads
     Set-Desktop
     Changes the current location to the Desktop directory.
 #>
-function Set-Desktop {
+function Private:Set-Desktop {
   [CmdletBinding()]
   param (
     # This function does not accept any parameters
@@ -1135,7 +1135,7 @@ Set-Alias -Name dtop -Value Set-Desktop
     Set-DDisk
     Changes the current location to the D:\ directory.
 #>
-function Set-DDisk {
+function Private:Set-DDisk {
   [CmdletBinding()]
   param (
     # This function does not accept any parameters
@@ -1170,7 +1170,7 @@ Set-Alias -Name dc -Value Set-DDisk
     Edit-Profile
     Opens the PowerShell profile in the default text editor.
 #>
-function Edit-Profile {
+function Private:Edit-Profile {
   [CmdletBinding()]
   param (
     # This function does not accept any parameters
@@ -1201,7 +1201,7 @@ Set-Alias -Name ep -Value Edit-Profile
     Get-SystemInfo
     Retrieves and displays detailed system information.
 #>
-function Get-SystemInfo {
+function Private:Get-SystemInfo {
   [CmdletBinding()]
   param (
     # This function does not accept any parameters
@@ -1232,7 +1232,7 @@ Set-Alias -Name sysinfo -Value Get-SystemInfo
     Stop-TerminateProcess "notepad"
     Terminates the "notepad" process.
 #>
-function Stop-TerminateProcess {
+function Private:Stop-TerminateProcess {
   [CmdletBinding()]
   param (
     [Parameter(Position = 0, Mandatory = $true)]
@@ -1264,7 +1264,7 @@ Set-Alias -Name k9 -Value Stop-TerminateProcess
     Clear-DnsClientCache
     Flushes the DNS cache on the local machine.
 #>
-function Clear-DnsCache {
+function Private:Clear-DnsCache {
   [CmdletBinding()]
   param (
     # This function does not accept any parameters
@@ -1299,7 +1299,7 @@ Set-Alias -Name flushdns -Value Clear-DnsCache
     Get-ChildItemFormatted "C:\Users"
     Lists files and directories in the "C:\Users" directory.
 #>
-function Get-ChildItemFormatted {
+function Private:Get-ChildItemFormatted {
   [CmdletBinding()]
   param (
     [Parameter(Position = 0)]
@@ -1312,4 +1312,4 @@ function Get-ChildItemFormatted {
 #------------------------------------------------------
 # Set the alias for Get-ChildItem-Formatted
 #------------------------------------------------------
-Set-Alias -Name ll -Value Get-ChildItemFormatted
+Set-Alias -Name la -Value Get-ChildItemFormatted
