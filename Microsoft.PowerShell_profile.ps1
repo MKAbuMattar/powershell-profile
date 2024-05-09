@@ -450,7 +450,7 @@ Set-Alias -Name reload-profile -Value Invoke-ProfileReload
 .DESCRIPTION
     This function extracts the specified file to the current directory using the Expand-Archive cmdlet.
 
-.PARAMETER file
+.PARAMETER File
     Specifies the file to extract.
 
 .OUTPUTS
@@ -467,14 +467,24 @@ function Private:Expand-File {
     [string]$File
   )
 
-  try {
-    Write-Host "Extracting file '$File' to '$PWD'..." -ForegroundColor Cyan
-    $FullFilePath = Get-Item -Path $File -ErrorAction Stop | Select-Object -ExpandProperty FullName
-    Expand-Archive -Path $FullFilePath -DestinationPath $PWD -Force -ErrorAction Stop
-    Write-Host "File extraction completed successfully." -ForegroundColor Green
+  BEGIN {
+    Write-Host "Starting file extraction process..." -ForegroundColor Cyan
   }
-  catch {
-    Write-Error "Failed to extract file '$File'. Error: $_"
+
+  PROCESS {
+    try {
+      Write-Host "Extracting file '$File' to '$PWD'..." -ForegroundColor Cyan
+      $FullFilePath = Get-Item -Path $File -ErrorAction Stop | Select-Object -ExpandProperty FullName
+      Expand-Archive -Path $FullFilePath -DestinationPath $PWD -Force -ErrorAction Stop
+      Write-Host "File extraction completed successfully." -ForegroundColor Green
+    }
+    catch {
+      Write-Error "Failed to extract file '$File'. Error: $_"
+    }
+  }
+
+  END {
+    Write-Host "File extraction process completed." -ForegroundColor Cyan
   }
 }
 
@@ -482,6 +492,7 @@ function Private:Expand-File {
 # Set the alias for Expand-File
 #------------------------------------------------------
 Set-Alias -Name unzip -Value Expand-File
+
 
 <#
 .SYNOPSIS
@@ -1313,49 +1324,3 @@ function Private:Get-ChildItemFormatted {
 # Set the alias for Get-ChildItem-Formatted
 #------------------------------------------------------
 Set-Alias -Name la -Value Get-ChildItemFormatted
-
-<#
-.SYNOPSIS
-    Performs a domain name lookup and returns information such as domain availability, ownership, and name servers.
-
-.DESCRIPTION
-    This function performs a domain name lookup using the Whois web service and returns information such as domain availability, creation and expiration date, ownership, and name servers.
-
-.PARAMETER Domain
-    Specifies the domain name to perform the lookup for. Enter the domain name without http:// and www (e.g., "power-shell.com").
-
-.OUTPUTS
-    Domain information including availability, creation and expiration date, ownership, and name servers.
-
-.EXAMPLE
-    Get-WhoIs -Domain "power-shell.com"
-    Performs a domain name lookup for "power-shell.com" and returns information.
-
-.EXAMPLE
-    Get-WhoIs "power-shell.com"
-    Performs a domain name lookup for "power-shell.com" and returns information.
-#>
-function Private:Get-WhoIs {
-  param (
-    [Parameter(Mandatory = $True,
-      HelpMessage = 'Please enter domain name (e.g. microsoft.com)')]
-    [string]$domain
-  )
-  Write-Host "Connecting to Web Services URL..." -ForegroundColor Green
-  try {
-    #Retrieve the data from web service WSDL
-    If ($whois = New-WebServiceProxy -uri "http://www.webservicex.net/whois.asmx?WSDL") { Write-Host "Ok" -ForegroundColor Green }
-    else { Write-Host "Error" -ForegroundColor Red }
-    Write-Host "Gathering $domain data..." -ForegroundColor Green
-    #Return the data
-  (($whois.getwhois("=$domain")).Split("<<<")[0])
-  }
-  catch {
-    Write-Host "Please enter valid domain name (e.g. microsoft.com)." -ForegroundColor Red
-  }
-}
-
-#------------------------------------------------------
-# Set the alias for Get-WhoIs
-#------------------------------------------------------
-Set-Alias -Name whois -Value Get-WhoIs
