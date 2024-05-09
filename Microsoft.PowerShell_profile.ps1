@@ -849,9 +849,9 @@ function nf {
     Creates a new directory with the specified name and sets the current location to that directory.
 
 .DESCRIPTION
-    This function creates a new directory with the specified name and then changes the current working directory to that newly created directory. It is a combination of the `mkdir` (or `New-Item`) and `Set-Location` cmdlets.
+    This function creates a new directory with the specified name and then changes the current working directory to that newly created directory. It is a combination of the `New-Item` and `Set-Location` cmdlets.
 
-.PARAMETER dir
+.PARAMETER name
     Specifies the name of the directory to create.
 
 .OUTPUTS
@@ -863,7 +863,18 @@ function nf {
 #>
 function mkcd {
   [CmdletBinding()]
-  param ($dir) mkdir $dir -Force; Set-Location $dir
+  param (
+    [Parameter(Position = 0, Mandatory = $true)]
+    [string]$name
+  )
+
+  try {
+    $newDir = New-Item -Path $PWD -Name $name -ItemType Directory -ErrorAction Stop
+    Set-Location -Path $newDir.FullName
+  }
+  catch {
+    Write-Warning "Failed to create directory '$name'. Error: $_"
+  }
 }
 
 <#
