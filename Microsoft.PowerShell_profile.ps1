@@ -484,7 +484,9 @@ function Private:Expand-File {
   }
 
   END {
-    Write-Host "File extraction process completed." -ForegroundColor Cyan
+    if (-not $Error) {
+      Write-Host "File extraction process completed." -ForegroundColor Cyan
+    }
   }
 }
 
@@ -492,7 +494,6 @@ function Private:Expand-File {
 # Set the alias for Expand-File
 #------------------------------------------------------
 Set-Alias -Name unzip -Value Expand-File
-
 
 <#
 .SYNOPSIS
