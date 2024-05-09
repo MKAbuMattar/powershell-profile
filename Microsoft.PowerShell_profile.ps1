@@ -278,32 +278,6 @@ else { 'notepad' }
 #------------------------------------------------------
 Set-Alias -Name vim -Value $EDITOR
 
-<#
-.SYNOPSIS
-    Opens the current user's profile in the configured text editor.
-
-.DESCRIPTION
-    This function opens the current user's PowerShell profile in the text editor specified by the $EDITOR variable. It provides an easy way to edit the profile settings and configurations.
-
-.PARAMETER None
-    This function does not accept any parameters.
-
-.OUTPUTS
-    None. This function does not return any output.
-
-.EXAMPLE
-    Edit-Profile
-    Opens the current user's PowerShell profile in the configured text editor.
-#>
-function Edit-Profile {
-  [CmdletBinding()]
-  param (
-    # This function does not accept any parameters
-  )
-
-  vim $PROFILE.CurrentUserAllHosts
-}
-
 ######################################################
 # Utility Functions
 ######################################################
@@ -322,14 +296,14 @@ function Edit-Profile {
     None. This function does not return any output.
 
 .EXAMPLE
-    touch "file.txt"
+    Set-FreshFile "file.txt"
     Creates a new empty file named "file.txt" if it doesn't exist. If "file.txt" already exists, its timestamp is updated.
 
 .EXAMPLE
-    touch "existing_file.txt"
+    Set-FreshFile "existing_file.txt"
     Updates the timestamp of the existing file named "existing_file.txt" without modifying its content.
 #>
-function touch {
+function Set-FreshFile {
   [CmdletBinding()]
   param (
     [Parameter(Mandatory = $true)]
@@ -347,6 +321,11 @@ function touch {
   }
 }
 
+#------------------------------------------------------
+# Set the alias for Set-FreshFile
+#------------------------------------------------------
+Set-Alias -Name touch -Value Set-FreshFile
+
 <#
 .SYNOPSIS
     Finds files matching a specified name pattern in the current directory and its subdirectories.
@@ -361,14 +340,14 @@ function touch {
     None. This function does not return any output directly. It writes the full paths of matching files to the pipeline.
 
 .EXAMPLE
-    ff "file.txt"
+    Find-Files "file.txt"
     Searches for files matching the pattern "file.txt" and returns their full paths.
 
 .EXAMPLE
-    ff "*.ps1"
+    Find-Files "*.ps1"
     Searches for files with the extension ".ps1" and returns their full paths.
 #>
-function ff {
+function Find-Files {
   [CmdletBinding()]
   param (
     [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
@@ -380,6 +359,11 @@ function ff {
     Write-Output $_.FullName
   }
 }
+
+#------------------------------------------------------
+# Set the alias for Find-Files
+#------------------------------------------------------
+Set-Alias -Name ff -Value Find-Files
 
 <#
 .SYNOPSIS
@@ -395,10 +379,10 @@ function ff {
     The system uptime in a human-readable format.
 
 .EXAMPLE
-    uptime
+    Get-Uptime
     Retrieves the system uptime.
 #>
-function uptime {
+function Get-Uptime {
   [CmdletBinding()]
   param (
     # This function does not accept any parameters
@@ -417,6 +401,11 @@ function uptime {
   }
 }
 
+#------------------------------------------------------
+# Set the alias for Get-Uptime
+#------------------------------------------------------
+Set-Alias -Name uptime -Value Get-Uptime
+
 <#
 .SYNOPSIS
     Reloads the PowerShell profile to apply changes.
@@ -431,10 +420,10 @@ function uptime {
     None. This function does not return any output.
 
 .EXAMPLE
-    reload-profile
+    Invoke-ProfileReload
     Reloads the PowerShell profile.
 #>
-function reload-profile {
+function Invoke-ProfileReload {
   [CmdletBinding()]
   param (
     # This function does not accept any parameters
@@ -448,6 +437,11 @@ function reload-profile {
     Write-Error "Failed to reload the PowerShell profile. Error: $_"
   }
 }
+
+#------------------------------------------------------
+# Set the alias for reloading the profile
+#------------------------------------------------------
+Set-Alias -Name reload-profile -Value Invoke-ProfileReload
 
 <#
 .SYNOPSIS
@@ -463,10 +457,10 @@ function reload-profile {
     None. This function does not return any output.
 
 .EXAMPLE
-    unzip "file.zip"
+    Expand-File "file.zip"
     Extracts the file "file.zip" to the current directory.
 #>
-function unzip {
+function Expand-File {
   [CmdletBinding()]
   param (
     [Parameter(Mandatory = $true, Position = 0)]
@@ -483,6 +477,11 @@ function unzip {
     Write-Error "Failed to extract file '$File'. Error: $_"
   }
 }
+
+#------------------------------------------------------
+# Set the alias for Expand-File
+#------------------------------------------------------
+Set-Alias -Name unzip -Value Expand-File
 
 <#
 .SYNOPSIS
@@ -501,10 +500,10 @@ function unzip {
     The lines in the file(s) that match the specified string or regular expression pattern.
 
 .EXAMPLE
-    grep "pattern" "file.txt"
+    Get-ContentMatching "pattern" "file.txt"
     Searches for occurrences of the pattern "pattern" in the file "file.txt" and returns matching lines.
 #>
-function grep {
+function Get-ContentMatching {
   [CmdletBinding()]
   param (
     [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
@@ -537,6 +536,11 @@ function grep {
   }
 }
 
+#------------------------------------------------------
+# Set the alias for Get-ContentMatching
+#------------------------------------------------------
+Set-Alias -Name grep -Value Get-ContentMatching
+
 <#
 .SYNOPSIS
     Retrieves volume information for all available volumes.
@@ -551,10 +555,10 @@ function grep {
     The volume information for all available volumes.
 
 .EXAMPLE
-    df
+    Get-VolumeInfo
     Retrieves volume information for all available volumes.
 #>
-function df {
+function Get-VolumeInfo {
   [CmdletBinding()]
   param(
     # This function does not accept any parameters
@@ -567,6 +571,11 @@ function df {
     Write-Error "An error occurred while retrieving volume information: $_"
   }
 }
+
+#------------------------------------------------------
+# Set the alias for Get-VolumeInfo
+#------------------------------------------------------
+Set-Alias -Name df -Value Get-VolumeInfo
 
 <#
 .SYNOPSIS
@@ -588,10 +597,10 @@ function df {
     None. This function does not return any output.
 
 .EXAMPLE
-    sed "file.txt" "pattern" "replacement"
+    Set-ContentMatching "file.txt" "pattern" "replacement"
     Searches for "pattern" in "file.txt" and replaces it with "replacement".
 #>
-function sed {
+function Set-ContentMatching {
   [CmdletBinding()]
   param (
     [Parameter(Mandatory = $true)]
@@ -613,6 +622,11 @@ function sed {
   }
 }
 
+#------------------------------------------------------
+# Set the alias for Set-ContentMatching
+#------------------------------------------------------
+Set-Alias -Name sed -Value Set-ContentMatching
+
 <#
 .SYNOPSIS
     Gets the definition of a command.
@@ -627,10 +641,10 @@ function sed {
     The definition of the specified command.
 
 .EXAMPLE
-    which "ls"
+    Get-CommandDefinition "ls"
     Retrieves the definition of the "ls" command.
 #>
-function which {
+function Get-CommandDefinition {
   [CmdletBinding()]
   param (
     [Parameter(Mandatory = $true)]
@@ -651,6 +665,11 @@ function which {
   }
 }
 
+#------------------------------------------------------
+# Set the alias for Get-CommandDefinition
+#------------------------------------------------------
+Set-Alias -Name def -Value Get-CommandDefinition
+
 <#
 .SYNOPSIS
     Exports an environment variable.
@@ -668,10 +687,10 @@ function which {
     None. This function does not return any output.
 
 .EXAMPLE
-    export "name" "value"
+    Set-EnvVar "name" "value"
     Exports an environment variable named "name" with the value "value".
 #>
-function export {
+function Set-EnvVar {
   [CmdletBinding()]
   param (
     [Parameter(Mandatory = $true)]
@@ -689,6 +708,11 @@ function export {
   }
 }
 
+#------------------------------------------------------
+# Set the alias for Set-EnvVar
+#------------------------------------------------------
+Set-Alias -Name export -Value Set-EnvVar
+
 <#
 .SYNOPSIS
     Terminates a process by name.
@@ -703,10 +727,10 @@ function export {
     None. This function does not return any output.
 
 .EXAMPLE
-    pkill "process"
+    Stop-ProcessByName "process"
     Terminates the process named "process".
 #>
-function pkill {
+function Stop-ProcessByName {
   [CmdletBinding()]
   param (
     [Parameter(Mandatory = $true)]
@@ -722,6 +746,11 @@ function pkill {
   }
 }
 
+#------------------------------------------------------
+# Set the alias for Stop-ProcessByName
+#------------------------------------------------------
+Set-Alias -Name pkill -Value Stop-ProcessByName
+
 <#
 .SYNOPSIS
     Finds a process by name.
@@ -736,10 +765,10 @@ function pkill {
     The process information if found.
 
 .EXAMPLE
-    pgrep "process"
+    Get-ProcessByName "process"
     Retrieves information about the process named "process".
 #>
-function pgrep {
+function Get-ProcessByName {
   [CmdletBinding()]
   param (
     [Parameter(Mandatory = $true)]
@@ -753,6 +782,11 @@ function pgrep {
     Write-Warning "No process with the name '$name' found."
   }
 }
+
+#------------------------------------------------------
+# Set the alias for Get-ProcessByName
+#------------------------------------------------------
+Set-Alias -Name pgrep -Value Get-ProcessByName
 
 <#
 .SYNOPSIS
@@ -771,10 +805,10 @@ function pgrep {
     The top n lines of the file content.
 
 .EXAMPLE
-    head "file.txt" 10
+    Get-HeadContent "file.txt" 10
     Retrieves the first 10 lines of the file "file.txt".
 #>
-function head {
+function Get-HeadContent {
   [CmdletBinding()]
   param (
     [Parameter(Position = 0, Mandatory = $true, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
@@ -793,6 +827,11 @@ function head {
   }
 }
 
+#------------------------------------------------------
+# Set the alias for Get-HeadContent
+#------------------------------------------------------
+Set-Alias -Name head -Value Get-HeadContent
+
 <#
 .SYNOPSIS
     Gets the last n lines of a file.
@@ -810,10 +849,10 @@ function head {
     The bottom n lines of the file content.
 
 .EXAMPLE
-    tail "file.txt" 10
+    Get-TailContent "file.txt" 10
     Retrieves the last 10 lines of the file "file.txt".
 #>
-function tail {
+function Get-TailContent {
   [CmdletBinding()]
   param (
     [Parameter(Position = 0, Mandatory = $true, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
@@ -832,6 +871,11 @@ function tail {
   }
 }
 
+#------------------------------------------------------
+# Set the alias for Get-TailContent
+#------------------------------------------------------
+Set-Alias -Name tail -Value Get-TailContent
+
 <#
 .SYNOPSIS
     Creates a new file with the specified name.
@@ -846,10 +890,10 @@ function tail {
     None. This function does not return any output.
 
 .EXAMPLE
-    nf "file.txt"
+    New-File "file.txt"
     Creates a new file named "file.txt" in the current directory.
 #>
-function nf { 
+function New-File {
   [CmdletBinding()]
   param (
     [Parameter(Position = 0, Mandatory = $true)]
@@ -863,6 +907,11 @@ function nf {
     Write-Warning "Failed to create file '$name'. Error: $_"
   }
 }
+
+#------------------------------------------------------
+# Set the alias for New-File
+#------------------------------------------------------
+Set-Alias -Name nf -Value New-File
 
 <#
 .SYNOPSIS
@@ -878,10 +927,10 @@ function nf {
     None. This function does not return any output.
 
 .EXAMPLE
-    mkcd "NewDirectory"
+    New-Directory "NewDirectory"
     Creates a new directory named "NewDirectory" and changes the current location to it.
 #>
-function mkcd {
+function New-Directory {
   [CmdletBinding()]
   param (
     [Parameter(Position = 0, Mandatory = $true)]
@@ -896,6 +945,11 @@ function mkcd {
     Write-Warning "Failed to create directory '$name'. Error: $_"
   }
 }
+
+#------------------------------------------------------
+# Set the alias for New-Directory
+#------------------------------------------------------
+Set-Alias -Name mkcd -Value New-Directory
 
 <#
 .SYNOPSIS
@@ -914,7 +968,7 @@ function mkcd {
     hist "command"
     Searches the full command history for occurrences of the term "command".
 #>
-function hist { 
+function Find-InHistory {
   [CmdletBinding()]
   param (
     [Parameter(Position = 0, Mandatory = $true, ValueFromPipeline = $true)]
@@ -931,45 +985,10 @@ function hist {
   Where-Object { $_ -like "*$searchTerm*" } | Select-Object -Unique | more
 }
 
-<#
-.SYNOPSIS
-    Starts a new PowerShell process with elevated privileges.
-
-.DESCRIPTION
-    This function starts a new PowerShell process with elevated privileges (run as administrator). 
-    If arguments are provided, they will be passed to the new PowerShell process.
-
-.PARAMETER Arguments
-    Specifies optional arguments to be passed to the new PowerShell process.
-
-.OUTPUTS
-    None. This function does not return any output.
-
-.EXAMPLE
-    admin
-    Starts a new PowerShell process with elevated privileges.
-
-.EXAMPLE
-    admin "Get-Service"
-    Starts a new PowerShell process with elevated privileges and executes the "Get-Service" command.
-#>
-function admin {
-  [CmdletBinding()]
-  param (
-    [string]$Arguments
-  )
-
-  $psi = @{
-    FilePath = "$psHome\powershell.exe"
-    Verb     = "runAs"
-  }
-
-  if ($Arguments) {
-    $psi.Add("ArgumentList", "-Command `"$Arguments`"")
-  }
-
-  Start-Process @psi
-}
+#------------------------------------------------------
+# Set the alias for Find-InHistory
+#------------------------------------------------------
+Set-Alias -Name hist -Value Find-InHistory
 
 ######################################################
 # Navigation Shortcuts
@@ -989,10 +1008,10 @@ function admin {
     None. This function does not return any output.
 
 .EXAMPLE
-    root
+    Set-Home
     Changes the current location to the root directory.
 #>
-function root {
+function Set-Home {
   [CmdletBinding()]
   param (
     # This function does not accept any parameters
@@ -1000,6 +1019,11 @@ function root {
 
   Set-Location -Path $HOME
 }
+
+#------------------------------------------------------
+# Set the alias for Set-Home
+#------------------------------------------------------
+Set-Alias -Name root -Value Set-Home
 
 <#
 .SYNOPSIS
@@ -1015,10 +1039,10 @@ function root {
     None. This function does not return any output.
 
 .EXAMPLE
-    doc
+    Set-Documents
     Changes the current location to the Documents directory.
 #>
-function doc {
+function Set-Documents {
   [CmdletBinding()]
   param (
     # This function does not accept any parameters
@@ -1026,6 +1050,11 @@ function doc {
 
   Set-Location -Path $HOME\Documents
 }
+
+#------------------------------------------------------
+# Set the alias for Set-Documents
+#------------------------------------------------------
+Set-Alias -Name doc -Value Set-Documents
 
 <#
 .SYNOPSIS
@@ -1041,10 +1070,10 @@ function doc {
     None. This function does not return any output.
 
 .EXAMPLE
-    dl
+    Set-Downloads
     Changes the current location to the Downloads directory.
 #>
-function dl {
+function Set-Downloads {
   [CmdletBinding()]
   param (
     # This function does not accept any parameters
@@ -1053,6 +1082,10 @@ function dl {
   Set-Location -Path $HOME\Downloads
 }
 
+#------------------------------------------------------
+# Set the alias for Set-Downloads
+#------------------------------------------------------
+Set-Alias -Name dl -Value Set-Downloads
 
 <#
 .SYNOPSIS
@@ -1068,10 +1101,10 @@ function dl {
     None. This function does not return any output.
 
 .EXAMPLE
-    dtop
+    Set-Desktop
     Changes the current location to the Desktop directory.
 #>
-function dtop {
+function Set-Desktop {
   [CmdletBinding()]
   param (
     # This function does not accept any parameters
@@ -1079,6 +1112,11 @@ function dtop {
 
   Set-Location -Path $HOME\Desktop
 }
+
+#------------------------------------------------------
+# Set the alias for Set-Desktop
+#------------------------------------------------------
+Set-Alias -Name dtop -Value Set-Desktop
 
 <#
 .SYNOPSIS
@@ -1094,10 +1132,10 @@ function dtop {
     None. This function does not return any output.
 
 .EXAMPLE
-    dc
+    Set-DDisk
     Changes the current location to the D:\ directory.
 #>
-function dc {
+function Set-DDisk {
   [CmdletBinding()]
   param (
     # This function does not accept any parameters
@@ -1105,6 +1143,11 @@ function dc {
 
   Set-Location -Path "D:\"
 }
+
+#------------------------------------------------------
+# Set the alias for Set-DDisk
+#------------------------------------------------------
+Set-Alias -Name dc -Value Set-DDisk
 
 ######################################################
 # Profile Shortcuts
@@ -1124,10 +1167,10 @@ function dc {
     None. This function does not return any output.
 
 .EXAMPLE
-    ep
+    Edit-Profile
     Opens the PowerShell profile in the default text editor.
 #>
-function ep {
+function Edit-Profile {
   [CmdletBinding()]
   param (
     # This function does not accept any parameters
@@ -1135,6 +1178,11 @@ function ep {
 
   $PROFILE | Invoke-Item
 }
+
+#------------------------------------------------------
+# Set the alias for Edit-Profile
+#------------------------------------------------------
+Set-Alias -Name ep -Value Edit-Profile
 
 <#
 .SYNOPSIS
@@ -1150,10 +1198,10 @@ function ep {
     The system information retrieved by the Get-ComputerInfo cmdlet.
 
 .EXAMPLE
-    sysinfo
+    Get-SystemInfo
     Retrieves and displays detailed system information.
 #>
-function sysinfo { 
+function Get-SystemInfo {
   [CmdletBinding()]
   param (
     # This function does not accept any parameters
@@ -1161,6 +1209,11 @@ function sysinfo {
   
   Get-ComputerInfo 
 }
+
+#------------------------------------------------------
+# Set the alias for Get-SystemInfo
+#------------------------------------------------------
+Set-Alias -Name sysinfo -Value Get-SystemInfo
 
 <#
 .SYNOPSIS
@@ -1176,10 +1229,10 @@ function sysinfo {
     None. This function does not return any output.
 
 .EXAMPLE
-    k9 "notepad"
+    Stop-TerminateProcess "notepad"
     Terminates the "notepad" process.
 #>
-function k9 { 
+function Stop-TerminateProcess {
   [CmdletBinding()]
   param (
     [Parameter(Position = 0, Mandatory = $true)]
@@ -1188,6 +1241,11 @@ function k9 {
   
   Stop-Process -Name $Name 
 }
+
+#------------------------------------------------------
+# Set the alias for Stop-TerminateProcess
+#------------------------------------------------------
+Set-Alias -Name k9 -Value Stop-TerminateProcess
 
 <#
 .SYNOPSIS
@@ -1203,10 +1261,10 @@ function k9 {
     None. This function does not return any output.
 
 .EXAMPLE
-    flushdns
+    Clear-DnsClientCache
     Flushes the DNS cache on the local machine.
 #>
-function flushdns { 
+function Clear-DnsCache {
   [CmdletBinding()]
   param (
     # This function does not accept any parameters
@@ -1214,6 +1272,11 @@ function flushdns {
   
   Clear-DnsClientCache 
 }
+
+#------------------------------------------------------
+# Set the alias for Clear-DnsCache
+#------------------------------------------------------
+Set-Alias -Name flushdns -Value Clear-DnsCache
 
 <#
 .SYNOPSIS
@@ -1229,14 +1292,14 @@ function flushdns {
     The files and directories in the specified path.
 
 .EXAMPLE
-    ll
+    Get-ChildItemFormatted
     Lists files and directories in the current directory.
 
 .EXAMPLE
-    ll "C:\Users"
+    Get-ChildItemFormatted "C:\Users"
     Lists files and directories in the "C:\Users" directory.
 #>
-function ll {
+function Get-ChildItemFormatted {
   [CmdletBinding()]
   param (
     [Parameter(Position = 0)]
@@ -1246,13 +1309,7 @@ function ll {
   Get-ChildItem -Path $Path -Force | Format-Table -AutoSize
 }
 
-
-######################################################
-# Aliases
-######################################################
-
 #------------------------------------------------------
-# Set UNIX-like aliases for common commands
+# Set the alias for Get-ChildItem-Formatted
 #------------------------------------------------------
-Set-Alias -Name su -Value admin
-Set-Alias -Name sudo -Value admin
+Set-Alias -Name ll -Value Get-ChildItemFormatted
