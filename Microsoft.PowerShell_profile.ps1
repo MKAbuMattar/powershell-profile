@@ -240,7 +240,8 @@ Invoke-Command -ScriptBlock ${function:Update-PowerShell} -ErrorAction SilentlyC
     Checks if the "ls" command exists in the current environment.
 #>
 function Test-CommandExists {
-  param(
+  [CmdletBinding()]
+  param (
     [Parameter(Position = 0, Mandatory = $true)]
     [string]$command
   )
@@ -289,51 +290,80 @@ function Edit-Profile {
 
 <#
 .SYNOPSIS
-    Creates a new empty file with the specified name.
+    Creates a new empty file or updates the timestamp of an existing file with the specified name.
 
 .DESCRIPTION
-    This function creates a new empty file with the specified name. It is a shorthand for creating an empty file using the Out-File cmdlet.
+    This function serves a dual purpose: it can create a new empty file with the specified name, or if a file with the same name already exists, it updates the timestamp of that file to reflect the current time. This operation is particularly useful in scenarios where you want to ensure a file's existence or update its timestamp without modifying its content. The function utilizes the Out-File cmdlet to achieve this.
 
-.PARAMETER file
-    Specifies the name of the file to create.
+.PARAMETER File
+    Specifies the name of the file to create or update. If the file already exists, its timestamp will be updated.
 
 .OUTPUTS
     None. This function does not return any output.
 
 .EXAMPLE
     touch "file.txt"
-    Creates a new empty file named "file.txt".
-#>
-function touch($file) {
-  "" | Out-File $file -Encoding ASCII
-}
-
-<#
-.SYNOPSIS
-    Finds files matching a specified name pattern.
-
-.DESCRIPTION
-    This function searches for files matching the specified name pattern in the current directory and its subdirectories. It returns the full path of each file found.
-
-.PARAMETER name
-    Specifies the name pattern to search for.
-
-.OUTPUTS
-    None. This function does not return any output.
+    Creates a new empty file named "file.txt" if it doesn't exist. If "file.txt" already exists, its timestamp is updated.
 
 .EXAMPLE
-    ff "file.txt"
-    Searches for files matching the pattern "file.txt" and returns their full paths.
+    touch "existing_file.txt"
+    Updates the timestamp of the existing file named "existing_file.txt" without modifying its content.
 #>
-function ff($name) {
-  Get-ChildItem -Recurse -Filter "*${name}*" -ErrorAction SilentlyContinue | ForEach-Object {
-    Write-Output "$($_.FullName)"
+function touch {
+  [CmdletBinding()]
+  param (
+    [Parameter(Mandatory = $true)]
+    [string]$File
+  )
+
+  # Check if the file exists
+  if (Test-Path $File) {
+    # If the file exists, update its timestamp
+      (Get-Item $File).LastWriteTime = Get-Date
+  }
+  else {
+    # If the file doesn't exist, create it with an empty content
+    "" | Out-File $File -Encoding ASCII
   }
 }
 
 <#
 .SYNOPSIS
-    Gets the system uptime in a human-readable format.
+    Finds files matching a specified name pattern in the current directory and its subdirectories.
+
+.DESCRIPTION
+    This function searches for files that match the specified name pattern in the current directory and its subdirectories. It returns the full path of each file found. If no matching files are found, it does not output anything.
+
+.PARAMETER Name
+    Specifies the name pattern to search for. You can use wildcard characters such as '*' and '?' to represent multiple characters or single characters in the file name.
+
+.OUTPUTS
+    None. This function does not return any output directly. It writes the full paths of matching files to the pipeline.
+
+.EXAMPLE
+    ff "file.txt"
+    Searches for files matching the pattern "file.txt" and returns their full paths.
+
+.EXAMPLE
+    ff "*.ps1"
+    Searches for files with the extension ".ps1" and returns their full paths.
+#>
+function ff {
+  [CmdletBinding()]
+  param (
+    [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [string]$Name
+  )
+  
+  # Search for files matching the specified name pattern
+  Get-ChildItem -Recurse -Filter $Name -ErrorAction SilentlyContinue | ForEach-Object {
+    Write-Output $_.FullName
+  }
+}
+
+<#
+.SYNOPSIS
+    Retrieves the system uptime in a human-readable format.
 
 .DESCRIPTION
     This function retrieves the system uptime in a human-readable format. It provides information about how long the system has been running since the last boot.
@@ -348,9 +378,19 @@ function ff($name) {
     uptime
     Retrieves the system uptime.
 #>
-function uptime {
+function Get-Uptime {
+  [CmdletBinding()]
+  param (
+    # This function does not accept any parameters
+  )
+
   if ($PSVersionTable.PSVersion.Major -eq 5) {
-    Get-WmiObject Win32_OperatingSystem | Select-Object @{Name = 'Uptime'; Expression = { (Get-Date) - $_.ConvertToDateTime($_.LastBootUpTime) } }
+    Get-WmiObject Win32_OperatingSystem | ForEach-Object {
+      $uptime = (Get-Date) - $_.ConvertToDateTime($_.LastBootUpTime)
+      [PSCustomObject]@{
+        Uptime = $uptime.Days, $uptime.Hours, $uptime.Minutes, $uptime.Seconds -join ':'
+      }
+    }
   }
   else {
     net statistics workstation | Select-String "since" | ForEach-Object { $_.ToString().Replace('Statistics since ', '') }
@@ -374,8 +414,19 @@ function uptime {
     reload-profile
     Reloads the PowerShell profile.
 #>
-function reload-profile {
-  & $profile
+function Reload-Profile {
+  [CmdletBinding()]
+  param (
+    # This function does not accept any parameters
+  )
+
+  try {
+    & $profile
+    Write-Host "PowerShell profile reloaded successfully." -ForegroundColor Green
+  }
+  catch {
+    Write-Error "Failed to reload the PowerShell profile. Error: $_"
+  }
 }
 
 <#
@@ -383,7 +434,7 @@ function reload-profile {
     Extracts a file to the current directory.
 
 .DESCRIPTION
-    This function extracts the specified file to the current directory. It is a shorthand for extracting files using the Expand-Archive cmdlet.
+    This function extracts the specified file to the current directory using the Expand-Archive cmdlet.
 
 .PARAMETER file
     Specifies the file to extract.
@@ -395,10 +446,22 @@ function reload-profile {
     unzip "file.zip"
     Extracts the file "file.zip" to the current directory.
 #>
-function unzip ($file) {
-  Write-Output("Extracting", $file, "to", $pwd)
-  $fullFile = Get-ChildItem -Path $pwd -Filter $file | ForEach-Object { $_.FullName }
-  Expand-Archive -Path $fullFile -DestinationPath $pwd
+function unzip {
+  [CmdletBinding()]
+  param (
+    [Parameter(Mandatory = $true, Position = 0)]
+    [string]$File
+  )
+
+  try {
+    Write-Host "Extracting file '$File' to '$PWD'..." -ForegroundColor Cyan
+    $FullFilePath = Get-Item -Path $File -ErrorAction Stop | Select-Object -ExpandProperty FullName
+    Expand-Archive -Path $FullFilePath -DestinationPath $PWD -Force -ErrorAction Stop
+    Write-Host "File extraction completed successfully." -ForegroundColor Green
+  }
+  catch {
+    Write-Error "Failed to extract file '$File'. Error: $_"
+  }
 }
 
 <#
@@ -586,7 +649,8 @@ function pgrep($name) {
     Retrieves the first 10 lines of the file "file.txt".
 #>
 function head {
-  param(
+  [CmdletBinding()]
+  param (
     [Parameter(Position = 0, Mandatory = $true)]
     [string]$Path,
     [int]$n = 10
@@ -616,7 +680,8 @@ function head {
     Retrieves the last 10 lines of the file "file.txt".
 #>
 function tail {
-  param(
+  [CmdletBinding()]
+  param (
     [Parameter(Position = 0, Mandatory = $true)]
     [string]$Path,
     [int]$n = 10
@@ -643,7 +708,8 @@ function tail {
     Creates a new file named "file.txt" in the current directory.
 #>
 function nf { 
-  param($name) New-Item -ItemType "file" -Path . -Name $name
+  [CmdletBinding()]
+  param ($name) New-Item -ItemType "file" -Path . -Name $name
 }
 
 <#
@@ -663,8 +729,9 @@ function nf {
     mkcd "NewDirectory"
     Creates a new directory named "NewDirectory" and changes the current location to it.
 #>
-function mkcd { 
-  param($dir) mkdir $dir -Force; Set-Location $dir
+function mkcd {
+  [CmdletBinding()]
+  param ($dir) mkdir $dir -Force; Set-Location $dir
 }
 
 <#
@@ -685,7 +752,8 @@ function mkcd {
     Searches the full command history for occurrences of the term "command".
 #>
 function hist { 
-  param(
+  [CmdletBinding()]
+  param (
     [Parameter(Position = 0, Mandatory = $true, ValueFromPipeline = $true)]
     [string]$searchTerm
   )
@@ -869,6 +937,7 @@ function sysinfo {
     Terminates the "notepad" process.
 #>
 function k9 { 
+  [CmdletBinding()]
   param (
     [Parameter(Position = 0, Mandatory = $true)]
     [string]$Name
