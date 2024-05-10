@@ -225,7 +225,6 @@ function Private:Update-PowerShell {
     }
     else {
       Write-Host "Your PowerShell is up to date." -ForegroundColor Green
-      Clear-Host
     }
   }
   catch {
