@@ -35,26 +35,131 @@
 $canConnectToGitHub = Test-Connection github.com -Count 1 -Quiet -TimeoutSeconds 1
 
 #------------------------------------------------------
-# 
+# Check if Terminal Icons module is installed
 #------------------------------------------------------
-$modules = @( 'Terminal-Icons', 'PowerShellGet', 'PSReadLine', 'Posh-Git', 'CompletionPredictor' )
+if (-not (Get-Module -ListAvailable -Name Terminal-Icons)) {
+  Install-Module -Name Terminal-Icons -Scope CurrentUser -Force -SkipPublisherCheck
+}
 
-foreach ($module in $modules) {
-  Write-Output "Checking $module"
-  try {
-    if (-not (Find-Module -Name $module)) {
-      Write-Output "Installing $module"
-      Install-Module -Name $module -Scope CurrentUser -Force -SkipPublisherCheck -ErrorAction Stop
+#------------------------------------------------------
+# Check if PowerShellGet module is installed
+#------------------------------------------------------
+if (-not (Get-Module -ListAvailable -Name PowerShellGet)) {
+  Install-Module -Name PowerShellGet -Scope CurrentUser -Force -SkipPublisherCheck
+}
+
+#------------------------------------------------------
+# Check if CompletionPredictor module is installed
+#------------------------------------------------------
+if (-not (Get-Module -ListAvailable -Name CompletionPredictor)) {
+  Install-Module -Name CompletionPredictor -Scope CurrentUser -Force -SkipPublisherCheck
+}
+
+#------------------------------------------------------
+# Check if PSReadLine module is installed
+#------------------------------------------------------
+if (-not (Get-Module -ListAvailable -Name PSReadLine)) {
+  Install-Module -Name PSReadLine -Scope CurrentUser -Force -SkipPublisherCheck
+}
+
+#------------------------------------------------------
+# Check if Posh-Git module is installed
+#------------------------------------------------------
+if (-not (Get-Module -ListAvailable -Name Posh-Git)) {
+  Install-Module -Name Posh-Git -Scope CurrentUser -Force -SkipPublisherCheck
+}
+
+<#
+.SYNOPSIS
+    Updates or installs the specified modules.
+
+.DESCRIPTION
+    This function checks if the specified modules are installed and updates them if they are already installed. If a module is not found, it installs the module. The function provides feedback on the installation or update process and handles any errors that may occur.
+
+.PARAMETER ModuleList
+    Specifies an array of module names to update or install.
+
+.OUTPUTS None
+    This function does not return any output.
+
+.EXAMPLE
+    Invoke-UpdateInstallPSModules -ModuleList @('Module1', 'Module2', 'Module3')
+    Updates or installs the modules 'Module1', 'Module2', and 'Module3'.
+
+.EXAMPLE
+    $modules = @('Module1', 'Module2', 'Module3')
+    Invoke-UpdateInstallPSModules -ModuleList $modules
+    Updates or installs the modules 'Module1', 'Module2', and 'Module3'.
+#>
+function Private:Invoke-UpdateInstallPSModules {
+  [CmdletBinding()]
+  param (
+    [Parameter(Mandatory = $true)]
+    [string[]]$ModuleList
+  )
+
+  foreach ($module in $ModuleList) {
+    Write-Output "Checking $module"
+    try {
+      if (-not (Find-Module -Name $module)) {
+        Write-Output "Installing $module"
+        Install-Module -Name $module -Scope CurrentUser -Force -SkipPublisherCheck -ErrorAction Stop
+      }
+      else {
+        Write-Output "Updating $module"
+        Update-Module -Name $module -Scope CurrentUser -Force -ErrorAction Stop
+      }
     }
-    else {
-      Write-Output "Updating $module"
-      Update-Module -Name $module -Scope CurrentUser -Force -ErrorAction Stop
+    catch {
+      Write-Warning "Failed to process module ${module}: $_"
     }
-  }
-  catch {
-    Write-Warning "Failed to process module ${module}: $_"
   }
 }
+
+<#
+.SYNOPSIS
+    Invokes the UpdateInstallPSModules function with a predefined list of modules.
+
+.DESCRIPTION
+    This function invokes the UpdateInstallPSModules function with a predefined list of modules to update or install. It is used to ensure that the required modules are up to date and installed in the PowerShell environment.
+
+.PARAMETER None
+    This function does not accept any parameters.
+
+.OUTPUTS None
+    This function does not return any output.
+
+.EXAMPLE
+    Invoke-UpdateInstallModules
+    Invokes the UpdateInstallPSModules function with a predefined list of modules.
+
+.ALIASES
+    update-modules -> Use the alias `update-modules` to quickly update or install the required modules.
+
+.NOTES
+    The UpdateInstallPSModules function is used to update or install the following modules:
+    - Terminal-Icons
+    - PowerShellGet
+    - PSReadLine
+    - Posh-Git
+    - CompletionPredictor
+
+    The Invoke-UpdateInstallModules function is used to ensure that these modules are up to date and installed in the PowerShell environment.
+#>
+function Private:Invoke-UpdateInstallModules {
+  [CmdletBinding()]
+  param (
+    # This function does not accept any parameters
+  )
+
+  $modules = @( 'Terminal-Icons', 'PowerShellGet', 'PSReadLine', 'Posh-Git', 'CompletionPredictor' )
+  Invoke-UpdateInstallPSModules -ModuleList $modules
+}
+
+#------------------------------------------------------
+# Alias for updating or installing modules
+#------------------------------------------------------
+Set-Alias -Name update-modules -Value Invoke-UpdateInstallModules
 
 #------------------------------------------------------
 # Load the modules
