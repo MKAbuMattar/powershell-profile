@@ -1332,35 +1332,6 @@ Set-Alias -Name la -Value Get-ChildItemFormatted
 #######################################################
 <#
 .SYNOPSIS
-    Moves up a specified number of directory levels.
-
-.DESCRIPTION
-    This function changes the current working directory to a parent directory at a specified number of levels above the current directory. It is useful for navigating up multiple levels in the directory structure.
-
-.PARAMETER Levels
-    Specifies the number of directory levels to move up.
-
-.OUTPUTS
-    None. This function does not return any output.
-
-.EXAMPLE
-    Invoke-UpDirectoryLevel 2
-    Moves up two directory levels.
-#>
-function Private:Invoke-UpDirectoryLevel {
-  [CmdletBinding()]
-  param (
-    [Parameter(Mandatory = $true, Position = 0)]
-    [int]$Levels
-  )
-
-  $parentPath = "..\"
-  $upPath = $parentPath * $Levels
-  Set-Location -Path $upPath
-}
-
-<#
-.SYNOPSIS
     Moves up one directory level.
 
 .DESCRIPTION
@@ -1382,13 +1353,13 @@ function Private:Invoke-UpOneDirectoryLevel {
     # This function does not accept any parameters
   )
 
-  Invoke-UpDirectoryLevel 1
+  Set-Location -Path .. -ErrorAction SilentlyContinue
 }
 
 #------------------------------------------------------
 # Set the alias for Invoke-UpOneDirectoryLevel
 #------------------------------------------------------
-Set-Alias -Name cd.1 -Value Invoke-UpOneDirectoryLevel
+Set-Alias -Name cd.1 -Value Private:Invoke-UpOneDirectoryLevel
 
 <#
 .SYNOPSIS
@@ -1413,7 +1384,7 @@ function Private:Invoke-UpTwoDirectoryLevels {
     # This function does not accept any parameters
   )
 
-  Invoke-UpDirectoryLevel -Levels 2
+  Set-Location -Path ..\.. -ErrorAction SilentlyContinue
 }
 
 #------------------------------------------------------
@@ -1444,7 +1415,7 @@ function Private:Invoke-UpThreeDirectoryLevels {
     # This function does not accept any parameters
   )
 
-  Invoke-UpDirectoryLevel -Levels 3
+  Set-Location -Path ..\..\.. -ErrorAction SilentlyContinue
 }
 
 #------------------------------------------------------
@@ -1475,7 +1446,7 @@ function Private:Invoke-UpFourDirectoryLevels {
     # This function does not accept any parameters
   )
 
-  Invoke-UpDirectoryLevel -Levels 4
+  Set-Location -Path ..\..\..\.. -ErrorAction SilentlyContinue
 }
 
 #------------------------------------------------------
@@ -1506,7 +1477,7 @@ function Private:Invoke-UpFiveDirectoryLevels {
     # This function does not accept any parameters
   )
 
-  Invoke-UpDirectoryLevel -Levels 5
+  Set-Location -Path ..\..\..\..\.. -ErrorAction SilentlyContinue
 }
 
 #------------------------------------------------------
@@ -1537,7 +1508,7 @@ function Private:Invoke-UpSixDirectoryLevels {
     # This function does not accept any parameters
   )
 
-  Invoke-UpDirectoryLevel -Levels 6
+  Set-Location -Path ..\..\..\..\..\.. -ErrorAction SilentlyContinue
 }
 
 #------------------------------------------------------
