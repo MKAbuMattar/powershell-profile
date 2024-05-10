@@ -1593,6 +1593,7 @@ Set-Alias -Name la -Value Get-ChildItemFormatted
 #######################################################
 # Move Up Directory
 #######################################################
+
 <#
 .SYNOPSIS
     Moves up one directory level.
@@ -1612,6 +1613,7 @@ Set-Alias -Name la -Value Get-ChildItemFormatted
 
 .ALIASES
     cd.1 -> Use the alias `cd.1` to quickly move up one directory level.
+    .. -> Use the alias `..` to quickly move up one directory level.
 #>
 function Private:Invoke-UpOneDirectoryLevel {
   [CmdletBinding()]
@@ -1626,6 +1628,7 @@ function Private:Invoke-UpOneDirectoryLevel {
 # Set the alias for Invoke-UpOneDirectoryLevel
 #------------------------------------------------------
 Set-Alias -Name cd.1 -Value Private:Invoke-UpOneDirectoryLevel
+Set-Alias -Name .. -Value Private:Invoke-UpOneDirectoryLevel
 
 <#
 .SYNOPSIS
@@ -1646,6 +1649,7 @@ Set-Alias -Name cd.1 -Value Private:Invoke-UpOneDirectoryLevel
 
 .ALIASES
     cd.2 -> Use the alias `cd.2` to quickly move up two directory levels.
+    ... -> Use the alias `...` to quickly move up two directory levels.
 #>
 function Private:Invoke-UpTwoDirectoryLevels {
   [CmdletBinding()]
@@ -1660,6 +1664,7 @@ function Private:Invoke-UpTwoDirectoryLevels {
 # Set the alias for Invoke-UpTwoDirectoryLevels
 #------------------------------------------------------
 Set-Alias -Name cd.2 -Value Invoke-UpTwoDirectoryLevels
+Set-Alias -Name ... -Value Invoke-UpTwoDirectoryLevels
 
 <#
 .SYNOPSIS
@@ -1680,6 +1685,7 @@ Set-Alias -Name cd.2 -Value Invoke-UpTwoDirectoryLevels
 
 .ALIASES
     cd.3 -> Use the alias `cd.3` to quickly move up three directory levels.
+    .... -> Use the alias `....` to quickly move up three directory levels.
 #>
 function Private:Invoke-UpThreeDirectoryLevels {
   [CmdletBinding()]
@@ -1694,6 +1700,7 @@ function Private:Invoke-UpThreeDirectoryLevels {
 # Set the alias for Invoke-UpThreeDirectoryLevels
 #------------------------------------------------------
 Set-Alias -Name cd.3 -Value Invoke-UpThreeDirectoryLevels
+Set-Alias -Name .... -Value Invoke-UpThreeDirectoryLevels
 
 <#
 .SYNOPSIS
@@ -1714,6 +1721,7 @@ Set-Alias -Name cd.3 -Value Invoke-UpThreeDirectoryLevels
 
 .ALIASES
     cd.4 -> Use the alias `cd.4` to quickly move up four directory levels.
+    ..... -> Use the alias `.....` to quickly move up four directory levels.
 #>
 function Private:Invoke-UpFourDirectoryLevels {
   [CmdletBinding()]
@@ -1728,6 +1736,7 @@ function Private:Invoke-UpFourDirectoryLevels {
 # Set the alias for Invoke-UpFourDirectoryLevels
 #------------------------------------------------------
 Set-Alias -Name cd.4 -Value Invoke-UpFourDirectoryLevels
+Set-Alias -Name ..... -Value Invoke-UpFourDirectoryLevels
 
 <#
 .SYNOPSIS
@@ -1748,6 +1757,7 @@ Set-Alias -Name cd.4 -Value Invoke-UpFourDirectoryLevels
 
 .ALIASES
     cd.5 -> Use the alias `cd.5` to quickly move up five directory levels.
+    ...... -> Use the alias `......` to quickly move up five directory levels.
 #>
 function Private:Invoke-UpFiveDirectoryLevels {
   [CmdletBinding()]
@@ -1762,6 +1772,7 @@ function Private:Invoke-UpFiveDirectoryLevels {
 # Set the alias for Invoke-UpFiveDirectoryLevels
 #------------------------------------------------------
 Set-Alias -Name cd.5 -Value Invoke-UpFiveDirectoryLevels
+Set-Alias -Name ...... -Value Invoke-UpFiveDirectoryLevels
 
 <#
 .SYNOPSIS
@@ -1782,6 +1793,7 @@ Set-Alias -Name cd.5 -Value Invoke-UpFiveDirectoryLevels
 
 .ALIASES
     cd.6 -> Use the alias `cd.6` to quickly move up six directory levels.
+    ....... -> Use the alias `.......` to quickly move up six directory levels.
 #>
 function Private:Invoke-UpSixDirectoryLevels {
   [CmdletBinding()]
@@ -1796,10 +1808,12 @@ function Private:Invoke-UpSixDirectoryLevels {
 # Set the alias for Invoke-UpSixDirectoryLevels
 #------------------------------------------------------
 Set-Alias -Name cd.6 -Value Invoke-UpSixDirectoryLevels
+Set-Alias -Name ....... -Value Invoke-UpSixDirectoryLevels
 
 #######################################################
 # Git Functions
 #######################################################
+
 <#
 .SYNOPSIS
     Initializes a new Git repository in the current directory.
