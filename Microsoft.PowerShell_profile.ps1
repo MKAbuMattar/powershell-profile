@@ -1344,7 +1344,7 @@ Set-Alias -Name la -Value Get-ChildItemFormatted
     None. This function does not return any output.
 
 .EXAMPLE
-    Move-UpDirectoryLevel -Levels 2
+    Move-UpDirectoryLevel 2
     Moves up two directory levels.
 #>
 function Private:Move-UpDirectoryLevel {
@@ -1362,12 +1362,12 @@ function Private:Move-UpDirectoryLevel {
 #------------------------------------------------------
 # Set the alias for Move-UpDirectoryLevel 1-6 levels
 #------------------------------------------------------
-Set-Alias -Name cd.1 -Value Move-UpDirectoryLevel -Levels 1
-Set-Alias -Name cd.2 -Value Move-UpDirectoryLevel -Levels 2
-Set-Alias -Name cd.3 -Value Move-UpDirectoryLevel -Levels 3
-Set-Alias -Name cd.4 -Value Move-UpDirectoryLevel -Levels 4
-Set-Alias -Name cd.5 -Value Move-UpDirectoryLevel -Levels 5
-Set-Alias -Name cd.6 -Value Move-UpDirectoryLevel -Levels 6
+Set-Alias -Name cd.1 -Value Move-UpDirectoryLevel 1
+Set-Alias -Name cd.2 -Value Move-UpDirectoryLevel 2
+Set-Alias -Name cd.3 -Value Move-UpDirectoryLevel 3
+Set-Alias -Name cd.4 -Value Move-UpDirectoryLevel 4
+Set-Alias -Name cd.5 -Value Move-UpDirectoryLevel 5
+Set-Alias -Name cd.6 -Value Move-UpDirectoryLevel 6
 
 ######################################################
 # Git Functions
