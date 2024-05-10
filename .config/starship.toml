@@ -1,5 +1,4 @@
-# ~/.config/starship.toml
-#
+#############################################
 #                             .
 #         ..                .''
 #         .,'..,.         ..,;,'
@@ -18,7 +17,10 @@
 #        ',;;;.        .
 #        .,;;.
 #        ,;
+#        .
 #
+#  MKAbuMattar's Starship Prompt Configuration
+#############################################
 
 ## FIRST LINE/ROW: Info & Status
 # First param ─┌
