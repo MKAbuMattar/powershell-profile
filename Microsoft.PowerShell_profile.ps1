@@ -1053,6 +1053,79 @@ function Private:Find-InHistory {
 #------------------------------------------------------
 Set-Alias -Name hist -Value Find-InHistory
 
+<#
+.DESCRIPTION
+    This function generates a tree structure to represent the hierarchy of processes in the system. It retrieves information about running processes, organizes them based on their parent-child relationships, and displays them in a tree-like format.
+
+.PARAMETER None
+    This function does not accept any parameters.
+
+.OUTPUTS
+    The process tree representation, showing the process ID (PID) and command line of each process.
+
+.EXAMPLE
+    Get-ProcessTree
+    Displays the process tree, showing the hierarchy of processes in the system.
+
+.ALIASES
+    pstree -> Use the alias `pstree` to quickly display the process tree.
+
+.NOTES
+    This function recursively traverses the process hierarchy, starting from processes without parents (e.g., system processes). It organizes processes based on their parent-child relationships and presents them in a tree-like structure, making it easier to visualize process dependencies.
+#>
+function Private:Get-ProcessTree {
+  $ProcessesById = @{}
+  foreach ($Process in (Get-WMIObject -Class Win32_Process)) {
+    $ProcessesById[$Process.ProcessId] = $Process
+  }
+
+  $ProcessesWithoutParents = @()
+  $ProcessesByParent = @{}
+  foreach ($Pair in $ProcessesById.GetEnumerator()) {
+    $Process = $Pair.Value
+
+    if (($Process.ParentProcessId -eq 0) -or !$ProcessesById.ContainsKey($Process.ParentProcessId)) {
+      $ProcessesWithoutParents += $Process
+      continue
+    }
+
+    if (!$ProcessesByParent.ContainsKey($Process.ParentProcessId)) {
+      $ProcessesByParent[$Process.ParentProcessId] = @()
+    }
+    $Siblings = $ProcessesByParent[$Process.ParentProcessId]
+    $Siblings += $Process
+    $ProcessesByParent[$Process.ParentProcessId] = $Siblings
+  }
+
+  function Show-ProcessTree([UInt32]$ProcessId, $IndentLevel) {
+    $Process = $ProcessesById[$ProcessId]
+    $Indent = " " * $IndentLevel
+    if ($Process.CommandLine) {
+      $Description = $Process.CommandLine
+    }
+    else {
+      $Description = $Process.Caption
+    }
+
+    Write-Output ("{0,6}{1} {2}" -f $Process.ProcessId, $Indent, $Description)
+    foreach ($Child in ($ProcessesByParent[$ProcessId] | Sort-Object CreationDate)) {
+      Show-ProcessTree $Child.ProcessId ($IndentLevel + 4)
+    }
+  }
+
+  Write-Output ("{0,6} {1}" -f "PID", "Command Line")
+  Write-Output ("{0,6} {1}" -f "---", "------------")
+
+  foreach ($Process in ($ProcessesWithoutParents | Sort-Object CreationDate)) {
+    Show-ProcessTree $Process.ProcessId 0
+  }
+}
+
+#------------------------------------------------------
+# Set the alias for Get-ProcessTree
+#------------------------------------------------------
+Set-Alias -Name pstree -Value Get-ProcessTree
+
 #######################################################
 # Navigation Shortcuts
 #######################################################
