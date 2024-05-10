@@ -9,11 +9,11 @@
 #       and tools.
 #
 # Created: 2021-09-01
-# Updated: 2024-05-09
+# Updated: 2024-05-11
 #
 # GitHub: https://github.com/MKAbuMattar/powershell-profile
 #
-# Version: 1.5.0
+# Version: 2.0.0
 #------------------------------------------------------
 
 #------------------------------------------------------
@@ -236,32 +236,61 @@ catch {
   Write-Error "Failed to install or update the required PowerShell modules. Error: $_"
 }
 
-#------------------------------------------------------
-# Install Starship
-#------------------------------------------------------
-try {
-  choco install starship -y
-}
-catch {
-  Write-Error "Failed to install Starship. Error: $_"
+<#
+.SYNOPSIS
+    Updates or installs the specified Chocolatey packages.
+
+.DESCRIPTION
+    This function checks if the specified Chocolatey packages are installed and updates them if they are already installed. If a package is not found, it installs the package. The function provides feedback on the installation or update process and handles any errors that may occur.
+
+.PARAMETER PackageList
+    Specifies an array of Chocolatey package names to update or install.
+
+.OUTPUTS None
+    This function does not return any output.
+
+.EXAMPLE
+    Invoke-UpdateInstallChocoPackages -PackageList @('Package1', 'Package2', 'Package3')
+    Updates or installs the Chocolatey packages 'Package1', 'Package2', and 'Package3'.
+
+.EXAMPLE
+    $packages = @('Package1', 'Package2', 'Package3')
+    Invoke-UpdateInstallChocoPackages -PackageList $packages
+    Updates or installs the Chocolatey packages 'Package1', 'Package2', and 'Package3'.
+#>
+function Private:Invoke-UpdateInstallChocoPackages {
+  [CmdletBinding()]
+  param (
+    [Parameter(Mandatory = $true)]
+    [string[]]$PackageList
+  )
+
+  foreach ($package in $PackageList) {
+    Write-Output "Checking $package"
+    try {
+      if (-not (Get-Package -Name $package -ErrorAction SilentlyContinue)) {
+        Write-Output "Installing $package"
+        choco install $package -y
+      }
+      else {
+        Write-Output "Updating $package"
+        choco upgrade $package -y
+      }
+    }
+    catch {
+      Write-Warning "Failed to process package ${package}: $_"
+    }
+  }
 }
 
 #------------------------------------------------------
-# Install Windows Terminal
+# Install required Chocolatey packages
 #------------------------------------------------------
-try {
-  choco install microsoft-windows-terminal -y
-}
-catch {
-  Write-Error "Failed to install Windows Terminal. Error: $_"
-}
+$packages = @( 'starship', 'microsoft-windows-terminal', 'powershell' )
 
-#------------------------------------------------------
-# Install PowerShell
-#------------------------------------------------------
 try {
-  choco install powershell -y
+  Invoke-UpdateInstallChocoPackages -PackageList $packages
 }
 catch {
-  Write-Error "Failed to install PowerShell. Error: $_"
+  Write-Error "Failed to install or update the required Chocolatey packages. Error: $_"
 }
