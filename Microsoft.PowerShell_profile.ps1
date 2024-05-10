@@ -170,7 +170,7 @@ function Private:Update-Profile {
     Write-Error "Unable to check for `$profile updates"
   }
   finally {
-    Remove-Item "$env:temp/Microsoft.PowerShell_profile.ps1" -ErrorAction SilentlyContinue
+    ReInvoke-Item "$env:temp/Microsoft.PowerShell_profile.ps1" -ErrorAction SilentlyContinue
   }
 }
 
@@ -1344,10 +1344,10 @@ Set-Alias -Name la -Value Get-ChildItemFormatted
     None. This function does not return any output.
 
 .EXAMPLE
-    Move-UpDirectoryLevel -Levels 2
+    Invoke-UpDirectoryLevel 2
     Moves up two directory levels.
 #>
-function Private:Move-UpDirectoryLevel {
+function Private:Invoke-UpDirectoryLevel {
   [CmdletBinding()]
   param (
     [Parameter(Mandatory = $true, Position = 0)]
@@ -1373,22 +1373,22 @@ function Private:Move-UpDirectoryLevel {
     None. This function does not return any output.
 
 .EXAMPLE
-    Move-UpOneDirectoryLevel
+    Invoke-UpOneDirectoryLevel
     Moves up one directory level.
 #>
-function Private:Move-UpOneDirectoryLevel {
+function Private:Invoke-UpOneDirectoryLevel {
   [CmdletBinding()]
   param (
     # This function does not accept any parameters
   )
 
-  Move-UpDirectoryLevel -Levels 1
+  Invoke-UpDirectoryLevel 1
 }
 
 #------------------------------------------------------
-# Set the alias for Move-UpOneDirectoryLevel
+# Set the alias for Invoke-UpOneDirectoryLevel
 #------------------------------------------------------
-Set-Alias -Name cd.1 -Value Move-UpOneDirectoryLevel
+Set-Alias -Name cd.1 -Value Invoke-UpOneDirectoryLevel
 
 <#
 .SYNOPSIS
@@ -1404,22 +1404,22 @@ Set-Alias -Name cd.1 -Value Move-UpOneDirectoryLevel
     None. This function does not return any output.
 
 .EXAMPLE
-    Move-UpTwoDirectoryLevels
+    Invoke-UpTwoDirectoryLevels
     Moves up two directory levels.
 #>
-function Private:Move-UpTwoDirectoryLevels {
+function Private:Invoke-UpTwoDirectoryLevels {
   [CmdletBinding()]
   param (
     # This function does not accept any parameters
   )
 
-  Move-UpDirectoryLevel -Levels 2
+  Invoke-UpDirectoryLevel -Levels 2
 }
 
 #------------------------------------------------------
-# Set the alias for Move-UpTwoDirectoryLevels
+# Set the alias for Invoke-UpTwoDirectoryLevels
 #------------------------------------------------------
-Set-Alias -Name cd.2 -Value Move-UpTwoDirectoryLevels
+Set-Alias -Name cd.2 -Value Invoke-UpTwoDirectoryLevels
 
 <#
 .SYNOPSIS
@@ -1435,22 +1435,22 @@ Set-Alias -Name cd.2 -Value Move-UpTwoDirectoryLevels
     None. This function does not return any output.
 
 .EXAMPLE
-    Move-UpThreeDirectoryLevels
+    Invoke-UpThreeDirectoryLevels
     Moves up three directory levels.
 #>
-function Private:Move-UpThreeDirectoryLevels {
+function Private:Invoke-UpThreeDirectoryLevels {
   [CmdletBinding()]
   param (
     # This function does not accept any parameters
   )
 
-  Move-UpDirectoryLevel -Levels 3
+  Invoke-UpDirectoryLevel -Levels 3
 }
 
 #------------------------------------------------------
-# Set the alias for Move-UpThreeDirectoryLevels
+# Set the alias for Invoke-UpThreeDirectoryLevels
 #------------------------------------------------------
-Set-Alias -Name cd.3 -Value Move-UpThreeDirectoryLevels
+Set-Alias -Name cd.3 -Value Invoke-UpThreeDirectoryLevels
 
 <#
 .SYNOPSIS
@@ -1466,22 +1466,22 @@ Set-Alias -Name cd.3 -Value Move-UpThreeDirectoryLevels
     None. This function does not return any output.
 
 .EXAMPLE
-    Move-UpFourDirectoryLevels
+    Invoke-UpFourDirectoryLevels
     Moves up four directory levels.
 #>
-function Private:Move-UpFourDirectoryLevels {
+function Private:Invoke-UpFourDirectoryLevels {
   [CmdletBinding()]
   param (
     # This function does not accept any parameters
   )
 
-  Move-UpDirectoryLevel -Levels 4
+  Invoke-UpDirectoryLevel -Levels 4
 }
 
 #------------------------------------------------------
-# Set the alias for Move-UpFourDirectoryLevels
+# Set the alias for Invoke-UpFourDirectoryLevels
 #------------------------------------------------------
-Set-Alias -Name cd.4 -Value Move-UpFourDirectoryLevels
+Set-Alias -Name cd.4 -Value Invoke-UpFourDirectoryLevels
 
 <#
 .SYNOPSIS
@@ -1497,22 +1497,22 @@ Set-Alias -Name cd.4 -Value Move-UpFourDirectoryLevels
     None. This function does not return any output.
 
 .EXAMPLE
-    Move-UpFiveDirectoryLevels
+    Invoke-UpFiveDirectoryLevels
     Moves up five directory levels.
 #>
-function Private:Move-UpFiveDirectoryLevels {
+function Private:Invoke-UpFiveDirectoryLevels {
   [CmdletBinding()]
   param (
     # This function does not accept any parameters
   )
 
-  Move-UpDirectoryLevel -Levels 5
+  Invoke-UpDirectoryLevel -Levels 5
 }
 
 #------------------------------------------------------
-# Set the alias for Move-UpFiveDirectoryLevels
+# Set the alias for Invoke-UpFiveDirectoryLevels
 #------------------------------------------------------
-Set-Alias -Name cd.5 -Value Move-UpFiveDirectoryLevels
+Set-Alias -Name cd.5 -Value Invoke-UpFiveDirectoryLevels
 
 <#
 .SYNOPSIS
@@ -1528,22 +1528,22 @@ Set-Alias -Name cd.5 -Value Move-UpFiveDirectoryLevels
     None. This function does not return any output.
 
 .EXAMPLE
-    Move-UpSixDirectoryLevels
+    Invoke-UpSixDirectoryLevels
     Moves up six directory levels.
 #>
-function Private:Move-UpSixDirectoryLevels {
+function Private:Invoke-UpSixDirectoryLevels {
   [CmdletBinding()]
   param (
     # This function does not accept any parameters
   )
 
-  Move-UpDirectoryLevel -Levels 6
+  Invoke-UpDirectoryLevel -Levels 6
 }
 
 #------------------------------------------------------
-# Set the alias for Move-UpSixDirectoryLevels
+# Set the alias for Invoke-UpSixDirectoryLevels
 #------------------------------------------------------
-Set-Alias -Name cd.6 -Value Move-UpSixDirectoryLevels
+Set-Alias -Name cd.6 -Value Invoke-UpSixDirectoryLevels
 
 #######################################################
 # Git Functions
