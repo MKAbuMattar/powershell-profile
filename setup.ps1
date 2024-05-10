@@ -178,44 +178,27 @@ catch {
 }
 
 #------------------------------------------------------
-# Install Terminal Icons module
+# Install required PowerShell modules
 #------------------------------------------------------
-try {
-  Install-Module -Name Terminal-Icons -Repository PSGallery -Force
-}
-catch {
-  Write-Error "Failed to install Terminal Icons module. Error: $_"
+$modules = @( 'Terminal-Icons', 'PSReadLine', 'Posh-Git', 'CompletionPredictor' )
+
+foreach ($module in $modules) {
+  Write-Output "Checking $module"
+  try {
+    if (-not (Find-Module -Name $module)) {
+      Write-Output "Installing $module"
+      Install-Module -Name $module -AllowPrerelease -Scope CurrentUser -Force -SkipPublisherCheck -ErrorAction Stop
+    }
+    else {
+      Write-Output "Updating $module"
+      Update-Module -Name $module -AllowPrerelease -Scope CurrentUser -Force -ErrorAction Stop
+    }
+  }
+  catch {
+    Write-Warning "Failed to process module ${module}: $_"
+  }
 }
 
-#------------------------------------------------------
-# Install PSReadLine Module
-#------------------------------------------------------
-try {
-  Install-Module -Name PSReadLine -Repository PSGallery -Force
-}
-catch {
-  Write-Error "Failed to install PSReadLine module. Error: $_"
-}
-
-#------------------------------------------------------
-# Install Posh-Git Module
-#------------------------------------------------------
-try {
-  Install-Module -Name Posh-Git -Repository PSGallery -Force
-}
-catch {
-  Write-Error "Failed to install Posh-Git module. Error: $_"
-}
-
-#------------------------------------------------------
-# Install CompletionPredictor Module
-#------------------------------------------------------
-try {
-  Install-Module -Name CompletionPredictor -Repository PSGallery -Force
-}
-catch {
-  Write-Error "Failed to install CompletionPredictor module. Error: $_"
-}
 
 #------------------------------------------------------
 # Install Starship

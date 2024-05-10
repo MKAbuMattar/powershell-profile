@@ -1053,7 +1053,27 @@ function Private:Find-InHistory {
 #------------------------------------------------------
 Set-Alias -Name hist -Value Find-InHistory
 
-function Get-ProcessTree {
+<#
+.SYNOPSIS
+    Displays the process tree of the system.
+
+.DESCRIPTION
+    This function retrieves the process tree of the system, showing the parent-child relationships between processes. It provides a hierarchical view of the processes running on the system.
+
+.PARAMETER None
+    This function does not accept any parameters.
+
+.OUTPUTS
+    The process tree of the system.
+
+.EXAMPLE
+    Get-ProcessTree
+    Displays the process tree of the system.
+
+.ALIASES
+    pstree -> Use the alias `pstree` to quickly display the process tree.
+#>
+function Private:Get-ProcessTree {
   $ProcessesById = @{}
   foreach ($Process in (Get-WMIObject -Class Win32_Process)) {
     $ProcessesById[$Process.ProcessId] = $Process
