@@ -302,6 +302,10 @@ Set-Alias -Name vim -Value $EDITOR
 .EXAMPLE
     Set-FreshFile "existing_file.txt"
     Updates the timestamp of the existing file named "existing_file.txt" without modifying its content.
+
+.NOTES
+    Alias:
+        touch -> Use the alias `touch` to quickly create a new file or update the timestamp of an existing file.
 #>
 function Private:Set-FreshFile {
   [CmdletBinding()]
@@ -346,6 +350,10 @@ Set-Alias -Name touch -Value Set-FreshFile
 .EXAMPLE
     Find-Files "*.ps1"
     Searches for files with the extension ".ps1" and returns their full paths.
+
+.NOTES
+    Alias:
+        ff -> Use the alias `ff` to quickly find files matching a name pattern.
 #>
 function Private:Find-Files {
   [CmdletBinding()]
@@ -381,6 +389,10 @@ Set-Alias -Name ff -Value Find-Files
 .EXAMPLE
     Get-Uptime
     Retrieves the system uptime.
+
+.NOTES
+    Alias:
+        uptime -> Use the alias `uptime` to quickly get the system uptime.
 #>
 function Private:Get-Uptime {
   [CmdletBinding()]
@@ -422,6 +434,10 @@ Set-Alias -Name uptime -Value Get-Uptime
 .EXAMPLE
     Invoke-ProfileReload
     Reloads the PowerShell profile.
+
+.NOTES
+    Alias:
+        reload-profile -> Use the alias `reload-profile` to quickly reload the profile.
 #>
 function Private:Invoke-ProfileReload {
   [CmdletBinding()]
@@ -459,6 +475,10 @@ Set-Alias -Name reload-profile -Value Invoke-ProfileReload
 .EXAMPLE
     Expand-File "file.zip"
     Extracts the file "file.zip" to the current directory.
+
+.NOTES
+    Alias:
+        unzip -> Use the alias `unzip` to quickly extract a file.
 #>
 function Private:Expand-File {
   [CmdletBinding()]
@@ -514,6 +534,10 @@ Set-Alias -Name unzip -Value Expand-File
 .EXAMPLE
     Get-ContentMatching "pattern" "file.txt"
     Searches for occurrences of the pattern "pattern" in the file "file.txt" and returns matching lines.
+
+.NOTES
+    Alias:
+        grep -> Use the alias `grep` to quickly search for a string in a file.
 #>
 function Private:Get-ContentMatching {
   [CmdletBinding()]
@@ -569,6 +593,10 @@ Set-Alias -Name grep -Value Get-ContentMatching
 .EXAMPLE
     Get-VolumeInfo
     Retrieves volume information for all available volumes.
+
+.NOTES
+    Alias:
+        df -> Use the alias `df` to quickly get volume information.
 #>
 function Private:Get-VolumeInfo {
   [CmdletBinding()]
@@ -611,6 +639,10 @@ Set-Alias -Name df -Value Get-VolumeInfo
 .EXAMPLE
     Set-ContentMatching "file.txt" "pattern" "replacement"
     Searches for "pattern" in "file.txt" and replaces it with "replacement".
+
+.NOTES
+    Alias:
+        sed -> Use the alias `sed` to quickly perform text replacements.
 #>
 function Private:Set-ContentMatching {
   [CmdletBinding()]
@@ -655,6 +687,10 @@ Set-Alias -Name sed -Value Set-ContentMatching
 .EXAMPLE
     Get-CommandDefinition "ls"
     Retrieves the definition of the "ls" command.
+
+.NOTES
+    Alias:
+        def -> Use the alias `def` to quickly get the definition of a command.
 #>
 function Private:Get-CommandDefinition {
   [CmdletBinding()]
@@ -701,6 +737,10 @@ Set-Alias -Name def -Value Get-CommandDefinition
 .EXAMPLE
     Set-EnvVar "name" "value"
     Exports an environment variable named "name" with the value "value".
+
+.NOTES
+    Alias:
+        export -> Use the alias `export` to quickly set an environment variable.
 #>
 function Private:Set-EnvVar {
   [CmdletBinding()]
@@ -741,6 +781,10 @@ Set-Alias -Name export -Value Set-EnvVar
 .EXAMPLE
     Stop-ProcessByName "process"
     Terminates the process named "process".
+
+.NOTES
+    Alias:
+        pkill -> Use the alias `pkill` to quickly stop a process by name.
 #>
 function Private:Stop-ProcessByName {
   [CmdletBinding()]
@@ -779,6 +823,10 @@ Set-Alias -Name pkill -Value Stop-ProcessByName
 .EXAMPLE
     Get-ProcessByName "process"
     Retrieves information about the process named "process".
+
+.NOTES
+    Alias:
+        pgrep -> Use the alias `pgrep` to quickly find a process by name.
 #>
 function Private:Get-ProcessByName {
   [CmdletBinding()]
@@ -819,6 +867,10 @@ Set-Alias -Name pgrep -Value Get-ProcessByName
 .EXAMPLE
     Get-HeadContent "file.txt" 10
     Retrieves the first 10 lines of the file "file.txt".
+
+.NOTES
+    Alias:
+        head -> Use the alias `head` to quickly retrieve the top n lines of a file.
 #>
 function Private:Get-HeadContent {
   [CmdletBinding()]
@@ -863,6 +915,10 @@ Set-Alias -Name head -Value Get-HeadContent
 .EXAMPLE
     Get-TailContent "file.txt" 10
     Retrieves the last 10 lines of the file "file.txt".
+
+.NOTES
+    Alias:
+        tail -> Use the alias `tail` to quickly retrieve the last n lines of a file.
 #>
 function Private:Get-TailContent {
   [CmdletBinding()]
@@ -904,6 +960,10 @@ Set-Alias -Name tail -Value Get-TailContent
 .EXAMPLE
     New-File "file.txt"
     Creates a new file named "file.txt" in the current directory.
+
+.NOTES
+    Alias:
+        nf -> Use the alias `nf` to quickly create a new file.
 #>
 function Private:New-File {
   [CmdletBinding()]
@@ -941,6 +1001,10 @@ Set-Alias -Name nf -Value New-File
 .EXAMPLE
     New-Directory "NewDirectory"
     Creates a new directory named "NewDirectory" and changes the current location to it.
+
+.NOTES
+    Alias:
+        mkcd -> Use the alias `mkcd` to quickly create a new directory and change to it.
 #>
 function Private:New-Directory {
   [CmdletBinding()]
@@ -979,6 +1043,10 @@ Set-Alias -Name mkcd -Value New-Directory
 .EXAMPLE
     hist "command"
     Searches the full command history for occurrences of the term "command".
+
+.NOTES
+    Alias:
+        hist -> Use the alias `hist` to quickly search the full command history.
 #>
 function Private:Find-InHistory {
   [CmdletBinding()]
@@ -1022,6 +1090,10 @@ Set-Alias -Name hist -Value Find-InHistory
 .EXAMPLE
     Set-Home
     Changes the current location to the root directory.
+
+.NOTES
+    Alias:
+        root -> Use the alias `root` to quickly change to the root directory.
 #>
 function Private:Set-Home {
   [CmdletBinding()]
@@ -1053,6 +1125,10 @@ Set-Alias -Name root -Value Set-Home
 .EXAMPLE
     Set-Documents
     Changes the current location to the Documents directory.
+
+.NOTES
+    Alias:
+        doc -> Use the alias `doc` to quickly change to the Documents directory.
 #>
 function Private:Set-Documents {
   [CmdletBinding()]
@@ -1084,6 +1160,10 @@ Set-Alias -Name doc -Value Set-Documents
 .EXAMPLE
     Set-Downloads
     Changes the current location to the Downloads directory.
+
+.NOTES
+    Alias:
+        dl -> Use the alias `dl` to quickly change to the Downloads directory.
 #>
 function Private:Set-Downloads {
   [CmdletBinding()]
@@ -1115,6 +1195,10 @@ Set-Alias -Name dl -Value Set-Downloads
 .EXAMPLE
     Set-Desktop
     Changes the current location to the Desktop directory.
+
+.NOTES
+    Alias:
+        dtop -> Use the alias `dtop` to quickly change to the Desktop directory.
 #>
 function Private:Set-Desktop {
   [CmdletBinding()]
@@ -1146,6 +1230,10 @@ Set-Alias -Name dtop -Value Set-Desktop
 .EXAMPLE
     Set-DDisk
     Changes the current location to the D:\ directory.
+
+.NOTES
+    Alias:
+        dc -> Use the alias `dc` to quickly change to the D:\ directory.
 #>
 function Private:Set-DDisk {
   [CmdletBinding()]
@@ -1181,6 +1269,10 @@ Set-Alias -Name dc -Value Set-DDisk
 .EXAMPLE
     Edit-Profile
     Opens the PowerShell profile in the default text editor.
+
+.NOTES
+    Alias:
+        ep -> Use the alias `ep` to quickly edit the PowerShell profile.
 #>
 function Private:Edit-Profile {
   [CmdletBinding()]
@@ -1212,6 +1304,10 @@ Set-Alias -Name ep -Value Edit-Profile
 .EXAMPLE
     Get-SystemInfo
     Retrieves and displays detailed system information.
+
+.NOTES
+    Alias:
+        sysinfo -> Use the alias `sysinfo` to quickly get system information.
 #>
 function Private:Get-SystemInfo {
   [CmdletBinding()]
@@ -1243,6 +1339,10 @@ Set-Alias -Name sysinfo -Value Get-SystemInfo
 .EXAMPLE
     Stop-TerminateProcess "notepad"
     Terminates the "notepad" process.
+
+.NOTES
+    Alias:
+        k9 -> Use the alias `k9` to quickly terminate a process by name.
 #>
 function Private:Stop-TerminateProcess {
   [CmdletBinding()]
@@ -1275,6 +1375,10 @@ Set-Alias -Name k9 -Value Stop-TerminateProcess
 .EXAMPLE
     Clear-DnsClientCache
     Flushes the DNS cache on the local machine.
+
+.NOTES
+    Alias:
+        flushdns -> Use the alias `flushdns` to quickly flush the DNS cache.
 #>
 function Private:Clear-DnsCache {
   [CmdletBinding()]
@@ -1310,6 +1414,10 @@ Set-Alias -Name flushdns -Value Clear-DnsCache
 .EXAMPLE
     Get-ChildItemFormatted "C:\Users"
     Lists files and directories in the "C:\Users" directory.
+
+.NOTES
+    Alias:
+        la -> Use the alias `la` to list files and directories in the current directory.
 #>
 function Private:Get-ChildItemFormatted {
   [CmdletBinding()]
@@ -1345,6 +1453,10 @@ Set-Alias -Name la -Value Get-ChildItemFormatted
 .EXAMPLE
     Invoke-UpOneDirectoryLevel
     Moves up one directory level.
+
+.NOTES
+    Alias:
+        cd.1 -> Use the alias `cd.1` to quickly move up one directory level.
 #>
 function Private:Invoke-UpOneDirectoryLevel {
   [CmdletBinding()]
@@ -1376,6 +1488,10 @@ Set-Alias -Name cd.1 -Value Private:Invoke-UpOneDirectoryLevel
 .EXAMPLE
     Invoke-UpTwoDirectoryLevels
     Moves up two directory levels.
+
+.NOTES
+    Alias:
+        cd.2 -> Use the alias `cd.2` to quickly move up two directory levels.
 #>
 function Private:Invoke-UpTwoDirectoryLevels {
   [CmdletBinding()]
@@ -1407,6 +1523,10 @@ Set-Alias -Name cd.2 -Value Invoke-UpTwoDirectoryLevels
 .EXAMPLE
     Invoke-UpThreeDirectoryLevels
     Moves up three directory levels.
+
+.NOTES
+    Alias:
+        cd.3 -> Use the alias `cd.3` to quickly move up three directory levels.
 #>
 function Private:Invoke-UpThreeDirectoryLevels {
   [CmdletBinding()]
@@ -1438,6 +1558,10 @@ Set-Alias -Name cd.3 -Value Invoke-UpThreeDirectoryLevels
 .EXAMPLE
     Invoke-UpFourDirectoryLevels
     Moves up four directory levels.
+
+.NOTES
+    Alias:
+        cd.4 -> Use the alias `cd.4` to quickly move up four directory levels.
 #>
 function Private:Invoke-UpFourDirectoryLevels {
   [CmdletBinding()]
@@ -1469,6 +1593,10 @@ Set-Alias -Name cd.4 -Value Invoke-UpFourDirectoryLevels
 .EXAMPLE
     Invoke-UpFiveDirectoryLevels
     Moves up five directory levels.
+
+.NOTES
+    Alias:
+        cd.5 -> Use the alias `cd.5` to quickly move up five directory levels.
 #>
 function Private:Invoke-UpFiveDirectoryLevels {
   [CmdletBinding()]
@@ -1500,6 +1628,10 @@ Set-Alias -Name cd.5 -Value Invoke-UpFiveDirectoryLevels
 .EXAMPLE
     Invoke-UpSixDirectoryLevels
     Moves up six directory levels.
+
+.NOTES
+    Alias:
+        cd.6 -> Use the alias `cd.6` to quickly move up six directory levels.
 #>
 function Private:Invoke-UpSixDirectoryLevels {
   [CmdletBinding()]
@@ -1534,6 +1666,10 @@ Set-Alias -Name cd.6 -Value Invoke-UpSixDirectoryLevels
 .EXAMPLE
     Invoke-InitializeGitRepository
     Initializes a new Git repository in the current directory.
+
+.NOTES
+    Alias:
+        init -> Use the alias `init` to quickly initialize a Git repository.
 #>
 function Private:Invoke-InitializeGitRepository {
   [CmdletBinding()]
@@ -1565,6 +1701,10 @@ Set-Alias -Name init -Value Invoke-InitializeGitRepository
 .EXAMPLE
     Invoke-GitAllChanges
     Adds all changes in the current directory to the staging area.
+
+.NOTES
+    Alias:
+        add-all -> Use the alias `add-all` to quickly add all changes to the staging area.
 #>
 function Private:Invoke-GitAllChanges {
   [CmdletBinding()]
@@ -1596,6 +1736,10 @@ Set-Alias -Name add-all -Value Invoke-GitAllChanges
 .EXAMPLE
     Invoke-GitCommitChanges -Message "Initial commit"
     Commits the changes in the staging area with the message "Initial commit".
+
+.NOTES
+    Alias:
+        commit -> Use the alias `commit` to quickly commit changes to the repository.
 #>
 function Private:Invoke-GitCommitChanges {
   [CmdletBinding()]
@@ -1632,6 +1776,10 @@ Set-Alias -Name commit -Value Invoke-GitCommitChanges
 .EXAMPLE
     Invoke-GitPushChanges -Branch "main"
     Pushes the committed changes to the "main" branch of the remote repository.
+
+.NOTES
+    Alias:
+        push -> Use the alias `push` to quickly push changes to the remote repository.
 #>
 function Private:Invoke-GitPushChanges {
   [CmdletBinding()]
@@ -1683,6 +1831,10 @@ Set-Alias -Name push -Value Invoke-GitPushChanges
 .EXAMPLE
     Invoke-GitPullChanges -Branch "main"
     Pulls changes from the "main" branch of the remote repository to the local repository.
+
+.NOTES
+    Alias:
+        pull -> Use the alias `pull` to quickly pull changes from the remote repository.
 #>
 function Private:Invoke-GitPullChanges {
   [CmdletBinding()]
@@ -1737,6 +1889,10 @@ Set-Alias -Name pull -Value Invoke-GitPullChanges
 .EXAMPLE
     Invoke-GitCloneRepository -Url "git@github.com:MKAbuMattar/powershell-profile.git" -Directory "C:\Projects"
     Clones the repository into the "C:\Projects" directory.
+
+.NOTES
+    Alias:
+        clone -> Use the alias `clone` to quickly clone a Git repository.
 #>
 function Private:Invoke-GitCloneRepository {
   [CmdletBinding()]
@@ -1782,6 +1938,10 @@ Set-Alias -Name clone -Value Invoke-GitCloneRepository
 .EXAMPLE
     Get-GitRepositoryStatus
     Displays the status of the Git repository.
+
+.NOTES
+    Alias:
+        status -> Use the alias `status` to quickly display the repository status.
 #>
 function Private:Get-GitRepositoryStatus {
   [CmdletBinding()]
@@ -1813,6 +1973,10 @@ Set-Alias -Name status -Value Get-GitRepositoryStatus
 .EXAMPLE
     Get-GitCommitHistory
     Displays the commit history of the Git repository.
+
+.NOTES
+    Alias:
+        log -> Use the alias `log` to quickly view the commit history.
 #>
 function Private:Get-GitCommitHistory {
   [CmdletBinding()]
@@ -1848,6 +2012,10 @@ Set-Alias -Name log -Value Get-GitCommitHistory
 .EXAMPLE
     Invoke-GitFetchRepository -Branch "main"
     Fetches changes from the "main" branch of the remote repository to the local repository.
+
+.NOTES
+    Alias:
+        fetch -> Use the alias `fetch` to quickly fetch changes from the remote repository.
 #>
 function Private:Invoke-GitFetchRepository {
   [CmdletBinding()]
@@ -1896,6 +2064,10 @@ Set-Alias -Name fetch -Value Invoke-GitFetchRepository
 .EXAMPLE
     Invoke-GitCreateBranch -Name "feature-branch"
     Creates a new branch named "feature-branch" in the Git repository.
+
+.NOTES
+    Alias:
+        branch -> Use the alias `branch` to quickly create a new branch.
 #>
 function Private:Invoke-GitCreateBranch {
   [CmdletBinding()]
@@ -1937,6 +2109,10 @@ Set-Alias -Name branch -Value Invoke-GitCreateBranch
 .EXAMPLE
     Invoke-GitCheckoutBranch -Name "feature-branch"
     Switches to the "feature-branch" branch in the Git repository.
+
+.NOTES
+    Alias:
+        checkout -> Use the alias `checkout` to quickly switch to a branch.
 #>
 function Invoke-GitCheckoutBranch {
   [CmdletBinding()]
@@ -1980,6 +2156,10 @@ Set-Alias -Name checkout -Value Invoke-GitCheckoutBranch
 .EXAMPLE
     Invoke-GitDeleteBranch -Name "feature-branch"
     Deletes the "feature-branch" branch from the Git repository.
+
+.NOTES
+    Alias:
+        delete-branch -> Use the alias `delete-branch` to quickly delete a branch.
 #>
 function Private:Invoke-GitDeleteBranch {
   [CmdletBinding()]
@@ -2023,6 +2203,10 @@ Set-Alias -Name delete-branch -Value Invoke-GitDeleteBranch
 .EXAMPLE
     Invoke-GitMergeBranch -Name "feature-branch"
     Merges changes from the "feature-branch" into the current branch.
+
+.NOTES
+    Alias:
+        merge-branch -> Use the alias `merge-branch` to quickly merge changes from a branch into the current branch.
 #>
 function Private:Invoke-GitMergeBranch {
   [CmdletBinding()]
@@ -2060,6 +2244,10 @@ Set-Alias -Name merge-branch -Value Invoke-GitMergeBranch
 .EXAMPLE
     Invoke-GitRevertChanges
     Reverts changes in the working directory to the last commit.
+
+.NOTES
+    Alias:
+        revert -> Use the alias `revert` to quickly revert changes to the last commit.
 #>
 function Private:Invoke-GitRevertChanges {
   [CmdletBinding()]
@@ -2100,6 +2288,10 @@ Set-Alias -Name revert -Value Invoke-GitRevertChanges
 .EXAMPLE
     Invoke-GitCleanupBranches -Branches "feature-branch1", "feature-branch2"
     Deletes all local branches except the master/main branch and "feature-branch1" and "feature-branch2".
+
+.NOTES
+    Alias:
+        cleanup-branches -> Use the alias `cleanup-branches` to quickly clean up local branches.
 #>
 
 function Invoke-GitCleanupBranches {
@@ -2146,7 +2338,74 @@ function Invoke-GitCleanupBranches {
   }
 }
 
+#######################################################
+# Network Functions
+#######################################################
+
+<#
+.SYNOPSIS
+    Displays the IP address information for the local machine.
+
+.DESCRIPTION
+    This function displays the IP address information for the local machine, including the IPv4 and IPv6 addresses, subnet mask, and default gateway.
+
+.PARAMETER None
+    This function does not accept any parameters.
+
+.OUTPUTS
+    The IP address information for the local machine.
+
+.EXAMPLE
+    Get-IPAddressInfo
+    Displays the IP address information for the local machine.
+
+.ALIASES
+    ipinfo -> Use the alias `ipinfo` to quickly get IP address information.
+#>
+function Private:Get-IPAddressInfo {
+  [CmdletBinding()]
+  param (
+    # This function does not accept any parameters
+  )
+
+  Get-NetIPAddress
+}
+
 #------------------------------------------------------
-# Set the alias for Invoke-GitCleanupBranches
+# Set the alias for Get-IPAddressInfo
 #------------------------------------------------------
-Set-Alias -Name cleanup-branches -Value Invoke-GitCleanupBranches
+Set-Alias -Name ipinfo -Value Get-IPAddressInfo
+
+<#
+.SYNOPSIS
+    Displays the DNS server information for the local machine.
+
+.DESCRIPTION
+    This function displays the DNS server information for the local machine, including the DNS server addresses and search domains.
+
+.PARAMETER None
+    This function does not accept any parameters.
+
+.OUTPUTS
+    The DNS server information for the local machine.
+
+.EXAMPLE
+    Get-DnsServerInfo
+    Displays the DNS server information for the local machine.
+
+.ALIASES
+    dnsinfo -> Use the alias `dnsinfo` to quickly get DNS server information.
+#>
+function Private:Get-DnsServerInfo {
+  [CmdletBinding()]
+  param (
+    # This function does not accept any parameters
+  )
+
+  Get-DnsClientServerAddress
+}
+
+#------------------------------------------------------
+# Set the alias for Get-DnsServerInfo
+#------------------------------------------------------
+Set-Alias -Name dnsinfo -Value Get-DnsServerInfo
