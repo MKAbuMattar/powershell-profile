@@ -1054,6 +1054,9 @@ function Private:Find-InHistory {
 Set-Alias -Name hist -Value Find-InHistory
 
 <#
+.SYNOPSIS
+    Displays the process tree, showing the hierarchy of processes in the system.
+
 .DESCRIPTION
     This function generates a tree structure to represent the hierarchy of processes in the system. It retrieves information about running processes, organizes them based on their parent-child relationships, and displays them in a tree-like format.
 
@@ -1061,7 +1064,7 @@ Set-Alias -Name hist -Value Find-InHistory
     This function does not accept any parameters.
 
 .OUTPUTS
-    The process tree representation, showing the process ID (PID) and command line of each process.
+    The process tree representation, showing the process ID (PID), command line, and additional properties of each process.
 
 .EXAMPLE
     Get-ProcessTree
@@ -1073,51 +1076,64 @@ Set-Alias -Name hist -Value Find-InHistory
 .NOTES
     This function recursively traverses the process hierarchy, starting from processes without parents (e.g., system processes). It organizes processes based on their parent-child relationships and presents them in a tree-like structure, making it easier to visualize process dependencies.
 #>
-function Private:Get-ProcessTree {
-  $ProcessesById = @{}
-  foreach ($Process in (Get-WMIObject -Class Win32_Process)) {
-    $ProcessesById[$Process.ProcessId] = $Process
-  }
+function Get-ProcessTree {
+  [CmdletBinding()]
+  param (
+    # This function does not accept any parameters
+  )
 
-  $ProcessesWithoutParents = @()
-  $ProcessesByParent = @{}
-  foreach ($Pair in $ProcessesById.GetEnumerator()) {
-    $Process = $Pair.Value
+  # Helper function to get process information by ID
+  function Get-ProcessInfo {
+    param (
+      [int]$ProcessId
+    )
 
-    if (($Process.ParentProcessId -eq 0) -or !$ProcessesById.ContainsKey($Process.ParentProcessId)) {
-      $ProcessesWithoutParents += $Process
-      continue
+    try {
+      # Using CIM cmdlets for better performance and compatibility
+      $Process = Get-CimInstance -Class Win32_Process -Filter "ProcessId = $ProcessId" -ErrorAction Stop
+      return $Process
     }
-
-    if (!$ProcessesByParent.ContainsKey($Process.ParentProcessId)) {
-      $ProcessesByParent[$Process.ParentProcessId] = @()
-    }
-    $Siblings = $ProcessesByParent[$Process.ParentProcessId]
-    $Siblings += $Process
-    $ProcessesByParent[$Process.ParentProcessId] = $Siblings
-  }
-
-  function Show-ProcessTree([UInt32]$ProcessId, $IndentLevel) {
-    $Process = $ProcessesById[$ProcessId]
-    $Indent = " " * $IndentLevel
-    if ($Process.CommandLine) {
-      $Description = $Process.CommandLine
-    }
-    else {
-      $Description = $Process.Caption
-    }
-
-    Write-Output ("{0,6}{1} {2}" -f $Process.ProcessId, $Indent, $Description)
-    foreach ($Child in ($ProcessesByParent[$ProcessId] | Sort-Object CreationDate)) {
-      Show-ProcessTree $Child.ProcessId ($IndentLevel + 4)
+    catch {
+      Write-Warning "Failed to retrieve process information for PID ${ProcessId}: $_"
+      return $null
     }
   }
 
-  Write-Output ("{0,6} {1}" -f "PID", "Command Line")
-  Write-Output ("{0,6} {1}" -f "---", "------------")
+  # Helper function to recursively display process tree
+  function Show-ProcessTree {
+    param (
+      [int]$ProcessId,
+      [int]$IndentLevel
+    )
 
-  foreach ($Process in ($ProcessesWithoutParents | Sort-Object CreationDate)) {
-    Show-ProcessTree $Process.ProcessId 0
+    try {
+      $Process = Get-ProcessInfo -ProcessId $ProcessId
+      if ($Process) {
+        $Indent = " " * $IndentLevel
+        $Description = if ($Process.CommandLine) { $Process.CommandLine } else { $Process.Caption }
+        Write-Output ("{0,6}{1} {2}" -f $Process.ProcessId, $Indent, $Description)
+        $ChildProcesses = Get-CimAssociatedInstance -InputObject $Process -ResultClassName Win32_Process -ErrorAction SilentlyContinue
+        if ($ChildProcesses) {
+          foreach ($Child in ($ChildProcesses | Sort-Object CreationDate)) {
+            Show-ProcessTree -ProcessId $Child.ProcessId -IndentLevel ($IndentLevel + 4)
+          }
+        }
+      }
+    }
+    catch {
+      Write-Warning "Error processing PID ${ProcessId}: $_"
+    }
+  }
+
+  Write-Output ("{0,6} {1,-60}" -f "PID", "Command Line")
+  Write-Output ("{0,6} {1,-60}" -f "---", "------------")
+
+  # Get top-level processes (processes without parents)
+  $TopLevelProcesses = Get-CimInstance -Class Win32_Process -Filter "ParentProcessId = 0" -ErrorAction SilentlyContinue
+  if ($TopLevelProcesses) {
+    foreach ($Process in ($TopLevelProcesses | Sort-Object CreationDate)) {
+      Show-ProcessTree -ProcessId $Process.ProcessId -IndentLevel 0
+    }
   }
 }
 
