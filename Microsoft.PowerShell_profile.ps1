@@ -13,11 +13,11 @@
 #       workflow.
 #
 # Created: 2021-09-01
-# Updated: 2024-05-09
+# Updated: 2024-05-10
 #
 # GitHub: https://github.com/MKAbuMattar/powershell-profile
 #
-# Version: 1.5.0
+# Version: 2.0.0
 #------------------------------------------------------
 
 #######################################################
@@ -35,31 +35,25 @@
 $canConnectToGitHub = Test-Connection github.com -Count 1 -Quiet -TimeoutSeconds 1
 
 #------------------------------------------------------
-# Check if Terminal Icons module is installed
+# 
 #------------------------------------------------------
-if (-not (Get-Module -ListAvailable -Name Terminal-Icons)) {
-  Install-Module -Name Terminal-Icons -Scope CurrentUser -Force -SkipPublisherCheck
-}
+$modules = @( 'Terminal-Icons', 'PSReadLine', 'Posh-Git', 'CompletionPredictor' )
 
-#------------------------------------------------------
-# Check if CompletionPredictor module is installed
-#------------------------------------------------------
-if (-not (Get-Module -ListAvailable -Name CompletionPredictor)) {
-  Install-Module -Name CompletionPredictor -Scope CurrentUser -Force -SkipPublisherCheck
-}
-
-#------------------------------------------------------
-# Check if PSReadLine module is installed
-#------------------------------------------------------
-if (-not (Get-Module -ListAvailable -Name PSReadLine)) {
-  Install-Module -Name PSReadLine -Scope CurrentUser -Force -SkipPublisherCheck
-}
-
-#------------------------------------------------------
-# Check if Posh-Git module is installed
-#------------------------------------------------------
-if (-not (Get-Module -ListAvailable -Name Posh-Git)) {
-  Install-Module -Name Posh-Git -Scope CurrentUser -Force -SkipPublisherCheck
+foreach ($module in $modules) {
+  Write-Output "Checking $module"
+  try {
+    if (-not (Find-Module -Name $module)) {
+      Write-Output "Installing $module"
+      Install-Module -Name $module -Scope CurrentUser -Force -SkipPublisherCheck -ErrorAction Stop
+    }
+    else {
+      Write-Output "Updating $module"
+      Update-Module -Name $module -Scope CurrentUser -Force -ErrorAction Stop
+    }
+  }
+  catch {
+    Write-Warning "Failed to process module ${module}: $_"
+  }
 }
 
 #------------------------------------------------------
@@ -78,7 +72,29 @@ Set-PSReadLineOption -PredictionViewStyle ListView
 Set-PSReadLineOption -HistoryNoDuplicates
 Set-PSReadLineOption -BellStyle None
 Set-PSReadLineOption -Colors @{ "Selection" = "`e[7m" }
-Set-PSReadlineKeyHandler -Key Tab -Function MenuComplete
+# Set-PSReadlineKeyHandler -Key Tab -Function MenuComplete
+
+Set-PSReadLineKeyHandler -Chord '"', "'" `
+  -BriefDescription SmartInsertQuote `
+  -LongDescription "Insert paired quotes if not already on a quote" `
+  -ScriptBlock {
+  param($key, $arg)
+
+  $line = $null
+  $cursor = $null
+  [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$line, [ref]$cursor)
+
+  if ($line.Length -gt $cursor -and $line[$cursor] -eq $key.KeyChar) {
+    # Just move the cursor
+    [Microsoft.PowerShell.PSConsoleReadLine]::SetCursorPosition($cursor + 1)
+  }
+  else {
+    # Insert matching quotes, move cursor to be in between the quotes
+    [Microsoft.PowerShell.PSConsoleReadLine]::Insert("$($key.KeyChar)" * 2)
+    [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$line, [ref]$cursor)
+    [Microsoft.PowerShell.PSConsoleReadLine]::SetCursorPosition($cursor - 1)
+  }
+}
 
 <#
 .SYNOPSIS

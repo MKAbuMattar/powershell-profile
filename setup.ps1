@@ -180,25 +180,24 @@ catch {
 #------------------------------------------------------
 # Install required PowerShell modules
 #------------------------------------------------------
-$modules = @( 'Terminal-Icons', 'PSReadLine', 'Posh-Git', 'CompletionPredictor' )
+$modules = @( 'Terminal-Icons', 'PowerShellGet', 'PSReadLine', 'Posh-Git', 'CompletionPredictor' )
 
 foreach ($module in $modules) {
   Write-Output "Checking $module"
   try {
     if (-not (Find-Module -Name $module)) {
       Write-Output "Installing $module"
-      Install-Module -Name $module -AllowPrerelease -Scope CurrentUser -Force -SkipPublisherCheck -ErrorAction Stop
+      Install-Module -Name $module -Scope CurrentUser -Force -SkipPublisherCheck -ErrorAction Stop
     }
     else {
       Write-Output "Updating $module"
-      Update-Module -Name $module -AllowPrerelease -Scope CurrentUser -Force -ErrorAction Stop
+      Update-Module -Name $module -Scope CurrentUser -Force -ErrorAction Stop
     }
   }
   catch {
     Write-Warning "Failed to process module ${module}: $_"
   }
 }
-
 
 #------------------------------------------------------
 # Install Starship
