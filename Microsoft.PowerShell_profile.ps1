@@ -37,7 +37,7 @@ $canConnectToGitHub = Test-Connection github.com -Count 1 -Quiet -TimeoutSeconds
 #------------------------------------------------------
 # 
 #------------------------------------------------------
-$modules = @( 'Terminal-Icons', 'PSReadLine', 'Posh-Git', 'CompletionPredictor' )
+$modules = @( 'Terminal-Icons', 'PowerShellGet', 'PSReadLine', 'Posh-Git', 'CompletionPredictor' )
 
 foreach ($module in $modules) {
   Write-Output "Checking $module"
@@ -72,8 +72,6 @@ Set-PSReadLineOption -PredictionViewStyle ListView
 Set-PSReadLineOption -HistoryNoDuplicates
 Set-PSReadLineOption -BellStyle None
 Set-PSReadLineOption -Colors @{ "Selection" = "`e[7m" }
-# Set-PSReadlineKeyHandler -Key Tab -Function MenuComplete
-
 Set-PSReadLineKeyHandler -Chord '"', "'" `
   -BriefDescription SmartInsertQuote `
   -LongDescription "Insert paired quotes if not already on a quote" `
