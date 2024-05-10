@@ -20,9 +20,9 @@
 # Version: 1.5.0
 #------------------------------------------------------
 
-######################################################
+#######################################################
 # Profile Setup
-######################################################
+#######################################################
 
 #------------------------------------------------------
 # Set the console encoding to UTF-8
@@ -279,9 +279,9 @@ else { 'notepad' }
 #------------------------------------------------------
 Set-Alias -Name vim -Value $EDITOR
 
-######################################################
+#######################################################
 # Utility Functions
-######################################################
+#######################################################
 
 <#
 .SYNOPSIS
@@ -1003,9 +1003,9 @@ function Private:Find-InHistory {
 #------------------------------------------------------
 Set-Alias -Name hist -Value Find-InHistory
 
-######################################################
+#######################################################
 # Navigation Shortcuts
-######################################################
+#######################################################
 
 <#
 .SYNOPSIS
@@ -1162,9 +1162,9 @@ function Private:Set-DDisk {
 #------------------------------------------------------
 Set-Alias -Name dc -Value Set-DDisk
 
-######################################################
+#######################################################
 # Profile Shortcuts
-######################################################
+#######################################################
 
 <#
 .SYNOPSIS
@@ -1327,9 +1327,9 @@ function Private:Get-ChildItemFormatted {
 #------------------------------------------------------
 Set-Alias -Name la -Value Get-ChildItemFormatted
 
-######################################################
+#######################################################
 # Move Up Directory
-######################################################
+#######################################################
 <#
 .SYNOPSIS
     Moves up a specified number of directory levels.
@@ -1344,7 +1344,7 @@ Set-Alias -Name la -Value Get-ChildItemFormatted
     None. This function does not return any output.
 
 .EXAMPLE
-    Move-UpDirectoryLevel 2
+    Move-UpDirectoryLevel -Levels 2
     Moves up two directory levels.
 #>
 function Private:Move-UpDirectoryLevel {
@@ -1359,19 +1359,195 @@ function Private:Move-UpDirectoryLevel {
   Set-Location -Path $upPath
 }
 
-#------------------------------------------------------
-# Set the alias for Move-UpDirectoryLevel 1-6 levels
-#------------------------------------------------------
-Set-Alias -Name cd.1 -Value Move-UpDirectoryLevel 1
-Set-Alias -Name cd.2 -Value Move-UpDirectoryLevel 2
-Set-Alias -Name cd.3 -Value Move-UpDirectoryLevel 3
-Set-Alias -Name cd.4 -Value Move-UpDirectoryLevel 4
-Set-Alias -Name cd.5 -Value Move-UpDirectoryLevel 5
-Set-Alias -Name cd.6 -Value Move-UpDirectoryLevel 6
+<#
+.SYNOPSIS
+    Moves up one directory level.
 
-######################################################
+.DESCRIPTION
+    This function changes the current working directory to the parent directory of the current directory. It is useful for navigating up one level in the directory structure.
+
+.PARAMETER None
+    This function does not accept any parameters.
+
+.OUTPUTS
+    None. This function does not return any output.
+
+.EXAMPLE
+    Move-UpOneDirectoryLevel
+    Moves up one directory level.
+#>
+function Private:Move-UpOneDirectoryLevel {
+  [CmdletBinding()]
+  param (
+    # This function does not accept any parameters
+  )
+
+  Move-UpDirectoryLevel -Levels 1
+}
+
+#------------------------------------------------------
+# Set the alias for Move-UpOneDirectoryLevel
+#------------------------------------------------------
+Set-Alias -Name cd.1 -Value Move-UpOneDirectoryLevel
+
+<#
+.SYNOPSIS
+    Moves up two directory levels.
+
+.DESCRIPTION
+    This function changes the current working directory to the parent directory of the parent directory of the current directory. It is useful for navigating up two levels in the directory structure.
+
+.PARAMETER None
+    This function does not accept any parameters.
+
+.OUTPUTS
+    None. This function does not return any output.
+
+.EXAMPLE
+    Move-UpTwoDirectoryLevels
+    Moves up two directory levels.
+#>
+function Private:Move-UpTwoDirectoryLevels {
+  [CmdletBinding()]
+  param (
+    # This function does not accept any parameters
+  )
+
+  Move-UpDirectoryLevel -Levels 2
+}
+
+#------------------------------------------------------
+# Set the alias for Move-UpTwoDirectoryLevels
+#------------------------------------------------------
+Set-Alias -Name cd.2 -Value Move-UpTwoDirectoryLevels
+
+<#
+.SYNOPSIS
+    Moves up three directory levels.
+
+.DESCRIPTION
+    This function changes the current working directory to the parent directory of the parent directory of the parent directory of the current directory. It is useful for navigating up three levels in the directory structure.
+
+.PARAMETER None
+    This function does not accept any parameters.
+
+.OUTPUTS
+    None. This function does not return any output.
+
+.EXAMPLE
+    Move-UpThreeDirectoryLevels
+    Moves up three directory levels.
+#>
+function Private:Move-UpThreeDirectoryLevels {
+  [CmdletBinding()]
+  param (
+    # This function does not accept any parameters
+  )
+
+  Move-UpDirectoryLevel -Levels 3
+}
+
+#------------------------------------------------------
+# Set the alias for Move-UpThreeDirectoryLevels
+#------------------------------------------------------
+Set-Alias -Name cd.3 -Value Move-UpThreeDirectoryLevels
+
+<#
+.SYNOPSIS
+    Moves up four directory levels.
+
+.DESCRIPTION
+    This function changes the current working directory to the parent directory of the parent directory of the parent directory of the parent directory of the current directory. It is useful for navigating up four levels in the directory structure.
+
+.PARAMETER None
+    This function does not accept any parameters.
+
+.OUTPUTS
+    None. This function does not return any output.
+
+.EXAMPLE
+    Move-UpFourDirectoryLevels
+    Moves up four directory levels.
+#>
+function Private:Move-UpFourDirectoryLevels {
+  [CmdletBinding()]
+  param (
+    # This function does not accept any parameters
+  )
+
+  Move-UpDirectoryLevel -Levels 4
+}
+
+#------------------------------------------------------
+# Set the alias for Move-UpFourDirectoryLevels
+#------------------------------------------------------
+Set-Alias -Name cd.4 -Value Move-UpFourDirectoryLevels
+
+<#
+.SYNOPSIS
+    Moves up five directory levels.
+
+.DESCRIPTION
+    This function changes the current working directory to the parent directory of the parent directory of the parent directory of the parent directory of the parent directory of the current directory. It is useful for navigating up five levels in the directory structure.
+
+.PARAMETER None
+    This function does not accept any parameters.
+
+.OUTPUTS
+    None. This function does not return any output.
+
+.EXAMPLE
+    Move-UpFiveDirectoryLevels
+    Moves up five directory levels.
+#>
+function Private:Move-UpFiveDirectoryLevels {
+  [CmdletBinding()]
+  param (
+    # This function does not accept any parameters
+  )
+
+  Move-UpDirectoryLevel -Levels 5
+}
+
+#------------------------------------------------------
+# Set the alias for Move-UpFiveDirectoryLevels
+#------------------------------------------------------
+Set-Alias -Name cd.5 -Value Move-UpFiveDirectoryLevels
+
+<#
+.SYNOPSIS
+    Moves up six directory levels.
+
+.DESCRIPTION
+    This function changes the current working directory to the parent directory of the parent directory of the parent directory of the parent directory of the parent directory of the parent directory of the current directory. It is useful for navigating up six levels in the directory structure.
+
+.PARAMETER None
+    This function does not accept any parameters.
+
+.OUTPUTS
+    None. This function does not return any output.
+
+.EXAMPLE
+    Move-UpSixDirectoryLevels
+    Moves up six directory levels.
+#>
+function Private:Move-UpSixDirectoryLevels {
+  [CmdletBinding()]
+  param (
+    # This function does not accept any parameters
+  )
+
+  Move-UpDirectoryLevel -Levels 6
+}
+
+#------------------------------------------------------
+# Set the alias for Move-UpSixDirectoryLevels
+#------------------------------------------------------
+Set-Alias -Name cd.6 -Value Move-UpSixDirectoryLevels
+
+#######################################################
 # Git Functions
-######################################################
+#######################################################
 <#
 .SYNOPSIS
     Initializes a new Git repository in the current directory.
