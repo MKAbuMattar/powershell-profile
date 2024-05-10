@@ -90,8 +90,8 @@ Set-PSReadlineKeyHandler -Key Tab -Function MenuComplete
 .PARAMETER None
     This function does not accept any parameters.
 
-.OUTPUTS
-    None. This function does not return any output.
+.OUTPUTS None
+    This function does not return any output.
 
 .EXAMPLE
     Invoke-Starship-TransientFunction
@@ -138,8 +138,8 @@ if (Test-Path $ChocolateyProfile) {
 .PARAMETER None
     This function does not accept any parameters.
 
-.OUTPUTS
-    None. This function does not return any output.
+.OUTPUTS None
+    This function does not return any output.
 
 .EXAMPLE
     Update-Profile
@@ -189,8 +189,8 @@ Invoke-Command -ScriptBlock ${function:Update-Profile} -ErrorAction SilentlyCont
 .PARAMETER None
     This function does not accept any parameters.
 
-.OUTPUTS
-    None. This function does not return any output.
+.OUTPUTS None
+    This function does not return any output.
 
 .EXAMPLE
     Update-PowerShell
@@ -292,8 +292,8 @@ Set-Alias -Name vim -Value $EDITOR
 .PARAMETER File
     Specifies the name of the file to create or update. If the file already exists, its timestamp will be updated.
 
-.OUTPUTS
-    None. This function does not return any output.
+.OUTPUTS None
+    This function does not return any output.
 
 .EXAMPLE
     Set-FreshFile "file.txt"
@@ -339,8 +339,8 @@ Set-Alias -Name touch -Value Set-FreshFile
 .PARAMETER Name
     Specifies the name pattern to search for. You can use wildcard characters such as '*' and '?' to represent multiple characters or single characters in the file name.
 
-.OUTPUTS
-    None. This function does not return any output directly. It writes the full paths of matching files to the pipeline.
+.OUTPUTS None
+    This function does not return any output directly. It writes the full paths of matching files to the pipeline.
 
 .EXAMPLE
     Find-Files "file.txt"
@@ -425,8 +425,8 @@ Set-Alias -Name uptime -Value Get-Uptime
 .PARAMETER None
     This function does not accept any parameters.
 
-.OUTPUTS
-    None. This function does not return any output.
+.OUTPUTS None
+    This function does not return any output.
 
 .EXAMPLE
     Invoke-ProfileReload
@@ -465,8 +465,8 @@ Set-Alias -Name reload-profile -Value Invoke-ProfileReload
 .PARAMETER File
     Specifies the file to extract.
 
-.OUTPUTS
-    None. This function does not return any output.
+.OUTPUTS None
+    This function does not return any output.
 
 .EXAMPLE
     Expand-File "file.zip"
@@ -626,8 +626,8 @@ Set-Alias -Name df -Value Get-VolumeInfo
 .PARAMETER replace
     Specifies the string to replace the found string with.
 
-.OUTPUTS
-    None. This function does not return any output.
+.OUTPUTS None
+    This function does not return any output.
 
 .EXAMPLE
     Set-ContentMatching "file.txt" "pattern" "replacement"
@@ -722,8 +722,8 @@ Set-Alias -Name def -Value Get-CommandDefinition
 .PARAMETER value
     Specifies the value of the environment variable.
 
-.OUTPUTS
-    None. This function does not return any output.
+.OUTPUTS None
+    This function does not return any output.
 
 .EXAMPLE
     Set-EnvVar "name" "value"
@@ -765,8 +765,8 @@ Set-Alias -Name export -Value Set-EnvVar
 .PARAMETER name
     Specifies the name of the process to terminate.
 
-.OUTPUTS
-    None. This function does not return any output.
+.OUTPUTS None
+    This function does not return any output.
 
 .EXAMPLE
     Stop-ProcessByName "process"
@@ -940,8 +940,8 @@ Set-Alias -Name tail -Value Get-TailContent
 .PARAMETER name
     Specifies the name of the file to create.
 
-.OUTPUTS
-    None. This function does not return any output.
+.OUTPUTS None
+    This function does not return any output.
 
 .EXAMPLE
     New-File "file.txt"
@@ -980,8 +980,8 @@ Set-Alias -Name nf -Value New-File
 .PARAMETER name
     Specifies the name of the directory to create.
 
-.OUTPUTS
-    None. This function does not return any output.
+.OUTPUTS None
+    This function does not return any output.
 
 .EXAMPLE
     New-Directory "NewDirectory"
@@ -1067,8 +1067,8 @@ Set-Alias -Name hist -Value Find-InHistory
 .PARAMETER None
     This function does not accept any parameters.
 
-.OUTPUTS
-    None. This function does not return any output.
+.OUTPUTS None
+    This function does not return any output.
 
 .EXAMPLE
     Set-Home
@@ -1101,8 +1101,8 @@ Set-Alias -Name root -Value Set-Home
 .PARAMETER None
     This function does not accept any parameters.
 
-.OUTPUTS
-    None. This function does not return any output.
+.OUTPUTS None
+    This function does not return any output.
 
 .EXAMPLE
     Set-Documents
@@ -1135,8 +1135,8 @@ Set-Alias -Name doc -Value Set-Documents
 .PARAMETER None
     This function does not accept any parameters.
 
-.OUTPUTS
-    None. This function does not return any output.
+.OUTPUTS None
+    This function does not return any output.
 
 .EXAMPLE
     Set-Downloads
@@ -1169,8 +1169,8 @@ Set-Alias -Name dl -Value Set-Downloads
 .PARAMETER None
     This function does not accept any parameters.
 
-.OUTPUTS
-    None. This function does not return any output.
+.OUTPUTS None
+    This function does not return any output.
 
 .EXAMPLE
     Set-Desktop
@@ -1203,8 +1203,8 @@ Set-Alias -Name dtop -Value Set-Desktop
 .PARAMETER None
     This function does not accept any parameters.
 
-.OUTPUTS
-    None. This function does not return any output.
+.OUTPUTS None
+    This function does not return any output.
 
 .EXAMPLE
     Set-DDisk
@@ -1241,8 +1241,8 @@ Set-Alias -Name dc -Value Set-DDisk
 .PARAMETER None
     This function does not accept any parameters.
 
-.OUTPUTS
-    None. This function does not return any output.
+.OUTPUTS None
+    This function does not return any output.
 
 .EXAMPLE
     Edit-Profile
@@ -1309,8 +1309,8 @@ Set-Alias -Name sysinfo -Value Get-SystemInfo
 .PARAMETER Name
     Specifies the name of the process to terminate.
 
-.OUTPUTS
-    None. This function does not return any output.
+.OUTPUTS None
+    This function does not return any output.
 
 .EXAMPLE
     Stop-TerminateProcess "notepad"
@@ -1344,8 +1344,8 @@ Set-Alias -Name k9 -Value Stop-TerminateProcess
 .PARAMETER None
     This function does not accept any parameters.
 
-.OUTPUTS
-    None. This function does not return any output.
+.OUTPUTS None
+    This function does not return any output.
 
 .EXAMPLE
     Clear-DnsClientCache
@@ -1420,8 +1420,8 @@ Set-Alias -Name la -Value Get-ChildItemFormatted
 .PARAMETER None
     This function does not accept any parameters.
 
-.OUTPUTS
-    None. This function does not return any output.
+.OUTPUTS None
+    This function does not return any output.
 
 .EXAMPLE
     Invoke-UpOneDirectoryLevel
@@ -1454,8 +1454,8 @@ Set-Alias -Name cd.1 -Value Private:Invoke-UpOneDirectoryLevel
 .PARAMETER None
     This function does not accept any parameters.
 
-.OUTPUTS
-    None. This function does not return any output.
+.OUTPUTS None
+    This function does not return any output.
 
 .EXAMPLE
     Invoke-UpTwoDirectoryLevels
@@ -1488,8 +1488,8 @@ Set-Alias -Name cd.2 -Value Invoke-UpTwoDirectoryLevels
 .PARAMETER None
     This function does not accept any parameters.
 
-.OUTPUTS
-    None. This function does not return any output.
+.OUTPUTS None
+    This function does not return any output.
 
 .EXAMPLE
     Invoke-UpThreeDirectoryLevels
@@ -1522,8 +1522,8 @@ Set-Alias -Name cd.3 -Value Invoke-UpThreeDirectoryLevels
 .PARAMETER None
     This function does not accept any parameters.
 
-.OUTPUTS
-    None. This function does not return any output.
+.OUTPUTS None
+    This function does not return any output.
 
 .EXAMPLE
     Invoke-UpFourDirectoryLevels
@@ -1556,8 +1556,8 @@ Set-Alias -Name cd.4 -Value Invoke-UpFourDirectoryLevels
 .PARAMETER None
     This function does not accept any parameters.
 
-.OUTPUTS
-    None. This function does not return any output.
+.OUTPUTS None
+    This function does not return any output.
 
 .EXAMPLE
     Invoke-UpFiveDirectoryLevels
@@ -1590,8 +1590,8 @@ Set-Alias -Name cd.5 -Value Invoke-UpFiveDirectoryLevels
 .PARAMETER None
     This function does not accept any parameters.
 
-.OUTPUTS
-    None. This function does not return any output.
+.OUTPUTS None
+    This function does not return any output.
 
 .EXAMPLE
     Invoke-UpSixDirectoryLevels
@@ -1627,8 +1627,8 @@ Set-Alias -Name cd.6 -Value Invoke-UpSixDirectoryLevels
 .PARAMETER None
     This function does not accept any parameters.
 
-.OUTPUTS
-    None. This function does not return any output.
+.OUTPUTS None
+    This function does not return any output.
 
 .EXAMPLE
     Invoke-InitializeGitRepository
@@ -1661,8 +1661,8 @@ Set-Alias -Name init -Value Invoke-InitializeGitRepository
 .PARAMETER None
     This function does not accept any parameters.
 
-.OUTPUTS
-    None. This function does not return any output.
+.OUTPUTS None
+    This function does not return any output.
 
 .EXAMPLE
     Invoke-GitAllChanges
@@ -1695,8 +1695,8 @@ Set-Alias -Name add-all -Value Invoke-GitAllChanges
 .PARAMETER Message
     Specifies the message for the commit.
 
-.OUTPUTS
-    None. This function does not return any output.
+.OUTPUTS None
+    This function does not return any output.
 
 .EXAMPLE
     Invoke-GitCommitChanges -Message "Initial commit"
@@ -1730,8 +1730,8 @@ Set-Alias -Name commit -Value Invoke-GitCommitChanges
 .PARAMETER Branch
     Specifies the branch to push the changes to. If not provided, the current branch is used.
 
-.OUTPUTS
-    None. This function does not return any output.
+.OUTPUTS None
+    This function does not return any output.
 
 .EXAMPLE
     Invoke-GitPushChanges
@@ -1784,8 +1784,8 @@ Set-Alias -Name push -Value Invoke-GitPushChanges
 .PARAMETER Branch
     Specifies the branch to pull changes from. If not provided, the current branch is used.
 
-.OUTPUTS
-    None. This function does not return any output.
+.OUTPUTS None
+    This function does not return any output.
 
 .EXAMPLE
     Invoke-GitPullChanges
@@ -1841,8 +1841,8 @@ Set-Alias -Name pull -Value Invoke-GitPullChanges
 .PARAMETER Directory
     Specifies the directory to clone the repository into. If not provided, the repository is cloned into a directory with the same name as the repository.
 
-.OUTPUTS
-    None. This function does not return any output.
+.OUTPUTS None
+    This function does not return any output.
 
 .EXAMPLE
     Invoke-GitCloneRepository -Url "git@github.com:MKAbuMattar/powershell-profile.git"
@@ -1961,8 +1961,8 @@ Set-Alias -Name log -Value Get-GitCommitHistory
 .PARAMETER Branch
     Specifies the branch to fetch changes from. If not provided, the current branch is used.
 
-.OUTPUTS
-    None. This function does not return any output.
+.OUTPUTS None
+    This function does not return any output.
 
 .EXAMPLE
     Invoke-GitFetchRepository
@@ -2016,8 +2016,8 @@ Set-Alias -Name fetch -Value Invoke-GitFetchRepository
 .PARAMETER Name
     Specifies the name of the new branch to create.
 
-.OUTPUTS
-    None. This function does not return any output.
+.OUTPUTS None
+    This function does not return any output.
 
 .EXAMPLE
     Invoke-GitCreateBranch -Name "feature-branch"
@@ -2056,8 +2056,8 @@ Set-Alias -Name branch -Value Invoke-GitCreateBranch
 .PARAMETER Name
     Specifies the name of the branch to switch to.
 
-.OUTPUTS
-    None. This function does not return any output.
+.OUTPUTS None
+    This function does not return any output.
 
 .EXAMPLE
     Invoke-GitCheckoutBranch -Name "main"
@@ -2106,8 +2106,8 @@ Set-Alias -Name checkout -Value Invoke-GitCheckoutBranch
 .PARAMETER Name
     Specifies the name of the branch to delete.
 
-.OUTPUTS
-    None. This function does not return any output.
+.OUTPUTS None
+    This function does not return any output.
 
 .EXAMPLE
     Invoke-GitDeleteBranch -Name "feature-branch"
@@ -2152,8 +2152,8 @@ Set-Alias -Name delete-branch -Value Invoke-GitDeleteBranch
 .PARAMETER Name
     Specifies the name of the branch to merge into the current branch.
 
-.OUTPUTS
-    None. This function does not return any output.
+.OUTPUTS None
+    This function does not return any output.
 
 .EXAMPLE
     Invoke-GitMergeBranch -Name "feature-branch"
@@ -2192,8 +2192,8 @@ Set-Alias -Name merge-branch -Value Invoke-GitMergeBranch
 .PARAMETER None
     This function does not accept any parameters.
 
-.OUTPUTS
-    None. This function does not return any output.
+.OUTPUTS None
+    This function does not return any output.
 
 .EXAMPLE
     Invoke-GitRevertChanges
@@ -2231,8 +2231,8 @@ Set-Alias -Name revert -Value Invoke-GitRevertChanges
 .PARAMETER Branches
     Specifies the branches to keep. If not provided, only the master/main branch is kept.
 
-.OUTPUTS
-    None. This function does not return any output.
+.OUTPUTS None
+    This function does not return any output.
 
 .EXAMPLE
     Invoke-GitCleanupBranches
@@ -2290,74 +2290,3 @@ function Invoke-GitCleanupBranches {
   }
 }
 
-#######################################################
-# Network Functions
-#######################################################
-
-<#
-.SYNOPSIS
-    Displays the IP address information for the local machine.
-
-.DESCRIPTION
-    This function displays the IP address information for the local machine, including the IPv4 and IPv6 addresses, subnet mask, and default gateway.
-
-.PARAMETER None
-    This function does not accept any parameters.
-
-.OUTPUTS
-    The IP address information for the local machine.
-
-.EXAMPLE
-    Get-IPAddressInfo
-    Displays the IP address information for the local machine.
-
-.ALIASES
-    ipinfo -> Use the alias `ipinfo` to quickly get IP address information.
-#>
-function Private:Get-IPAddressInfo {
-  [CmdletBinding()]
-  param (
-    # This function does not accept any parameters
-  )
-
-  Get-NetIPAddress
-}
-
-#------------------------------------------------------
-# Set the alias for Get-IPAddressInfo
-#------------------------------------------------------
-Set-Alias -Name ipinfo -Value Get-IPAddressInfo
-
-<#
-.SYNOPSIS
-    Displays the DNS server information for the local machine.
-
-.DESCRIPTION
-    This function displays the DNS server information for the local machine, including the DNS server addresses and search domains.
-
-.PARAMETER None
-    This function does not accept any parameters.
-
-.OUTPUTS
-    The DNS server information for the local machine.
-
-.EXAMPLE
-    Get-DnsServerInfo
-    Displays the DNS server information for the local machine.
-
-.ALIASES
-    dnsinfo -> Use the alias `dnsinfo` to quickly get DNS server information.
-#>
-function Private:Get-DnsServerInfo {
-  [CmdletBinding()]
-  param (
-    # This function does not accept any parameters
-  )
-
-  Get-DnsClientServerAddress
-}
-
-#------------------------------------------------------
-# Set the alias for Get-DnsServerInfo
-#------------------------------------------------------
-Set-Alias -Name dnsinfo -Value Get-DnsServerInfo
