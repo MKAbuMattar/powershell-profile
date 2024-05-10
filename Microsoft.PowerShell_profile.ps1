@@ -361,56 +361,56 @@ else { 'notepad' }
 #------------------------------------------------------
 Set-Alias -Name vim -Value $EDITOR
 
-<#
-.SYNOPSIS
-    Updates all installed PowerShell modules to their latest versions.
+# <#
+# .SYNOPSIS
+#     Updates all installed PowerShell modules to their latest versions.
 
-.DESCRIPTION
-    This function updates all installed PowerShell modules to their latest versions. It retrieves the list of installed modules, checks for updates, and updates each module to the latest version if available. The function provides feedback on the update process for each module.
+# .DESCRIPTION
+#     This function updates all installed PowerShell modules to their latest versions. It retrieves the list of installed modules, checks for updates, and updates each module to the latest version if available. The function provides feedback on the update process for each module.
 
-.PARAMETER None
-    This function does not accept any parameters.
+# .PARAMETER None
+#     This function does not accept any parameters.
 
-.OUTPUTS None
-    This function does not return any output.
+# .OUTPUTS None
+#     This function does not return any output.
 
-.EXAMPLE
-    Update-InstalledModules
-    Updates all installed PowerShell modules to their latest versions.
+# .EXAMPLE
+#     Update-InstalledModules
+#     Updates all installed PowerShell modules to their latest versions.
 
-.ALIASES
-    update-modules -> Use the alias `update-modules` to quickly update all installed modules.
+# .ALIASES
+#     update-modules -> Use the alias `update-modules` to quickly update all installed modules.
 
-.NOTES
-    This function requires an active internet connection to check for module updates.
-#>
-function Private:Invoke-UpdateInstalledModules {
-  [CmdletBinding()]
-  param (
-    # This function does not accept any parameters
-  )
+# .NOTES
+#     This function requires an active internet connection to check for module updates.
+# #>
+# function Private:Invoke-UpdateInstalledModules {
+#   [CmdletBinding()]
+#   param (
+#     # This function does not accept any parameters
+#   )
   
-  $installedModules = Get-Module -ListAvailable | Select-Object -ExpandProperty Name
+#   $installedModules = Get-Module -ListAvailable | Select-Object -ExpandProperty Name
 
-  foreach ($module in $installedModules) {
-    $moduleInfo = Get-Module -Name $module -ListAvailable | Select-Object -First 1
-    $latestVersion = (Find-Module -Name $module).Version
-    $installedVersion = $moduleInfo.Version
+#   foreach ($module in $installedModules) {
+#     $moduleInfo = Get-Module -Name $module -ListAvailable | Select-Object -First 1
+#     $latestVersion = (Find-Module -Name $module).Version
+#     $installedVersion = $moduleInfo.Version
 
-    if ($latestVersion -gt $installedVersion) {
-      Write-Host "Updating module $module from version $installedVersion to version $latestVersion"
-      Update-Module -Name $module -Scope CurrentUser -Force -ErrorAction SilentlyContinue Stop
-    }
-    else {
-      Write-Host "Module $module is up to date"
-    }
-  }
-}
+#     if ($latestVersion -gt $installedVersion) {
+#       Write-Host "Updating module $module from version $installedVersion to version $latestVersion"
+#       Update-Module -Name $module -Scope CurrentUser -Force -ErrorAction SilentlyContinue Stop
+#     }
+#     else {
+#       Write-Host "Module $module is up to date"
+#     }
+#   }
+# }
 
-#------------------------------------------------------
-# Set the alias for updating installed modules
-#------------------------------------------------------
-Set-Alias -Name update-modules -Value Invoke-UpdateInstalledModules
+# #------------------------------------------------------
+# # Set the alias for updating installed modules
+# #------------------------------------------------------
+# Set-Alias -Name update-modules -Value Invoke-UpdateInstalledModules
 
 #######################################################
 # Utility Functions
