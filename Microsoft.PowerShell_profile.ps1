@@ -1325,3 +1325,681 @@ function Private:Get-ChildItemFormatted {
 # Set the alias for Get-ChildItem-Formatted
 #------------------------------------------------------
 Set-Alias -Name la -Value Get-ChildItemFormatted
+
+######################################################
+# Move Up Directory
+######################################################
+<#
+.SYNOPSIS
+    Moves up a specified number of directory levels.
+
+.DESCRIPTION
+    This function changes the current working directory to a parent directory at a specified number of levels above the current directory. It is useful for navigating up multiple levels in the directory structure.
+
+.PARAMETER Levels
+    Specifies the number of directory levels to move up.
+
+.OUTPUTS
+    None. This function does not return any output.
+
+.EXAMPLE
+    Move-UpDirectoryLevel -Levels 2
+    Moves up two directory levels.
+#>
+function Private:Move-UpDirectoryLevel {
+  [CmdletBinding()]
+  param (
+    [Parameter(Mandatory = $true, Position = 0)]
+    [int]$Levels
+  )
+
+  $parentPath = "..\"
+  $upPath = $parentPath * $Levels
+  Set-Location -Path $upPath
+}
+
+#------------------------------------------------------
+# Set the alias for Move-UpDirectoryLevel 1-6 levels
+#------------------------------------------------------
+Set-Alias -Name cd.1 -Value Move-UpDirectoryLevel -Levels 1
+Set-Alias -Name cd.2 -Value Move-UpDirectoryLevel -Levels 2
+Set-Alias -Name cd.3 -Value Move-UpDirectoryLevel -Levels 3
+Set-Alias -Name cd.4 -Value Move-UpDirectoryLevel -Levels 4
+Set-Alias -Name cd.5 -Value Move-UpDirectoryLevel -Levels 5
+Set-Alias -Name cd.6 -Value Move-UpDirectoryLevel -Levels 6
+
+######################################################
+# Git Functions
+######################################################
+<#
+.SYNOPSIS
+    Initializes a new Git repository in the current directory.
+
+.DESCRIPTION
+    This function initializes a new Git repository in the current directory. It creates the necessary Git configuration files and directories to start tracking changes in the directory.
+
+.PARAMETER None
+    This function does not accept any parameters.
+
+.OUTPUTS
+    None. This function does not return any output.
+
+.EXAMPLE
+    Invoke-InitializeGitRepository
+    Initializes a new Git repository in the current directory.
+#>
+function Private:Invoke-InitializeGitRepository {
+  [CmdletBinding()]
+  param (
+    # This function does not accept any parameters
+  )
+
+  git init
+}
+
+#------------------------------------------------------
+# Set the alias for Invoke-InitializeGitRepository
+#------------------------------------------------------
+Set-Alias -Name init -Value Invoke-InitializeGitRepository
+
+<#
+.SYNOPSIS
+    Adds all changes in the current directory to the staging area.
+
+.DESCRIPTION
+    This function adds all changes in the current directory to the staging area in preparation for committing the changes to the Git repository.
+
+.PARAMETER None
+    This function does not accept any parameters.
+
+.OUTPUTS
+    None. This function does not return any output.
+
+.EXAMPLE
+    Invoke-GitAllChanges
+    Adds all changes in the current directory to the staging area.
+#>
+function Private:Invoke-GitAllChanges {
+  [CmdletBinding()]
+  param (
+    # This function does not accept any parameters
+  )
+
+  git add .
+}
+
+#------------------------------------------------------
+# Set the alias for Invoke-GitAllChanges
+#------------------------------------------------------
+Set-Alias -Name add-all -Value Invoke-GitAllChanges
+
+<#
+.SYNOPSIS
+    Commits the changes in the staging area to the Git repository.
+
+.DESCRIPTION
+    This function commits the changes in the staging area to the Git repository. It creates a new commit with the specified message to track the changes made to the repository.
+
+.PARAMETER Message
+    Specifies the message for the commit.
+
+.OUTPUTS
+    None. This function does not return any output.
+
+.EXAMPLE
+    Invoke-GitCommitChanges -Message "Initial commit"
+    Commits the changes in the staging area with the message "Initial commit".
+#>
+function Private:Invoke-GitCommitChanges {
+  [CmdletBinding()]
+  param (
+    [Parameter(Position = 0, Mandatory = $true)]
+    [string]$Message
+  )
+
+  git commit -m $Message
+}
+
+#------------------------------------------------------
+# Set the alias for Invoke-GitCommitChanges
+#------------------------------------------------------
+Set-Alias -Name commit -Value Invoke-GitCommitChanges
+
+<#
+.SYNOPSIS
+    Pushes the committed changes to a remote Git repository.
+
+.DESCRIPTION
+    This function pushes the committed changes to a remote Git repository. It updates the remote repository with the changes made locally.
+
+.PARAMETER Branch
+    Specifies the branch to push the changes to. If not provided, the current branch is used.
+
+.OUTPUTS
+    None. This function does not return any output.
+
+.EXAMPLE
+    Invoke-GitPushChanges
+    Pushes the committed changes to the remote repository.
+
+.EXAMPLE
+    Invoke-GitPushChanges -Branch "main"
+    Pushes the committed changes to the "main" branch of the remote repository.
+#>
+function Private:Invoke-GitPushChanges {
+  [CmdletBinding()]
+  param (
+    [Parameter(Position = 0)]
+    [string]$Branch
+  )
+
+  try {
+    if ($null -eq $Branch) {
+      $Branch = (git branch --show-current)
+      if (-not $Branch) {
+        Write-Error "No branch specified, and unable to determine the current branch."
+        return
+      }
+    }
+
+    Write-Host "Pushing changes to branch '$Branch'..." -ForegroundColor Cyan
+    git push origin $Branch
+    Write-Host "Changes pushed successfully to branch '$Branch'." -ForegroundColor Green
+  }
+  catch {
+    Write-Error "Failed to push changes to branch '$Branch'. Error: $_"
+  }
+}
+
+#------------------------------------------------------
+# Set the alias for Invoke-GitPushChanges
+#------------------------------------------------------
+Set-Alias -Name push -Value Invoke-GitPushChanges
+
+<#
+.SYNOPSIS
+    Pulls changes from a remote Git repository to the local repository.
+
+.DESCRIPTION
+    This function pulls changes from a remote Git repository to the local repository. It updates the local repository with the changes made in the remote repository.
+
+.PARAMETER Branch
+    Specifies the branch to pull changes from. If not provided, the current branch is used.
+
+.OUTPUTS
+    None. This function does not return any output.
+
+.EXAMPLE
+    Invoke-GitPullChanges
+    Pulls changes from the remote repository to the local repository.
+
+.EXAMPLE
+    Invoke-GitPullChanges -Branch "main"
+    Pulls changes from the "main" branch of the remote repository to the local repository.
+#>
+function Private:Invoke-GitPullChanges {
+  [CmdletBinding()]
+  param (
+    [Parameter(Position = 0)]
+    [string]$Branch
+  )
+
+  try {
+    if ($null -eq $Branch) {
+      $Branch = (git branch --show-current)
+      if (-not $Branch) {
+        Write-Error "No branch specified, and unable to determine the current branch."
+        return
+      }
+    }
+
+    Write-Host "Pulling changes from branch '$Branch'..." -ForegroundColor Cyan
+    git pull origin $Branch
+    Write-Host "Changes pulled successfully from branch '$Branch'." -ForegroundColor Green
+  }
+  catch {
+    Write-Error "Failed to pull changes from branch '$Branch'. Error: $_"
+  }
+}
+
+#------------------------------------------------------
+# Set the alias for Invoke-GitPullChanges
+#------------------------------------------------------
+Set-Alias -Name pull -Value Invoke-GitPullChanges
+
+<#
+.SYNOPSIS
+    Clones a Git repository from a remote URL.
+
+.DESCRIPTION
+    This function clones a Git repository from a remote URL to the local machine. It creates a copy of the remote repository in the specified directory.
+
+.PARAMETER Url
+    Specifies the URL of the remote Git repository to clone.
+
+.PARAMETER Directory
+    Specifies the directory to clone the repository into. If not provided, the repository is cloned into a directory with the same name as the repository.
+
+.OUTPUTS
+    None. This function does not return any output.
+
+.EXAMPLE
+    Invoke-GitCloneRepository -Url "git@github.com:MKAbuMattar/powershell-profile.git"
+    Clones the repository from the specified URL.
+
+.EXAMPLE
+    Invoke-GitCloneRepository -Url "git@github.com:MKAbuMattar/powershell-profile.git" -Directory "C:\Projects"
+    Clones the repository into the "C:\Projects" directory.
+#>
+function Private:Invoke-GitCloneRepository {
+  [CmdletBinding()]
+  param (
+    [Parameter(Position = 0, Mandatory = $true)]
+    [string]$Url,
+
+    [Parameter(Position = 1)]
+    [string]$Directory
+  )
+
+  try {
+    if ($null -eq $Directory) {
+      git clone $Url
+    }
+    else {
+      git clone $Url $Directory
+    }
+  }
+  catch {
+    Write-Error "Failed to clone the repository from '$Url'. Error: $_"
+  }
+}
+
+#------------------------------------------------------
+# Set the alias for Invoke-GitCloneRepository
+#------------------------------------------------------
+Set-Alias -Name clone -Value Invoke-GitCloneRepository
+
+<#
+.SYNOPSIS
+    Displays the status of the Git repository.
+    
+.DESCRIPTION
+    This function displays the status of the Git repository, including information about modified files, untracked files, and the current branch.
+
+.PARAMETER None
+    This function does not accept any parameters.
+
+.OUTPUTS
+    The status of the Git repository.
+
+.EXAMPLE
+    Get-GitRepositoryStatus
+    Displays the status of the Git repository.
+#>
+function Private:Get-GitRepositoryStatus {
+  [CmdletBinding()]
+  param (
+    # This function does not accept any parameters
+  )
+
+  git status
+}
+
+#------------------------------------------------------
+# Set the alias for Get-GitRepositoryStatus
+#------------------------------------------------------
+Set-Alias -Name status -Value Get-GitRepositoryStatus
+
+<#
+.SYNOPSIS
+    Displays the commit history of the Git repository.
+
+.DESCRIPTION
+    This function displays the commit history of the Git repository, including information about past commits, commit messages, and commit authors.
+
+.PARAMETER None
+    This function does not accept any parameters.
+
+.OUTPUTS
+    The commit history of the Git repository.
+
+.EXAMPLE
+    Get-GitCommitHistory
+    Displays the commit history of the Git repository.
+#>
+function Private:Get-GitCommitHistory {
+  [CmdletBinding()]
+  param (
+    # This function does not accept any parameters
+  )
+
+  git log
+}
+
+#------------------------------------------------------
+# Set the alias for Get-GitCommitHistory
+#------------------------------------------------------
+Set-Alias -Name log -Value Get-GitCommitHistory
+
+<#
+.SYNOPSIS
+    Fetches changes from a remote Git repository.
+
+.DESCRIPTION
+    This function fetches changes from a remote Git repository to the local repository. It updates the local repository with the changes made in the remote repository without merging the changes.
+
+.PARAMETER Branch
+    Specifies the branch to fetch changes from. If not provided, the current branch is used.
+
+.OUTPUTS
+    None. This function does not return any output.
+
+.EXAMPLE
+    Invoke-GitFetchRepository
+    Fetches changes from the remote repository to the local repository.
+
+.EXAMPLE
+    Invoke-GitFetchRepository -Branch "main"
+    Fetches changes from the "main" branch of the remote repository to the local repository.
+#>
+function Private:Invoke-GitFetchRepository {
+  [CmdletBinding()]
+  param (
+    [Parameter(Position = 0)]
+    [string]$Branch
+  )
+
+  try {
+    if ($null -eq $Branch) {
+      $Branch = (git branch --show-current)
+      if (-not $Branch) {
+        Write-Error "No branch specified, and unable to determine the current branch."
+        return
+      }
+    }
+
+    Write-Host "Syncing with branch '$Branch'..." -ForegroundColor Cyan
+    git fetch origin $Branch
+    git merge origin/$Branch
+    Write-Host "Sync completed with branch '$Branch'." -ForegroundColor Green
+  }
+  catch {
+    Write-Error "Failed to sync with branch '$Branch'. Error: $_"
+  }
+}
+
+#------------------------------------------------------
+# Set the alias for Invoke-GitFetchRepository
+#------------------------------------------------------
+Set-Alias -Name fetch -Value Invoke-GitFetchRepository
+
+<#
+.SYNOPSIS
+    Creates a new branch in the Git repository.
+
+.DESCRIPTION
+    This function creates a new branch in the Git repository based on the current branch. It allows you to work on new features or changes in isolation from the main branch.
+
+.PARAMETER Name
+    Specifies the name of the new branch to create.
+
+.OUTPUTS
+    None. This function does not return any output.
+
+.EXAMPLE
+    Invoke-GitCreateBranch -Name "feature-branch"
+    Creates a new branch named "feature-branch" in the Git repository.
+#>
+function Private:Invoke-GitCreateBranch {
+  [CmdletBinding()]
+  param (
+    [Parameter(Position = 0, Mandatory = $true)]
+    [string]$Name
+  )
+
+  try {
+    git checkout -b $Name
+  }
+  catch {
+    Write-Error "Failed to create branch '$Name'. Error: $_"
+  }
+}
+
+#------------------------------------------------------
+# Set the alias for Invoke-GitCreateBranch
+#------------------------------------------------------
+Set-Alias -Name branch -Value Invoke-GitCreateBranch
+
+<#
+.SYNOPSIS
+    Checkout/Switches to an existing branch in the Git repository.
+
+.DESCRIPTION
+    This function switches to an existing branch in the Git repository. It allows you to work on different branches of the repository.
+
+.PARAMETER Name
+    Specifies the name of the branch to switch to.
+
+.OUTPUTS
+    None. This function does not return any output.
+
+.EXAMPLE
+    Invoke-GitCheckoutBranch -Name "main"
+    Switches to the "main" branch in the Git repository.
+
+.EXAMPLE
+    Invoke-GitCheckoutBranch -Name "feature-branch"
+    Switches to the "feature-branch" branch in the Git repository.
+#>
+function Invoke-GitCheckoutBranch {
+  [CmdletBinding()]
+  param (
+    [Parameter(Position = 0, Mandatory = $true)]
+    [string]$Name
+  )
+
+  try {
+    $existingBranches = git branch --list $Name
+    if (-not $existingBranches) {
+      Write-Error "Branch '$Name' does not exist in the repository."
+      return
+    }
+    
+    git checkout $Name
+  }
+  catch {
+    Write-Error "Failed to switch to branch '$Name'. Error: $_"
+  }
+}
+
+#------------------------------------------------------
+# Set the alias for Invoke-GitCheckoutBranch
+#------------------------------------------------------
+Set-Alias -Name checkout -Value Invoke-GitCheckoutBranch
+
+<#
+.SYNOPSIS
+    Deletes a branch in the Git repository.
+
+.DESCRIPTION
+    This function deletes a branch in the Git repository. It removes the specified branch from the repository.
+
+.PARAMETER Name
+    Specifies the name of the branch to delete.
+
+.OUTPUTS
+    None. This function does not return any output.
+
+.EXAMPLE
+    Invoke-GitDeleteBranch -Name "feature-branch"
+    Deletes the "feature-branch" branch from the Git repository.
+#>
+function Private:Invoke-GitDeleteBranch {
+  [CmdletBinding()]
+  param (
+    [Parameter(Position = 0, Mandatory = $true)]
+    [string]$Name
+  )
+
+  try {
+    $existingBranches = git branch --list $Name
+    if (-not $existingBranches) {
+      Write-Error "Branch '$Name' does not exist in the repository."
+      return
+    }
+
+    git branch -D $Name
+  }
+  catch {
+    Write-Error "Failed to delete branch '$Name'. Error: $_"
+  }
+}
+
+#------------------------------------------------------
+# Set the alias for Invoke-GitDeleteBranch
+#------------------------------------------------------
+Set-Alias -Name delete-branch -Value Invoke-GitDeleteBranch
+
+<#
+.SYNOPSIS
+    Merges changes from one branch into the current branch.
+
+.DESCRIPTION
+    This function merges changes from one branch into the current branch in the Git repository. It combines the changes made in the specified branch with the changes in the current branch.
+
+.PARAMETER Name
+    Specifies the name of the branch to merge into the current branch.
+
+.OUTPUTS
+    None. This function does not return any output.
+
+.EXAMPLE
+    Invoke-GitMergeBranch -Name "feature-branch"
+    Merges changes from the "feature-branch" into the current branch.
+#>
+function Private:Invoke-GitMergeBranch {
+  [CmdletBinding()]
+  param (
+    [Parameter(Position = 0, Mandatory = $true)]
+    [string]$Name
+  )
+
+  try {
+    git merge $Name
+  }
+  catch {
+    Write-Error "Failed to merge branch '$Name' into the current branch. Error: $_"
+  }
+}
+
+#------------------------------------------------------
+# Set the alias for Invoke-GitMergeBranch
+#------------------------------------------------------
+Set-Alias -Name merge-branch -Value Invoke-GitMergeBranch
+
+<#
+.SYNOPSIS
+    Reverts changes in the working directory to the last commit.
+
+.DESCRIPTION
+    This function reverts changes in the working directory to the last commit in the Git repository. It resets the working directory to the state of the last commit without losing current changes.
+
+.PARAMETER None
+    This function does not accept any parameters.
+
+.OUTPUTS
+    None. This function does not return any output.
+
+.EXAMPLE
+    Invoke-GitRevertChanges
+    Reverts changes in the working directory to the last commit.
+#>
+function Private:Invoke-GitRevertChanges {
+  [CmdletBinding()]
+  param (
+    # This function does not accept any parameters
+  )
+
+  try {
+    git reset --hard HEAD
+  }
+  catch {
+    Write-Error "Failed to revert changes to the last commit. Error: $_"
+  }
+}
+
+#------------------------------------------------------
+# Set the alias for Invoke-GitRevertChanges
+#------------------------------------------------------
+Set-Alias -Name revert -Value Invoke-GitRevertChanges
+
+<#
+.SYNOPSIS
+    Deletes all local branches and keep only the master/main branch or branches that are specified.
+    
+.DESCRIPTION
+    This function deletes all local branches except the master/main branch or branches that are specified. It is useful for cleaning up local branches after merging changes.
+
+.PARAMETER Branches
+    Specifies the branches to keep. If not provided, only the master/main branch is kept.
+
+.OUTPUTS
+    None. This function does not return any output.
+
+.EXAMPLE
+    Invoke-GitCleanupBranches
+    Deletes all local branches except the master/main branch.
+
+.EXAMPLE
+    Invoke-GitCleanupBranches -Branches "feature-branch1", "feature-branch2"
+    Deletes all local branches except the master/main branch and "feature-branch1" and "feature-branch2".
+#>
+
+function Invoke-GitCleanupBranches {
+  [CmdletBinding()]
+  param (
+    [Parameter(Position = 0)]
+    [string[]]$Branches
+  )
+
+  try {
+    # If no branches are specified, keep only the current branch
+    if (-not $Branches) {
+      $currentBranch = git branch --show-current
+      if ($currentBranch -eq 'master' -or $currentBranch -eq 'main') {
+        $Branches = @($currentBranch)
+      }
+      else {
+        $Branches = @('master', 'main', $currentBranch)
+      }
+    }
+    else {
+      # If branches are specified, ensure master/main is included
+      if ('master' -notin $Branches -and 'main' -notin $Branches) {
+        $Branches += 'master', 'main'
+      }
+    }
+
+    # Get all local branches except the ones specified to keep
+    $branchesToDelete = (git branch | ForEach-Object { $_.Trim() }) | Where-Object { $_ -notin $Branches }
+
+    # If there are no branches to delete, inform the user and exit
+    if (-not $branchesToDelete) {
+      Write-Host "No branches to delete." -ForegroundColor Yellow
+      return
+    }
+
+    # Loop through the branches to delete and delete them
+    foreach ($branch in $branchesToDelete) {
+      git branch -D $branch
+    }
+  }
+  catch {
+    Write-Error "Failed to delete branches. Error: $_"
+  }
+}
+
+#------------------------------------------------------
+# Set the alias for Invoke-GitCleanupBranches
+#------------------------------------------------------
+Set-Alias -Name cleanup-branches -Value Invoke-GitCleanupBranches
