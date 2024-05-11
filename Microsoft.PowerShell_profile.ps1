@@ -442,6 +442,7 @@ Set-Alias -Name vim -Value $EDITOR
 #>
 function Private:Set-FreshFile {
   [CmdletBinding()]
+  [Alias("touch")]
   param (
     [Parameter(Mandatory = $true)]
     [string]$File
@@ -458,10 +459,10 @@ function Private:Set-FreshFile {
   }
 }
 
-#------------------------------------------------------
-# Set the alias for Set-FreshFile
-#------------------------------------------------------
-Set-Alias -Name touch -Value Set-FreshFile
+# #------------------------------------------------------
+# # Set the alias for Set-FreshFile
+# #------------------------------------------------------
+# Set-Alias -Name touch -Value Set-FreshFile
 
 <#
 .SYNOPSIS
@@ -489,6 +490,7 @@ Set-Alias -Name touch -Value Set-FreshFile
 #>
 function Private:Find-Files {
   [CmdletBinding()]
+  [Alias("ff")]
   param (
     [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
     [string]$Name
@@ -500,10 +502,10 @@ function Private:Find-Files {
   }
 }
 
-#------------------------------------------------------
-# Set the alias for Find-Files
-#------------------------------------------------------
-Set-Alias -Name ff -Value Find-Files
+# #------------------------------------------------------
+# # Set the alias for Find-Files
+# #------------------------------------------------------
+# Set-Alias -Name ff -Value Find-Files
 
 <#
 .SYNOPSIS
@@ -527,6 +529,7 @@ Set-Alias -Name ff -Value Find-Files
 #>
 function Private:Get-Uptime {
   [CmdletBinding()]
+  [Alias("uptime")]
   param (
     # This function does not accept any parameters
   )
@@ -544,10 +547,10 @@ function Private:Get-Uptime {
   }
 }
 
-#------------------------------------------------------
-# Set the alias for Get-Uptime
-#------------------------------------------------------
-Set-Alias -Name uptime -Value Get-Uptime
+# #------------------------------------------------------
+# # Set the alias for Get-Uptime
+# #------------------------------------------------------
+# Set-Alias -Name uptime -Value Get-Uptime
 
 <#
 .SYNOPSIS
@@ -571,6 +574,7 @@ Set-Alias -Name uptime -Value Get-Uptime
 #>
 function Private:Invoke-ProfileReload {
   [CmdletBinding()]
+  [Alias("reload-profile")]
   param (
     # This function does not accept any parameters
   )
@@ -584,10 +588,10 @@ function Private:Invoke-ProfileReload {
   }
 }
 
-#------------------------------------------------------
-# Set the alias for reloading the profile
-#------------------------------------------------------
-Set-Alias -Name reload-profile -Value Invoke-ProfileReload
+# #------------------------------------------------------
+# # Set the alias for reloading the profile
+# #------------------------------------------------------
+# Set-Alias -Name reload-profile -Value Invoke-ProfileReload
 
 <#
 .SYNOPSIS
@@ -611,6 +615,7 @@ Set-Alias -Name reload-profile -Value Invoke-ProfileReload
 #>
 function Private:Expand-File {
   [CmdletBinding()]
+  [Alias("unzip")]
   param (
     [Parameter(Mandatory = $true, Position = 0)]
     [string]$File
@@ -639,10 +644,10 @@ function Private:Expand-File {
   }
 }
 
-#------------------------------------------------------
-# Set the alias for Expand-File
-#------------------------------------------------------
-Set-Alias -Name unzip -Value Expand-File
+# #------------------------------------------------------
+# # Set the alias for Expand-File
+# #------------------------------------------------------
+# Set-Alias -Name unzip -Value Expand-File
 
 <#
 .SYNOPSIS
@@ -669,6 +674,7 @@ Set-Alias -Name unzip -Value Expand-File
 #>
 function Private:Get-ContentMatching {
   [CmdletBinding()]
+  [Alias("grep")]
   param (
     [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
     [string]$Pattern,
@@ -700,10 +706,10 @@ function Private:Get-ContentMatching {
   }
 }
 
-#------------------------------------------------------
-# Set the alias for Get-ContentMatching
-#------------------------------------------------------
-Set-Alias -Name grep -Value Get-ContentMatching
+# #------------------------------------------------------
+# # Set the alias for Get-ContentMatching
+# #------------------------------------------------------
+# Set-Alias -Name grep -Value Get-ContentMatching
 
 <#
 .SYNOPSIS
@@ -727,6 +733,7 @@ Set-Alias -Name grep -Value Get-ContentMatching
 #>
 function Private:Get-VolumeInfo {
   [CmdletBinding()]
+  [Alias("df")]
   param(
     # This function does not accept any parameters
   )
@@ -739,10 +746,10 @@ function Private:Get-VolumeInfo {
   }
 }
 
-#------------------------------------------------------
-# Set the alias for Get-VolumeInfo
-#------------------------------------------------------
-Set-Alias -Name df -Value Get-VolumeInfo
+# #------------------------------------------------------
+# # Set the alias for Get-VolumeInfo
+# #------------------------------------------------------
+# Set-Alias -Name df -Value Get-VolumeInfo
 
 <#
 .SYNOPSIS
@@ -772,6 +779,7 @@ Set-Alias -Name df -Value Get-VolumeInfo
 #>
 function Private:Set-ContentMatching {
   [CmdletBinding()]
+  [Alias("sed")]
   param (
     [Parameter(Mandatory = $true)]
     [string]$file,
@@ -792,10 +800,10 @@ function Private:Set-ContentMatching {
   }
 }
 
-#------------------------------------------------------
-# Set the alias for Set-ContentMatching
-#------------------------------------------------------
-Set-Alias -Name sed -Value Set-ContentMatching
+# #------------------------------------------------------
+# # Set the alias for Set-ContentMatching
+# #------------------------------------------------------
+# Set-Alias -Name sed -Value Set-ContentMatching
 
 <#
 .SYNOPSIS
@@ -819,6 +827,7 @@ Set-Alias -Name sed -Value Set-ContentMatching
 #>
 function Private:Get-CommandDefinition {
   [CmdletBinding()]
+  [Alias("def")]
   param (
     [Parameter(Mandatory = $true)]
     [string]$name
@@ -838,10 +847,10 @@ function Private:Get-CommandDefinition {
   }
 }
 
-#------------------------------------------------------
-# Set the alias for Get-CommandDefinition
-#------------------------------------------------------
-Set-Alias -Name def -Value Get-CommandDefinition
+# #------------------------------------------------------
+# # Set the alias for Get-CommandDefinition
+# #------------------------------------------------------
+# Set-Alias -Name def -Value Get-CommandDefinition
 
 <#
 .SYNOPSIS
@@ -868,6 +877,7 @@ Set-Alias -Name def -Value Get-CommandDefinition
 #>
 function Private:Set-EnvVar {
   [CmdletBinding()]
+  [Alias("export")]
   param (
     [Parameter(Mandatory = $true)]
     [string]$name,
@@ -884,10 +894,10 @@ function Private:Set-EnvVar {
   }
 }
 
-#------------------------------------------------------
-# Set the alias for Set-EnvVar
-#------------------------------------------------------
-Set-Alias -Name export -Value Set-EnvVar
+# #------------------------------------------------------
+# # Set the alias for Set-EnvVar
+# #------------------------------------------------------
+# Set-Alias -Name export -Value Set-EnvVar
 
 <#
 .SYNOPSIS
@@ -911,6 +921,7 @@ Set-Alias -Name export -Value Set-EnvVar
 #>
 function Private:Stop-ProcessByName {
   [CmdletBinding()]
+  [Alias("pkill")]
   param (
     [Parameter(Mandatory = $true)]
     [string]$name
@@ -925,10 +936,10 @@ function Private:Stop-ProcessByName {
   }
 }
 
-#------------------------------------------------------
-# Set the alias for Stop-ProcessByName
-#------------------------------------------------------
-Set-Alias -Name pkill -Value Stop-ProcessByName
+# #------------------------------------------------------
+# # Set the alias for Stop-ProcessByName
+# #------------------------------------------------------
+# Set-Alias -Name pkill -Value Stop-ProcessByName
 
 <#
 .SYNOPSIS
@@ -952,6 +963,7 @@ Set-Alias -Name pkill -Value Stop-ProcessByName
 #>
 function Private:Get-ProcessByName {
   [CmdletBinding()]
+  [Alias("pgrep")]
   param (
     [Parameter(Mandatory = $true)]
     [string]$name
@@ -965,10 +977,10 @@ function Private:Get-ProcessByName {
   }
 }
 
-#------------------------------------------------------
-# Set the alias for Get-ProcessByName
-#------------------------------------------------------
-Set-Alias -Name pgrep -Value Get-ProcessByName
+# #------------------------------------------------------
+# # Set the alias for Get-ProcessByName
+# #------------------------------------------------------
+# Set-Alias -Name pgrep -Value Get-ProcessByName
 
 <#
 .SYNOPSIS
@@ -995,6 +1007,7 @@ Set-Alias -Name pgrep -Value Get-ProcessByName
 #>
 function Private:Get-HeadContent {
   [CmdletBinding()]
+  [Alias("head")]
   param (
     [Parameter(Position = 0, Mandatory = $true, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
     [string]$Path,
@@ -1012,10 +1025,10 @@ function Private:Get-HeadContent {
   }
 }
 
-#------------------------------------------------------
-# Set the alias for Get-HeadContent
-#------------------------------------------------------
-Set-Alias -Name head -Value Get-HeadContent
+# #------------------------------------------------------
+# # Set the alias for Get-HeadContent
+# #------------------------------------------------------
+# Set-Alias -Name head -Value Get-HeadContent
 
 <#
 .SYNOPSIS
@@ -1042,6 +1055,7 @@ Set-Alias -Name head -Value Get-HeadContent
 #>
 function Private:Get-TailContent {
   [CmdletBinding()]
+  [Alias("tail")]
   param (
     [Parameter(Position = 0, Mandatory = $true, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
     [string]$Path,
@@ -1059,10 +1073,10 @@ function Private:Get-TailContent {
   }
 }
 
-#------------------------------------------------------
-# Set the alias for Get-TailContent
-#------------------------------------------------------
-Set-Alias -Name tail -Value Get-TailContent
+# #------------------------------------------------------
+# # Set the alias for Get-TailContent
+# #------------------------------------------------------
+# Set-Alias -Name tail -Value Get-TailContent
 
 <#
 .SYNOPSIS
@@ -1086,6 +1100,7 @@ Set-Alias -Name tail -Value Get-TailContent
 #>
 function Private:New-File {
   [CmdletBinding()]
+  [Alias("nf")]
   param (
     [Parameter(Position = 0, Mandatory = $true)]
     [string]$name
@@ -1099,10 +1114,10 @@ function Private:New-File {
   }
 }
 
-#------------------------------------------------------
-# Set the alias for New-File
-#------------------------------------------------------
-Set-Alias -Name nf -Value New-File
+# #------------------------------------------------------
+# # Set the alias for New-File
+# #------------------------------------------------------
+# Set-Alias -Name nf -Value New-File
 
 <#
 .SYNOPSIS
@@ -1126,6 +1141,7 @@ Set-Alias -Name nf -Value New-File
 #>
 function Private:New-Directory {
   [CmdletBinding()]
+  [Alias("mkcd")]
   param (
     [Parameter(Position = 0, Mandatory = $true)]
     [string]$name
@@ -1140,10 +1156,10 @@ function Private:New-Directory {
   }
 }
 
-#------------------------------------------------------
-# Set the alias for New-Directory
-#------------------------------------------------------
-Set-Alias -Name mkcd -Value New-Directory
+# #------------------------------------------------------
+# # Set the alias for New-Directory
+# #------------------------------------------------------
+# Set-Alias -Name mkcd -Value New-Directory
 
 <#
 .SYNOPSIS
@@ -1167,6 +1183,7 @@ Set-Alias -Name mkcd -Value New-Directory
 #>
 function Private:Find-InHistory {
   [CmdletBinding()]
+  [Alias("hist")]
   param (
     [Parameter(Position = 0, Mandatory = $true, ValueFromPipeline = $true)]
     [string]$searchTerm
@@ -1182,10 +1199,10 @@ function Private:Find-InHistory {
   Where-Object { $_ -like "*$searchTerm*" } | Select-Object -Unique | more
 }
 
-#------------------------------------------------------
-# Set the alias for Find-InHistory
-#------------------------------------------------------
-Set-Alias -Name hist -Value Find-InHistory
+# #------------------------------------------------------
+# # Set the alias for Find-InHistory
+# #------------------------------------------------------
+# Set-Alias -Name hist -Value Find-InHistory
 
 <#
 .SYNOPSIS
@@ -1208,6 +1225,11 @@ Set-Alias -Name hist -Value Find-InHistory
     pstree -> Use the alias `pstree` to quickly display the process tree.
 #>
 function Private:Get-ProcessTree {
+  [CmdletBinding()]
+  [Alias("pstree")]
+  param (
+    # This function does not accept any parameters
+  )
   $ProcessesById = @{}
   foreach ($Process in (Get-WMIObject -Class Win32_Process)) {
     $ProcessesById[$Process.ProcessId] = $Process
@@ -1255,10 +1277,10 @@ function Private:Get-ProcessTree {
   }
 }
 
-#------------------------------------------------------
-# Set the alias for Get-ProcessTree
-#------------------------------------------------------
-Set-Alias -Name pstree -Value Get-ProcessTree
+# #------------------------------------------------------
+# # Set the alias for Get-ProcessTree
+# #------------------------------------------------------
+# Set-Alias -Name pstree -Value Get-ProcessTree
 
 #######################################################
 # Navigation Shortcuts
@@ -1286,6 +1308,7 @@ Set-Alias -Name pstree -Value Get-ProcessTree
 #>
 function Private:Set-Home {
   [CmdletBinding()]
+  [Alias("root")]
   param (
     # This function does not accept any parameters
   )
@@ -1293,10 +1316,10 @@ function Private:Set-Home {
   Set-Location -Path $HOME
 }
 
-#------------------------------------------------------
-# Set the alias for Set-Home
-#------------------------------------------------------
-Set-Alias -Name root -Value Set-Home
+# #------------------------------------------------------
+# # Set the alias for Set-Home
+# #------------------------------------------------------
+# Set-Alias -Name root -Value Set-Home
 
 <#
 .SYNOPSIS
@@ -1320,6 +1343,7 @@ Set-Alias -Name root -Value Set-Home
 #>
 function Private:Set-Documents {
   [CmdletBinding()]
+  [Alias("doc")]
   param (
     # This function does not accept any parameters
   )
@@ -1327,10 +1351,10 @@ function Private:Set-Documents {
   Set-Location -Path $HOME\Documents
 }
 
-#------------------------------------------------------
-# Set the alias for Set-Documents
-#------------------------------------------------------
-Set-Alias -Name doc -Value Set-Documents
+# #------------------------------------------------------
+# # Set the alias for Set-Documents
+# #------------------------------------------------------
+# Set-Alias -Name doc -Value Set-Documents
 
 <#
 .SYNOPSIS
@@ -1354,6 +1378,7 @@ Set-Alias -Name doc -Value Set-Documents
 #>
 function Private:Set-Downloads {
   [CmdletBinding()]
+  [Alias("dl")]
   param (
     # This function does not accept any parameters
   )
@@ -1361,10 +1386,10 @@ function Private:Set-Downloads {
   Set-Location -Path $HOME\Downloads
 }
 
-#------------------------------------------------------
-# Set the alias for Set-Downloads
-#------------------------------------------------------
-Set-Alias -Name dl -Value Set-Downloads
+# #------------------------------------------------------
+# # Set the alias for Set-Downloads
+# #------------------------------------------------------
+# Set-Alias -Name dl -Value Set-Downloads
 
 <#
 .SYNOPSIS
@@ -1388,6 +1413,7 @@ Set-Alias -Name dl -Value Set-Downloads
 #>
 function Private:Set-Desktop {
   [CmdletBinding()]
+  [Alias("dtop")]
   param (
     # This function does not accept any parameters
   )
@@ -1395,10 +1421,10 @@ function Private:Set-Desktop {
   Set-Location -Path $HOME\Desktop
 }
 
-#------------------------------------------------------
-# Set the alias for Set-Desktop
-#------------------------------------------------------
-Set-Alias -Name dtop -Value Set-Desktop
+# #------------------------------------------------------
+# # Set the alias for Set-Desktop
+# #------------------------------------------------------
+# Set-Alias -Name dtop -Value Set-Desktop
 
 <#
 .SYNOPSIS
@@ -1422,6 +1448,7 @@ Set-Alias -Name dtop -Value Set-Desktop
 #>
 function Private:Set-DDisk {
   [CmdletBinding()]
+  [Alias("dc")]
   param (
     # This function does not accept any parameters
   )
@@ -1429,10 +1456,10 @@ function Private:Set-DDisk {
   Set-Location -Path "D:\"
 }
 
-#------------------------------------------------------
-# Set the alias for Set-DDisk
-#------------------------------------------------------
-Set-Alias -Name dc -Value Set-DDisk
+# #------------------------------------------------------
+# # Set the alias for Set-DDisk
+# #------------------------------------------------------
+# Set-Alias -Name dc -Value Set-DDisk
 
 #######################################################
 # Profile Shortcuts
@@ -1460,6 +1487,7 @@ Set-Alias -Name dc -Value Set-DDisk
 #>
 function Private:Edit-Profile {
   [CmdletBinding()]
+  [Alias("ep")]
   param (
     # This function does not accept any parameters
   )
@@ -1467,10 +1495,10 @@ function Private:Edit-Profile {
   $PROFILE | Invoke-Item
 }
 
-#------------------------------------------------------
-# Set the alias for Edit-Profile
-#------------------------------------------------------
-Set-Alias -Name ep -Value Edit-Profile
+# #------------------------------------------------------
+# # Set the alias for Edit-Profile
+# #------------------------------------------------------
+# Set-Alias -Name ep -Value Edit-Profile
 
 <#
 .SYNOPSIS
@@ -1494,6 +1522,7 @@ Set-Alias -Name ep -Value Edit-Profile
 #>
 function Private:Get-SystemInfo {
   [CmdletBinding()]
+  [Alias("sysinfo")]
   param (
     # This function does not accept any parameters
   )
@@ -1501,10 +1530,10 @@ function Private:Get-SystemInfo {
   Get-ComputerInfo 
 }
 
-#------------------------------------------------------
-# Set the alias for Get-SystemInfo
-#------------------------------------------------------
-Set-Alias -Name sysinfo -Value Get-SystemInfo
+# #------------------------------------------------------
+# # Set the alias for Get-SystemInfo
+# #------------------------------------------------------
+# Set-Alias -Name sysinfo -Value Get-SystemInfo
 
 <#
 .SYNOPSIS
@@ -1528,6 +1557,7 @@ Set-Alias -Name sysinfo -Value Get-SystemInfo
 #>
 function Private:Stop-TerminateProcess {
   [CmdletBinding()]
+  [Alias("k9")]
   param (
     [Parameter(Position = 0, Mandatory = $true)]
     [string]$Name
@@ -1536,10 +1566,10 @@ function Private:Stop-TerminateProcess {
   Stop-Process -Name $Name 
 }
 
-#------------------------------------------------------
-# Set the alias for Stop-TerminateProcess
-#------------------------------------------------------
-Set-Alias -Name k9 -Value Stop-TerminateProcess
+# #------------------------------------------------------
+# # Set the alias for Stop-TerminateProcess
+# #------------------------------------------------------
+# Set-Alias -Name k9 -Value Stop-TerminateProcess
 
 <#
 .SYNOPSIS
@@ -1563,6 +1593,7 @@ Set-Alias -Name k9 -Value Stop-TerminateProcess
 #>
 function Private:Clear-DnsCache {
   [CmdletBinding()]
+  [Alias("flushdns")]
   param (
     # This function does not accept any parameters
   )
@@ -1570,10 +1601,10 @@ function Private:Clear-DnsCache {
   Clear-DnsClientCache 
 }
 
-#------------------------------------------------------
-# Set the alias for Clear-DnsCache
-#------------------------------------------------------
-Set-Alias -Name flushdns -Value Clear-DnsCache
+# #------------------------------------------------------
+# # Set the alias for Clear-DnsCache
+# #------------------------------------------------------
+# Set-Alias -Name flushdns -Value Clear-DnsCache
 
 <#
 .SYNOPSIS
@@ -1601,6 +1632,7 @@ Set-Alias -Name flushdns -Value Clear-DnsCache
 #>
 function Private:Get-ChildItemFormatted {
   [CmdletBinding()]
+  [Alias("la")]
   param (
     [Parameter(Position = 0)]
     [string]$Path = "."
@@ -1609,10 +1641,10 @@ function Private:Get-ChildItemFormatted {
   Get-ChildItem -Path $Path -Force | Format-Table -AutoSize
 }
 
-#------------------------------------------------------
-# Set the alias for Get-ChildItem-Formatted
-#------------------------------------------------------
-Set-Alias -Name la -Value Get-ChildItemFormatted
+# #------------------------------------------------------
+# # Set the alias for Get-ChildItem-Formatted
+# #------------------------------------------------------
+# Set-Alias -Name la -Value Get-ChildItemFormatted
 
 #######################################################
 # Move Up Directory
@@ -1641,6 +1673,8 @@ Set-Alias -Name la -Value Get-ChildItemFormatted
 #>
 function Private:Invoke-UpOneDirectoryLevel {
   [CmdletBinding()]
+  [Alias("cd.1")]
+  [Alias("..")]
   param (
     # This function does not accept any parameters
   )
@@ -1648,11 +1682,11 @@ function Private:Invoke-UpOneDirectoryLevel {
   Set-Location -Path .. -ErrorAction SilentlyContinue
 }
 
-#------------------------------------------------------
-# Set the alias for Invoke-UpOneDirectoryLevel
-#------------------------------------------------------
-Set-Alias -Name cd.1 -Value Private:Invoke-UpOneDirectoryLevel
-Set-Alias -Name .. -Value Private:Invoke-UpOneDirectoryLevel
+# #------------------------------------------------------
+# # Set the alias for Invoke-UpOneDirectoryLevel
+# #------------------------------------------------------
+# Set-Alias -Name cd.1 -Value Private:Invoke-UpOneDirectoryLevel
+# Set-Alias -Name .. -Value Private:Invoke-UpOneDirectoryLevel
 
 <#
 .SYNOPSIS
@@ -1677,6 +1711,8 @@ Set-Alias -Name .. -Value Private:Invoke-UpOneDirectoryLevel
 #>
 function Private:Invoke-UpTwoDirectoryLevels {
   [CmdletBinding()]
+  [Alias("cd.2")]
+  [Alias("...")]
   param (
     # This function does not accept any parameters
   )
@@ -1684,11 +1720,11 @@ function Private:Invoke-UpTwoDirectoryLevels {
   Set-Location -Path ..\.. -ErrorAction SilentlyContinue
 }
 
-#------------------------------------------------------
-# Set the alias for Invoke-UpTwoDirectoryLevels
-#------------------------------------------------------
-Set-Alias -Name cd.2 -Value Invoke-UpTwoDirectoryLevels
-Set-Alias -Name ... -Value Invoke-UpTwoDirectoryLevels
+# #------------------------------------------------------
+# # Set the alias for Invoke-UpTwoDirectoryLevels
+# #------------------------------------------------------
+# Set-Alias -Name cd.2 -Value Invoke-UpTwoDirectoryLevels
+# Set-Alias -Name ... -Value Invoke-UpTwoDirectoryLevels
 
 <#
 .SYNOPSIS
@@ -1713,6 +1749,8 @@ Set-Alias -Name ... -Value Invoke-UpTwoDirectoryLevels
 #>
 function Private:Invoke-UpThreeDirectoryLevels {
   [CmdletBinding()]
+  [Alias("cd.3")]
+  [Alias("....")]
   param (
     # This function does not accept any parameters
   )
@@ -1720,11 +1758,11 @@ function Private:Invoke-UpThreeDirectoryLevels {
   Set-Location -Path ..\..\.. -ErrorAction SilentlyContinue
 }
 
-#------------------------------------------------------
-# Set the alias for Invoke-UpThreeDirectoryLevels
-#------------------------------------------------------
-Set-Alias -Name cd.3 -Value Invoke-UpThreeDirectoryLevels
-Set-Alias -Name .... -Value Invoke-UpThreeDirectoryLevels
+# #------------------------------------------------------
+# # Set the alias for Invoke-UpThreeDirectoryLevels
+# #------------------------------------------------------
+# Set-Alias -Name cd.3 -Value Invoke-UpThreeDirectoryLevels
+# Set-Alias -Name .... -Value Invoke-UpThreeDirectoryLevels
 
 <#
 .SYNOPSIS
@@ -1749,6 +1787,8 @@ Set-Alias -Name .... -Value Invoke-UpThreeDirectoryLevels
 #>
 function Private:Invoke-UpFourDirectoryLevels {
   [CmdletBinding()]
+  [Alias("cd.4")]
+  [Alias(".....")]
   param (
     # This function does not accept any parameters
   )
@@ -1756,11 +1796,11 @@ function Private:Invoke-UpFourDirectoryLevels {
   Set-Location -Path ..\..\..\.. -ErrorAction SilentlyContinue
 }
 
-#------------------------------------------------------
-# Set the alias for Invoke-UpFourDirectoryLevels
-#------------------------------------------------------
-Set-Alias -Name cd.4 -Value Invoke-UpFourDirectoryLevels
-Set-Alias -Name ..... -Value Invoke-UpFourDirectoryLevels
+# #------------------------------------------------------
+# # Set the alias for Invoke-UpFourDirectoryLevels
+# #------------------------------------------------------
+# Set-Alias -Name cd.4 -Value Invoke-UpFourDirectoryLevels
+# Set-Alias -Name ..... -Value Invoke-UpFourDirectoryLevels
 
 <#
 .SYNOPSIS
@@ -1785,6 +1825,8 @@ Set-Alias -Name ..... -Value Invoke-UpFourDirectoryLevels
 #>
 function Private:Invoke-UpFiveDirectoryLevels {
   [CmdletBinding()]
+  [Alias("cd.5")]
+  [Alias("......")]
   param (
     # This function does not accept any parameters
   )
@@ -1792,11 +1834,11 @@ function Private:Invoke-UpFiveDirectoryLevels {
   Set-Location -Path ..\..\..\..\.. -ErrorAction SilentlyContinue
 }
 
-#------------------------------------------------------
-# Set the alias for Invoke-UpFiveDirectoryLevels
-#------------------------------------------------------
-Set-Alias -Name cd.5 -Value Invoke-UpFiveDirectoryLevels
-Set-Alias -Name ...... -Value Invoke-UpFiveDirectoryLevels
+# #------------------------------------------------------
+# # Set the alias for Invoke-UpFiveDirectoryLevels
+# #------------------------------------------------------
+# Set-Alias -Name cd.5 -Value Invoke-UpFiveDirectoryLevels
+# Set-Alias -Name ...... -Value Invoke-UpFiveDirectoryLevels
 
 <#
 .SYNOPSIS
@@ -1821,6 +1863,8 @@ Set-Alias -Name ...... -Value Invoke-UpFiveDirectoryLevels
 #>
 function Private:Invoke-UpSixDirectoryLevels {
   [CmdletBinding()]
+  [Alias("cd.6")]
+  [Alias(".......")]
   param (
     # This function does not accept any parameters
   )
@@ -1828,11 +1872,11 @@ function Private:Invoke-UpSixDirectoryLevels {
   Set-Location -Path ..\..\..\..\..\.. -ErrorAction SilentlyContinue
 }
 
-#------------------------------------------------------
-# Set the alias for Invoke-UpSixDirectoryLevels
-#------------------------------------------------------
-Set-Alias -Name cd.6 -Value Invoke-UpSixDirectoryLevels
-Set-Alias -Name ....... -Value Invoke-UpSixDirectoryLevels
+# #------------------------------------------------------
+# # Set the alias for Invoke-UpSixDirectoryLevels
+# #------------------------------------------------------
+# Set-Alias -Name cd.6 -Value Invoke-UpSixDirectoryLevels
+# Set-Alias -Name ....... -Value Invoke-UpSixDirectoryLevels
 
 #######################################################
 # Git Functions
@@ -1860,6 +1904,7 @@ Set-Alias -Name ....... -Value Invoke-UpSixDirectoryLevels
 #>
 function Private:Invoke-InitializeGitRepository {
   [CmdletBinding()]
+  [Alias("init")]
   param (
     # This function does not accept any parameters
   )
@@ -1867,10 +1912,10 @@ function Private:Invoke-InitializeGitRepository {
   git init
 }
 
-#------------------------------------------------------
-# Set the alias for Invoke-InitializeGitRepository
-#------------------------------------------------------
-Set-Alias -Name init -Value Invoke-InitializeGitRepository
+# #------------------------------------------------------
+# # Set the alias for Invoke-InitializeGitRepository
+# #------------------------------------------------------
+# Set-Alias -Name init -Value Invoke-InitializeGitRepository
 
 <#
 .SYNOPSIS
@@ -1894,6 +1939,7 @@ Set-Alias -Name init -Value Invoke-InitializeGitRepository
 #>
 function Private:Invoke-GitAllChanges {
   [CmdletBinding()]
+  [Alias("add-all")]
   param (
     # This function does not accept any parameters
   )
@@ -1901,10 +1947,10 @@ function Private:Invoke-GitAllChanges {
   git add .
 }
 
-#------------------------------------------------------
-# Set the alias for Invoke-GitAllChanges
-#------------------------------------------------------
-Set-Alias -Name add-all -Value Invoke-GitAllChanges
+# #------------------------------------------------------
+# # Set the alias for Invoke-GitAllChanges
+# #------------------------------------------------------
+# Set-Alias -Name add-all -Value Invoke-GitAllChanges
 
 <#
 .SYNOPSIS
@@ -1928,6 +1974,7 @@ Set-Alias -Name add-all -Value Invoke-GitAllChanges
 #>
 function Private:Invoke-GitCommitChanges {
   [CmdletBinding()]
+  [Alias("commit")]
   param (
     [Parameter(Position = 0, Mandatory = $true)]
     [string]$Message
@@ -1936,10 +1983,10 @@ function Private:Invoke-GitCommitChanges {
   git commit -m $Message
 }
 
-#------------------------------------------------------
-# Set the alias for Invoke-GitCommitChanges
-#------------------------------------------------------
-Set-Alias -Name commit -Value Invoke-GitCommitChanges
+# #------------------------------------------------------
+# # Set the alias for Invoke-GitCommitChanges
+# #------------------------------------------------------
+# Set-Alias -Name commit -Value Invoke-GitCommitChanges
 
 <#
 .SYNOPSIS
@@ -1967,6 +2014,7 @@ Set-Alias -Name commit -Value Invoke-GitCommitChanges
 #>
 function Private:Invoke-GitPushChanges {
   [CmdletBinding()]
+  [Alias("push")]
   param (
     [Parameter(Position = 0)]
     [string]$Branch
@@ -1990,10 +2038,10 @@ function Private:Invoke-GitPushChanges {
   }
 }
 
-#------------------------------------------------------
-# Set the alias for Invoke-GitPushChanges
-#------------------------------------------------------
-Set-Alias -Name push -Value Invoke-GitPushChanges
+# #------------------------------------------------------
+# # Set the alias for Invoke-GitPushChanges
+# #------------------------------------------------------
+# Set-Alias -Name push -Value Invoke-GitPushChanges
 
 <#
 .SYNOPSIS
@@ -2021,6 +2069,7 @@ Set-Alias -Name push -Value Invoke-GitPushChanges
 #>
 function Private:Invoke-GitPullChanges {
   [CmdletBinding()]
+  [Alias("pull")]
   param (
     [Parameter(Position = 0)]
     [string]$Branch
@@ -2044,10 +2093,10 @@ function Private:Invoke-GitPullChanges {
   }
 }
 
-#------------------------------------------------------
-# Set the alias for Invoke-GitPullChanges
-#------------------------------------------------------
-Set-Alias -Name pull -Value Invoke-GitPullChanges
+# #------------------------------------------------------
+# # Set the alias for Invoke-GitPullChanges
+# #------------------------------------------------------
+# Set-Alias -Name pull -Value Invoke-GitPullChanges
 
 <#
 .SYNOPSIS
@@ -2078,6 +2127,7 @@ Set-Alias -Name pull -Value Invoke-GitPullChanges
 #>
 function Private:Invoke-GitCloneRepository {
   [CmdletBinding()]
+  [Alias("clone")]
   param (
     [Parameter(Position = 0, Mandatory = $true)]
     [string]$Url,
@@ -2099,10 +2149,10 @@ function Private:Invoke-GitCloneRepository {
   }
 }
 
-#------------------------------------------------------
-# Set the alias for Invoke-GitCloneRepository
-#------------------------------------------------------
-Set-Alias -Name clone -Value Invoke-GitCloneRepository
+# #------------------------------------------------------
+# # Set the alias for Invoke-GitCloneRepository
+# #------------------------------------------------------
+# Set-Alias -Name clone -Value Invoke-GitCloneRepository
 
 <#
 .SYNOPSIS
@@ -2126,6 +2176,7 @@ Set-Alias -Name clone -Value Invoke-GitCloneRepository
 #>
 function Private:Get-GitRepositoryStatus {
   [CmdletBinding()]
+  [Alias("status")]
   param (
     # This function does not accept any parameters
   )
@@ -2133,10 +2184,10 @@ function Private:Get-GitRepositoryStatus {
   git status
 }
 
-#------------------------------------------------------
-# Set the alias for Get-GitRepositoryStatus
-#------------------------------------------------------
-Set-Alias -Name status -Value Get-GitRepositoryStatus
+# #------------------------------------------------------
+# # Set the alias for Get-GitRepositoryStatus
+# #------------------------------------------------------
+# Set-Alias -Name status -Value Get-GitRepositoryStatus
 
 <#
 .SYNOPSIS
@@ -2160,6 +2211,7 @@ Set-Alias -Name status -Value Get-GitRepositoryStatus
 #>
 function Private:Get-GitCommitHistory {
   [CmdletBinding()]
+  [Alias("log")]
   param (
     # This function does not accept any parameters
   )
@@ -2167,10 +2219,10 @@ function Private:Get-GitCommitHistory {
   git log
 }
 
-#------------------------------------------------------
-# Set the alias for Get-GitCommitHistory
-#------------------------------------------------------
-Set-Alias -Name log -Value Get-GitCommitHistory
+# #------------------------------------------------------
+# # Set the alias for Get-GitCommitHistory
+# #------------------------------------------------------
+# Set-Alias -Name log -Value Get-GitCommitHistory
 
 <#
 .SYNOPSIS
@@ -2198,6 +2250,7 @@ Set-Alias -Name log -Value Get-GitCommitHistory
 #>
 function Private:Invoke-GitFetchRepository {
   [CmdletBinding()]
+  [Alias("fetch")]
   param (
     [Parameter(Position = 0)]
     [string]$Branch
@@ -2222,10 +2275,10 @@ function Private:Invoke-GitFetchRepository {
   }
 }
 
-#------------------------------------------------------
-# Set the alias for Invoke-GitFetchRepository
-#------------------------------------------------------
-Set-Alias -Name fetch -Value Invoke-GitFetchRepository
+# #------------------------------------------------------
+# # Set the alias for Invoke-GitFetchRepository
+# #------------------------------------------------------
+# Set-Alias -Name fetch -Value Invoke-GitFetchRepository
 
 <#
 .SYNOPSIS
@@ -2249,6 +2302,7 @@ Set-Alias -Name fetch -Value Invoke-GitFetchRepository
 #>
 function Private:Invoke-GitCreateBranch {
   [CmdletBinding()]
+  [Alias("branch")]
   param (
     [Parameter(Position = 0, Mandatory = $true)]
     [string]$Name
@@ -2262,10 +2316,10 @@ function Private:Invoke-GitCreateBranch {
   }
 }
 
-#------------------------------------------------------
-# Set the alias for Invoke-GitCreateBranch
-#------------------------------------------------------
-Set-Alias -Name branch -Value Invoke-GitCreateBranch
+# #------------------------------------------------------
+# # Set the alias for Invoke-GitCreateBranch
+# #------------------------------------------------------
+# Set-Alias -Name branch -Value Invoke-GitCreateBranch
 
 <#
 .SYNOPSIS
@@ -2293,6 +2347,7 @@ Set-Alias -Name branch -Value Invoke-GitCreateBranch
 #>
 function Invoke-GitCheckoutBranch {
   [CmdletBinding()]
+  [Alias("checkout")]
   param (
     [Parameter(Position = 0, Mandatory = $true)]
     [string]$Name
@@ -2312,10 +2367,10 @@ function Invoke-GitCheckoutBranch {
   }
 }
 
-#------------------------------------------------------
-# Set the alias for Invoke-GitCheckoutBranch
-#------------------------------------------------------
-Set-Alias -Name checkout -Value Invoke-GitCheckoutBranch
+# #------------------------------------------------------
+# # Set the alias for Invoke-GitCheckoutBranch
+# #------------------------------------------------------
+# Set-Alias -Name checkout -Value Invoke-GitCheckoutBranch
 
 <#
 .SYNOPSIS
@@ -2339,6 +2394,7 @@ Set-Alias -Name checkout -Value Invoke-GitCheckoutBranch
 #>
 function Private:Invoke-GitDeleteBranch {
   [CmdletBinding()]
+  [Alias("delete-branch")]
   param (
     [Parameter(Position = 0, Mandatory = $true)]
     [string]$Name
@@ -2358,10 +2414,10 @@ function Private:Invoke-GitDeleteBranch {
   }
 }
 
-#------------------------------------------------------
-# Set the alias for Invoke-GitDeleteBranch
-#------------------------------------------------------
-Set-Alias -Name delete-branch -Value Invoke-GitDeleteBranch
+# #------------------------------------------------------
+# # Set the alias for Invoke-GitDeleteBranch
+# #------------------------------------------------------
+# Set-Alias -Name delete-branch -Value Invoke-GitDeleteBranch
 
 <#
 .SYNOPSIS
@@ -2385,6 +2441,7 @@ Set-Alias -Name delete-branch -Value Invoke-GitDeleteBranch
 #>
 function Private:Invoke-GitMergeBranch {
   [CmdletBinding()]
+  [Alias("merge-branch")]
   param (
     [Parameter(Position = 0, Mandatory = $true)]
     [string]$Name
@@ -2398,10 +2455,10 @@ function Private:Invoke-GitMergeBranch {
   }
 }
 
-#------------------------------------------------------
-# Set the alias for Invoke-GitMergeBranch
-#------------------------------------------------------
-Set-Alias -Name merge-branch -Value Invoke-GitMergeBranch
+# #------------------------------------------------------
+# # Set the alias for Invoke-GitMergeBranch
+# #------------------------------------------------------
+# Set-Alias -Name merge-branch -Value Invoke-GitMergeBranch
 
 <#
 .SYNOPSIS
@@ -2425,6 +2482,7 @@ Set-Alias -Name merge-branch -Value Invoke-GitMergeBranch
 #>
 function Private:Invoke-GitRevertChanges {
   [CmdletBinding()]
+  [Alias("revert")]
   param (
     # This function does not accept any parameters
   )
@@ -2437,10 +2495,10 @@ function Private:Invoke-GitRevertChanges {
   }
 }
 
-#------------------------------------------------------
-# Set the alias for Invoke-GitRevertChanges
-#------------------------------------------------------
-Set-Alias -Name revert -Value Invoke-GitRevertChanges
+# #------------------------------------------------------
+# # Set the alias for Invoke-GitRevertChanges
+# #------------------------------------------------------
+# Set-Alias -Name revert -Value Invoke-GitRevertChanges
 
 <#
 .SYNOPSIS
@@ -2469,6 +2527,7 @@ Set-Alias -Name revert -Value Invoke-GitRevertChanges
 
 function Invoke-GitCleanupBranches {
   [CmdletBinding()]
+  [Alias("cleanup-branches")]
   param (
     [Parameter(Position = 0)]
     [string[]]$Branches
@@ -2511,7 +2570,7 @@ function Invoke-GitCleanupBranches {
   }
 }
 
-#------------------------------------------------------
-# Set the alias for Invoke-GitCleanupBranches
-#------------------------------------------------------
-Set-Alias -Name cleanup-branches -Value Invoke-GitCleanupBranches
+# #------------------------------------------------------
+# # Set the alias for Invoke-GitCleanupBranches
+# #------------------------------------------------------
+# Set-Alias -Name cleanup-branches -Value Invoke-GitCleanupBranches
