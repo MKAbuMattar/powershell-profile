@@ -422,7 +422,7 @@ catch {
 #------------------------------------------------------
 # Check if the setup completed successfully
 #------------------------------------------------------
-if (Test-Path -Path $Environment_VariablesPath) {
+if (Test-Path -Path $EnvironmentVariablesPath) {
   Write-Host "Setup completed successfully. Please restart your PowerShell session to apply changes."
 }
 else {
