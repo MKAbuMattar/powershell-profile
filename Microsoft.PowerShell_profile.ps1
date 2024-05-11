@@ -182,6 +182,68 @@ if (Test-Path $ChocolateyProfile) {
 
 <#
 .SYNOPSIS
+    Loads the personal profile script if it exists.
+
+.DESCRIPTION
+    This function loads the personal profile script if it exists in the user's profile directory. It checks for the presence of the personal profile script and sources it if found. This allows users to define custom settings, functions, and aliases in their personal profile script to customize their PowerShell environment.
+
+.PARAMETER None
+    This function does not accept any parameters.
+
+.OUTPUTS None
+    This function does not return any output.
+
+.EXAMPLE
+    Invoke-LoadPersonalProfile
+    Loads the personal profile script if it exists.
+#>
+function Private:Invoke-LoadPersonalProfile {
+  $ProfileDirectory = [System.IO.Path]::GetDirectoryName($PROFILE.CurrentUserAllHosts)
+  $PersonalProfilePath = Join-Path -Path $ProfileDirectory -ChildPath "personal.ps1"
+  if (Test-Path $PersonalProfilePath -PathType Leaf) {
+    Write-Output "Loading personal profile: $PersonalProfilePath"
+    . $PersonalProfilePath
+  }
+}
+
+#------------------------------------------------------
+# Invoke the personal profile loading function
+#------------------------------------------------------
+Invoke-Command -ScriptBlock ${function:Invoke-LoadPersonalProfile} -ErrorAction SilentlyContinue
+
+<#
+.SYNOPSIS
+    Loads the environment variables script if it exists.
+
+.DESCRIPTION
+    This function loads the environment variables script if it exists in the user's profile directory. It checks for the presence of the environment variables script and sources it if found. This allows users to define environment variables in a separate script for better organization and management.
+
+.PARAMETER None
+    This function does not accept any parameters.
+
+.OUTPUTS None
+    This function does not return any output.
+
+.EXAMPLE
+    Invoke-LoadEnvironment_Variables
+    Loads the environment variables script if it exists.
+#>
+function Private:Invoke-LoadEnvironment_Variables {
+  $ProfileDirectory = [System.IO.Path]::GetDirectoryName($PROFILE.CurrentUserAllHosts)
+  $EnvironmentVariablesPath = Join-Path -Path $ProfileDirectory -ChildPath "MKAbuMattar.Environment_Variables.ps1"
+  if (Test-Path $EnvironmentVariablesPath -PathType Leaf) {
+    Write-Output "Loading environment variables: $EnvironmentVariablesPath"
+    . $EnvironmentVariablesPath
+  }
+}
+
+#------------------------------------------------------
+# Invoke the environment variables loading function
+#------------------------------------------------------
+Invoke-Command -ScriptBlock ${function:Invoke-LoadEnvironment_Variables} -ErrorAction SilentlyContinue
+
+<#
+.SYNOPSIS
     Checks for updates to the PowerShell profile from a specified GitHub repository and updates the local profile if changes are detected.
 
 .DESCRIPTION
@@ -237,6 +299,9 @@ function Private:Update-Profile {
 # Invoke the profile update function
 #------------------------------------------------------
 # Invoke-Command -ScriptBlock ${function:Update-Profile} -ErrorAction SilentlyContinue
+if ($env:AutoUpdateProfile -eq $true) {
+  Invoke-Command -ScriptBlock ${function:Update-Profile} -ErrorAction SilentlyContinue
+}
 
 <#
 .SYNOPSIS
@@ -302,37 +367,9 @@ function Private:Update-PowerShell {
 # Invoke the PowerShell update function
 #------------------------------------------------------
 # Invoke-Command -ScriptBlock ${function:Update-PowerShell} -ErrorAction SilentlyContinue
-
-<#
-.SYNOPSIS
-    Loads the personal profile script if it exists.
-
-.DESCRIPTION
-    This function loads the personal profile script if it exists in the user's profile directory. It checks for the presence of the personal profile script and sources it if found. This allows users to define custom settings, functions, and aliases in their personal profile script to customize their PowerShell environment.
-
-.PARAMETER None
-    This function does not accept any parameters.
-
-.OUTPUTS None
-    This function does not return any output.
-
-.EXAMPLE
-    Invoke-LoadPersonalProfile
-    Loads the personal profile script if it exists.
-#>
-function Private:Invoke-LoadPersonalProfile {
-  $ProfileDirectory = [System.IO.Path]::GetDirectoryName($PROFILE.CurrentUserAllHosts)
-  $PersonalProfilePath = Join-Path -Path $ProfileDirectory -ChildPath "personal.ps1"
-  if (Test-Path $PersonalProfilePath -PathType Leaf) {
-    Write-Output "Loading personal profile: $PersonalProfilePath"
-    . $PersonalProfilePath
-  }
+if ($env:AutoUpdatePowerShell -eq $true) {
+  Invoke-Command -ScriptBlock ${function:Update-PowerShell} -ErrorAction SilentlyContinue
 }
-
-#------------------------------------------------------
-# Invoke the personal profile loading function
-#------------------------------------------------------
-Invoke-Command -ScriptBlock ${function:Invoke-LoadPersonalProfile} -ErrorAction SilentlyContinue
 
 <#
 .SYNOPSIS
