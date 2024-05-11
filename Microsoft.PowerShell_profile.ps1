@@ -45,6 +45,36 @@
 #------------------------------------------------------
 
 #######################################################
+# Environment Variables
+#######################################################
+
+<#
+.SYNOPSIS
+    Set environment variables for the PowerShell profile Auto Update.
+
+.DESCRIPTION
+    This environment variable determines whether the PowerShell profile should automatically check for updates. If set to true, it enables the profile update function, which checks for updates to the PowerShell profile from a specified GitHub repository and updates the local profile if changes are detected. Default value is false.
+
+.EXAMPLE
+    AutoUpdateProfile = false
+    Disables the automatic update of the PowerShell profile.
+#>
+$env:AutoUpdateProfile = [bool]$false
+
+<#
+.SYNOPSIS
+    Set environment variables for the PowerShell Auto Update.
+
+.DESCRIPTION
+    This environment variable determines whether the PowerShell should automatically check for updates. If set to true, it enables the PowerShell update function, which checks for updates to the PowerShell from a specified GitHub repository and updates the local PowerShell if changes are detected. Default value is false.
+
+.EXAMPLE
+    AutoUpdatePowerShell = false
+    Disables the automatic update of the PowerShell.
+#>
+$env:AutoUpdatePowerShell = [bool]$false
+
+#######################################################
 # Profile Setup
 #######################################################
 
@@ -236,7 +266,10 @@ function Private:Update-Profile {
 #------------------------------------------------------
 # Invoke the profile update function
 #------------------------------------------------------
-Invoke-Command -ScriptBlock ${function:Update-Profile} -ErrorAction SilentlyContinue
+# Invoke-Command -ScriptBlock ${function:Update-Profile} -ErrorAction SilentlyContinue
+if ($env:AutoUpdateProfile -eq $true) {
+  Invoke-Command -ScriptBlock ${function:Update-Profile} -ErrorAction SilentlyContinue
+}
 
 <#
 .SYNOPSIS
@@ -301,7 +334,10 @@ function Private:Update-PowerShell {
 #------------------------------------------------------
 # Invoke the PowerShell update function
 #------------------------------------------------------
-Invoke-Command -ScriptBlock ${function:Update-PowerShell} -ErrorAction SilentlyContinue
+# Invoke-Command -ScriptBlock ${function:Update-PowerShell} -ErrorAction SilentlyContinue
+if ($env:AutoUpdatePowerShell -eq $true) {
+  Invoke-Command -ScriptBlock ${function:Update-PowerShell} -ErrorAction SilentlyContinue
+}
 
 <#
 .SYNOPSIS
