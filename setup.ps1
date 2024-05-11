@@ -324,11 +324,12 @@ catch {
 #------------------------------------------------------
 
 try {
-  #------------------------------------------------------
   # Prompt user for environment variable values
-  #------------------------------------------------------
-  $AutoUpdateProfile = Read-Host "Enter value for AutoUpdateProfile (true/false):"
-  $AutoUpdatePowerShell = Read-Host "Enter value for AutoUpdatePowerShell (true/false):"
+  $AutoUpdateProfileInput = Read-Host "Enter value for AutoUpdateProfile (true/false):"
+  $AutoUpdateProfile = [bool]::Parse($AutoUpdateProfileInput)
+
+  $AutoUpdatePowerShellInput = Read-Host "Enter value for AutoUpdatePowerShell (true/false):"
+  $AutoUpdatePowerShell = [bool]::Parse($AutoUpdatePowerShellInput)
 
   $EnvironmentVariablesScript = @"
 #######################################################
@@ -392,7 +393,7 @@ try {
     AutoUpdateProfile = false
     Disables the automatic update of the PowerShell profile.
 #>
-\$env:AutoUpdateProfile = [bool]\$($AutoUpdateProfile -eq 'true')
+\$env:AutoUpdateProfile = $AutoUpdateProfile
 
 <#
 .SYNOPSIS
@@ -405,7 +406,7 @@ try {
     AutoUpdatePowerShell = false
     Disables the automatic update of the PowerShell.
 #>
-\$env:AutoUpdatePowerShell = [bool]\$($AutoUpdatePowerShell -eq 'true')
+\$env:AutoUpdatePowerShell = $AutoUpdatePowerShell
 "@
 
   # Write the script content to file
@@ -414,11 +415,8 @@ try {
   $EnvironmentVariablesPath = Join-Path -Path $ProfileDirectory -ChildPath "MKAbuMattar.Environment_Variables.ps1"
 
   Set-Content -Path $EnvironmentVariablesPath -Value $EnvironmentVariablesScript -Force
-  # $EnvironmentVariablesScript | Out-File -FilePath $EnvironmentVariablesPath -Force -Encoding utf8 -ErrorAction Stop
 
-  #------------------------------------------------------
   # Check if the setup completed successfully
-  #------------------------------------------------------
   if (Test-Path -Path $EnvironmentVariablesPath) {
     Write-Host "Setup completed successfully. Please restart your PowerShell session to apply changes."
   }
