@@ -180,11 +180,6 @@ if (Test-Path $ChocolateyProfile) {
   Import-Module $ChocolateyProfile
 }
 
-#------------------------------------------------------
-# Invoke the environment variables loading function
-#------------------------------------------------------
-Invoke-Command -ScriptBlock ${function:Invoke-LoadEnvironment_Variables} -ErrorAction SilentlyContinue
-
 <#
 .SYNOPSIS
     Checks for updates to the PowerShell profile from a specified GitHub repository and updates the local profile if changes are detected.
