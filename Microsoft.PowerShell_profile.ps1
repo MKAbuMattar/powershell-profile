@@ -236,10 +236,7 @@ function Private:Update-Profile {
 #------------------------------------------------------
 # Invoke the profile update function
 #------------------------------------------------------
-# Invoke-Command -ScriptBlock ${function:Update-Profile} -ErrorAction SilentlyContinue
-if ($env:AutoUpdateProfile -eq $true) {
-  Invoke-Command -ScriptBlock ${function:Update-Profile} -ErrorAction SilentlyContinue
-}
+Invoke-Command -ScriptBlock ${function:Update-Profile} -ErrorAction SilentlyContinue
 
 <#
 .SYNOPSIS
@@ -304,10 +301,7 @@ function Private:Update-PowerShell {
 #------------------------------------------------------
 # Invoke the PowerShell update function
 #------------------------------------------------------
-# Invoke-Command -ScriptBlock ${function:Update-PowerShell} -ErrorAction SilentlyContinue
-if ($env:AutoUpdatePowerShell -eq $true) {
-  Invoke-Command -ScriptBlock ${function:Update-PowerShell} -ErrorAction SilentlyContinue
-}
+Invoke-Command -ScriptBlock ${function:Update-PowerShell} -ErrorAction SilentlyContinue
 
 <#
 .SYNOPSIS
