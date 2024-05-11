@@ -331,81 +331,81 @@ try {
   $AutoUpdatePowerShell = Read-Host "Enter value for AutoUpdatePowerShell (true/false):"
 
   $EnvironmentVariablesScript = @"
-  #######################################################
-  #                             .
-  #         ..                .''
-  #         .,'..,.         ..,;,'
-  #          ,;;;;,,       .,,;;;
-  #           ,;;;;;'    .',;;;
-  #            ,;;;;,'...,;;;,
-  #             ,;;;;;,,;;;;.
-  #              ,;;;;;;;;;
-  #              .,;;;;;;;
-  #              .,;;;;;;;'
-  #              .,;;;;;;;,'
-  #            .',;;;;;;;;;;,.
-  #          ..,;;;;;;;;;;;;;,.
-  #         .';;;;;.   ';;;;;;,'
-  #        .,;;;;.      ,; .;; .,
-  #        ',;;;.        .
-  #        .,;;.
-  #        ,;
-  #        .
-  #
-  #  MKAbuMattar's PowerShell Profile
-  #######################################################
-  
-  #------------------------------------------------------
-  # MKAbuMattar's PowerShell Profile
-  #
-  # Author: Mohammad Abu Mattar
-  #
-  # Description:
-  #       This PowerShell profile script is crafted by
-  #       Mohammad Abu Mattar to tailor and optimize the
-  #       PowerShell environment according to specific
-  #       preferences and requirements. It includes various
-  #       settings, module imports, utility functions, and
-  #       shortcuts to enhance productivity and streamline
-  #       workflow.
-  #
-  # Created: 2021-09-01
-  # Updated: $(Get-Date -Format "yyyy-MM-dd HH:mm:ss")
-  #
-  # GitHub: https://github.com/MKAbuMattar/powershell-profile
-  #
-  # Version: 2.0.1
-  #------------------------------------------------------
-  
-  #######################################################
-  # Environment Variables
-  #######################################################
-  
-  <#
-  .SYNOPSIS
-      Set environment variables for the PowerShell profile Auto Update.
-  
-  .DESCRIPTION
-      This environment variable determines whether the PowerShell profile should automatically check for updates. If set to true, it enables the profile update function, which checks for updates to the PowerShell profile from a specified GitHub repository and updates the local profile if changes are detected. Default value is false.
-  
-  .EXAMPLE
-      AutoUpdateProfile = false
-      Disables the automatic update of the PowerShell profile.
-  #>
-  \$env:AutoUpdateProfile = [bool]\$(if(\$AutoUpdateProfile -eq 'true') {'$true'} else {'$false'})
-  
-  <#
-  .SYNOPSIS
-      Set environment variables for the PowerShell Auto Update.
-  
-  .DESCRIPTION
-      This environment variable determines whether the PowerShell should automatically check for updates. If set to true, it enables the PowerShell update function, which checks for updates to the PowerShell from a specified GitHub repository and updates the local PowerShell if changes are detected. Default value is false.
-  
-  .EXAMPLE
-      AutoUpdatePowerShell = false
-      Disables the automatic update of the PowerShell.
-  #>
-  \$env:AutoUpdatePowerShell = [bool]\$(if(\$AutoUpdatePowerShell -eq 'true') {'$true'} else {'$false'})
+#######################################################
+#                             .
+#         ..                .''
+#         .,'..,.         ..,;,'
+#          ,;;;;,,       .,,;;;
+#           ,;;;;;'    .',;;;
+#            ,;;;;,'...,;;;,
+#             ,;;;;;,,;;;;.
+#              ,;;;;;;;;;
+#              .,;;;;;;;
+#              .,;;;;;;;'
+#              .,;;;;;;;,'
+#            .',;;;;;;;;;;,.
+#          ..,;;;;;;;;;;;;;,.
+#         .';;;;;.   ';;;;;;,'
+#        .,;;;;.      ,; .;; .,
+#        ',;;;.        .
+#        .,;;.
+#        ,;
+#        .
+#
+#  MKAbuMattar's PowerShell Profile
+#######################################################
+
+#------------------------------------------------------
+# MKAbuMattar's PowerShell Profile
+#
+# Author: Mohammad Abu Mattar
+#
+# Description:
+#       This PowerShell profile script is crafted by
+#       Mohammad Abu Mattar to tailor and optimize the
+#       PowerShell environment according to specific
+#       preferences and requirements. It includes various
+#       settings, module imports, utility functions, and
+#       shortcuts to enhance productivity and streamline
+#       workflow.
+#
+# Created: 2021-09-01
+# Updated: $(Get-Date -Format "yyyy-MM-dd HH:mm:ss")
+#
+# GitHub: https://github.com/MKAbuMattar/powershell-profile
+#
+# Version: 2.0.1
+#------------------------------------------------------
+
+#######################################################
+# Environment Variables
+#######################################################
+
+<#
+.SYNOPSIS
+    Set environment variables for the PowerShell profile Auto Update.
+
+.DESCRIPTION
+    This environment variable determines whether the PowerShell profile should automatically check for updates. If set to true, it enables the profile update function, which checks for updates to the PowerShell profile from a specified GitHub repository and updates the local profile if changes are detected. Default value is false.
+
+.EXAMPLE
+    AutoUpdateProfile = false
+    Disables the automatic update of the PowerShell profile.
+#>
+\$env:AutoUpdateProfile = [bool]\$($AutoUpdateProfile -eq 'true')
+
+<#
+.SYNOPSIS
+    Set environment variables for the PowerShell Auto Update.
+
+.DESCRIPTION
+    This environment variable determines whether the PowerShell should automatically check for updates. If set to true, it enables the PowerShell update function, which checks for updates to the PowerShell from a specified GitHub repository and updates the local PowerShell if changes are detected. Default value is false.
+
+.EXAMPLE
+    AutoUpdatePowerShell = false
+    Disables the automatic update of the PowerShell.
+#>
+\$env:AutoUpdatePowerShell = [bool]\$($AutoUpdatePowerShell -eq 'true')
 "@
 
   # Write the script content to file
@@ -413,18 +413,19 @@ try {
   $ProfileDirectory = [System.IO.Path]::GetDirectoryName($PROFILE.CurrentUserAllHosts)
   $EnvironmentVariablesPath = Join-Path -Path $ProfileDirectory -ChildPath "MKAbuMattar.Environment_Variables.ps1"
 
-  $EnvironmentVariablesScript | Out-File -FilePath $EnvironmentVariablesPath -Force -Encoding utf8 -ErrorAction Stop
+  Set-Content -Path $EnvironmentVariablesPath -Value $EnvironmentVariablesScript -Force
+  # $EnvironmentVariablesScript | Out-File -FilePath $EnvironmentVariablesPath -Force -Encoding utf8 -ErrorAction Stop
+
+  #------------------------------------------------------
+  # Check if the setup completed successfully
+  #------------------------------------------------------
+  if (Test-Path -Path $EnvironmentVariablesPath) {
+    Write-Host "Setup completed successfully. Please restart your PowerShell session to apply changes."
+  }
+  else {
+    Write-Warning "Setup completed with errors. Please check the error messages above."
+  }  
 }
 catch {
   Write-Error "Failed to create the environment variables script. Error: $_"
-}
-
-#------------------------------------------------------
-# Check if the setup completed successfully
-#------------------------------------------------------
-if (Test-Path -Path $EnvironmentVariablesPath) {
-  Write-Host "Setup completed successfully. Please restart your PowerShell session to apply changes."
-}
-else {
-  Write-Warning "Setup completed with errors. Please check the error messages above."
 }
