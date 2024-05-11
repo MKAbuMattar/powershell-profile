@@ -459,11 +459,6 @@ function Private:Set-FreshFile {
   }
 }
 
-# #------------------------------------------------------
-# # Set the alias for Set-FreshFile
-# #------------------------------------------------------
-# Set-Alias -Name touch -Value Set-FreshFile
-
 <#
 .SYNOPSIS
     Finds files matching a specified name pattern in the current directory and its subdirectories.
@@ -501,11 +496,6 @@ function Private:Find-Files {
     Write-Output $_.FullName
   }
 }
-
-# #------------------------------------------------------
-# # Set the alias for Find-Files
-# #------------------------------------------------------
-# Set-Alias -Name ff -Value Find-Files
 
 <#
 .SYNOPSIS
@@ -547,11 +537,6 @@ function Private:Get-Uptime {
   }
 }
 
-# #------------------------------------------------------
-# # Set the alias for Get-Uptime
-# #------------------------------------------------------
-# Set-Alias -Name uptime -Value Get-Uptime
-
 <#
 .SYNOPSIS
     Reloads the PowerShell profile to apply changes.
@@ -587,11 +572,6 @@ function Private:Invoke-ProfileReload {
     Write-Error "Failed to reload the PowerShell profile. Error: $_"
   }
 }
-
-# #------------------------------------------------------
-# # Set the alias for reloading the profile
-# #------------------------------------------------------
-# Set-Alias -Name reload-profile -Value Invoke-ProfileReload
 
 <#
 .SYNOPSIS
@@ -643,11 +623,6 @@ function Private:Expand-File {
     }
   }
 }
-
-# #------------------------------------------------------
-# # Set the alias for Expand-File
-# #------------------------------------------------------
-# Set-Alias -Name unzip -Value Expand-File
 
 <#
 .SYNOPSIS
@@ -706,11 +681,6 @@ function Private:Get-ContentMatching {
   }
 }
 
-# #------------------------------------------------------
-# # Set the alias for Get-ContentMatching
-# #------------------------------------------------------
-# Set-Alias -Name grep -Value Get-ContentMatching
-
 <#
 .SYNOPSIS
     Retrieves volume information for all available volumes.
@@ -745,11 +715,6 @@ function Private:Get-VolumeInfo {
     Write-Error "An error occurred while retrieving volume information: $_"
   }
 }
-
-# #------------------------------------------------------
-# # Set the alias for Get-VolumeInfo
-# #------------------------------------------------------
-# Set-Alias -Name df -Value Get-VolumeInfo
 
 <#
 .SYNOPSIS
@@ -800,11 +765,6 @@ function Private:Set-ContentMatching {
   }
 }
 
-# #------------------------------------------------------
-# # Set the alias for Set-ContentMatching
-# #------------------------------------------------------
-# Set-Alias -Name sed -Value Set-ContentMatching
-
 <#
 .SYNOPSIS
     Gets the definition of a command.
@@ -846,11 +806,6 @@ function Private:Get-CommandDefinition {
     Write-Error "An error occurred while retrieving the definition of '$name': $_"
   }
 }
-
-# #------------------------------------------------------
-# # Set the alias for Get-CommandDefinition
-# #------------------------------------------------------
-# Set-Alias -Name def -Value Get-CommandDefinition
 
 <#
 .SYNOPSIS
@@ -894,11 +849,6 @@ function Private:Set-EnvVar {
   }
 }
 
-# #------------------------------------------------------
-# # Set the alias for Set-EnvVar
-# #------------------------------------------------------
-# Set-Alias -Name export -Value Set-EnvVar
-
 <#
 .SYNOPSIS
     Terminates a process by name.
@@ -936,11 +886,6 @@ function Private:Stop-ProcessByName {
   }
 }
 
-# #------------------------------------------------------
-# # Set the alias for Stop-ProcessByName
-# #------------------------------------------------------
-# Set-Alias -Name pkill -Value Stop-ProcessByName
-
 <#
 .SYNOPSIS
     Finds a process by name.
@@ -976,11 +921,6 @@ function Private:Get-ProcessByName {
     Write-Warning "No process with the name '$name' found."
   }
 }
-
-# #------------------------------------------------------
-# # Set the alias for Get-ProcessByName
-# #------------------------------------------------------
-# Set-Alias -Name pgrep -Value Get-ProcessByName
 
 <#
 .SYNOPSIS
@@ -1025,11 +965,6 @@ function Private:Get-HeadContent {
   }
 }
 
-# #------------------------------------------------------
-# # Set the alias for Get-HeadContent
-# #------------------------------------------------------
-# Set-Alias -Name head -Value Get-HeadContent
-
 <#
 .SYNOPSIS
     Gets the last n lines of a file.
@@ -1073,11 +1008,6 @@ function Private:Get-TailContent {
   }
 }
 
-# #------------------------------------------------------
-# # Set the alias for Get-TailContent
-# #------------------------------------------------------
-# Set-Alias -Name tail -Value Get-TailContent
-
 <#
 .SYNOPSIS
     Creates a new file with the specified name.
@@ -1113,11 +1043,6 @@ function Private:New-File {
     Write-Warning "Failed to create file '$name'. Error: $_"
   }
 }
-
-# #------------------------------------------------------
-# # Set the alias for New-File
-# #------------------------------------------------------
-# Set-Alias -Name nf -Value New-File
 
 <#
 .SYNOPSIS
@@ -1156,11 +1081,6 @@ function Private:New-Directory {
   }
 }
 
-# #------------------------------------------------------
-# # Set the alias for New-Directory
-# #------------------------------------------------------
-# Set-Alias -Name mkcd -Value New-Directory
-
 <#
 .SYNOPSIS
     Searches through the full command history for occurrences of a specified term.
@@ -1198,11 +1118,6 @@ function Private:Find-InHistory {
   Get-Content (Get-PSReadlineOption).HistorySavePath |
   Where-Object { $_ -like "*$searchTerm*" } | Select-Object -Unique | more
 }
-
-# #------------------------------------------------------
-# # Set the alias for Find-InHistory
-# #------------------------------------------------------
-# Set-Alias -Name hist -Value Find-InHistory
 
 <#
 .SYNOPSIS
@@ -1277,11 +1192,6 @@ function Private:Get-ProcessTree {
   }
 }
 
-# #------------------------------------------------------
-# # Set the alias for Get-ProcessTree
-# #------------------------------------------------------
-# Set-Alias -Name pstree -Value Get-ProcessTree
-
 #######################################################
 # Navigation Shortcuts
 #######################################################
@@ -1316,11 +1226,6 @@ function Private:Set-Home {
   Set-Location -Path $HOME
 }
 
-# #------------------------------------------------------
-# # Set the alias for Set-Home
-# #------------------------------------------------------
-# Set-Alias -Name root -Value Set-Home
-
 <#
 .SYNOPSIS
     Changes the current location to the Documents directory.
@@ -1350,11 +1255,6 @@ function Private:Set-Documents {
 
   Set-Location -Path $HOME\Documents
 }
-
-# #------------------------------------------------------
-# # Set the alias for Set-Documents
-# #------------------------------------------------------
-# Set-Alias -Name doc -Value Set-Documents
 
 <#
 .SYNOPSIS
@@ -1386,11 +1286,6 @@ function Private:Set-Downloads {
   Set-Location -Path $HOME\Downloads
 }
 
-# #------------------------------------------------------
-# # Set the alias for Set-Downloads
-# #------------------------------------------------------
-# Set-Alias -Name dl -Value Set-Downloads
-
 <#
 .SYNOPSIS
     Changes the current location to the Desktop directory.
@@ -1421,11 +1316,6 @@ function Private:Set-Desktop {
   Set-Location -Path $HOME\Desktop
 }
 
-# #------------------------------------------------------
-# # Set the alias for Set-Desktop
-# #------------------------------------------------------
-# Set-Alias -Name dtop -Value Set-Desktop
-
 <#
 .SYNOPSIS
     Changes the current location to the D:\ directory.
@@ -1455,11 +1345,6 @@ function Private:Set-DDisk {
 
   Set-Location -Path "D:\"
 }
-
-# #------------------------------------------------------
-# # Set the alias for Set-DDisk
-# #------------------------------------------------------
-# Set-Alias -Name dc -Value Set-DDisk
 
 #######################################################
 # Profile Shortcuts
@@ -1495,11 +1380,6 @@ function Private:Edit-Profile {
   $PROFILE | Invoke-Item
 }
 
-# #------------------------------------------------------
-# # Set the alias for Edit-Profile
-# #------------------------------------------------------
-# Set-Alias -Name ep -Value Edit-Profile
-
 <#
 .SYNOPSIS
     Retrieves detailed system information.
@@ -1529,11 +1409,6 @@ function Private:Get-SystemInfo {
   
   Get-ComputerInfo 
 }
-
-# #------------------------------------------------------
-# # Set the alias for Get-SystemInfo
-# #------------------------------------------------------
-# Set-Alias -Name sysinfo -Value Get-SystemInfo
 
 <#
 .SYNOPSIS
@@ -1566,11 +1441,6 @@ function Private:Stop-TerminateProcess {
   Stop-Process -Name $Name 
 }
 
-# #------------------------------------------------------
-# # Set the alias for Stop-TerminateProcess
-# #------------------------------------------------------
-# Set-Alias -Name k9 -Value Stop-TerminateProcess
-
 <#
 .SYNOPSIS
     Flushes the DNS cache to resolve DNS-related issues.
@@ -1600,11 +1470,6 @@ function Private:Clear-DnsCache {
   
   Clear-DnsClientCache 
 }
-
-# #------------------------------------------------------
-# # Set the alias for Clear-DnsCache
-# #------------------------------------------------------
-# Set-Alias -Name flushdns -Value Clear-DnsCache
 
 <#
 .SYNOPSIS
@@ -1640,11 +1505,6 @@ function Private:Get-ChildItemFormatted {
 
   Get-ChildItem -Path $Path -Force | Format-Table -AutoSize
 }
-
-# #------------------------------------------------------
-# # Set the alias for Get-ChildItem-Formatted
-# #------------------------------------------------------
-# Set-Alias -Name la -Value Get-ChildItemFormatted
 
 #######################################################
 # Move Up Directory
@@ -1682,12 +1542,6 @@ function Private:Invoke-UpOneDirectoryLevel {
   Set-Location -Path .. -ErrorAction SilentlyContinue
 }
 
-# #------------------------------------------------------
-# # Set the alias for Invoke-UpOneDirectoryLevel
-# #------------------------------------------------------
-# Set-Alias -Name cd.1 -Value Private:Invoke-UpOneDirectoryLevel
-# Set-Alias -Name .. -Value Private:Invoke-UpOneDirectoryLevel
-
 <#
 .SYNOPSIS
     Moves up two directory levels.
@@ -1719,12 +1573,6 @@ function Private:Invoke-UpTwoDirectoryLevels {
 
   Set-Location -Path ..\.. -ErrorAction SilentlyContinue
 }
-
-# #------------------------------------------------------
-# # Set the alias for Invoke-UpTwoDirectoryLevels
-# #------------------------------------------------------
-# Set-Alias -Name cd.2 -Value Invoke-UpTwoDirectoryLevels
-# Set-Alias -Name ... -Value Invoke-UpTwoDirectoryLevels
 
 <#
 .SYNOPSIS
@@ -1758,12 +1606,6 @@ function Private:Invoke-UpThreeDirectoryLevels {
   Set-Location -Path ..\..\.. -ErrorAction SilentlyContinue
 }
 
-# #------------------------------------------------------
-# # Set the alias for Invoke-UpThreeDirectoryLevels
-# #------------------------------------------------------
-# Set-Alias -Name cd.3 -Value Invoke-UpThreeDirectoryLevels
-# Set-Alias -Name .... -Value Invoke-UpThreeDirectoryLevels
-
 <#
 .SYNOPSIS
     Moves up four directory levels.
@@ -1795,12 +1637,6 @@ function Private:Invoke-UpFourDirectoryLevels {
 
   Set-Location -Path ..\..\..\.. -ErrorAction SilentlyContinue
 }
-
-# #------------------------------------------------------
-# # Set the alias for Invoke-UpFourDirectoryLevels
-# #------------------------------------------------------
-# Set-Alias -Name cd.4 -Value Invoke-UpFourDirectoryLevels
-# Set-Alias -Name ..... -Value Invoke-UpFourDirectoryLevels
 
 <#
 .SYNOPSIS
@@ -1834,12 +1670,6 @@ function Private:Invoke-UpFiveDirectoryLevels {
   Set-Location -Path ..\..\..\..\.. -ErrorAction SilentlyContinue
 }
 
-# #------------------------------------------------------
-# # Set the alias for Invoke-UpFiveDirectoryLevels
-# #------------------------------------------------------
-# Set-Alias -Name cd.5 -Value Invoke-UpFiveDirectoryLevels
-# Set-Alias -Name ...... -Value Invoke-UpFiveDirectoryLevels
-
 <#
 .SYNOPSIS
     Moves up six directory levels.
@@ -1871,12 +1701,6 @@ function Private:Invoke-UpSixDirectoryLevels {
 
   Set-Location -Path ..\..\..\..\..\.. -ErrorAction SilentlyContinue
 }
-
-# #------------------------------------------------------
-# # Set the alias for Invoke-UpSixDirectoryLevels
-# #------------------------------------------------------
-# Set-Alias -Name cd.6 -Value Invoke-UpSixDirectoryLevels
-# Set-Alias -Name ....... -Value Invoke-UpSixDirectoryLevels
 
 #######################################################
 # Git Functions
@@ -1912,11 +1736,6 @@ function Private:Invoke-InitializeGitRepository {
   git init
 }
 
-# #------------------------------------------------------
-# # Set the alias for Invoke-InitializeGitRepository
-# #------------------------------------------------------
-# Set-Alias -Name init -Value Invoke-InitializeGitRepository
-
 <#
 .SYNOPSIS
     Adds all changes in the current directory to the staging area.
@@ -1946,11 +1765,6 @@ function Private:Invoke-GitAllChanges {
 
   git add .
 }
-
-# #------------------------------------------------------
-# # Set the alias for Invoke-GitAllChanges
-# #------------------------------------------------------
-# Set-Alias -Name add-all -Value Invoke-GitAllChanges
 
 <#
 .SYNOPSIS
@@ -1982,11 +1796,6 @@ function Private:Invoke-GitCommitChanges {
 
   git commit -m $Message
 }
-
-# #------------------------------------------------------
-# # Set the alias for Invoke-GitCommitChanges
-# #------------------------------------------------------
-# Set-Alias -Name commit -Value Invoke-GitCommitChanges
 
 <#
 .SYNOPSIS
@@ -2038,11 +1847,6 @@ function Private:Invoke-GitPushChanges {
   }
 }
 
-# #------------------------------------------------------
-# # Set the alias for Invoke-GitPushChanges
-# #------------------------------------------------------
-# Set-Alias -Name push -Value Invoke-GitPushChanges
-
 <#
 .SYNOPSIS
     Pulls changes from a remote Git repository to the local repository.
@@ -2092,11 +1896,6 @@ function Private:Invoke-GitPullChanges {
     Write-Error "Failed to pull changes from branch '$Branch'. Error: $_"
   }
 }
-
-# #------------------------------------------------------
-# # Set the alias for Invoke-GitPullChanges
-# #------------------------------------------------------
-# Set-Alias -Name pull -Value Invoke-GitPullChanges
 
 <#
 .SYNOPSIS
@@ -2149,11 +1948,6 @@ function Private:Invoke-GitCloneRepository {
   }
 }
 
-# #------------------------------------------------------
-# # Set the alias for Invoke-GitCloneRepository
-# #------------------------------------------------------
-# Set-Alias -Name clone -Value Invoke-GitCloneRepository
-
 <#
 .SYNOPSIS
     Displays the status of the Git repository.
@@ -2184,11 +1978,6 @@ function Private:Get-GitRepositoryStatus {
   git status
 }
 
-# #------------------------------------------------------
-# # Set the alias for Get-GitRepositoryStatus
-# #------------------------------------------------------
-# Set-Alias -Name status -Value Get-GitRepositoryStatus
-
 <#
 .SYNOPSIS
     Displays the commit history of the Git repository.
@@ -2218,11 +2007,6 @@ function Private:Get-GitCommitHistory {
 
   git log
 }
-
-# #------------------------------------------------------
-# # Set the alias for Get-GitCommitHistory
-# #------------------------------------------------------
-# Set-Alias -Name log -Value Get-GitCommitHistory
 
 <#
 .SYNOPSIS
@@ -2275,11 +2059,6 @@ function Private:Invoke-GitFetchRepository {
   }
 }
 
-# #------------------------------------------------------
-# # Set the alias for Invoke-GitFetchRepository
-# #------------------------------------------------------
-# Set-Alias -Name fetch -Value Invoke-GitFetchRepository
-
 <#
 .SYNOPSIS
     Creates a new branch in the Git repository.
@@ -2315,11 +2094,6 @@ function Private:Invoke-GitCreateBranch {
     Write-Error "Failed to create branch '$Name'. Error: $_"
   }
 }
-
-# #------------------------------------------------------
-# # Set the alias for Invoke-GitCreateBranch
-# #------------------------------------------------------
-# Set-Alias -Name branch -Value Invoke-GitCreateBranch
 
 <#
 .SYNOPSIS
@@ -2367,11 +2141,6 @@ function Invoke-GitCheckoutBranch {
   }
 }
 
-# #------------------------------------------------------
-# # Set the alias for Invoke-GitCheckoutBranch
-# #------------------------------------------------------
-# Set-Alias -Name checkout -Value Invoke-GitCheckoutBranch
-
 <#
 .SYNOPSIS
     Deletes a branch in the Git repository.
@@ -2414,11 +2183,6 @@ function Private:Invoke-GitDeleteBranch {
   }
 }
 
-# #------------------------------------------------------
-# # Set the alias for Invoke-GitDeleteBranch
-# #------------------------------------------------------
-# Set-Alias -Name delete-branch -Value Invoke-GitDeleteBranch
-
 <#
 .SYNOPSIS
     Merges changes from one branch into the current branch.
@@ -2455,11 +2219,6 @@ function Private:Invoke-GitMergeBranch {
   }
 }
 
-# #------------------------------------------------------
-# # Set the alias for Invoke-GitMergeBranch
-# #------------------------------------------------------
-# Set-Alias -Name merge-branch -Value Invoke-GitMergeBranch
-
 <#
 .SYNOPSIS
     Reverts changes in the working directory to the last commit.
@@ -2494,11 +2253,6 @@ function Private:Invoke-GitRevertChanges {
     Write-Error "Failed to revert changes to the last commit. Error: $_"
   }
 }
-
-# #------------------------------------------------------
-# # Set the alias for Invoke-GitRevertChanges
-# #------------------------------------------------------
-# Set-Alias -Name revert -Value Invoke-GitRevertChanges
 
 <#
 .SYNOPSIS
@@ -2569,8 +2323,3 @@ function Invoke-GitCleanupBranches {
     Write-Error "Failed to delete branches. Error: $_"
   }
 }
-
-# #------------------------------------------------------
-# # Set the alias for Invoke-GitCleanupBranches
-# #------------------------------------------------------
-# Set-Alias -Name cleanup-branches -Value Invoke-GitCleanupBranches
