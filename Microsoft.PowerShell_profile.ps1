@@ -196,9 +196,16 @@ if (Test-Path $ChocolateyProfile) {
 .EXAMPLE
     Update-Profile
     Checks for updates to the PowerShell profile and updates the local profile if changes are detected.
+
+.ALIASES
+    up -> Use the alias `up` to quickly check for profile updates.
+
+.NOTES
+    The profile update function is disabled by default. To enable it, uncomment the line that invokes the function at the end of the script.
 #>
 function Private:Update-Profile {
   [CmdletBinding()]
+  [Alias("up")]
   param (
     # This function does not accept any parameters
   )
@@ -229,7 +236,7 @@ function Private:Update-Profile {
 #------------------------------------------------------
 # Invoke the profile update function
 #------------------------------------------------------
-Invoke-Command -ScriptBlock ${function:Update-Profile} -ErrorAction SilentlyContinue
+# Invoke-Command -ScriptBlock ${function:Update-Profile} -ErrorAction SilentlyContinue
 
 <#
 .SYNOPSIS
@@ -247,9 +254,16 @@ Invoke-Command -ScriptBlock ${function:Update-Profile} -ErrorAction SilentlyCont
 .EXAMPLE
     Update-PowerShell
     Checks for updates to PowerShell and upgrades to the latest version if available.
+
+.ALIASES
+    upw -> Use the alias `upw` to quickly check for PowerShell updates.
+
+.NOTES
+    The PowerShell update function is disabled by default. To enable it, uncomment the line that invokes the function at the end of the script.
 #>
 function Private:Update-PowerShell {
   [CmdletBinding()]
+  [Alias("upw")]
   param (
     # This function does not accept any parameters
   )
@@ -287,7 +301,7 @@ function Private:Update-PowerShell {
 #------------------------------------------------------
 # Invoke the PowerShell update function
 #------------------------------------------------------
-Invoke-Command -ScriptBlock ${function:Update-PowerShell} -ErrorAction SilentlyContinue
+# Invoke-Command -ScriptBlock ${function:Update-PowerShell} -ErrorAction SilentlyContinue
 
 <#
 .SYNOPSIS
