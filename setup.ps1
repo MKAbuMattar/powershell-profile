@@ -393,7 +393,7 @@ try {
     AutoUpdateProfile = false
     Disables the automatic update of the PowerShell profile.
 #>
-\$env:AutoUpdateProfile = $AutoUpdateProfile
+$env:AutoUpdateProfile = $AutoUpdateProfile
 
 <#
 .SYNOPSIS
@@ -406,7 +406,7 @@ try {
     AutoUpdatePowerShell = false
     Disables the automatic update of the PowerShell.
 #>
-\$env:AutoUpdatePowerShell = $AutoUpdatePowerShell
+$env:AutoUpdatePowerShell = $AutoUpdatePowerShell
 "@
 
   # Write the script content to file
