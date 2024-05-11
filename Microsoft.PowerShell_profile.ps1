@@ -59,7 +59,7 @@
     AutoUpdateProfile = false
     Disables the automatic update of the PowerShell profile.
 #>
-$env:AutoUpdateProfile = [bool]$false
+$AutoUpdateProfile = [bool]$false
 
 <#
 .SYNOPSIS
@@ -72,7 +72,7 @@ $env:AutoUpdateProfile = [bool]$false
     AutoUpdatePowerShell = false
     Disables the automatic update of the PowerShell.
 #>
-$env:AutoUpdatePowerShell = [bool]$false
+$AutoUpdatePowerShell = [bool]$false
 
 #######################################################
 # Profile Setup
@@ -86,7 +86,7 @@ $env:AutoUpdatePowerShell = [bool]$false
 #------------------------------------------------------
 # Test if we can connect to GitHub
 #------------------------------------------------------
-$canConnectToGitHub = Test-Connection github.com -Count 1 -Quiet -TimeoutSeconds 1
+$CanConnectToGitHub = Test-Connection github.com -Count 1 -Quiet -TimeoutSeconds 1
 
 #------------------------------------------------------
 # Check if Terminal Icons module is installed
@@ -236,7 +236,7 @@ function Private:Update-Profile {
     # This function does not accept any parameters
   )
 
-  if (-not $global:canConnectToGitHub) {
+  if (-not $global:CanConnectToGitHub) {
     Write-Host "Skipping profile update check due to GitHub.com not responding within 1 second." -ForegroundColor Yellow
     return
   }
@@ -263,7 +263,7 @@ function Private:Update-Profile {
 # Invoke the profile update function
 #------------------------------------------------------
 # Invoke-Command -ScriptBlock ${function:Update-Profile} -ErrorAction SilentlyContinue
-if ($env:AutoUpdateProfile -eq $true) {
+if ($global:AutoUpdateProfile -eq $true) {
   Invoke-Command -ScriptBlock ${function:Update-Profile} -ErrorAction SilentlyContinue
 }
 
@@ -293,7 +293,7 @@ function Private:Update-PowerShell {
     # This function does not accept any parameters
   )
 
-  if (-not $global:canConnectToGitHub) {
+  if (-not $global:CanConnectToGitHub) {
     Write-Host "Skipping PowerShell update check due to GitHub.com not responding within 1 second." -ForegroundColor Yellow
     return
   }
@@ -327,7 +327,7 @@ function Private:Update-PowerShell {
 # Invoke the PowerShell update function
 #------------------------------------------------------
 # Invoke-Command -ScriptBlock ${function:Update-PowerShell} -ErrorAction SilentlyContinue
-if ($env:AutoUpdatePowerShell -eq $true) {
+if ($global:AutoUpdatePowerShell -eq $true) {
   Invoke-Command -ScriptBlock ${function:Update-PowerShell} -ErrorAction SilentlyContinue
 }
 
