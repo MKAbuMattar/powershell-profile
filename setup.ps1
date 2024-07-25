@@ -393,21 +393,21 @@ function Invoke-UpdateInstallChocoPackages {
         Write-LogMessage -Message "Checking $package"
         try {
             $installedPackage = choco list --local-only --exact $package -r -e | Select-String -Pattern $package
-            
-            if (-not $installedPackage) {
-                Write-LogMessage -Message "Installing $package"
-                choco install $package -y
-            }
-            else {
-                $outdatedPackage = choco outdated --exact | Where-Object { $_ -match $package }
-                
-                if ($outdatedPackage) {
-                    Write-LogMessage -Message "Updating $package"
+            if ($installedPackage) {
+                $installedVersion = $installedPackage.ToString().Split('|')[1].Trim()
+                $latestVersion = (choco search $package --exact --limit-output | Select-String -Pattern $package).ToString().Split('|')[1].Trim()
+
+                if ($installedVersion -ne $latestVersion) {
+                    Write-LogMessage -Message "Updating $package from version $installedVersion to $latestVersion"
                     choco upgrade $package -y
                 }
                 else {
-                    Write-LogMessage -Message "$package is already up-to-date"
+                    Write-LogMessage -Message "$package is already up-to-date (version $installedVersion)"
                 }
+            }
+            else {
+                Write-LogMessage -Message "Installing $package"
+                choco install $package -y
             }
         }
         catch {
