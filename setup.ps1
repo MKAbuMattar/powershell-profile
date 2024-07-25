@@ -450,14 +450,14 @@ Invoke-Command -ScriptBlock ${Function:Install-Chocolatey} -ErrorAction Stop
 #------------------------------------------------------
 Write-LogMessage -Message "Installing or updating required PowerShell modules..."
 $modules = @('Terminal-Icons', 'PowerShellGet', 'PSReadLine', 'Posh-Git', 'CompletionPredictor')
-Invoke-Command -ScriptBlock ${Function:Invoke-UpdateInstallPSModules} -ArgumentList $modules -ErrorAction Stop
+Invoke-UpdateInstallPSModules -ModuleList $modules
 
 #------------------------------------------------------
 # Install or update required Chocolatey packages
 #------------------------------------------------------
 Write-LogMessage -Message "Installing or updating required Chocolatey packages..."
 $packages = @('starship', 'microsoft-windows-terminal', 'powershell-core')
-Invoke-Command -ScriptBlock ${Function:Invoke-UpdateInstallChocoPackages} -ArgumentList $packages -ErrorAction Stop
+Invoke-UpdateInstallChocoPackages -PackageList $packages
 
 #------------------------------------------------------
 # End the setup process
