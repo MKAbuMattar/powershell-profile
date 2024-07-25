@@ -342,26 +342,27 @@ Function Install-Chocolatey {
     Invoke-UpdateInstallPSModules -ModuleList @("Module1", "Module2", "Module3")
     Installs or updates the modules "Module1", "Module2", and "Module3".
 #>
-Function Invoke-UpdateInstallPSModules {
+function Private:Invoke-UpdateInstallPSModules {
     [CmdletBinding()]
     param (
+        [Parameter(Mandatory = $true)]
         [string[]]$ModuleList
     )
 
     foreach ($module in $ModuleList) {
-        Write-LogMessage -Message "Checking $module"
+        Write-Output "Checking $module"
         try {
             if (-not (Find-Module -Name $module)) {
-                Write-LogMessage -Message "Installing $module"
+                Write-Output "Installing $module"
                 Install-Module -Name $module -Scope CurrentUser -Force -SkipPublisherCheck -ErrorAction Stop
             }
             else {
-                Write-LogMessage -Message "Updating $module"
+                Write-Output "Updating $module"
                 Update-Module -Name $module -Scope CurrentUser -Force -ErrorAction Stop
             }
         }
         catch {
-            Invoke-ErrorHandling -ErrorMessage "Failed to process module $module." -ErrorRecord $_
+            Write-Warning "Failed to process module ${module}: $_"
         }
     }
 }
