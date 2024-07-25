@@ -206,6 +206,11 @@ Invoke-Command -ScriptBlock ${function:Invoke-StarshipTransientFunction} -ErrorA
 Invoke-Expression (&starship init powershell)
 
 #------------------------------------------------------
+# Load zoxide
+#------------------------------------------------------
+Invoke-Expression (& { (zoxide init powershell | Out-String) })
+
+#------------------------------------------------------
 # Set Chocolatey Profile
 #------------------------------------------------------
 $ChocolateyProfile = "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
