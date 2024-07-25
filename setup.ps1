@@ -253,45 +253,66 @@ function Initialize-StarshipConfig {
 .DESCRIPTION
     This function installs the Cascadia Code font if it is not already installed. The font is downloaded from the GitHub repository and installed in the Windows Fonts directory.
 
+.PARAMETER FontName
+    Specifies the name of the font to install. Default is "CascadiaCode".
+
+.PARAMETER FontDisplayName
+    Specifies the display name of the font. Default is "CaskaydiaCove NF".
+
+.PARAMETER Version
+    Specifies the version of the font to download. Default is "3.2.1".
+
 .OUTPUTS
-    The Cascadia Code font is installed in the Windows Fonts directory.
+    The Cascadia Code font is installed.
 
 .EXAMPLE
     Install-CascadiaCodeFont
-    Installs the Cascadia Code font if it is not already installed.
+    Installs the Cascadia Code font with the default parameters.
+
+.EXAMPLE
+    Install-CascadiaCodeFont -FontName "CascadiaCode" -FontDisplayName "CaskaydiaCove NF" -Version "3.2.1"
+    Installs the Cascadia Code font with the specified parameters.
 #>
 function Install-CascadiaCodeFont {
     [CmdletBinding()]
-    param(
-        # This function does not accept any parameters
+    param (
+        [string]$FontName = "CascadiaCode",
+        [string]$FontDisplayName = "CaskaydiaCove NF",
+        [string]$Version = "3.2.1"
     )
-    
+
     try {
         [void] [System.Reflection.Assembly]::LoadWithPartialName("System.Drawing")
         $fontFamilies = (New-Object System.Drawing.Text.InstalledFontCollection).Families.Name
+        if ($fontFamilies -notcontains "${FontDisplayName}") {
+            $fontZipUrl = "https://github.com/ryanoasis/nerd-fonts/releases/download/v${Version}/${FontName}.zip"
+            $zipFilePath = "$env:TEMP\${FontName}.zip"
+            $extractPath = "$env:TEMP\${FontName}"
 
-        if ($fontFamilies -notcontains "CaskaydiaCove NF") {
             $webClient = New-Object System.Net.WebClient
-            $webClient.DownloadFileAsync((New-Object System.Uri("https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/CascadiaCode.zip")), ".\CascadiaCode.zip")
+            $webClient.DownloadFileAsync((New-Object System.Uri($fontZipUrl)), $zipFilePath)
 
             while ($webClient.IsBusy) {
                 Start-Sleep -Seconds 2
             }
 
-            Expand-Archive -Path ".\CascadiaCode.zip" -DestinationPath ".\CascadiaCode" -Force
+            Expand-Archive -Path $zipFilePath -DestinationPath $extractPath -Force
             $destination = (New-Object -ComObject Shell.Application).Namespace(0x14)
-            Get-ChildItem -Path ".\CascadiaCode" -Recurse -Filter "*.ttf" | ForEach-Object {
-                If (-not(Test-Path "C:\Windows\Fonts\$($_.Name)")) {        
+            Get-ChildItem -Path $extractPath -Recurse -Filter "*.ttf" | ForEach-Object {
+                If (-not(Test-Path "C:\Windows\Fonts\$($_.Name)")) {
                     $destination.CopyHere($_.FullName, 0x10)
                 }
             }
 
-            Remove-Item -Path ".\CascadiaCode" -Recurse -Force
-            Remove-Item -Path ".\CascadiaCode.zip" -Force
+            Remove-Item -Path $extractPath -Recurse -Force
+            Remove-Item -Path $zipFilePath -Force
+        }
+        else {
+            Write-LogMessage -Message "${FontDisplayName} font is already installed."
         }
     }
     catch {
-        Invoke-ErrorHandling -ErrorMessage "Failed to download or install the Cascadia Code font." -ErrorRecord $_
+        Invoke-ErrorHandling "Failed to download or install ${FontDisplayName} font. Error: $_"
     }
 }
 
