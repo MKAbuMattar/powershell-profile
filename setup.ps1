@@ -342,7 +342,7 @@ Function Install-Chocolatey {
     Invoke-UpdateInstallPSModules -ModuleList @("Module1", "Module2", "Module3")
     Installs or updates the modules "Module1", "Module2", and "Module3".
 #>
-function Invoke-UpdateInstallPSModules {
+Function Invoke-UpdateInstallPSModules {
     [CmdletBinding()]
     param (
         [string[]]$ModuleList
@@ -383,7 +383,7 @@ function Invoke-UpdateInstallPSModules {
     Invoke-UpdateInstallChocoPackages -PackageList @("Package1", "Package2", "Package3")
     Installs or updates the packages "Package1", "Package2", and "Package3".
 #>
-function Invoke-UpdateInstallChocoPackages {
+Function Invoke-UpdateInstallChocoPackages {
     [CmdletBinding()]
     param (
         [string[]]$PackageList
@@ -400,14 +400,17 @@ function Invoke-UpdateInstallChocoPackages {
                 if ($installedVersion -ne $latestVersion) {
                     Write-LogMessage -Message "Updating $package from version $installedVersion to $latestVersion"
                     choco upgrade $package -y
+                    continue
                 }
                 else {
                     Write-LogMessage -Message "$package is already up-to-date (version $installedVersion)"
+                    continue
                 }
             }
             else {
                 Write-LogMessage -Message "Installing $package"
                 choco install $package -y
+                continue
             }
         }
         catch {
@@ -457,7 +460,7 @@ Invoke-Command -ScriptBlock ${Function:Invoke-UpdateInstallPSModules} -ArgumentL
 #------------------------------------------------------
 Write-LogMessage -Message "Installing or updating required Chocolatey packages..."
 $packages = @('starship', 'microsoft-windows-terminal', 'powershell-core')
-Invoke-UpdateInstallChocoPackages -PackageList $packages
+Invoke-Command -ScriptBlock ${Function:Invoke-UpdateInstallChocoPackages} -ArgumentList $packages -ErrorAction Stop
 
 #------------------------------------------------------
 # End the setup process
