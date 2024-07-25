@@ -72,7 +72,7 @@ function Write-LogMessage {
     )
 
     $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
-    Write-Output "[$timestamp][$Level][$($MyInvocation.MyCommand.Name)] $Message"
+    Write-Output "[$timestamp][$Level] $Message"
 }
 
 <#
