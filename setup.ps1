@@ -392,14 +392,14 @@ function Invoke-UpdateInstallChocoPackages {
     foreach ($package in $PackageList) {
         Write-LogMessage -Message "Checking $package"
         try {
-            $installedPackage = Get-Package -Name $package -ErrorAction SilentlyContinue
+            $installedPackage = choco list --local-only --exact $package -r -e | Select-String -Pattern $package
             
             if (-not $installedPackage) {
                 Write-LogMessage -Message "Installing $package"
                 choco install $package -y
             }
             else {
-                $outdatedPackage = choco outdated | Where-Object { $_ -match $package }
+                $outdatedPackage = choco outdated --exact | Where-Object { $_ -match $package }
                 
                 if ($outdatedPackage) {
                     Write-LogMessage -Message "Updating $package"
