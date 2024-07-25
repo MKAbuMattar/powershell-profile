@@ -64,7 +64,7 @@
     Write-LogMessage -Message "This is a warning message." -Level "WARNING"
     Logs a warning message with the log level "WARNING".
 #>
-Function Write-LogMessage {
+function Write-LogMessage {
     [CmdletBinding()]
     param (
         [string]$Message,
@@ -95,7 +95,7 @@ Function Write-LogMessage {
     Invoke-ErrorHandling -ErrorMessage "An error occurred." -ErrorRecord $Error
     Logs an error message and the exception message and breaks the script.
 #>
-Function Invoke-ErrorHandling {
+function Invoke-ErrorHandling {
     [CmdletBinding()]
     param (
         [string]$ErrorMessage,
@@ -131,7 +131,7 @@ if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdenti
     Test-InternetConnection
     Checks for internet connection using the default host (www.google.com).
 #>
-Function Test-InternetConnection {
+function Test-InternetConnection {
     [CmdletBinding()]
     param(
         [string]$HostName = "www.google.com"
@@ -168,7 +168,7 @@ if (-not (Test-InternetConnection)) {
     Initialize-PowerShellProfile
     Initializes the PowerShell profile by creating or updating the profile script.
 #>
-Function Initialize-PowerShellProfile {
+function Initialize-PowerShellProfile {
     [CmdletBinding()]
     param(
         # This function does not accept any parameters
@@ -217,7 +217,7 @@ Function Initialize-PowerShellProfile {
     Initialize-StarshipConfig
     Initializes the Starship configuration by creating the ~/.config directory and copying the starship.toml file.
 #>
-Function Initialize-StarshipConfig { 
+function Initialize-StarshipConfig { 
     [CmdletBinding()]
     param(
         # This function does not accept any parameters
@@ -260,7 +260,7 @@ Function Initialize-StarshipConfig {
     Install-CascadiaCodeFont
     Installs the Cascadia Code font if it is not already installed.
 #>
-Function Install-CascadiaCodeFont {
+function Install-CascadiaCodeFont {
     [CmdletBinding()]
     param(
         # This function does not accept any parameters
@@ -309,7 +309,7 @@ Function Install-CascadiaCodeFont {
     Install-Chocolatey
     Installs the Chocolatey package manager.
 #>
-Function Install-Chocolatey {
+function Install-Chocolatey {
     [CmdletBinding()]
     param(
         # This function does not accept any parameters
@@ -342,7 +342,7 @@ Function Install-Chocolatey {
     Invoke-UpdateInstallPSModules -ModuleList @("Module1", "Module2", "Module3")
     Installs or updates the modules "Module1", "Module2", and "Module3".
 #>
-Function Invoke-UpdateInstallPSModules {
+function Invoke-UpdateInstallPSModules {
     [CmdletBinding()]
     param (
         [string[]]$ModuleList
@@ -383,7 +383,7 @@ Function Invoke-UpdateInstallPSModules {
     Invoke-UpdateInstallChocoPackages -PackageList @("Package1", "Package2", "Package3")
     Installs or updates the packages "Package1", "Package2", and "Package3".
 #>
-Function Invoke-UpdateInstallChocoPackages {
+function Invoke-UpdateInstallChocoPackages {
     [CmdletBinding()]
     param (
         [string[]]$PackageList
@@ -425,25 +425,25 @@ Write-LogMessage -Message "Starting the setup process..."
 # Initialize the PowerShell profile
 #------------------------------------------------------
 Write-LogMessage -Message "Initializing the PowerShell profile..."
-Invoke-Command -ScriptBlock ${Function:Initialize-PowerShellProfile} -ErrorAction Stop
+Invoke-Command -ScriptBlock ${function:Initialize-PowerShellProfile} -ErrorAction Stop
 
 #------------------------------------------------------
 # Initialize the Starship configuration
 #------------------------------------------------------
 Write-LogMessage -Message "Initializing the Starship configuration..."
-Invoke-Command -ScriptBlock ${Function:Initialize-StarshipConfig} -ErrorAction Stop
+Invoke-Command -ScriptBlock ${function:Initialize-StarshipConfig} -ErrorAction Stop
 
 #------------------------------------------------------
 # Install the Cascadia Code font
 #------------------------------------------------------
 Write-LogMessage -Message "Installing the Cascadia Code font..."
-Invoke-Command -ScriptBlock ${Function:Install-CascadiaCodeFont} -ErrorAction Stop
+Invoke-Command -ScriptBlock ${function:Install-CascadiaCodeFont} -ErrorAction Stop
 
 #------------------------------------------------------
 # Install Chocolatey package manager
 #------------------------------------------------------
 Write-LogMessage -Message "Installing Chocolatey..."
-Invoke-Command -ScriptBlock ${Function:Install-Chocolatey} -ErrorAction Stop
+Invoke-Command -ScriptBlock ${function:Install-Chocolatey} -ErrorAction Stop
 
 #------------------------------------------------------
 # Install or update required PowerShell modules
