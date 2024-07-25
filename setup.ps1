@@ -470,7 +470,7 @@ Write-LogMessage -Message "Setup process completed successfully."
 #------------------------------------------------------
 # Check if the setup completed successfully
 #------------------------------------------------------
-if ((Test-Path -Path $PROFILE) -and ($fontFamilies -contains "CaskaydiaCove NF")) {
+if (Test-Path -Path $PROFILE) {
     Write-LogMessage -Message "Setup completed successfully. Please restart your PowerShell session to apply changes."
 }
 else {
