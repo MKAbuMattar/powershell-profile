@@ -371,7 +371,7 @@ function Invoke-UpdateInstallPSModules {
     Installs or updates the required Chocolatey packages.
 
 .DESCRIPTION
-    This function installs or updates the required Chocolatey packages based on the provided package list. If the package is not found, it is installed; otherwise, it is updated.
+    This function installs or updates the required Chocolatey packages based on the provided package list. If the package is not found, it is installed; otherwise, it is updated if it is outdated.
 
 .PARAMETER PackageList
     Specifies the list of packages to install or update.
@@ -392,13 +392,22 @@ function Invoke-UpdateInstallChocoPackages {
     foreach ($package in $PackageList) {
         Write-LogMessage -Message "Checking $package"
         try {
-            if (-not (Get-Package -Name $package -ErrorAction SilentlyContinue)) {
+            $installedPackage = Get-Package -Name $package -ErrorAction SilentlyContinue
+            
+            if (-not $installedPackage) {
                 Write-LogMessage -Message "Installing $package"
                 choco install $package -y
             }
             else {
-                Write-LogMessage -Message "Updating $package"
-                choco upgrade $package -y
+                $outdatedPackage = choco outdated | Where-Object { $_ -match $package }
+                
+                if ($outdatedPackage) {
+                    Write-LogMessage -Message "Updating $package"
+                    choco upgrade $package -y
+                }
+                else {
+                    Write-LogMessage -Message "$package is already up-to-date"
+                }
             }
         }
         catch {
@@ -448,7 +457,7 @@ Invoke-Command -ScriptBlock ${Function:Invoke-UpdateInstallPSModules} -ArgumentL
 #------------------------------------------------------
 Write-LogMessage -Message "Installing or updating required Chocolatey packages..."
 $packages = @('starship', 'microsoft-windows-terminal', 'powershell-core')
-Invoke-UpdateInstallChocoPackages -PackageList $packages
+Invoke-Command -ScriptBlock ${Function:Invoke-UpdateInstallChocoPackages} -ArgumentList $packages -ErrorAction Stop
 
 #------------------------------------------------------
 # End the setup process
