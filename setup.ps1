@@ -457,7 +457,7 @@ Invoke-Command -ScriptBlock ${Function:Invoke-UpdateInstallPSModules} -ArgumentL
 #------------------------------------------------------
 Write-LogMessage -Message "Installing or updating required Chocolatey packages..."
 $packages = @('starship', 'microsoft-windows-terminal', 'powershell-core')
-Invoke-Command -ScriptBlock ${Function:Invoke-UpdateInstallChocoPackages} -ArgumentList $packages -ErrorAction Stop
+Invoke-UpdateInstallChocoPackages -PackageList $packages
 
 #------------------------------------------------------
 # End the setup process
