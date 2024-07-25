@@ -400,17 +400,14 @@ Function Invoke-UpdateInstallChocoPackages {
                 if ($installedVersion -ne $latestVersion) {
                     Write-LogMessage -Message "Updating $package from version $installedVersion to $latestVersion"
                     choco upgrade $package -y
-                    continue
                 }
                 else {
                     Write-LogMessage -Message "$package is already up-to-date (version $installedVersion)"
-                    continue
                 }
             }
             else {
                 Write-LogMessage -Message "Installing $package"
                 choco install $package -y
-                continue
             }
         }
         catch {
