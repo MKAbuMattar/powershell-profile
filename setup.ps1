@@ -486,7 +486,7 @@ Invoke-UpdateInstallPSModules -ModuleList $modules
 # Install or update required Chocolatey packages
 #------------------------------------------------------
 Write-LogMessage -Message "Installing or updating required Chocolatey packages..."
-$packages = @('starship', 'microsoft-windows-terminal', 'powershell-core')
+$packages = @('starship', 'microsoft-windows-terminal', 'powershell-core', 'zoxide')
 Invoke-UpdateInstallChocoPackages -PackageList $packages
 
 #------------------------------------------------------
