@@ -351,13 +351,22 @@ function Invoke-UpdateInstallPSModules {
     foreach ($module in $ModuleList) {
         Write-LogMessage -Message "Checking $module"
         try {
-            if (-not (Find-Module -Name $module)) {
-                Write-LogMessage -Message "Installing $module"
-                Install-Module -Name $module -Scope CurrentUser -Force -SkipPublisherCheck -ErrorAction Stop
+            $installedModule = Get-InstalledModule -Name $module -ErrorAction SilentlyContinue
+            if ($installedModule) {
+                $installedVersion = $installedModule.Version
+                $latestVersion = (Find-Module -Name $module).Version
+
+                if ($installedVersion -ne $latestVersion) {
+                    Write-LogMessage -Message "Updating $module from version $installedVersion to $latestVersion"
+                    Update-Module -Name $module -Force
+                }
+                else {
+                    Write-LogMessage -Message "$module is already up-to-date (version $installedVersion)"
+                }
             }
             else {
-                Write-LogMessage -Message "Updating $module"
-                Update-Module -Name $module -Scope CurrentUser -Force -ErrorAction Stop
+                Write-LogMessage -Message "Installing $module"
+                Install-Module -Name $module -Force
             }
         }
         catch {
