@@ -1,25 +1,25 @@
 <#
 .SYNOPSIS
-    Updates the local PowerShell Module directory with the latest version from the GitHub repository.
+    Updates the Modules directory in the local profile with the latest version from the GitHub repository.
 
 .DESCRIPTION
-    This function updates the local PowerShell Module directory with the latest version from the GitHub repository. It downloads the files from the repository and copies them to the local directory. The function provides feedback on the status of the update process and handles errors gracefully.
+    This function checks for updates to the Modules directory in the local profile from the GitHub repository specified in the script. It compares the hash of the local Modules directory with the hash of the Modules directory on GitHub. If updates are found, it downloads the updated Modules directory and replaces the local Modules directory with the updated one. The function provides feedback on whether the Modules directory has been updated and prompts the user to restart the shell to reflect changes.
 
 .PARAMETER LocalPath
-    Specifies the local directory where the Module directory should be updated. The default value is "$HOME\Documents\PowerShell".
+    Specifies the local path where the Modules directory should be updated. The default value is "$HOME\Documents\PowerShell".
 
 .OUTPUTS
     This function does not return any output.
 
 .EXAMPLE
     Update-LocalProfileModuleDirectory
-    Updates the local PowerShell Module directory with the latest version from the GitHub repository.
+    Checks for updates to the Modules directory in the local profile and updates the local Modules directory if changes are detected.
 
 .ALIASES
-    update-local-module -> Use the alias `update-local-module` to quickly update the local PowerShell Module directory.
+    update-local-module -> Use the alias `update-local-module` to quickly check for updates to the Modules directory in the local profile.
 
 .NOTES
-    The local profile module update function is disabled by default. To enable it, uncomment the line that invokes the function at the end of the script.
+    The local profile update function is disabled by default. To enable it, uncomment the line that invokes the function at the end of the script.
 #>
 function Update-LocalProfileModuleDirectory {
     [CmdletBinding()]
@@ -28,18 +28,21 @@ function Update-LocalProfileModuleDirectory {
         [string]$LocalPath = "$HOME\Documents\PowerShell"
     )
 
+    if (-not $global:CanConnectToGitHub) {
+        Write-LogMessage -Message "Skipping profile update check due to GitHub.com not responding within 1 second." -Level "WARNING"
+        return
+    }
+
     try {
         $baseRepoUrl = "https://github.com/MKAbuMattar/powershell-profile"
         $moduleDirUrl = "$baseRepoUrl/raw/main/Module"
 
-        # Create the local Module directory if it does not exist
         $localModuleDir = Join-Path -Path $LocalPath -ChildPath "Module"
         if (-not (Test-Path -Path $localModuleDir)) {
             New-Item -Path $localModuleDir -ItemType Directory -Force
             Write-LogMessage -Message "Created directory: $localModuleDir"
         }
 
-        # Define the files to be copied from the Module directory
         $files = @(
             "Environment/Environment.psm1",
             "Environment/Environment.psd1",
@@ -55,22 +58,41 @@ function Update-LocalProfileModuleDirectory {
             $fileUrl = "$moduleDirUrl/$file"
             $localFilePath = Join-Path -Path $localModuleDir -ChildPath $file
 
-            # Ensure the local directory for the file exists
             $localFileDir = Split-Path -Path $localFilePath -Parent
             if (-not (Test-Path -Path $localFileDir)) {
                 New-Item -Path $localFileDir -ItemType Directory -Force
                 Write-LogMessage -Message "Created directory: $localFileDir"
             }
 
-            # Remove the file if it exists
+            $downloadFile = $true
+
             if (Test-Path -Path $localFilePath) {
-                Remove-Item -Path $localFilePath -Force
-                Write-LogMessage -Message "Removed existing file: $localFilePath"
+                try {
+                    $localFileHash = Get-FileHash -Path $localFilePath
+                    $tempFilePath = [System.IO.Path]::GetTempFileName()
+                    Invoke-WebRequest -Uri $fileUrl -OutFile $tempFilePath
+                    $remoteFileHash = Get-FileHash -Path $tempFilePath
+
+                    if ($localFileHash.Hash -eq $remoteFileHash.Hash) {
+                        Write-LogMessage -Message "File $file is already up-to-date."
+                        $downloadFile = $false
+                    }
+                    else {
+                        Write-LogMessage -Message "Removing existing file: $localFilePath"
+                        Remove-Item -Path $localFilePath -Force
+                    }
+
+                    Remove-Item -Path $tempFilePath -Force
+                }
+                catch {
+                    Invoke-ErrorHandling -ErrorMessage "Failed to compare hashes for $file." -ErrorRecord $_
+                }
             }
 
-            # Copy the new file
-            Invoke-WebRequest -Uri $fileUrl -OutFile $localFilePath
-            Write-LogMessage -Message "Copied $file to: $localFilePath"
+            if ($downloadFile) {
+                Invoke-WebRequest -Uri $fileUrl -OutFile $localFilePath
+                Write-LogMessage -Message "Copied $file to: $localFilePath"
+            }
         }
     }
     catch {
