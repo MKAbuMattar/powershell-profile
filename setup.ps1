@@ -160,7 +160,7 @@ if (-not (Test-InternetConnection)) {
     Copies the Module directory and its contents from the repository to the specified local path.
 
 .DESCRIPTION
-    This function copies the Module directory and its contents from the GitHub repository to the specified local path.
+    This function copies the Module directory and its contents from the GitHub repository to the specified local path. If the file already exists, it will be removed before copying the new file.
 
 .PARAMETER LocalPath
     Specifies the local path where the Module directory will be copied.
@@ -212,6 +212,13 @@ function Copy-ModuleDirectory {
                 Write-LogMessage -Message "Created directory: $localFileDir"
             }
 
+            # Remove the file if it exists
+            if (Test-Path -Path $localFilePath) {
+                Remove-Item -Path $localFilePath -Force
+                Write-LogMessage -Message "Removed existing file: $localFilePath"
+            }
+
+            # Copy the new file
             Invoke-WebRequest -Uri $fileUrl -OutFile $localFilePath
             Write-LogMessage -Message "Copied $file to: $localFilePath"
         }
