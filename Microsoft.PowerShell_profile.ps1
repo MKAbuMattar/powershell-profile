@@ -162,6 +162,13 @@ if (Test-Path $ChocolateyProfile) {
 # Invoke the profile update function
 #---------------------------------------------------------------------------------------------------
 if ($global:AutoUpdateProfile -eq $true) {
+    Invoke-Command -ScriptBlock ${function:Update-LocalProfileModuleDirectory} -ErrorAction SilentlyContinue
+}
+
+#---------------------------------------------------------------------------------------------------
+# Invoke the profile update function
+#---------------------------------------------------------------------------------------------------
+if ($global:AutoUpdateProfile -eq $true) {
     Invoke-Command -ScriptBlock ${function:Update-Profile} -ErrorAction SilentlyContinue
 }
 

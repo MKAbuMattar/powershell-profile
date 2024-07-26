@@ -1,5 +1,85 @@
 <#
 .SYNOPSIS
+    Updates the local PowerShell Module directory with the latest version from the GitHub repository.
+
+.DESCRIPTION
+    This function updates the local PowerShell Module directory with the latest version from the GitHub repository. It downloads the files from the repository and copies them to the local directory. The function provides feedback on the status of the update process and handles errors gracefully.
+
+.PARAMETER LocalPath
+    Specifies the local directory where the Module directory should be updated. The default value is "$HOME\Documents\PowerShell".
+
+.OUTPUTS
+    This function does not return any output.
+
+.EXAMPLE
+    Update-LocalProfileModuleDirectory
+    Updates the local PowerShell Module directory with the latest version from the GitHub repository.
+
+.ALIASES
+    update-local-module -> Use the alias `update-local-module` to quickly update the local PowerShell Module directory.
+
+.NOTES
+    The local profile module update function is disabled by default. To enable it, uncomment the line that invokes the function at the end of the script.
+#>
+function Update-LocalProfileModuleDirectory {
+    [CmdletBinding()]
+    [Alias("update-local-module")]
+    param (
+        [string]$LocalPath = "$HOME\Documents\PowerShell"
+    )
+
+    try {
+        $baseRepoUrl = "https://github.com/MKAbuMattar/powershell-profile"
+        $moduleDirUrl = "$baseRepoUrl/raw/main/Module"
+
+        # Create the local Module directory if it does not exist
+        $localModuleDir = Join-Path -Path $LocalPath -ChildPath "Module"
+        if (-not (Test-Path -Path $localModuleDir)) {
+            New-Item -Path $localModuleDir -ItemType Directory -Force
+            Write-LogMessage -Message "Created directory: $localModuleDir"
+        }
+
+        # Define the files to be copied from the Module directory
+        $files = @(
+            "Environment/Environment.psm1",
+            "Environment/Environment.psd1",
+            "Logging/Logging.psm1",
+            "Logging/Logging.psd1",
+            "Starship/Starship.psm1",
+            "Starship/Starship.psd1",
+            "Update/Update.psm1",
+            "Update/Update.psd1"
+        )
+
+        foreach ($file in $files) {
+            $fileUrl = "$moduleDirUrl/$file"
+            $localFilePath = Join-Path -Path $localModuleDir -ChildPath $file
+
+            # Ensure the local directory for the file exists
+            $localFileDir = Split-Path -Path $localFilePath -Parent
+            if (-not (Test-Path -Path $localFileDir)) {
+                New-Item -Path $localFileDir -ItemType Directory -Force
+                Write-LogMessage -Message "Created directory: $localFileDir"
+            }
+
+            # Remove the file if it exists
+            if (Test-Path -Path $localFilePath) {
+                Remove-Item -Path $localFilePath -Force
+                Write-LogMessage -Message "Removed existing file: $localFilePath"
+            }
+
+            # Copy the new file
+            Invoke-WebRequest -Uri $fileUrl -OutFile $localFilePath
+            Write-LogMessage -Message "Copied $file to: $localFilePath"
+        }
+    }
+    catch {
+        Invoke-ErrorHandling -ErrorMessage "Failed to copy Module directory from the repository." -ErrorRecord $_
+    }
+}
+
+<#
+.SYNOPSIS
     Checks for updates to the PowerShell profile from a specified GitHub repository and updates the local profile if changes are detected.
 
 .DESCRIPTION

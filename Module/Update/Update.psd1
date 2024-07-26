@@ -5,12 +5,14 @@
     Copyright         = '(c) 2024 Mohammad Abu Mattar'
     Description       = 'Update module'
     FunctionsToExport = @(
+        'Update-LocalProfileModuleDirectory',
         'Update-Profile', 
         'Update-PowerShell'
     )
     CmdletsToExport   = @()
     VariablesToExport = '*'
     AliasesToExport   = @(
+        'update-local-module',
         'update-profile', 
         'update-ps1'
     )
