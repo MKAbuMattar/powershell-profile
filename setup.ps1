@@ -182,20 +182,11 @@ function Copy-ModuleDirectory {
         $baseRepoUrl = "https://github.com/MKAbuMattar/powershell-profile"
         $moduleDirUrl = "$baseRepoUrl/raw/main/Module"
 
-        $profilePath = if ($PSVersionTable.PSEdition -eq "Core") {
-            "$env:userprofile\Documents\Powershell"
-        }
-        elseif ($PSVersionTable.PSEdition -eq "Desktop") {
-            "$env:userprofile\Documents\WindowsPowerShell"
-        }
-
-        if (!(Test-Path -Path $profilePath)) {
-            New-Item -Path $profilePath -ItemType "directory"
-        }
-
+        # Create the local Module directory if it does not exist
         $localModuleDir = Join-Path -Path $LocalPath -ChildPath "Module"
         if (-not (Test-Path -Path $localModuleDir)) {
             New-Item -Path $localModuleDir -ItemType Directory -Force
+            Write-LogMessage -Message "Created directory: $localModuleDir"
         }
 
         # Define the files to be copied from the Module directory
@@ -214,9 +205,11 @@ function Copy-ModuleDirectory {
             $fileUrl = "$moduleDirUrl/$file"
             $localFilePath = Join-Path -Path $localModuleDir -ChildPath $file
 
+            # Ensure the local directory for the file exists
             $localFileDir = Split-Path -Path $localFilePath -Parent
             if (-not (Test-Path -Path $localFileDir)) {
                 New-Item -Path $localFileDir -ItemType Directory -Force
+                Write-LogMessage -Message "Created directory: $localFileDir"
             }
 
             Invoke-WebRequest -Uri $fileUrl -OutFile $localFilePath
