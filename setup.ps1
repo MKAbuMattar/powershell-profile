@@ -198,7 +198,9 @@ function Copy-ModuleDirectory {
             "Starship/Starship.psm1",
             "Starship/Starship.psd1",
             "Update/Update.psm1",
-            "Update/Update.psd1"
+            "Update/Update.psd1",
+            "Utility/Utility.psm1",
+            "Utility/Utility.psd1"
         )
 
         foreach ($file in $files) {
