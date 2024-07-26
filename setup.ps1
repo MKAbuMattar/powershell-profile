@@ -1,4 +1,7 @@
-#######################################################
+#---------------------------------------------------------------------------------------------------
+# MKAbuMattar's PowerShell Profile
+#
+#                 
 #                             .
 #         ..                .''
 #         .,'..,.         ..,;,'
@@ -19,11 +22,9 @@
 #        ,;
 #        .
 #
-#  MKAbuMattar's PowerShell Profile
-#######################################################
-
-#------------------------------------------------------
-# MKAbuMattar's PowerShell Profile Setup
+#      "The only way to do great work is to love what you do."
+#                           - Steve Jobs
+#
 #
 # Author: Mohammad Abu Mattar
 #
@@ -33,12 +34,12 @@
 #       and tools.
 #
 # Created: 2021-09-01
-# Updated: 2024-07-11
+# Updated: 2024-07-26
 #
 # GitHub: https://github.com/MKAbuMattar/powershell-profile
 #
 # Version: 3.0.0-beta
-#------------------------------------------------------
+#---------------------------------------------------------------------------------------------------
 
 <#
 .SYNOPSIS
@@ -106,9 +107,9 @@ function Invoke-ErrorHandling {
     break
 }
 
-#------------------------------------------------------
+#---------------------------------------------------------------------------------------------------
 # Check if the script is running as an Administrator
-#------------------------------------------------------
+#---------------------------------------------------------------------------------------------------
 if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
     Write-LogMessage -Message "Please run this script as an Administrator!" -Level "WARNING"
     break
@@ -147,11 +148,78 @@ function Test-InternetConnection {
     }
 }
 
-#------------------------------------------------------
+#---------------------------------------------------------------------------------------------------
 # Check for internet connection before proceeding
-#------------------------------------------------------
+#---------------------------------------------------------------------------------------------------
 if (-not (Test-InternetConnection)) {
     break
+}
+
+<#
+.SYNOPSIS
+    Copies the Module directory and its contents from the repository to the specified local path.
+
+.DESCRIPTION
+    This function copies the Module directory and its contents from the GitHub repository to the specified local path.
+
+.PARAMETER LocalPath
+    Specifies the local path where the Module directory will be copied.
+
+.OUTPUTS
+    The Module directory and its contents are copied to the specified local path.
+
+.EXAMPLE
+    Copy-ModuleDirectory -LocalPath "$HOME\Documents\PowerShell"
+    Copies the Module directory to the specified local path.
+#>
+function Copy-ModuleDirectory {
+    [CmdletBinding()]
+    param (
+        [string]$LocalPath = "$HOME\Documents\PowerShell"
+    )
+
+    try {
+        $baseRepoUrl = "https://github.com/MKAbuMattar/powershell-profile"
+        $moduleDirUrl = "$baseRepoUrl/raw/main/Module"
+
+        $profilePath = if ($PSVersionTable.PSEdition -eq "Core") {
+            "$env:userprofile\Documents\Powershell"
+        }
+        elseif ($PSVersionTable.PSEdition -eq "Desktop") {
+            "$env:userprofile\Documents\WindowsPowerShell"
+        }
+
+        if (!(Test-Path -Path $profilePath)) {
+            New-Item -Path $profilePath -ItemType "directory"
+        }
+
+        $localModuleDir = Join-Path -Path $LocalPath -ChildPath "Module"
+        if (-not (Test-Path -Path $localModuleDir)) {
+            New-Item -Path $localModuleDir -ItemType Directory -Force
+        }
+
+        # Define the files to be copied from the Module directory
+        $files = @(
+            "Logging/Logging.psm1",
+            "Logging/Logging.psd1"
+        )
+
+        foreach ($file in $files) {
+            $fileUrl = "$moduleDirUrl/$file"
+            $localFilePath = Join-Path -Path $localModuleDir -ChildPath $file
+
+            $localFileDir = Split-Path -Path $localFilePath -Parent
+            if (-not (Test-Path -Path $localFileDir)) {
+                New-Item -Path $localFileDir -ItemType Directory -Force
+            }
+
+            Invoke-WebRequest -Uri $fileUrl -OutFile $localFilePath
+            Write-LogMessage -Message "Copied $file to: $localFilePath"
+        }
+    }
+    catch {
+        Invoke-ErrorHandling -ErrorMessage "Failed to copy Module directory from the repository." -ErrorRecord $_
+    }
 }
 
 <#
@@ -446,57 +514,57 @@ function Invoke-UpdateInstallChocoPackages {
     }
 }
 
-#------------------------------------------------------
+#---------------------------------------------------------------------------------------------------
 # Start the setup process
-#------------------------------------------------------
+#---------------------------------------------------------------------------------------------------
 Write-LogMessage -Message "Starting the setup process..."
 
-#------------------------------------------------------
+#---------------------------------------------------------------------------------------------------
 # Initialize the PowerShell profile
-#------------------------------------------------------
+#---------------------------------------------------------------------------------------------------
 Write-LogMessage -Message "Initializing the PowerShell profile..."
 Invoke-Command -ScriptBlock ${function:Initialize-PowerShellProfile} -ErrorAction Stop
 
-#------------------------------------------------------
+#---------------------------------------------------------------------------------------------------
 # Initialize the Starship configuration
-#------------------------------------------------------
+#---------------------------------------------------------------------------------------------------
 Write-LogMessage -Message "Initializing the Starship configuration..."
 Invoke-Command -ScriptBlock ${function:Initialize-StarshipConfig} -ErrorAction Stop
 
-#------------------------------------------------------
+#---------------------------------------------------------------------------------------------------
 # Install the Cascadia Code font
-#------------------------------------------------------
+#---------------------------------------------------------------------------------------------------
 Write-LogMessage -Message "Installing the Cascadia Code font..."
 Invoke-Command -ScriptBlock ${function:Install-CascadiaCodeFont} -ErrorAction Stop
 
-#------------------------------------------------------
+#---------------------------------------------------------------------------------------------------
 # Install Chocolatey package manager
-#------------------------------------------------------
+#---------------------------------------------------------------------------------------------------
 Write-LogMessage -Message "Installing Chocolatey..."
 Invoke-Command -ScriptBlock ${function:Install-Chocolatey} -ErrorAction Stop
 
-#------------------------------------------------------
+#---------------------------------------------------------------------------------------------------
 # Install or update required PowerShell modules
-#------------------------------------------------------
+#---------------------------------------------------------------------------------------------------
 Write-LogMessage -Message "Installing or updating required PowerShell modules..."
 $modules = @('Terminal-Icons', 'PowerShellGet', 'PSReadLine', 'Posh-Git', 'CompletionPredictor')
 Invoke-UpdateInstallPSModules -ModuleList $modules
 
-#------------------------------------------------------
+#---------------------------------------------------------------------------------------------------
 # Install or update required Chocolatey packages
-#------------------------------------------------------
+#---------------------------------------------------------------------------------------------------
 Write-LogMessage -Message "Installing or updating required Chocolatey packages..."
 $packages = @('starship', 'microsoft-windows-terminal', 'powershell-core', 'zoxide')
 Invoke-UpdateInstallChocoPackages -PackageList $packages
 
-#------------------------------------------------------
+#---------------------------------------------------------------------------------------------------
 # End the setup process
-#------------------------------------------------------
+#---------------------------------------------------------------------------------------------------
 Write-LogMessage -Message "Setup process completed successfully."
 
-#------------------------------------------------------
+#---------------------------------------------------------------------------------------------------
 # Check if the setup completed successfully
-#------------------------------------------------------
+#---------------------------------------------------------------------------------------------------
 if (Test-Path -Path $PROFILE) {
     Write-LogMessage -Message "Setup completed successfully. Please restart your PowerShell session to apply changes."
 }
