@@ -45,6 +45,52 @@
 #------------------------------------------------------
 
 #######################################################
+# Logging Functions
+#######################################################
+
+<#
+.SYNOPSIS
+    Logs a message with a timestamp and log level.
+
+.DESCRIPTION
+    This function logs a message with a timestamp and log level. The default log level is "INFO".
+
+.PARAMETER Message
+    Specifies the message to log.
+
+.PARAMETER Level
+    Specifies the log level. Default is "INFO".
+
+.OUTPUTS
+    A log message with a timestamp and log level.
+
+.EXAMPLE
+    Write-LogMessage -Message "This is an informational message."
+    Logs an informational message with the default log level "INFO".
+
+.EXAMPLE
+    Write-LogMessage -Message "This is a warning message." -Level "WARNING"
+    Logs a warning message with the log level "WARNING".
+
+.ALIASES
+    log-message -> Use the alias `log-message` to quickly log a message.
+
+.NOTES
+    This function is used to log messages with a timestamp and log level.
+#>
+function Write-LogMessage {
+    [CmdletBinding()]
+    [Alias("log-message")]
+    param (
+        [string]$Message,
+        [string]$Level = "INFO"
+    )
+
+    $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+    Write-Output "[$timestamp][$Level] $Message"
+}
+
+#######################################################
 # Environment Variables
 #######################################################
 
@@ -206,11 +252,6 @@ Invoke-Command -ScriptBlock ${function:Invoke-StarshipTransientFunction} -ErrorA
 Invoke-Expression (&starship init powershell)
 
 #------------------------------------------------------
-# Load zoxide
-#------------------------------------------------------
-Invoke-Expression (& { (zoxide init powershell | Out-String) })
-
-#------------------------------------------------------
 # Set Chocolatey Profile
 #------------------------------------------------------
 $ChocolateyProfile = "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
@@ -222,85 +263,14 @@ if (Test-Path $ChocolateyProfile) {
     Import-Module $ChocolateyProfile
 }
 
-<#
-.SYNOPSIS
-    Logs a message with a timestamp and log level.
+#------------------------------------------------------
+# Load zoxide
+#------------------------------------------------------
+Invoke-Expression (& { (zoxide init powershell | Out-String) })
 
-.DESCRIPTION
-    This function logs a message with a timestamp and log level. The default log level is "INFO".
-
-.PARAMETER Message
-    Specifies the message to log.
-
-.PARAMETER Level
-    Specifies the log level. Default is "INFO".
-
-.OUTPUTS
-    A log message with a timestamp and log level.
-
-.EXAMPLE
-    Write-LogMessage -Message "This is an informational message."
-    Logs an informational message with the default log level "INFO".
-
-.EXAMPLE
-    Write-LogMessage -Message "This is a warning message." -Level "WARNING"
-    Logs a warning message with the log level "WARNING".
-
-.ALIASES
-    log-message -> Use the alias `log-message` to quickly log a message.
-
-.NOTES
-    This function is used to log messages with a timestamp and log level.
-#>
-function Write-LogMessage {
-    [CmdletBinding()]
-    [Alias("log-message")]
-    param (
-        [string]$Message,
-        [string]$Level = "INFO"
-    )
-
-    $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
-    Write-Output "[$timestamp][$Level] $Message"
-}
-
-<#
-.SYNOPSIS
-    Eeror handling function to log the error message and break the script.
-
-.DESCRIPTION
-    This function logs the error message and the exception message and then breaks the script.
-
-.PARAMETER ErrorMessage
-    Specifies the error message to log.
-
-.PARAMETER ErrorRecord
-    Specifies the error record object.
-
-.OUTPUTS
-    A log message with the error message and exception message.
-
-.EXAMPLE
-    Invoke-ErrorHandling -ErrorMessage "An error occurred." -ErrorRecord $Error
-    Logs an error message and the exception message and breaks the script.
-
-.ALIASES
-    error-handling -> Use the alias `error-handling` to quickly handle errors.
-
-.NOTES
-    This function is used to handle errors and log the error message and exception message before breaking the script.
-#>
-function Invoke-ErrorHandling {
-    [CmdletBinding()]
-    [Alias("error-handling")]
-    param (
-        [string]$ErrorMessage,
-        [System.Management.Automation.ErrorRecord]$ErrorRecord
-    )
-
-    Write-LogMessage -Message "$ErrorMessage`n$($ErrorRecord.Exception.Message)" -Level "ERROR"
-    break
-}
+#------------------------------------------------------
+# Load the profile for the current user
+#------------------------------------------------------
 
 <#
 .SYNOPSIS
@@ -348,7 +318,7 @@ function Update-Profile {
         }
     }
     catch {
-        Invoke-ErrorHandling -ErrorMessage "Unable to check for `$profile updates" -ErrorRecord $_
+        Write-LogMessage -Message "Unable to check for `$profile updates" -Level "WARNING"
     }
     finally {
         Remove-Item "$env:temp/Microsoft.PowerShell_profile.ps1" -ErrorAction SilentlyContinue
@@ -418,7 +388,7 @@ function Update-PowerShell {
         }
     }
     catch {
-        Invoke-ErrorHandling -ErrorMessage "Failed to update PowerShell" -ErrorRecord $_
+        Write-LogMessage -Message "Failed to update PowerShell" -Level "WARNING"
     }
 }
 
@@ -637,10 +607,10 @@ function Invoke-ProfileReload {
 
     try {
         & $profile
-        Write-Host "PowerShell profile reloaded successfully." -ForegroundColor Green
+        Write-LogMessage -Message "PowerShell profile reloaded successfully." -Level "INFO"
     }
     catch {
-        Write-Error "Failed to reload the PowerShell profile. Error: $_"
+        Write-LogMessage -Message "Failed to reload the PowerShell profile." -Level "ERROR"
     }
 }
 
@@ -676,24 +646,363 @@ function Expand-File {
     )
 
     BEGIN {
-        Write-Host "Starting file extraction process..." -ForegroundColor Cyan
+        Write-LogMessage -Message "Starting file extraction process..." -Level "INFO"
     }
 
     PROCESS {
         try {
-            Write-Host "Extracting file '$File' to '$PWD'..." -ForegroundColor Cyan
+            Write-LogMessage -Message "Extracting file '$File' to '$PWD'..." -Level "INFO"
             $FullFilePath = Get-Item -Path $File -ErrorAction Stop | Select-Object -ExpandProperty FullName
             Expand-Archive -Path $FullFilePath -DestinationPath $PWD -Force -ErrorAction Stop
-            Write-Host "File extraction completed successfully." -ForegroundColor Green
+            Write-LogMessage -Message "File extraction completed successfully." -Level "INFO"
         }
         catch {
-            Write-Error "Failed to extract file '$File'. Error: $_"
+            Write-LogMessage -Message "Failed to extract file '$File'." -Level "ERROR"
         }
     }
 
     END {
         if (-not $Error) {
-            Write-Host "File extraction process completed." -ForegroundColor Cyan
+            Write-LogMessage -Message "File extraction process completed." -Level "INFO"
         }
+    }
+}
+
+<#
+.SYNOPSIS
+    Searches for a string in a file and returns matching lines.
+
+.DESCRIPTION
+    This function searches for a specified string or regular expression pattern in a file or files within a directory. It returns the lines that contain the matching string or pattern. It is useful for finding occurrences of specific patterns in text files.
+
+.PARAMETER Pattern
+    Specifies the string or regular expression pattern to search for.
+
+.PARAMETER Path
+    Specifies the path to the file or directory to search in. If not provided, the function searches in the current directory.
+
+.OUTPUTS
+    The lines in the file(s) that match the specified string or regular expression pattern.
+
+.EXAMPLE
+    Get-ContentMatching "pattern" "file.txt"
+    Searches for occurrences of the pattern "pattern" in the file "file.txt" and returns matching lines.
+
+.ALIASES
+    grep -> Use the alias `grep` to quickly search for a string in a file.
+#>
+function Get-ContentMatching {
+    [CmdletBinding()]
+    [Alias("grep")]
+    param (
+        [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
+        [string]$Pattern,
+
+        [Parameter(Position = 1)]
+        [string]$Path = $PWD
+    )
+
+    try {
+        if (-not (Test-Path $Path)) {
+            Write-LogMessage -Message "The specified path '$Path' does not exist." -Level "WARNING"
+            return
+        }
+
+        if (Test-Path $Path -PathType Leaf) {
+            Get-Content $Path | Select-String $Pattern
+        }
+        elseif (Test-Path $Path -PathType Container) {
+            Get-ChildItem -Path $Path -File | ForEach-Object {
+                Get-Content $_.FullName | Select-String $Pattern
+            }
+        }
+        else {
+            Write-LogMessage -Message "The specified path '$Path' is neither a file nor a directory." -Level "WARNING"
+        }
+    }
+    catch {
+        Write-LogMessage -Message "An error occurred while searching for the pattern." -Level "ERROR"
+    }
+}
+
+<#
+.SYNOPSIS
+    Retrieves volume information for all available volumes.
+
+.DESCRIPTION
+    This function retrieves information about all available volumes on the system. It provides details such as volume label, drive letter, file system, and capacity.
+
+.PARAMETER None
+    This function does not accept any parameters.
+
+.OUTPUTS
+    The volume information for all available volumes.
+
+.EXAMPLE
+    Get-VolumeInfo
+    Retrieves volume information for all available volumes.
+
+.ALIASES
+    df -> Use the alias `df` to quickly get volume information.
+#>
+function Get-VolumeInfo {
+    [CmdletBinding()]
+    [Alias("df")]
+    param(
+        # This function does not accept any parameters
+    )
+
+    try {
+        Get-Volume
+    }
+    catch {
+        Write-LogMessage -Message "An error occurred while retrieving volume information." -Level "ERROR"
+    }
+}
+
+<#
+.SYNOPSIS
+    Searches for a string in a file and replaces it with another string.
+
+.DESCRIPTION
+    This function searches for a specified string in a file and replaces it with another string. It is useful for performing text replacements in files.
+
+.PARAMETER file
+    Specifies the file to search and perform replacements in.
+
+.PARAMETER find
+    Specifies the string to search for.
+
+.PARAMETER replace
+    Specifies the string to replace the found string with.
+
+.OUTPUTS None
+    This function does not return any output.
+
+.EXAMPLE
+    Set-ContentMatching "file.txt" "pattern" "replacement"
+    Searches for "pattern" in "file.txt" and replaces it with "replacement".
+
+.ALIASES
+    sed -> Use the alias `sed` to quickly perform text replacements.
+#>
+function Set-ContentMatching {
+    [CmdletBinding()]
+    [Alias("sed")]
+    param (
+        [Parameter(Mandatory = $true)]
+        [string]$file,
+
+        [Parameter(Mandatory = $true)]
+        [string]$find,
+
+        [Parameter(Mandatory = $true)]
+        [string]$replace
+    )
+
+    try {
+        $content = Get-Content $file -ErrorAction Stop
+        $content -replace $find, $replace | Set-Content $file -ErrorAction Stop
+    }
+    catch {
+        Write-LogMessage -Message "An error occurred while performing text replacement." -Level "ERROR"
+    }
+}
+
+<#
+.SYNOPSIS
+    Gets the definition of a command.
+
+.DESCRIPTION
+    This function retrieves the definition of a specified command. It is useful for understanding the functionality and usage of PowerShell cmdlets and functions.
+
+.PARAMETER name
+    Specifies the name of the command to retrieve the definition for.
+
+.OUTPUTS
+    The definition of the specified command.
+
+.EXAMPLE
+    Get-CommandDefinition "ls"
+    Retrieves the definition of the "ls" command.
+
+.ALIASES
+    def -> Use the alias `def` to quickly get the definition of a command.
+#>
+function Get-CommandDefinition {
+    [CmdletBinding()]
+    [Alias("def")]
+    param (
+        [Parameter(Mandatory = $true)]
+        [string]$name
+    )
+
+    try {
+        $definition = Get-Command $name -ErrorAction Stop | Select-Object -ExpandProperty Definition
+        if ($definition) {
+            Write-Output $definition
+        }
+        else {
+            Write-LogMessage -Message "Command '$name' not found." -Level "WARNING"
+        }
+    }
+    catch {
+        Write-LogMessage -Message "An error occurred while retrieving the definition of '$name'." -Level "ERROR"
+    }
+}
+
+<#
+.SYNOPSIS
+    Exports an environment variable.
+
+.DESCRIPTION
+    This function exports an environment variable with the specified name and value. It sets the specified environment variable with the provided value.
+
+.PARAMETER name
+    Specifies the name of the environment variable.
+
+.PARAMETER value
+    Specifies the value of the environment variable.
+
+.OUTPUTS None
+    This function does not return any output.
+
+.EXAMPLE
+    Set-EnvVar "name" "value"
+    Exports an environment variable named "name" with the value "value".
+
+.ALIASES
+    env-var -> Use the alias `env-var` to quickly export an environment variable.
+#>
+function Set-EnvVar {
+    [CmdletBinding()]
+    [Alias("env-var")]
+    param (
+        [Parameter(Mandatory = $true)]
+        [string]$name,
+
+        [Parameter(Mandatory = $true)]
+        [string]$value
+    )
+
+    try {
+        Set-Item -Force -Path "env:$name" -Value $value -ErrorAction Stop
+    }
+    catch {
+        Write-LogMessage -Message "Failed to export environment variable '$name'." -Level "ERROR"
+    }
+}
+
+<#
+.SYNOPSIS
+    Retrieves a list of all running processes.
+
+.DESCRIPTION
+    This function retrieves information about all running processes on the system. It provides details such as the process name, ID, CPU usage, and memory usage.
+
+.PARAMETER Name
+    Specifies the name of a specific process to retrieve information for. If not provided, information for all processes is retrieved.
+
+.OUTPUTS
+    The process information for all running processes.
+
+.EXAMPLE
+    Get-AllProcesses
+    Retrieves information about all running processes.
+
+.ALIASES
+    pall -> Use the alias `pall` to quickly get information about all running processes.
+#>
+function Get-AllProcesses {
+    [CmdletBinding()]
+    [Alias("pall")]
+    param (
+        [Parameter(Mandatory = $false)]
+        [string]$name
+    )
+
+    try {
+        if ($name) {
+            Get-Process $name -ErrorAction Stop
+        }
+        else {
+            Get-Process
+        }
+    }
+    catch {
+        Write-LogMessage -Message "Failed to retrieve process information." -Level "ERROR"
+    }
+}
+
+<#
+.SYNOPSIS
+    Finds a process by name.
+
+.DESCRIPTION
+    This function searches for a process by its name. It retrieves information about the specified process, if found.
+
+.PARAMETER name
+    Specifies the name of the process to find.
+
+.OUTPUTS
+    The process information if found.
+
+.EXAMPLE
+    Get-ProcessByName "process"
+    Retrieves information about the process named "process".
+
+.ALIASES
+    pgrep -> Use the alias `pgrep` to quickly find a process by name.
+#>
+function Get-ProcessByName {
+    [CmdletBinding()]
+    [Alias("pgrep")]
+    param (
+        [Parameter(Mandatory = $true)]
+        [string]$name
+    )
+
+    try {
+        Get-Process $name -ErrorAction Stop
+    }
+    catch {
+        Write-Warning "No process with the name '$name' found."
+    }
+}
+
+<#
+.SYNOPSIS
+    Terminates a process by name.
+
+.DESCRIPTION
+    This function terminates a process by its name. It is useful for stopping processes that may be unresponsive or causing issues.
+
+.PARAMETER name
+    Specifies the name of the process to terminate.
+
+.OUTPUTS None
+    This function does not return any output.
+
+.EXAMPLE
+    Stop-ProcessByName "process"
+    Terminates the process named "process".
+
+.ALIASES
+    pkill -> Use the alias `pkill` to quickly stop a process by name.
+#>
+function Stop-ProcessByName {
+    [CmdletBinding()]
+    [Alias("pkill")]
+    param (
+        [Parameter(Mandatory = $true)]
+        [string]$name
+    )
+
+    $process = Get-Process $name -ErrorAction SilentlyContinue
+    if ($process) {
+        $process | Stop-Process -Force
+    }
+    else {
+        Write-LogMessage -Message "No process with the name '$name' found." -Level "WARNING"
     }
 }
