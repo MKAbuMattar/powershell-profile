@@ -1,5 +1,34 @@
 <#
 .SYNOPSIS
+    Checks if a command exists in the current environment.
+
+.DESCRIPTION
+    This function checks whether a specified command exists in the current PowerShell environment. It returns a boolean value indicating whether the command is available.
+
+.PARAMETER command
+    Specifies the command to check for existence.
+
+.OUTPUTS
+    $exists: True if the command exists, false otherwise.
+
+.EXAMPLE
+    Test-CommandExists "ls"
+    Checks if the "ls" command exists in the current environment.
+#>
+function Test-CommandExists {
+    [CmdletBinding()]
+    [Alias("command-exists")]
+    param (
+        [Parameter(Position = 0, Mandatory = $true)]
+        [string]$command
+    )
+
+    $exists = $null -ne (Get-Command $command -ErrorAction SilentlyContinue)
+    return $exists
+}
+
+<#
+.SYNOPSIS
     Reloads the PowerShell profile to apply changes.
 
 .DESCRIPTION

@@ -5,6 +5,7 @@
     Copyright         = '(c) 2024 Mohammad Abu Mattar'
     Description       = 'Utility module'
     FunctionsToExport = @(
+        'Test-CommandExists',
         'Invoke-ProfileReload',
         'Find-Files', 
         'Set-FreshFile',
@@ -15,6 +16,7 @@
     CmdletsToExport   = @()
     VariablesToExport = '*'
     AliasesToExport   = @(
+        'command-exists',
         'reload-profile',
         'ff', 
         'touch',
