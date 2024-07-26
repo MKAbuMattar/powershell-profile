@@ -37,12 +37,58 @@
 #       workflow.
 #
 # Created: 2021-09-01
-# Updated: 2024-05-11
+# Updated: 2024-07-11
 #
 # GitHub: https://github.com/MKAbuMattar/powershell-profile
 #
-# Version: 2.0.1
+# Version: 3.0.0-beta
 #------------------------------------------------------
+
+#######################################################
+# Logging Functions
+#######################################################
+
+<#
+.SYNOPSIS
+    Logs a message with a timestamp and log level.
+
+.DESCRIPTION
+    This function logs a message with a timestamp and log level. The default log level is "INFO".
+
+.PARAMETER Message
+    Specifies the message to log.
+
+.PARAMETER Level
+    Specifies the log level. Default is "INFO".
+
+.OUTPUTS
+    A log message with a timestamp and log level.
+
+.EXAMPLE
+    Write-LogMessage -Message "This is an informational message."
+    Logs an informational message with the default log level "INFO".
+
+.EXAMPLE
+    Write-LogMessage -Message "This is a warning message." -Level "WARNING"
+    Logs a warning message with the log level "WARNING".
+
+.ALIASES
+    log-message -> Use the alias `log-message` to quickly log a message.
+
+.NOTES
+    This function is used to log messages with a timestamp and log level.
+#>
+function Write-LogMessage {
+    [CmdletBinding()]
+    [Alias("log-message")]
+    param (
+        [string]$Message,
+        [string]$Level = "INFO"
+    )
+
+    $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+    Write-Output "[$timestamp][$Level] $Message"
+}
 
 #######################################################
 # Environment Variables
@@ -92,35 +138,35 @@ $CanConnectToGitHub = Test-Connection github.com -Count 1 -Quiet -TimeoutSeconds
 # Check if Terminal Icons module is installed
 #------------------------------------------------------
 if (-not (Get-Module -ListAvailable -Name Terminal-Icons)) {
-  Install-Module -Name Terminal-Icons -Scope CurrentUser -Force -SkipPublisherCheck
+    Install-Module -Name Terminal-Icons -Scope CurrentUser -Force -SkipPublisherCheck
 }
 
 #------------------------------------------------------
 # Check if PowerShellGet module is installed
 #------------------------------------------------------
 if (-not (Get-Module -ListAvailable -Name PowerShellGet)) {
-  Install-Module -Name PowerShellGet -Scope CurrentUser -Force -SkipPublisherCheck
+    Install-Module -Name PowerShellGet -Scope CurrentUser -Force -SkipPublisherCheck
 }
 
 #------------------------------------------------------
 # Check if CompletionPredictor module is installed
 #------------------------------------------------------
 if (-not (Get-Module -ListAvailable -Name CompletionPredictor)) {
-  Install-Module -Name CompletionPredictor -Scope CurrentUser -Force -SkipPublisherCheck
+    Install-Module -Name CompletionPredictor -Scope CurrentUser -Force -SkipPublisherCheck
 }
 
 #------------------------------------------------------
 # Check if PSReadLine module is installed
 #------------------------------------------------------
 if (-not (Get-Module -ListAvailable -Name PSReadLine)) {
-  Install-Module -Name PSReadLine -Scope CurrentUser -Force -SkipPublisherCheck
+    Install-Module -Name PSReadLine -Scope CurrentUser -Force -SkipPublisherCheck
 }
 
 #------------------------------------------------------
 # Check if Posh-Git module is installed
 #------------------------------------------------------
 if (-not (Get-Module -ListAvailable -Name Posh-Git)) {
-  Install-Module -Name Posh-Git -Scope CurrentUser -Force -SkipPublisherCheck
+    Install-Module -Name Posh-Git -Scope CurrentUser -Force -SkipPublisherCheck
 }
 
 #------------------------------------------------------
@@ -141,25 +187,25 @@ Set-PSReadLineOption -HistoryNoDuplicates
 Set-PSReadLineOption -BellStyle None
 Set-PSReadLineOption -Colors @{ "Selection" = "`e[7m" }
 Set-PSReadLineKeyHandler -Chord '"', "'" `
-  -BriefDescription SmartInsertQuote `
-  -LongDescription "Insert paired quotes if not already on a quote" `
-  -ScriptBlock {
-  param($key, $arg)
+    -BriefDescription SmartInsertQuote `
+    -LongDescription "Insert paired quotes if not already on a quote" `
+    -ScriptBlock {
+    param($key, $arg)
 
-  $line = $null
-  $cursor = $null
-  [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$line, [ref]$cursor)
-
-  if ($line.Length -gt $cursor -and $line[$cursor] -eq $key.KeyChar) {
-    # Just move the cursor
-    [Microsoft.PowerShell.PSConsoleReadLine]::SetCursorPosition($cursor + 1)
-  }
-  else {
-    # Insert matching quotes, move cursor to be in between the quotes
-    [Microsoft.PowerShell.PSConsoleReadLine]::Insert("$($key.KeyChar)" * 2)
+    $line = $null
+    $cursor = $null
     [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$line, [ref]$cursor)
-    [Microsoft.PowerShell.PSConsoleReadLine]::SetCursorPosition($cursor - 1)
-  }
+
+    if ($line.Length -gt $cursor -and $line[$cursor] -eq $key.KeyChar) {
+        # Just move the cursor
+        [Microsoft.PowerShell.PSConsoleReadLine]::SetCursorPosition($cursor + 1)
+    }
+    else {
+        # Insert matching quotes, move cursor to be in between the quotes
+        [Microsoft.PowerShell.PSConsoleReadLine]::Insert("$($key.KeyChar)" * 2)
+        [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$line, [ref]$cursor)
+        [Microsoft.PowerShell.PSConsoleReadLine]::SetCursorPosition($cursor - 1)
+    }
 }
 
 <#
@@ -172,20 +218,27 @@ Set-PSReadLineKeyHandler -Chord '"', "'" `
 .PARAMETER None
     This function does not accept any parameters.
 
-.OUTPUTS None
+.OUTPUTS
     This function does not return any output.
 
 .EXAMPLE
     Invoke-Starship-TransientFunction
     Invokes the Starship module transiently to load the Starship prompt.
-#>
-function Private:Invoke-StarshipTransientFunction {
-  [CmdletBinding()]
-  param (
-    # This function does not accept any parameters
-  )
 
-  &starship module character
+.ALIASES
+    starship-transient -> Use the alias `starship-transient` to quickly load the Starship prompt transiently.
+
+.NOTES
+    This function is used to load the Starship prompt transiently without permanently modifying the PowerShell environment.
+#>
+function Invoke-StarshipTransientFunction {
+    [CmdletBinding()]
+    [Alias("starship-transient")]
+    param (
+        # This function does not accept any parameters
+    )
+
+    &starship module character
 }
 
 #------------------------------------------------------
@@ -207,8 +260,17 @@ $ChocolateyProfile = "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
 # Import Chocolatey Profile
 #------------------------------------------------------
 if (Test-Path $ChocolateyProfile) {
-  Import-Module $ChocolateyProfile
+    Import-Module $ChocolateyProfile
 }
+
+#------------------------------------------------------
+# Load zoxide
+#------------------------------------------------------
+Invoke-Expression (& { (zoxide init powershell | Out-String) })
+
+#------------------------------------------------------
+# Load the profile for the current user
+#------------------------------------------------------
 
 <#
 .SYNOPSIS
@@ -220,51 +282,54 @@ if (Test-Path $ChocolateyProfile) {
 .PARAMETER None
     This function does not accept any parameters.
 
-.OUTPUTS None
+.OUTPUTS
     This function does not return any output.
 
 .EXAMPLE
     Update-Profile
     Checks for updates to the PowerShell profile and updates the local profile if changes are detected.
 
+.ALIASES
+    update-profile -> Use the alias `update-profile` to quickly check for updates to the PowerShell profile.
+
 .NOTES
     The profile update function is disabled by default. To enable it, uncomment the line that invokes the function at the end of the script.
 #>
-function Private:Update-Profile {
-  [CmdletBinding()]
-  param (
-    # This function does not accept any parameters
-  )
+function Update-Profile {
+    [CmdletBinding()]
+    [Alias("update-profile")]
+    param (
+        # This function does not accept any parameters
+    )
 
-  if (-not $global:CanConnectToGitHub) {
-    Write-Host "Skipping profile update check due to GitHub.com not responding within 1 second." -ForegroundColor Yellow
-    return
-  }
-
-  try {
-    $url = "https://raw.githubusercontent.com/MKAbuMattar/powershell-profile/main/Microsoft.PowerShell_profile.ps1"
-    $oldhash = Get-FileHash $PROFILE
-    Invoke-RestMethod $url -OutFile "$env:temp/Microsoft.PowerShell_profile.ps1"
-    $newhash = Get-FileHash "$env:temp/Microsoft.PowerShell_profile.ps1"
-    if ($newhash.Hash -ne $oldhash.Hash) {
-      Copy-Item -Path "$env:temp/Microsoft.PowerShell_profile.ps1" -Destination $PROFILE -Force
-      Write-Host "Profile has been updated. Please restart your shell to reflect changes" -ForegroundColor Magenta
+    if (-not $global:CanConnectToGitHub) {
+        Write-LogMessage -Message "Skipping profile update check due to GitHub.com not responding within 1 second." -Level "WARNING"
+        return
     }
-  }
-  catch {
-    Write-Error "Unable to check for `$profile updates"
-  }
-  finally {
-    Remove-Item "$env:temp/Microsoft.PowerShell_profile.ps1" -ErrorAction SilentlyContinue
-  }
+
+    try {
+        $url = "https://raw.githubusercontent.com/MKAbuMattar/powershell-profile/main/Microsoft.PowerShell_profile.ps1"
+        $oldhash = Get-FileHash $PROFILE
+        Invoke-RestMethod $url -OutFile "$env:temp/Microsoft.PowerShell_profile.ps1"
+        $newhash = Get-FileHash "$env:temp/Microsoft.PowerShell_profile.ps1"
+        if ($newhash.Hash -ne $oldhash.Hash) {
+            Copy-Item -Path "$env:temp/Microsoft.PowerShell_profile.ps1" -Destination $PROFILE -Force
+            Write-LogMessage -Message "Profile has been updated. Please restart your shell to reflect changes" -Level "INFO"
+        }
+    }
+    catch {
+        Write-LogMessage -Message "Unable to check for `$profile updates" -Level "WARNING"
+    }
+    finally {
+        Remove-Item "$env:temp/Microsoft.PowerShell_profile.ps1" -ErrorAction SilentlyContinue
+    }
 }
 
 #------------------------------------------------------
 # Invoke the profile update function
 #------------------------------------------------------
-# Invoke-Command -ScriptBlock ${function:Update-Profile} -ErrorAction SilentlyContinue
 if ($global:AutoUpdateProfile -eq $true) {
-  Invoke-Command -ScriptBlock ${function:Update-Profile} -ErrorAction SilentlyContinue
+    Invoke-Command -ScriptBlock ${function:Update-Profile} -ErrorAction SilentlyContinue
 }
 
 <#
@@ -277,58 +342,61 @@ if ($global:AutoUpdateProfile -eq $true) {
 .PARAMETER None
     This function does not accept any parameters.
 
-.OUTPUTS None
+.OUTPUTS
     This function does not return any output.
 
 .EXAMPLE
     Update-PowerShell
     Checks for updates to PowerShell and upgrades to the latest version if available.
 
+.ALIASES
+    update-ps1 -> Use the alias `update-ps1` to quickly check for updates to PowerShell.
+
 .NOTES
     The PowerShell update function is disabled by default. To enable it, uncomment the line that invokes the function at the end of the script.
 #>
-function Private:Update-PowerShell {
-  [CmdletBinding()]
-  param (
-    # This function does not accept any parameters
-  )
+function Update-PowerShell {
+    [CmdletBinding()]
+    [Alias("update-ps1")]
+    param (
+        # This function does not accept any parameters
+    )
 
-  if (-not $global:CanConnectToGitHub) {
-    Write-Host "Skipping PowerShell update check due to GitHub.com not responding within 1 second." -ForegroundColor Yellow
-    return
-  }
-
-  try {
-    Write-Host "Checking for PowerShell updates..." -ForegroundColor Cyan
-    $updateNeeded = $false
-    $currentVersion = $PSVersionTable.PSVersion.ToString()
-    $gitHubApiUrl = "https://api.github.com/repos/PowerShell/PowerShell/releases/latest"
-    $latestReleaseInfo = Invoke-RestMethod -Uri $gitHubApiUrl
-    $latestVersion = $latestReleaseInfo.tag_name.Trim('v')
-    if ($currentVersion -lt $latestVersion) {
-      $updateNeeded = $true
+    if (-not $global:CanConnectToGitHub) {
+        Write-LogMessage -Message "Skipping PowerShell update check due to GitHub.com not responding within 1 second." -Level "WARNING"
+        return
     }
 
-    if ($updateNeeded) {
-      Write-Host "Updating PowerShell..." -ForegroundColor Yellow
-      winget upgrade "Microsoft.PowerShell" --accept-source-agreements --accept-package-agreements
-      Write-Host "PowerShell has been updated. Please restart your shell to reflect changes" -ForegroundColor Magenta
+    try {
+        Write-LogMessage -Message "Checking for PowerShell updates..." -Level "INFO"
+        $updateNeeded = $false
+        $currentVersion = $PSVersionTable.PSVersion.ToString()
+        $gitHubApiUrl = "https://api.github.com/repos/PowerShell/PowerShell/releases/latest"
+        $latestReleaseInfo = Invoke-RestMethod -Uri $gitHubApiUrl
+        $latestVersion = $latestReleaseInfo.tag_name.Trim('v')
+        if ($currentVersion -lt $latestVersion) {
+            $updateNeeded = $true
+        }
+
+        if ($updateNeeded) {
+            Write-LogMessage -Message "Updating PowerShell..." -Level "INFO"
+            choco upgrade powershell -y
+            Write-LogMessage -Message "PowerShell has been updated. Please restart your shell to reflect changes" -Level "INFO"
+        }
+        else {
+            Write-LogMessage -Message "Your PowerShell is up to date." -Level "INFO"
+        }
     }
-    else {
-      Write-Host "Your PowerShell is up to date." -ForegroundColor Green
+    catch {
+        Write-LogMessage -Message "Failed to update PowerShell" -Level "WARNING"
     }
-  }
-  catch {
-    Write-Error "Failed to update PowerShell. Error: $_"
-  }
 }
 
 #------------------------------------------------------
 # Invoke the PowerShell update function
 #------------------------------------------------------
-# Invoke-Command -ScriptBlock ${function:Update-PowerShell} -ErrorAction SilentlyContinue
 if ($global:AutoUpdatePowerShell -eq $true) {
-  Invoke-Command -ScriptBlock ${function:Update-PowerShell} -ErrorAction SilentlyContinue
+    Invoke-Command -ScriptBlock ${function:Update-PowerShell} -ErrorAction SilentlyContinue
 }
 
 <#
@@ -348,15 +416,16 @@ if ($global:AutoUpdatePowerShell -eq $true) {
     Test-CommandExists "ls"
     Checks if the "ls" command exists in the current environment.
 #>
-function Private:Test-CommandExists {
-  [CmdletBinding()]
-  param (
-    [Parameter(Position = 0, Mandatory = $true)]
-    [string]$command
-  )
-  
-  $exists = $null -ne (Get-Command $command -ErrorAction SilentlyContinue)
-  return $exists
+function Test-CommandExists {
+    [CmdletBinding()]
+    [Alias("command-exists")]
+    param (
+        [Parameter(Position = 0, Mandatory = $true)]
+        [string]$command
+    )
+
+    $exists = $null -ne (Get-Command $command -ErrorAction SilentlyContinue)
+    return $exists
 }
 
 #------------------------------------------------------
@@ -386,7 +455,7 @@ Set-Alias -Name vim -Value $EDITOR
 .PARAMETER File
     Specifies the name of the file to create or update. If the file already exists, its timestamp will be updated.
 
-.OUTPUTS None
+.OUTPUTS
     This function does not return any output.
 
 .EXAMPLE
@@ -399,24 +468,27 @@ Set-Alias -Name vim -Value $EDITOR
 
 .ALIASES
     touch -> Use the alias `touch` to quickly create a new file or update the timestamp of an existing file.
-#>
-function Private:Set-FreshFile {
-  [CmdletBinding()]
-  [Alias("touch")]
-  param (
-    [Parameter(Mandatory = $true)]
-    [string]$File
-  )
 
-  # Check if the file exists
-  if (Test-Path $File) {
-    # If the file exists, update its timestamp
-      (Get-Item $File).LastWriteTime = Get-Date
-  }
-  else {
-    # If the file doesn't exist, create it with an empty content
-    "" | Out-File $File -Encoding ASCII
-  }
+.NOTES
+    This function can be used as an alias "touch" to quickly create a new file or update the timestamp of an existing file.
+#>
+function Set-FreshFile {
+    [CmdletBinding()]
+    [Alias("touch")]
+    param (
+        [Parameter(Mandatory = $true)]
+        [string]$File
+    )
+
+    # Check if the file exists
+    if (Test-Path $File) {
+        # If the file exists, update its timestamp
+        (Get-Item $File).LastWriteTime = Get-Date
+    }
+    else {
+        # If the file doesn't exist, create it with an empty content
+        "" | Out-File $File -Encoding ASCII
+    }
 }
 
 <#
@@ -442,19 +514,22 @@ function Private:Set-FreshFile {
 
 .ALIASES
     ff -> Use the alias `ff` to quickly find files matching a name pattern.
+
+.NOTES
+    This function is useful for quickly finding files that match a specific name pattern in the current directory and its subdirectories.
 #>
-function Private:Find-Files {
-  [CmdletBinding()]
-  [Alias("ff")]
-  param (
-    [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
-    [string]$Name
-  )
-  
-  # Search for files matching the specified name pattern
-  Get-ChildItem -Recurse -Filter $Name -ErrorAction SilentlyContinue | ForEach-Object {
-    Write-Output $_.FullName
-  }
+function Find-Files {
+    [CmdletBinding()]
+    [Alias("ff")]
+    param (
+        [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+        [string]$Name
+    )
+
+    # Search for files matching the specified name pattern
+    Get-ChildItem -Recurse -Filter $Name -ErrorAction SilentlyContinue | ForEach-Object {
+        Write-Output $_.FullName
+    }
 }
 
 <#
@@ -476,25 +551,28 @@ function Private:Find-Files {
 
 .ALIASES
     uptime -> Use the alias `uptime` to quickly get the system uptime.
-#>
-function Private:Get-Uptime {
-  [CmdletBinding()]
-  [Alias("uptime")]
-  param (
-    # This function does not accept any parameters
-  )
 
-  if ($PSVersionTable.PSVersion.Major -eq 5) {
-    Get-WmiObject Win32_OperatingSystem | ForEach-Object {
-      $uptime = (Get-Date) - $_.ConvertToDateTime($_.LastBootUpTime)
-      [PSCustomObject]@{
-        Uptime = $uptime.Days, $uptime.Hours, $uptime.Minutes, $uptime.Seconds -join ':'
-      }
+.NOTES
+    This function is useful for checking how long the system has been running since the last boot.
+#>
+function Get-Uptime {
+    [CmdletBinding()]
+    [Alias("uptime")]
+    param (
+        # This function does not accept any parameters
+    )
+
+    if ($PSVersionTable.PSVersion.Major -eq 5) {
+        Get-WmiObject Win32_OperatingSystem | ForEach-Object {
+            $uptime = (Get-Date) - $_.ConvertToDateTime($_.LastBootUpTime)
+            [PSCustomObject]@{
+                Uptime = $uptime.Days, $uptime.Hours, $uptime.Minutes, $uptime.Seconds -join ':'
+            }
+        }
     }
-  }
-  else {
-    net statistics workstation | Select-String "since" | ForEach-Object { $_.ToString().Replace('Statistics since ', '') }
-  }
+    else {
+        net statistics workstation | Select-String "since" | ForEach-Object { $_.ToString().Replace('Statistics since ', '') }
+    }
 }
 
 <#
@@ -507,7 +585,7 @@ function Private:Get-Uptime {
 .PARAMETER None
     This function does not accept any parameters.
 
-.OUTPUTS None
+.OUTPUTS
     This function does not return any output.
 
 .EXAMPLE
@@ -516,21 +594,24 @@ function Private:Get-Uptime {
 
 .ALIASES
     reload-profile -> Use the alias `reload-profile` to quickly reload the profile.
-#>
-function Private:Invoke-ProfileReload {
-  [CmdletBinding()]
-  [Alias("reload-profile")]
-  param (
-    # This function does not accept any parameters
-  )
 
-  try {
-    & $profile
-    Write-Host "PowerShell profile reloaded successfully." -ForegroundColor Green
-  }
-  catch {
-    Write-Error "Failed to reload the PowerShell profile. Error: $_"
-  }
+.NOTES
+    This function is useful for quickly reloading the PowerShell profile to apply changes without restarting the shell.
+#>
+function Invoke-ProfileReload {
+    [CmdletBinding()]
+    [Alias("reload-profile")]
+    param (
+        # This function does not accept any parameters
+    )
+
+    try {
+        & $profile
+        Write-LogMessage -Message "PowerShell profile reloaded successfully." -Level "INFO"
+    }
+    catch {
+        Write-LogMessage -Message "Failed to reload the PowerShell profile." -Level "ERROR"
+    }
 }
 
 <#
@@ -552,36 +633,39 @@ function Private:Invoke-ProfileReload {
 
 .ALIASES
     unzip -> Use the alias `unzip` to quickly extract a file.
+
+.NOTES
+    This function is useful for quickly extracting files to the current directory.
 #>
-function Private:Expand-File {
-  [CmdletBinding()]
-  [Alias("unzip")]
-  param (
-    [Parameter(Mandatory = $true, Position = 0)]
-    [string]$File
-  )
+function Expand-File {
+    [CmdletBinding()]
+    [Alias("unzip")]
+    param (
+        [Parameter(Mandatory = $true, Position = 0)]
+        [string]$File
+    )
 
-  BEGIN {
-    Write-Host "Starting file extraction process..." -ForegroundColor Cyan
-  }
+    BEGIN {
+        Write-LogMessage -Message "Starting file extraction process..." -Level "INFO"
+    }
 
-  PROCESS {
-    try {
-      Write-Host "Extracting file '$File' to '$PWD'..." -ForegroundColor Cyan
-      $FullFilePath = Get-Item -Path $File -ErrorAction Stop | Select-Object -ExpandProperty FullName
-      Expand-Archive -Path $FullFilePath -DestinationPath $PWD -Force -ErrorAction Stop
-      Write-Host "File extraction completed successfully." -ForegroundColor Green
+    PROCESS {
+        try {
+            Write-LogMessage -Message "Extracting file '$File' to '$PWD'..." -Level "INFO"
+            $FullFilePath = Get-Item -Path $File -ErrorAction Stop | Select-Object -ExpandProperty FullName
+            Expand-Archive -Path $FullFilePath -DestinationPath $PWD -Force -ErrorAction Stop
+            Write-LogMessage -Message "File extraction completed successfully." -Level "INFO"
+        }
+        catch {
+            Write-LogMessage -Message "Failed to extract file '$File'." -Level "ERROR"
+        }
     }
-    catch {
-      Write-Error "Failed to extract file '$File'. Error: $_"
-    }
-  }
 
-  END {
-    if (-not $Error) {
-      Write-Host "File extraction process completed." -ForegroundColor Cyan
+    END {
+        if (-not $Error) {
+            Write-LogMessage -Message "File extraction process completed." -Level "INFO"
+        }
     }
-  }
 }
 
 <#
@@ -607,38 +691,38 @@ function Private:Expand-File {
 .ALIASES
     grep -> Use the alias `grep` to quickly search for a string in a file.
 #>
-function Private:Get-ContentMatching {
-  [CmdletBinding()]
-  [Alias("grep")]
-  param (
-    [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
-    [string]$Pattern,
+function Get-ContentMatching {
+    [CmdletBinding()]
+    [Alias("grep")]
+    param (
+        [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
+        [string]$Pattern,
 
-    [Parameter(Position = 1)]
-    [string]$Path = $PWD
-  )
+        [Parameter(Position = 1)]
+        [string]$Path = $PWD
+    )
 
-  try {
-    if (-not (Test-Path $Path)) {
-      Write-Error "The specified path '$Path' does not exist."
-      return
-    }
+    try {
+        if (-not (Test-Path $Path)) {
+            Write-LogMessage -Message "The specified path '$Path' does not exist." -Level "WARNING"
+            return
+        }
 
-    if (Test-Path $Path -PathType Leaf) {
-      Get-Content $Path | Select-String $Pattern
+        if (Test-Path $Path -PathType Leaf) {
+            Get-Content $Path | Select-String $Pattern
+        }
+        elseif (Test-Path $Path -PathType Container) {
+            Get-ChildItem -Path $Path -File | ForEach-Object {
+                Get-Content $_.FullName | Select-String $Pattern
+            }
+        }
+        else {
+            Write-LogMessage -Message "The specified path '$Path' is neither a file nor a directory." -Level "WARNING"
+        }
     }
-    elseif (Test-Path $Path -PathType Container) {
-      Get-ChildItem -Path $Path -File | ForEach-Object {
-        Get-Content $_.FullName | Select-String $Pattern
-      }
+    catch {
+        Write-LogMessage -Message "An error occurred while searching for the pattern." -Level "ERROR"
     }
-    else {
-      Write-Error "The specified path '$Path' is neither a file nor a directory."
-    }
-  }
-  catch {
-    Write-Error "An error occurred: $_"
-  }
 }
 
 <#
@@ -661,19 +745,19 @@ function Private:Get-ContentMatching {
 .ALIASES
     df -> Use the alias `df` to quickly get volume information.
 #>
-function Private:Get-VolumeInfo {
-  [CmdletBinding()]
-  [Alias("df")]
-  param(
-    # This function does not accept any parameters
-  )
+function Get-VolumeInfo {
+    [CmdletBinding()]
+    [Alias("df")]
+    param(
+        # This function does not accept any parameters
+    )
 
-  try {
-    Get-Volume
-  }
-  catch {
-    Write-Error "An error occurred while retrieving volume information: $_"
-  }
+    try {
+        Get-Volume
+    }
+    catch {
+        Write-LogMessage -Message "An error occurred while retrieving volume information." -Level "ERROR"
+    }
 }
 
 <#
@@ -702,27 +786,27 @@ function Private:Get-VolumeInfo {
 .ALIASES
     sed -> Use the alias `sed` to quickly perform text replacements.
 #>
-function Private:Set-ContentMatching {
-  [CmdletBinding()]
-  [Alias("sed")]
-  param (
-    [Parameter(Mandatory = $true)]
-    [string]$file,
+function Set-ContentMatching {
+    [CmdletBinding()]
+    [Alias("sed")]
+    param (
+        [Parameter(Mandatory = $true)]
+        [string]$file,
 
-    [Parameter(Mandatory = $true)]
-    [string]$find,
+        [Parameter(Mandatory = $true)]
+        [string]$find,
 
-    [Parameter(Mandatory = $true)]
-    [string]$replace
-  )
+        [Parameter(Mandatory = $true)]
+        [string]$replace
+    )
 
-  try {
-    $content = Get-Content $file -ErrorAction Stop
-    $content -replace $find, $replace | Set-Content $file -ErrorAction Stop
-  }
-  catch {
-    Write-Error "An error occurred while performing text replacement: $_"
-  }
+    try {
+        $content = Get-Content $file -ErrorAction Stop
+        $content -replace $find, $replace | Set-Content $file -ErrorAction Stop
+    }
+    catch {
+        Write-LogMessage -Message "An error occurred while performing text replacement." -Level "ERROR"
+    }
 }
 
 <#
@@ -745,26 +829,26 @@ function Private:Set-ContentMatching {
 .ALIASES
     def -> Use the alias `def` to quickly get the definition of a command.
 #>
-function Private:Get-CommandDefinition {
-  [CmdletBinding()]
-  [Alias("def")]
-  param (
-    [Parameter(Mandatory = $true)]
-    [string]$name
-  )
+function Get-CommandDefinition {
+    [CmdletBinding()]
+    [Alias("def")]
+    param (
+        [Parameter(Mandatory = $true)]
+        [string]$name
+    )
 
-  try {
-    $definition = Get-Command $name -ErrorAction Stop | Select-Object -ExpandProperty Definition
-    if ($definition) {
-      Write-Output $definition
+    try {
+        $definition = Get-Command $name -ErrorAction Stop | Select-Object -ExpandProperty Definition
+        if ($definition) {
+            Write-Output $definition
+        }
+        else {
+            Write-LogMessage -Message "Command '$name' not found." -Level "WARNING"
+        }
     }
-    else {
-      Write-Warning "Command '$name' not found."
+    catch {
+        Write-LogMessage -Message "An error occurred while retrieving the definition of '$name'." -Level "ERROR"
     }
-  }
-  catch {
-    Write-Error "An error occurred while retrieving the definition of '$name': $_"
-  }
 }
 
 <#
@@ -788,62 +872,66 @@ function Private:Get-CommandDefinition {
     Exports an environment variable named "name" with the value "value".
 
 .ALIASES
-    export -> Use the alias `export` to quickly set an environment variable.
+    env-var -> Use the alias `env-var` to quickly export an environment variable.
 #>
-function Private:Set-EnvVar {
-  [CmdletBinding()]
-  [Alias("export")]
-  param (
-    [Parameter(Mandatory = $true)]
-    [string]$name,
+function Set-EnvVar {
+    [CmdletBinding()]
+    [Alias("env-var")]
+    param (
+        [Parameter(Mandatory = $true)]
+        [string]$name,
 
-    [Parameter(Mandatory = $true)]
-    [string]$value
-  )
+        [Parameter(Mandatory = $true)]
+        [string]$value
+    )
 
-  try {
-    Set-Item -Force -Path "env:$name" -Value $value -ErrorAction Stop
-  }
-  catch {
-    Write-Error "Failed to export environment variable '$name': $_"
-  }
+    try {
+        Set-Item -Force -Path "env:$name" -Value $value -ErrorAction Stop
+    }
+    catch {
+        Write-LogMessage -Message "Failed to export environment variable '$name'." -Level "ERROR"
+    }
 }
 
 <#
 .SYNOPSIS
-    Terminates a process by name.
+    Retrieves a list of all running processes.
 
 .DESCRIPTION
-    This function terminates a process by its name. It is useful for stopping processes that may be unresponsive or causing issues.
+    This function retrieves information about all running processes on the system. It provides details such as the process name, ID, CPU usage, and memory usage.
 
-.PARAMETER name
-    Specifies the name of the process to terminate.
+.PARAMETER Name
+    Specifies the name of a specific process to retrieve information for. If not provided, information for all processes is retrieved.
 
-.OUTPUTS None
-    This function does not return any output.
+.OUTPUTS
+    The process information for all running processes.
 
 .EXAMPLE
-    Stop-ProcessByName "process"
-    Terminates the process named "process".
+    Get-AllProcesses
+    Retrieves information about all running processes.
 
 .ALIASES
-    pkill -> Use the alias `pkill` to quickly stop a process by name.
+    pall -> Use the alias `pall` to quickly get information about all running processes.
 #>
-function Private:Stop-ProcessByName {
-  [CmdletBinding()]
-  [Alias("pkill")]
-  param (
-    [Parameter(Mandatory = $true)]
-    [string]$name
-  )
+function Get-AllProcesses {
+    [CmdletBinding()]
+    [Alias("pall")]
+    param (
+        [Parameter(Mandatory = $false)]
+        [string]$name
+    )
 
-  $process = Get-Process $name -ErrorAction SilentlyContinue
-  if ($process) {
-    $process | Stop-Process -Force
-  }
-  else {
-    Write-Warning "No process with the name '$name' found."
-  }
+    try {
+        if ($name) {
+            Get-Process $name -ErrorAction Stop
+        }
+        else {
+            Get-Process
+        }
+    }
+    catch {
+        Write-LogMessage -Message "Failed to retrieve process information." -Level "ERROR"
+    }
 }
 
 <#
@@ -866,508 +954,20 @@ function Private:Stop-ProcessByName {
 .ALIASES
     pgrep -> Use the alias `pgrep` to quickly find a process by name.
 #>
-function Private:Get-ProcessByName {
-  [CmdletBinding()]
-  [Alias("pgrep")]
-  param (
-    [Parameter(Mandatory = $true)]
-    [string]$name
-  )
+function Get-ProcessByName {
+    [CmdletBinding()]
+    [Alias("pgrep")]
+    param (
+        [Parameter(Mandatory = $true)]
+        [string]$name
+    )
 
-  try {
-    Get-Process $name -ErrorAction Stop
-  }
-  catch {
-    Write-Warning "No process with the name '$name' found."
-  }
-}
-
-<#
-.SYNOPSIS
-    Gets the first n lines of a file.
-
-.DESCRIPTION
-    This function retrieves the top n lines of the specified file. It is useful for quickly viewing the beginning of log files or other large text files.
-
-.PARAMETER Path
-    Specifies the path to the file to retrieve the content from.
-
-.PARAMETER n
-    Specifies the number of lines to retrieve from the beginning of the file. The default value is 10.
-
-.OUTPUTS
-    The top n lines of the file content.
-
-.EXAMPLE
-    Get-HeadContent "file.txt" 10
-    Retrieves the first 10 lines of the file "file.txt".
-
-.ALIASES
-    head -> Use the alias `head` to quickly retrieve the top n lines of a file.
-#>
-function Private:Get-HeadContent {
-  [CmdletBinding()]
-  [Alias("head")]
-  param (
-    [Parameter(Position = 0, Mandatory = $true, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
-    [string]$Path,
-
-    [Parameter(Position = 1)]
-    [ValidateRange(1, [int]::MaxValue)]
-    [int]$n = 10
-  )
-
-  try {
-    Get-Content -Path $Path -TotalCount $n -ErrorAction Stop
-  }
-  catch {
-    Write-Warning "Failed to retrieve the top $n lines of '$Path'. Error: $_"
-  }
-}
-
-<#
-.SYNOPSIS
-    Gets the last n lines of a file.
-
-.DESCRIPTION
-    This function retrieves the bottom n lines of the specified file. It is useful for quickly viewing the end of log files or other large text files.
-
-.PARAMETER Path
-    Specifies the path to the file to retrieve the content from.
-
-.PARAMETER n
-    Specifies the number of lines to retrieve from the end of the file. The default value is 10.
-
-.OUTPUTS
-    The bottom n lines of the file content.
-
-.EXAMPLE
-    Get-TailContent "file.txt" 10
-    Retrieves the last 10 lines of the file "file.txt".
-
-.ALIASES
-    tail -> Use the alias `tail` to quickly retrieve the last n lines of a file.
-#>
-function Private:Get-TailContent {
-  [CmdletBinding()]
-  [Alias("tail")]
-  param (
-    [Parameter(Position = 0, Mandatory = $true, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
-    [string]$Path,
-
-    [Parameter(Position = 1)]
-    [ValidateRange(1, [int]::MaxValue)]
-    [int]$n = 10
-  )
-
-  try {
-    Get-Content -Path $Path -Tail $n -ErrorAction Stop
-  }
-  catch {
-    Write-Warning "Failed to retrieve the last $n lines of '$Path'. Error: $_"
-  }
-}
-
-<#
-.SYNOPSIS
-    Creates a new file with the specified name.
-
-.DESCRIPTION
-    This function creates a new file with the specified name in the current directory. It is a shorthand for creating a new file using the `New-Item` cmdlet.
-
-.PARAMETER name
-    Specifies the name of the file to create.
-
-.OUTPUTS None
-    This function does not return any output.
-
-.EXAMPLE
-    New-File "file.txt"
-    Creates a new file named "file.txt" in the current directory.
-
-.ALIASES
-    nf -> Use the alias `nf` to quickly create a new file.
-#>
-function Private:New-File {
-  [CmdletBinding()]
-  [Alias("nf")]
-  param (
-    [Parameter(Position = 0, Mandatory = $true)]
-    [string]$name
-  )
-
-  try {
-    New-Item -ItemType File -Path $PWD -Name $name -ErrorAction Stop | Out-Null
-  }
-  catch {
-    Write-Warning "Failed to create file '$name'. Error: $_"
-  }
-}
-
-<#
-.SYNOPSIS
-    Creates a new directory with the specified name and sets the current location to that directory.
-
-.DESCRIPTION
-    This function creates a new directory with the specified name and then changes the current working directory to that newly created directory. It is a combination of the `New-Item` and `Set-Location` cmdlets.
-
-.PARAMETER name
-    Specifies the name of the directory to create.
-
-.OUTPUTS None
-    This function does not return any output.
-
-.EXAMPLE
-    New-Directory "NewDirectory"
-    Creates a new directory named "NewDirectory" and changes the current location to it.
-
-.ALIASES
-    mkcd -> Use the alias `mkcd` to quickly create a new directory and change to it.
-#>
-function Private:New-Directory {
-  [CmdletBinding()]
-  [Alias("mkcd")]
-  param (
-    [Parameter(Position = 0, Mandatory = $true)]
-    [string]$name
-  )
-
-  try {
-    $newDir = New-Item -Path $PWD -Name $name -ItemType Directory -ErrorAction Stop
-    Set-Location -Path $newDir.FullName
-  }
-  catch {
-    Write-Warning "Failed to create directory '$name'. Error: $_"
-  }
-}
-
-<#
-.SYNOPSIS
-    Searches through the full command history for occurrences of a specified term.
-
-.DESCRIPTION
-    This function searches through the full command history for occurrences of the specified term. It retrieves commands that match the search term from the entire command history. The function uses the `-like` operator to perform a wildcard search.
-
-.PARAMETER searchTerm
-    Specifies the term to search for in the command history.
-
-.OUTPUTS
-    The commands from the command history that match the search term.
-
-.EXAMPLE
-    hist "command"
-    Searches the full command history for occurrences of the term "command".
-
-.ALIASES
-    hist -> Use the alias `hist` to quickly search the full command history.
-#>
-function Private:Find-InHistory {
-  [CmdletBinding()]
-  [Alias("hist")]
-  param (
-    [Parameter(Position = 0, Mandatory = $true, ValueFromPipeline = $true)]
-    [string]$searchTerm
-  )
-
-  if (-not $searchTerm) {
-    Write-Warning "Please provide a search term."
-    return
-  }
-
-  Write-Host "Finding in full history using {`$_ -like `"*$searchTerm*`"}"
-  Get-Content (Get-PSReadlineOption).HistorySavePath |
-  Where-Object { $_ -like "*$searchTerm*" } | Select-Object -Unique | more
-}
-
-<#
-.SYNOPSIS
-    Displays the process tree of the system.
-
-.DESCRIPTION
-    This function retrieves the process tree of the system, showing the parent-child relationships between processes. It provides a hierarchical view of the processes running on the system.
-
-.PARAMETER None
-    This function does not accept any parameters.
-
-.OUTPUTS
-    The process tree of the system.
-
-.EXAMPLE
-    Get-ProcessTree
-    Displays the process tree of the system.
-
-.ALIASES
-    pstree -> Use the alias `pstree` to quickly display the process tree.
-#>
-function Private:Get-ProcessTree {
-  [CmdletBinding()]
-  [Alias("pstree")]
-  param (
-    # This function does not accept any parameters
-  )
-  $ProcessesById = @{}
-  foreach ($Process in (Get-WMIObject -Class Win32_Process)) {
-    $ProcessesById[$Process.ProcessId] = $Process
-  }
-
-  $ProcessesWithoutParents = @()
-  $ProcessesByParent = @{}
-  foreach ($Pair in $ProcessesById.GetEnumerator()) {
-    $Process = $Pair.Value
-
-    if (($Process.ParentProcessId -eq 0) -or !$ProcessesById.ContainsKey($Process.ParentProcessId)) {
-      $ProcessesWithoutParents += $Process
-      continue
+    try {
+        Get-Process $name -ErrorAction Stop
     }
-
-    if (!$ProcessesByParent.ContainsKey($Process.ParentProcessId)) {
-      $ProcessesByParent[$Process.ParentProcessId] = @()
+    catch {
+        Write-Warning "No process with the name '$name' found."
     }
-    $Siblings = $ProcessesByParent[$Process.ParentProcessId]
-    $Siblings += $Process
-    $ProcessesByParent[$Process.ParentProcessId] = $Siblings
-  }
-
-  function Show-ProcessTree([UInt32]$ProcessId, $IndentLevel) {
-    $Process = $ProcessesById[$ProcessId]
-    $Indent = " " * $IndentLevel
-    if ($Process.CommandLine) {
-      $Description = $Process.CommandLine
-    }
-    else {
-      $Description = $Process.Caption
-    }
-
-    Write-Output ("{0,6}{1} {2}" -f $Process.ProcessId, $Indent, $Description)
-    foreach ($Child in ($ProcessesByParent[$ProcessId] | Sort-Object CreationDate)) {
-      Show-ProcessTree $Child.ProcessId ($IndentLevel + 4)
-    }
-  }
-
-  Write-Output ("{0,6} {1}" -f "PID", "Command Line")
-  Write-Output ("{0,6} {1}" -f "---", "------------")
-
-  foreach ($Process in ($ProcessesWithoutParents | Sort-Object CreationDate)) {
-    Show-ProcessTree $Process.ProcessId 0
-  }
-}
-
-#######################################################
-# Navigation Shortcuts
-#######################################################
-
-<#
-.SYNOPSIS
-    Changes the current location to the root directory.
-
-.DESCRIPTION
-    This function changes the current working directory to the root directory, typically the user's home directory or the root of the filesystem.
-
-.PARAMETER None
-    This function does not accept any parameters.
-
-.OUTPUTS None
-    This function does not return any output.
-
-.EXAMPLE
-    Set-Home
-    Changes the current location to the root directory.
-
-.ALIASES
-    root -> Use the alias `root` to quickly change to the root directory.
-#>
-function Private:Set-Home {
-  [CmdletBinding()]
-  [Alias("root")]
-  param (
-    # This function does not accept any parameters
-  )
-
-  Set-Location -Path $HOME
-}
-
-<#
-.SYNOPSIS
-    Changes the current location to the Documents directory.
-
-.DESCRIPTION
-    This function changes the current working directory to the Documents directory, where user documents are typically stored.
-
-.PARAMETER None
-    This function does not accept any parameters.
-
-.OUTPUTS None
-    This function does not return any output.
-
-.EXAMPLE
-    Set-Documents
-    Changes the current location to the Documents directory.
-
-.ALIASES
-    doc -> Use the alias `doc` to quickly change to the Documents directory.
-#>
-function Private:Set-Documents {
-  [CmdletBinding()]
-  [Alias("doc")]
-  param (
-    # This function does not accept any parameters
-  )
-
-  Set-Location -Path $HOME\Documents
-}
-
-<#
-.SYNOPSIS
-    Changes the current location to the Downloads directory.
-
-.DESCRIPTION
-    This function changes the current working directory to the Downloads directory, where downloaded files are typically stored.
-
-.PARAMETER None
-    This function does not accept any parameters.
-
-.OUTPUTS None
-    This function does not return any output.
-
-.EXAMPLE
-    Set-Downloads
-    Changes the current location to the Downloads directory.
-
-.ALIASES
-    dl -> Use the alias `dl` to quickly change to the Downloads directory.
-#>
-function Private:Set-Downloads {
-  [CmdletBinding()]
-  [Alias("dl")]
-  param (
-    # This function does not accept any parameters
-  )
-
-  Set-Location -Path $HOME\Downloads
-}
-
-<#
-.SYNOPSIS
-    Changes the current location to the Desktop directory.
-
-.DESCRIPTION
-    This function changes the current working directory to the Desktop directory, which is typically where user desktop files and shortcuts are stored.
-
-.PARAMETER None
-    This function does not accept any parameters.
-
-.OUTPUTS None
-    This function does not return any output.
-
-.EXAMPLE
-    Set-Desktop
-    Changes the current location to the Desktop directory.
-
-.ALIASES
-    dtop -> Use the alias `dtop` to quickly change to the Desktop directory.
-#>
-function Private:Set-Desktop {
-  [CmdletBinding()]
-  [Alias("dtop")]
-  param (
-    # This function does not accept any parameters
-  )
-
-  Set-Location -Path $HOME\Desktop
-}
-
-<#
-.SYNOPSIS
-    Changes the current location to the D:\ directory.
-
-.DESCRIPTION
-    This function changes the current working directory to the D:\ directory. It is useful for quickly navigating to a specific drive.
-
-.PARAMETER None
-    This function does not accept any parameters.
-
-.OUTPUTS None
-    This function does not return any output.
-
-.EXAMPLE
-    Set-DDisk
-    Changes the current location to the D:\ directory.
-
-.ALIASES
-    dc -> Use the alias `dc` to quickly change to the D:\ directory.
-#>
-function Private:Set-DDisk {
-  [CmdletBinding()]
-  [Alias("dc")]
-  param (
-    # This function does not accept any parameters
-  )
-
-  Set-Location -Path "D:\"
-}
-
-#######################################################
-# Profile Shortcuts
-#######################################################
-
-<#
-.SYNOPSIS
-    Opens the PowerShell profile in the default text editor.
-
-.DESCRIPTION
-    This function opens the PowerShell profile file (`Microsoft.PowerShell_profile.ps1`) in the default text editor. You can modify this file to customize your PowerShell environment.
-
-.PARAMETER None
-    This function does not accept any parameters.
-
-.OUTPUTS None
-    This function does not return any output.
-
-.EXAMPLE
-    Edit-Profile
-    Opens the PowerShell profile in the default text editor.
-
-.ALIASES
-    ep -> Use the alias `ep` to quickly edit the PowerShell profile.
-#>
-function Private:Edit-Profile {
-  [CmdletBinding()]
-  [Alias("ep")]
-  param (
-    # This function does not accept any parameters
-  )
-
-  $PROFILE | Invoke-Item
-}
-
-<#
-.SYNOPSIS
-    Retrieves detailed system information.
-
-.DESCRIPTION
-    This function retrieves various details about the system, including hardware and operating system information, such as the manufacturer, model, operating system version, and more.
-
-.PARAMETER None
-    This function does not accept any parameters.
-
-.OUTPUTS
-    The system information retrieved by the Get-ComputerInfo cmdlet.
-
-.EXAMPLE
-    Get-SystemInfo
-    Retrieves and displays detailed system information.
-
-.ALIASES
-    sysinfo -> Use the alias `sysinfo` to quickly get system information.
-#>
-function Private:Get-SystemInfo {
-  [CmdletBinding()]
-  [Alias("sysinfo")]
-  param (
-    # This function does not accept any parameters
-  )
-  
-  Get-ComputerInfo 
 }
 
 <#
@@ -1377,909 +977,32 @@ function Private:Get-SystemInfo {
 .DESCRIPTION
     This function terminates a process by its name. It is useful for stopping processes that may be unresponsive or causing issues.
 
-.PARAMETER Name
+.PARAMETER name
     Specifies the name of the process to terminate.
 
 .OUTPUTS None
     This function does not return any output.
 
 .EXAMPLE
-    Stop-TerminateProcess "notepad"
-    Terminates the "notepad" process.
+    Stop-ProcessByName "process"
+    Terminates the process named "process".
 
 .ALIASES
-    k9 -> Use the alias `k9` to quickly terminate a process by name.
+    pkill -> Use the alias `pkill` to quickly stop a process by name.
 #>
-function Private:Stop-TerminateProcess {
-  [CmdletBinding()]
-  [Alias("k9")]
-  param (
-    [Parameter(Position = 0, Mandatory = $true)]
-    [string]$Name
-  )
-  
-  Stop-Process -Name $Name 
-}
-
-<#
-.SYNOPSIS
-    Flushes the DNS cache to resolve DNS-related issues.
-
-.DESCRIPTION
-    This function clears the DNS cache on the local machine, which can help resolve DNS-related problems such as DNS resolution failures or outdated DNS records.
-
-.PARAMETER None
-    This function does not accept any parameters.
-
-.OUTPUTS None
-    This function does not return any output.
-
-.EXAMPLE
-    Clear-DnsClientCache
-    Flushes the DNS cache on the local machine.
-
-.ALIASES
-    flushdns -> Use the alias `flushdns` to quickly flush the DNS cache.
-#>
-function Private:Clear-DnsCache {
-  [CmdletBinding()]
-  [Alias("flushdns")]
-  param (
-    # This function does not accept any parameters
-  )
-  
-  Clear-DnsClientCache 
-}
-
-<#
-.SYNOPSIS
-    Lists files and directories.
-
-.DESCRIPTION
-    This function lists files and directories either in the current directory or in the specified path.
-
-.PARAMETER Path
-    Specifies the path of the directory to list. If no path is provided, the current directory is listed.
-
-.OUTPUTS
-    The files and directories in the specified path.
-
-.EXAMPLE
-    Get-ChildItemFormatted
-    Lists files and directories in the current directory.
-
-.EXAMPLE
-    Get-ChildItemFormatted "C:\Users"
-    Lists files and directories in the "C:\Users" directory.
-
-.ALIASES
-    la -> Use the alias `la` to list files and directories in the current directory.
-#>
-function Private:Get-ChildItemFormatted {
-  [CmdletBinding()]
-  [Alias("la")]
-  param (
-    [Parameter(Position = 0)]
-    [string]$Path = "."
-  )
-
-  Get-ChildItem -Path $Path -Force | Format-Table -AutoSize
-}
-
-#######################################################
-# Move Up Directory
-#######################################################
-
-<#
-.SYNOPSIS
-    Moves up one directory level.
-
-.DESCRIPTION
-    This function changes the current working directory to the parent directory of the current directory. It is useful for navigating up one level in the directory structure.
-
-.PARAMETER None
-    This function does not accept any parameters.
-
-.OUTPUTS None
-    This function does not return any output.
-
-.EXAMPLE
-    Invoke-UpOneDirectoryLevel
-    Moves up one directory level.
-
-.ALIASES
-    cd.1 -> Use the alias `cd.1` to quickly move up one directory level.
-    .. -> Use the alias `..` to quickly move up one directory level.
-#>
-function Private:Invoke-UpOneDirectoryLevel {
-  [CmdletBinding()]
-  [Alias("cd.1")]
-  [Alias("..")]
-  param (
-    # This function does not accept any parameters
-  )
-
-  Set-Location -Path .. -ErrorAction SilentlyContinue
-}
-
-<#
-.SYNOPSIS
-    Moves up two directory levels.
-
-.DESCRIPTION
-    This function changes the current working directory to the parent directory of the parent directory of the current directory. It is useful for navigating up two levels in the directory structure.
-
-.PARAMETER None
-    This function does not accept any parameters.
-
-.OUTPUTS None
-    This function does not return any output.
-
-.EXAMPLE
-    Invoke-UpTwoDirectoryLevels
-    Moves up two directory levels.
-
-.ALIASES
-    cd.2 -> Use the alias `cd.2` to quickly move up two directory levels.
-    ... -> Use the alias `...` to quickly move up two directory levels.
-#>
-function Private:Invoke-UpTwoDirectoryLevels {
-  [CmdletBinding()]
-  [Alias("cd.2")]
-  [Alias("...")]
-  param (
-    # This function does not accept any parameters
-  )
-
-  Set-Location -Path ..\.. -ErrorAction SilentlyContinue
-}
-
-<#
-.SYNOPSIS
-    Moves up three directory levels.
-
-.DESCRIPTION
-    This function changes the current working directory to the parent directory of the parent directory of the parent directory of the current directory. It is useful for navigating up three levels in the directory structure.
-
-.PARAMETER None
-    This function does not accept any parameters.
-
-.OUTPUTS None
-    This function does not return any output.
-
-.EXAMPLE
-    Invoke-UpThreeDirectoryLevels
-    Moves up three directory levels.
-
-.ALIASES
-    cd.3 -> Use the alias `cd.3` to quickly move up three directory levels.
-    .... -> Use the alias `....` to quickly move up three directory levels.
-#>
-function Private:Invoke-UpThreeDirectoryLevels {
-  [CmdletBinding()]
-  [Alias("cd.3")]
-  [Alias("....")]
-  param (
-    # This function does not accept any parameters
-  )
-
-  Set-Location -Path ..\..\.. -ErrorAction SilentlyContinue
-}
-
-<#
-.SYNOPSIS
-    Moves up four directory levels.
-
-.DESCRIPTION
-    This function changes the current working directory to the parent directory of the parent directory of the parent directory of the parent directory of the current directory. It is useful for navigating up four levels in the directory structure.
-
-.PARAMETER None
-    This function does not accept any parameters.
-
-.OUTPUTS None
-    This function does not return any output.
-
-.EXAMPLE
-    Invoke-UpFourDirectoryLevels
-    Moves up four directory levels.
-
-.ALIASES
-    cd.4 -> Use the alias `cd.4` to quickly move up four directory levels.
-    ..... -> Use the alias `.....` to quickly move up four directory levels.
-#>
-function Private:Invoke-UpFourDirectoryLevels {
-  [CmdletBinding()]
-  [Alias("cd.4")]
-  [Alias(".....")]
-  param (
-    # This function does not accept any parameters
-  )
-
-  Set-Location -Path ..\..\..\.. -ErrorAction SilentlyContinue
-}
-
-<#
-.SYNOPSIS
-    Moves up five directory levels.
-
-.DESCRIPTION
-    This function changes the current working directory to the parent directory of the parent directory of the parent directory of the parent directory of the parent directory of the current directory. It is useful for navigating up five levels in the directory structure.
-
-.PARAMETER None
-    This function does not accept any parameters.
-
-.OUTPUTS None
-    This function does not return any output.
-
-.EXAMPLE
-    Invoke-UpFiveDirectoryLevels
-    Moves up five directory levels.
-
-.ALIASES
-    cd.5 -> Use the alias `cd.5` to quickly move up five directory levels.
-    ...... -> Use the alias `......` to quickly move up five directory levels.
-#>
-function Private:Invoke-UpFiveDirectoryLevels {
-  [CmdletBinding()]
-  [Alias("cd.5")]
-  [Alias("......")]
-  param (
-    # This function does not accept any parameters
-  )
-
-  Set-Location -Path ..\..\..\..\.. -ErrorAction SilentlyContinue
-}
-
-<#
-.SYNOPSIS
-    Moves up six directory levels.
-
-.DESCRIPTION
-    This function changes the current working directory to the parent directory of the parent directory of the parent directory of the parent directory of the parent directory of the parent directory of the current directory. It is useful for navigating up six levels in the directory structure.
-
-.PARAMETER None
-    This function does not accept any parameters.
-
-.OUTPUTS None
-    This function does not return any output.
-
-.EXAMPLE
-    Invoke-UpSixDirectoryLevels
-    Moves up six directory levels.
-
-.ALIASES
-    cd.6 -> Use the alias `cd.6` to quickly move up six directory levels.
-    ....... -> Use the alias `.......` to quickly move up six directory levels.
-#>
-function Private:Invoke-UpSixDirectoryLevels {
-  [CmdletBinding()]
-  [Alias("cd.6")]
-  [Alias(".......")]
-  param (
-    # This function does not accept any parameters
-  )
-
-  Set-Location -Path ..\..\..\..\..\.. -ErrorAction SilentlyContinue
-}
-
-#######################################################
-# Git Functions
-#######################################################
-
-<#
-.SYNOPSIS
-    Initializes a new Git repository in the current directory.
-
-.DESCRIPTION
-    This function initializes a new Git repository in the current directory. It creates the necessary Git configuration files and directories to start tracking changes in the directory.
-
-.PARAMETER None
-    This function does not accept any parameters.
-
-.OUTPUTS None
-    This function does not return any output.
-
-.EXAMPLE
-    Invoke-InitializeGitRepository
-    Initializes a new Git repository in the current directory.
-
-.ALIASES
-    init -> Use the alias `init` to quickly initialize a Git repository.
-#>
-function Private:Invoke-InitializeGitRepository {
-  [CmdletBinding()]
-  [Alias("init")]
-  param (
-    # This function does not accept any parameters
-  )
-
-  git init
-}
-
-<#
-.SYNOPSIS
-    Adds all changes in the current directory to the staging area.
-
-.DESCRIPTION
-    This function adds all changes in the current directory to the staging area in preparation for committing the changes to the Git repository.
-
-.PARAMETER None
-    This function does not accept any parameters.
-
-.OUTPUTS None
-    This function does not return any output.
-
-.EXAMPLE
-    Invoke-GitAllChanges
-    Adds all changes in the current directory to the staging area.
-
-.ALIASES
-    add-all -> Use the alias `add-all` to quickly add all changes to the staging area.
-#>
-function Private:Invoke-GitAllChanges {
-  [CmdletBinding()]
-  [Alias("add-all")]
-  param (
-    # This function does not accept any parameters
-  )
-
-  git add .
-}
-
-<#
-.SYNOPSIS
-    Commits the changes in the staging area to the Git repository.
-
-.DESCRIPTION
-    This function commits the changes in the staging area to the Git repository. It creates a new commit with the specified message to track the changes made to the repository.
-
-.PARAMETER Message
-    Specifies the message for the commit.
-
-.OUTPUTS None
-    This function does not return any output.
-
-.EXAMPLE
-    Invoke-GitCommitChanges -Message "Initial commit"
-    Commits the changes in the staging area with the message "Initial commit".
-
-.ALIASES
-    commit -> Use the alias `commit` to quickly commit changes to the repository.
-#>
-function Private:Invoke-GitCommitChanges {
-  [CmdletBinding()]
-  [Alias("commit")]
-  param (
-    [Parameter(Position = 0, Mandatory = $true)]
-    [string]$Message
-  )
-
-  git commit -m $Message
-}
-
-<#
-.SYNOPSIS
-    Pushes the committed changes to a remote Git repository.
-
-.DESCRIPTION
-    This function pushes the committed changes to a remote Git repository. It updates the remote repository with the changes made locally.
-
-.PARAMETER Branch
-    Specifies the branch to push the changes to. If not provided, the current branch is used.
-
-.OUTPUTS None
-    This function does not return any output.
-
-.EXAMPLE
-    Invoke-GitPushChanges
-    Pushes the committed changes to the remote repository.
-
-.EXAMPLE
-    Invoke-GitPushChanges -Branch "main"
-    Pushes the committed changes to the "main" branch of the remote repository.
-
-.ALIASES
-    push -> Use the alias `push` to quickly push changes to the remote repository.
-#>
-function Private:Invoke-GitPushChanges {
-  [CmdletBinding()]
-  [Alias("push")]
-  param (
-    [Parameter(Position = 0)]
-    [string]$Branch
-  )
-
-  try {
-    if ($null -eq $Branch) {
-      $Branch = (git branch --show-current)
-      if (-not $Branch) {
-        Write-Error "No branch specified, and unable to determine the current branch."
-        return
-      }
-    }
-
-    Write-Host "Pushing changes to branch '$Branch'..." -ForegroundColor Cyan
-    git push origin $Branch
-    Write-Host "Changes pushed successfully to branch '$Branch'." -ForegroundColor Green
-  }
-  catch {
-    Write-Error "Failed to push changes to branch '$Branch'. Error: $_"
-  }
-}
-
-<#
-.SYNOPSIS
-    Pulls changes from a remote Git repository to the local repository.
-
-.DESCRIPTION
-    This function pulls changes from a remote Git repository to the local repository. It updates the local repository with the changes made in the remote repository.
-
-.PARAMETER Branch
-    Specifies the branch to pull changes from. If not provided, the current branch is used.
-
-.OUTPUTS None
-    This function does not return any output.
-
-.EXAMPLE
-    Invoke-GitPullChanges
-    Pulls changes from the remote repository to the local repository.
-
-.EXAMPLE
-    Invoke-GitPullChanges -Branch "main"
-    Pulls changes from the "main" branch of the remote repository to the local repository.
-
-.ALIASES
-    pull -> Use the alias `pull` to quickly pull changes from the remote repository.
-#>
-function Private:Invoke-GitPullChanges {
-  [CmdletBinding()]
-  [Alias("pull")]
-  param (
-    [Parameter(Position = 0)]
-    [string]$Branch
-  )
-
-  try {
-    if ($null -eq $Branch) {
-      $Branch = (git branch --show-current)
-      if (-not $Branch) {
-        Write-Error "No branch specified, and unable to determine the current branch."
-        return
-      }
-    }
-
-    Write-Host "Pulling changes from branch '$Branch'..." -ForegroundColor Cyan
-    git pull origin $Branch
-    Write-Host "Changes pulled successfully from branch '$Branch'." -ForegroundColor Green
-  }
-  catch {
-    Write-Error "Failed to pull changes from branch '$Branch'. Error: $_"
-  }
-}
-
-<#
-.SYNOPSIS
-    Clones a Git repository from a remote URL.
-
-.DESCRIPTION
-    This function clones a Git repository from a remote URL to the local machine. It creates a copy of the remote repository in the specified directory.
-
-.PARAMETER Url
-    Specifies the URL of the remote Git repository to clone.
-
-.PARAMETER Directory
-    Specifies the directory to clone the repository into. If not provided, the repository is cloned into a directory with the same name as the repository.
-
-.OUTPUTS None
-    This function does not return any output.
-
-.EXAMPLE
-    Invoke-GitCloneRepository -Url "git@github.com:MKAbuMattar/powershell-profile.git"
-    Clones the repository from the specified URL.
-
-.EXAMPLE
-    Invoke-GitCloneRepository -Url "git@github.com:MKAbuMattar/powershell-profile.git" -Directory "C:\Projects"
-    Clones the repository into the "C:\Projects" directory.
-
-.ALIASES
-    clone -> Use the alias `clone` to quickly clone a Git repository.
-#>
-function Private:Invoke-GitCloneRepository {
-  [CmdletBinding()]
-  [Alias("clone")]
-  param (
-    [Parameter(Position = 0, Mandatory = $true)]
-    [string]$Url,
-
-    [Parameter(Position = 1)]
-    [string]$Directory
-  )
-
-  try {
-    if ($null -eq $Directory) {
-      git clone $Url
+function Stop-ProcessByName {
+    [CmdletBinding()]
+    [Alias("pkill")]
+    param (
+        [Parameter(Mandatory = $true)]
+        [string]$name
+    )
+
+    $process = Get-Process $name -ErrorAction SilentlyContinue
+    if ($process) {
+        $process | Stop-Process -Force
     }
     else {
-      git clone $Url $Directory
+        Write-LogMessage -Message "No process with the name '$name' found." -Level "WARNING"
     }
-  }
-  catch {
-    Write-Error "Failed to clone the repository from '$Url'. Error: $_"
-  }
-}
-
-<#
-.SYNOPSIS
-    Displays the status of the Git repository.
-    
-.DESCRIPTION
-    This function displays the status of the Git repository, including information about modified files, untracked files, and the current branch.
-
-.PARAMETER None
-    This function does not accept any parameters.
-
-.OUTPUTS
-    The status of the Git repository.
-
-.EXAMPLE
-    Get-GitRepositoryStatus
-    Displays the status of the Git repository.
-
-.ALIASES
-    status -> Use the alias `status` to quickly display the repository status.
-#>
-function Private:Get-GitRepositoryStatus {
-  [CmdletBinding()]
-  [Alias("status")]
-  param (
-    # This function does not accept any parameters
-  )
-
-  git status
-}
-
-<#
-.SYNOPSIS
-    Displays the commit history of the Git repository.
-
-.DESCRIPTION
-    This function displays the commit history of the Git repository, including information about past commits, commit messages, and commit authors.
-
-.PARAMETER None
-    This function does not accept any parameters.
-
-.OUTPUTS
-    The commit history of the Git repository.
-
-.EXAMPLE
-    Get-GitCommitHistory
-    Displays the commit history of the Git repository.
-
-.ALIASES
-    log -> Use the alias `log` to quickly view the commit history.
-#>
-function Private:Get-GitCommitHistory {
-  [CmdletBinding()]
-  [Alias("log")]
-  param (
-    # This function does not accept any parameters
-  )
-
-  git log
-}
-
-<#
-.SYNOPSIS
-    Fetches changes from a remote Git repository.
-
-.DESCRIPTION
-    This function fetches changes from a remote Git repository to the local repository. It updates the local repository with the changes made in the remote repository without merging the changes.
-
-.PARAMETER Branch
-    Specifies the branch to fetch changes from. If not provided, the current branch is used.
-
-.OUTPUTS None
-    This function does not return any output.
-
-.EXAMPLE
-    Invoke-GitFetchRepository
-    Fetches changes from the remote repository to the local repository.
-
-.EXAMPLE
-    Invoke-GitFetchRepository -Branch "main"
-    Fetches changes from the "main" branch of the remote repository to the local repository.
-
-.ALIASES
-    fetch -> Use the alias `fetch` to quickly fetch changes from the remote repository.
-#>
-function Private:Invoke-GitFetchRepository {
-  [CmdletBinding()]
-  [Alias("fetch")]
-  param (
-    [Parameter(Position = 0)]
-    [string]$Branch
-  )
-
-  try {
-    if ($null -eq $Branch) {
-      $Branch = (git branch --show-current)
-      if (-not $Branch) {
-        Write-Error "No branch specified, and unable to determine the current branch."
-        return
-      }
-    }
-
-    Write-Host "Syncing with branch '$Branch'..." -ForegroundColor Cyan
-    git fetch origin $Branch
-    git merge origin/$Branch
-    Write-Host "Sync completed with branch '$Branch'." -ForegroundColor Green
-  }
-  catch {
-    Write-Error "Failed to sync with branch '$Branch'. Error: $_"
-  }
-}
-
-<#
-.SYNOPSIS
-    Creates a new branch in the Git repository.
-
-.DESCRIPTION
-    This function creates a new branch in the Git repository based on the current branch. It allows you to work on new features or changes in isolation from the main branch.
-
-.PARAMETER Name
-    Specifies the name of the new branch to create.
-
-.OUTPUTS None
-    This function does not return any output.
-
-.EXAMPLE
-    Invoke-GitCreateBranch -Name "feature-branch"
-    Creates a new branch named "feature-branch" in the Git repository.
-
-.ALIASES
-    branch -> Use the alias `branch` to quickly create a new branch.
-#>
-function Private:Invoke-GitCreateBranch {
-  [CmdletBinding()]
-  [Alias("branch")]
-  param (
-    [Parameter(Position = 0, Mandatory = $true)]
-    [string]$Name
-  )
-
-  try {
-    git checkout -b $Name
-  }
-  catch {
-    Write-Error "Failed to create branch '$Name'. Error: $_"
-  }
-}
-
-<#
-.SYNOPSIS
-    Checkout/Switches to an existing branch in the Git repository.
-
-.DESCRIPTION
-    This function switches to an existing branch in the Git repository. It allows you to work on different branches of the repository.
-
-.PARAMETER Name
-    Specifies the name of the branch to switch to.
-
-.OUTPUTS None
-    This function does not return any output.
-
-.EXAMPLE
-    Invoke-GitCheckoutBranch -Name "main"
-    Switches to the "main" branch in the Git repository.
-
-.EXAMPLE
-    Invoke-GitCheckoutBranch -Name "feature-branch"
-    Switches to the "feature-branch" branch in the Git repository.
-
-.ALIASES
-    checkout -> Use the alias `checkout` to quickly switch to a branch.
-#>
-function Invoke-GitCheckoutBranch {
-  [CmdletBinding()]
-  [Alias("checkout")]
-  param (
-    [Parameter(Position = 0, Mandatory = $true)]
-    [string]$Name
-  )
-
-  try {
-    $existingBranches = git branch --list $Name
-    if (-not $existingBranches) {
-      Write-Error "Branch '$Name' does not exist in the repository."
-      return
-    }
-    
-    git checkout $Name
-  }
-  catch {
-    Write-Error "Failed to switch to branch '$Name'. Error: $_"
-  }
-}
-
-<#
-.SYNOPSIS
-    Deletes a branch in the Git repository.
-
-.DESCRIPTION
-    This function deletes a branch in the Git repository. It removes the specified branch from the repository.
-
-.PARAMETER Name
-    Specifies the name of the branch to delete.
-
-.OUTPUTS None
-    This function does not return any output.
-
-.EXAMPLE
-    Invoke-GitDeleteBranch -Name "feature-branch"
-    Deletes the "feature-branch" branch from the Git repository.
-
-.ALIASES
-    delete-branch -> Use the alias `delete-branch` to quickly delete a branch.
-#>
-function Private:Invoke-GitDeleteBranch {
-  [CmdletBinding()]
-  [Alias("delete-branch")]
-  param (
-    [Parameter(Position = 0, Mandatory = $true)]
-    [string]$Name
-  )
-
-  try {
-    $existingBranches = git branch --list $Name
-    if (-not $existingBranches) {
-      Write-Error "Branch '$Name' does not exist in the repository."
-      return
-    }
-
-    git branch -D $Name
-  }
-  catch {
-    Write-Error "Failed to delete branch '$Name'. Error: $_"
-  }
-}
-
-<#
-.SYNOPSIS
-    Merges changes from one branch into the current branch.
-
-.DESCRIPTION
-    This function merges changes from one branch into the current branch in the Git repository. It combines the changes made in the specified branch with the changes in the current branch.
-
-.PARAMETER Name
-    Specifies the name of the branch to merge into the current branch.
-
-.OUTPUTS None
-    This function does not return any output.
-
-.EXAMPLE
-    Invoke-GitMergeBranch -Name "feature-branch"
-    Merges changes from the "feature-branch" into the current branch.
-
-.ALIASES
-    merge-branch -> Use the alias `merge-branch` to quickly merge changes from a branch into the current branch.
-#>
-function Private:Invoke-GitMergeBranch {
-  [CmdletBinding()]
-  [Alias("merge-branch")]
-  param (
-    [Parameter(Position = 0, Mandatory = $true)]
-    [string]$Name
-  )
-
-  try {
-    git merge $Name
-  }
-  catch {
-    Write-Error "Failed to merge branch '$Name' into the current branch. Error: $_"
-  }
-}
-
-<#
-.SYNOPSIS
-    Reverts changes in the working directory to the last commit.
-
-.DESCRIPTION
-    This function reverts changes in the working directory to the last commit in the Git repository. It resets the working directory to the state of the last commit without losing current changes.
-
-.PARAMETER None
-    This function does not accept any parameters.
-
-.OUTPUTS None
-    This function does not return any output.
-
-.EXAMPLE
-    Invoke-GitRevertChanges
-    Reverts changes in the working directory to the last commit.
-
-.ALIASES
-    revert -> Use the alias `revert` to quickly revert changes to the last commit.
-#>
-function Private:Invoke-GitRevertChanges {
-  [CmdletBinding()]
-  [Alias("revert")]
-  param (
-    # This function does not accept any parameters
-  )
-
-  try {
-    git reset --hard HEAD
-  }
-  catch {
-    Write-Error "Failed to revert changes to the last commit. Error: $_"
-  }
-}
-
-<#
-.SYNOPSIS
-    Deletes all local branches and keep only the master/main branch or branches that are specified.
-    
-.DESCRIPTION
-    This function deletes all local branches except the master/main branch or branches that are specified. It is useful for cleaning up local branches after merging changes.
-
-.PARAMETER Branches
-    Specifies the branches to keep. If not provided, only the master/main branch is kept.
-
-.OUTPUTS None
-    This function does not return any output.
-
-.EXAMPLE
-    Invoke-GitCleanupBranches
-    Deletes all local branches except the master/main branch.
-
-.EXAMPLE
-    Invoke-GitCleanupBranches -Branches "feature-branch1", "feature-branch2"
-    Deletes all local branches except the master/main branch and "feature-branch1" and "feature-branch2".
-
-.ALIASES
-    cleanup-branches -> Use the alias `cleanup-branches` to quickly clean up local branches.
-#>
-
-function Invoke-GitCleanupBranches {
-  [CmdletBinding()]
-  [Alias("cleanup-branches")]
-  param (
-    [Parameter(Position = 0)]
-    [string[]]$Branches
-  )
-
-  try {
-    # If no branches are specified, keep only the current branch
-    if (-not $Branches) {
-      $currentBranch = git branch --show-current
-      if ($currentBranch -eq 'master' -or $currentBranch -eq 'main') {
-        $Branches = @($currentBranch)
-      }
-      else {
-        $Branches = @('master', 'main', $currentBranch)
-      }
-    }
-    else {
-      # If branches are specified, ensure master/main is included
-      if ('master' -notin $Branches -and 'main' -notin $Branches) {
-        $Branches += 'master', 'main'
-      }
-    }
-
-    # Get all local branches except the ones specified to keep
-    $branchesToDelete = (git branch | ForEach-Object { $_.Trim() }) | Where-Object { $_ -notin $Branches }
-
-    # If there are no branches to delete, inform the user and exit
-    if (-not $branchesToDelete) {
-      Write-Host "No branches to delete." -ForegroundColor Yellow
-      return
-    }
-
-    # Loop through the branches to delete and delete them
-    foreach ($branch in $branchesToDelete) {
-      git branch -D $branch
-    }
-  }
-  catch {
-    Write-Error "Failed to delete branches. Error: $_"
-  }
 }

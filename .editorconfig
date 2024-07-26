@@ -1,0 +1,27 @@
+# EditorConfig is awesome: https://EditorConfig.org
+
+# Top-most EditorConfig file
+root = true
+
+[*]
+charset = utf-8
+indent_style = space
+insert_final_newline = true
+
+# Source code
+[*.{cs,ps1,psd1,psm1}]
+indent_size = 4
+
+# Shell scripts
+[*.sh]
+end_of_line = lf
+indent_size = 4
+
+
+# Data serialization
+[*.{json,yaml,yml}]
+indent_size = 2
+
+# Markdown
+[*.md]
+indent_size = 2
