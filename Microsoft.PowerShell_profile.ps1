@@ -124,6 +124,9 @@ Set-PSReadLineKeyHandler -Chord '"', "'" `
     }
 }
 
+#---------------------------------------------------------------------------------------------------
+# Import the custom modules
+#---------------------------------------------------------------------------------------------------
 $EnvironmentModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Environment/Environment.psm1'
 Import-Module $EnvironmentModulePath -Force -ErrorAction SilentlyContinue
 
@@ -135,6 +138,9 @@ Import-Module $StarshipModulePath -Force -ErrorAction SilentlyContinue
 
 $UpdateModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Update/Update.psm1'
 Import-Module $UpdateModulePath -Force -ErrorAction SilentlyContinue
+
+$UtilityModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Utility/Utility.psm1'
+Import-Module $UtilityModulePath -Force -ErrorAction SilentlyContinue
 
 #---------------------------------------------------------------------------------------------------
 # Invoke Starship Transient Function
@@ -178,3 +184,16 @@ if ($global:AutoUpdateProfile -eq $true) {
 if ($global:AutoUpdatePowerShell -eq $true) {
     Invoke-Command -ScriptBlock ${function:Update-PowerShell} -ErrorAction SilentlyContinue
 }
+
+#------------------------------------------------------
+# Editor Configuration
+#------------------------------------------------------
+$EDITOR = if (Test-CommandExists nvim) { 'vim' }
+elseif (Test-CommandExists vi) { 'vi' }
+elseif (Test-CommandExists code) { 'code' }
+else { 'notepad' }
+
+#------------------------------------------------------
+# Set the editor alias
+#------------------------------------------------------
+Set-Alias -Name vim -Value $EDITOR

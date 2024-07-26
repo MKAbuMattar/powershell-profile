@@ -16,7 +16,8 @@
     Checks for updates to the Modules directory in the local profile and updates the local Modules directory if changes are detected.
 
 .ALIASES
-    update-local-module -> Use the alias `update-local-module` to quickly check for updates to the Modules directory in the local profile.
+    update-local-module
+    Use the alias `update-local-module` to quickly check for updates to the Modules directory in the local profile.
 
 .NOTES
     The local profile update function is disabled by default. To enable it, uncomment the line that invokes the function at the end of the script.
@@ -118,7 +119,8 @@ function Update-LocalProfileModuleDirectory {
     Checks for updates to the PowerShell profile and updates the local profile if changes are detected.
 
 .ALIASES
-    update-profile -> Use the alias `update-profile` to quickly check for updates to the PowerShell profile.
+    update-profile
+    Use the alias `update-profile` to quickly check for updates to the PowerShell profile.
 
 .NOTES
     The profile update function is disabled by default. To enable it, uncomment the line that invokes the function at the end of the script.
@@ -171,7 +173,8 @@ function Update-Profile {
     Checks for updates to PowerShell and upgrades to the latest version if available.
 
 .ALIASES
-    update-ps1 -> Use the alias `update-ps1` to quickly check for updates to PowerShell.
+    update-ps1
+    Use the alias `update-ps1` to quickly check for updates to PowerShell.
 
 .NOTES
     The PowerShell update function is disabled by default. To enable it, uncomment the line that invokes the function at the end of the script.
