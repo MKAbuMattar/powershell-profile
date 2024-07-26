@@ -23,7 +23,8 @@
     Logs a warning message with the log level "WARNING".
 
 .ALIASES
-    log-message -> Use the alias `log-message` to quickly log a message.
+    log-message
+    Use the alias `log-message` to quickly log a message.
 
 .NOTES
     This function is used to log messages with a timestamp and log level.

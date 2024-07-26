@@ -16,7 +16,8 @@
     Invokes the Starship module transiently to load the Starship prompt.
 
 .ALIASES
-    starship-transient -> Use the alias `starship-transient` to quickly load the Starship prompt transiently.
+    starship-transient
+    Use the alias `starship-transient` to quickly load the Starship prompt transiently.
 
 .NOTES
     This function is used to load the Starship prompt transiently without permanently modifying the PowerShell environment.
