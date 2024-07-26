@@ -221,6 +221,12 @@ function Copy-ModuleDirectory {
     }
 }
 
+#---------------------------------------------------------------------------------------------------
+# Copy the Module directory from the repository to the local path
+#---------------------------------------------------------------------------------------------------
+Write-LogMessage -Message "Copying the Module directory from the repository to the local path..."
+Invoke-Command -ScriptBlock ${function:Copy-ModuleDirectory} -ErrorAction Stop
+
 <#
 .SYNOPSIS
     Initializes the PowerShell profile by creating or updating the profile script.
