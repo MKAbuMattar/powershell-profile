@@ -44,8 +44,10 @@
   "logo": {
     "type": "builtin",
     "color": {
-      "1": "white",
-      "2": "cyan"
+      "1": "cyan",
+      "2": "cyan",
+      "3": "cyan",
+      "4": "cyan"
     }
   },
   "display": {

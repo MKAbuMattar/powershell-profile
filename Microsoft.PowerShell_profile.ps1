@@ -155,7 +155,7 @@ Invoke-Expression (&starship init powershell)
 #---------------------------------------------------------------------------------------------------
 # Set Chocolatey Profile
 #---------------------------------------------------------------------------------------------------
-$ChocolateyProfile = "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
+$ChocolateyProfile = "$ENV:CHOCOLATEYINSTALL\helpers\chocolateyProfile.psm1"
 
 #---------------------------------------------------------------------------------------------------
 # Import Chocolatey Profile
