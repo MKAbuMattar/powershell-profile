@@ -16,11 +16,10 @@ indent_size = 4
 # Shell scripts
 [*.sh]
 end_of_line = lf
-indent_size = 4
-
+indent_size = 2
 
 # Data serialization
-[*.{json,yaml,yml}]
+[*.{toml,json,jsonc,yaml,yml}]
 indent_size = 2
 
 # Markdown
