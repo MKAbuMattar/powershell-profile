@@ -1,7 +1,7 @@
 #---------------------------------------------------------------------------------------------------
 # MKAbuMattar's Starship Configuration File
 #
-#                 
+#
 #                             .
 #         ..                .''
 #         .,'..,.         ..,;,'
@@ -258,7 +258,7 @@ truncate_to_repo = true
 truncation_symbol = "repo: "
 fish_style_pwd_dir_length = 0
 use_logical_path = false
-format = '[├──](bold red) [$path]($style) [$read_only]($read_only_style)'
+format = '[├─](bold red) [$path]($style) [$read_only]($read_only_style)'
 style = 'fg:85 bold'
 read_only = ''
 read_only_style = 'red'
@@ -837,9 +837,9 @@ symbol = "🔴"
 
 [sudo]
 disabled = false
-format = '[as $symbol]($style)'
-symbol = ' '
-style = 'bold blue'
+format = 'as [$symbol]($style)'
+symbol = ''
+style = 'bold #8DFBD2'
 
 [swift]
 disabled = false
