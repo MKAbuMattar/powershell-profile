@@ -34,7 +34,7 @@
 #       and tools.
 #
 # Created: 2021-09-01
-# Updated: 2024-07-26
+# Updated: 2024-11-17
 #
 # GitHub: https://github.com/MKAbuMattar/powershell-profile
 #
@@ -259,10 +259,10 @@ function Initialize-PowerShellProfile {
     try {
         if (!(Test-Path -Path $PROFILE -PathType Leaf)) {
             $profilePath = if ($PSVersionTable.PSEdition -eq "Core") {
-                "$env:userprofile\Documents\Powershell"
+                "$ENV:USERPROFILE\Documents\Powershell"
             }
             elseif ($PSVersionTable.PSEdition -eq "Desktop") {
-                "$env:userprofile\Documents\WindowsPowerShell"
+                "$ENV:USERPROFILE\Documents\WindowsPowerShell"
             }
 
             if (!(Test-Path -Path $profilePath)) {
@@ -306,7 +306,7 @@ function Initialize-StarshipConfig {
     )
 
     try {
-        $configDir = "$env:USERPROFILE\.config"
+        $configDir = "$ENV:USERPROFILE\.config"
         if (!(Test-Path -Path $configDir -PathType Container)) {
             New-Item -Path $configDir -ItemType Directory
             Write-LogMessage -Message "Created directory: $configDir"
@@ -325,6 +325,55 @@ function Initialize-StarshipConfig {
     }
     catch {
         Invoke-ErrorHandling -ErrorMessage "Failed to create ~/.config directory or copy starship.toml." -ErrorRecord $_
+    }
+}
+
+<#
+.SYNOPSIS
+    Initializes the FastFetch configuration by creating the ~/.config/fastfetch directory and copying the config.jsonc file.
+
+.DESCRIPTION
+    This function initializes the FastFetch configuration by creating the ~/.config/fastfetch directory and copying the config.jsonc file from the GitHub repository.
+
+.OUTPUTS
+    The ~/.config/fastfetch directory is created, and the config.jsonc file is copied.
+
+.EXAMPLE
+    Initialize-FastFetchConfig
+    Initializes the FastFetch configuration by creating the ~/.config/fastfetch directory and copying the config.jsonc file.
+#>
+function Initialize-FastFetchConfig {
+    [CmdletBinding()]
+    param(
+        # This function does not accept any parameters
+    )
+
+    try {
+        $configDir = "$ENV:USERPROFILE\.config"
+        if (!(Test-Path -Path $configDir -PathType Container)) {
+            New-Item -Path $configDir -ItemType Directory
+            Write-LogMessage -Message "Created directory: $configDir"
+        }
+
+        $configPath = Join-Path -Path $configDir -ChildPath "fastfetch"
+        if (!(Test-Path -Path $configPath -PathType Container)) {
+            New-Item -Path $configPath -ItemType Directory
+            Write-LogMessage -Message "Created directory: $configPath"
+        }
+
+        $fastfetchConfigUrl = "https://github.com/MKAbuMattar/powershell-profile/raw/main/.config/fastfetch/config.jsonc"
+        $fastfetchConfigPath = Join-Path -Path $configPath -ChildPath "config.jsonc"
+
+        if (!(Test-Path -Path $fastfetchConfigPath)) {
+            Invoke-WebRequest -Uri $fastfetchConfigUrl -OutFile $fastfetchConfigPath
+            Write-LogMessage -Message "Copied config.jsonc to: $fastfetchConfigPath"
+        }
+        else {
+            Write-LogMessage -Message "config.jsonc already exists in: $configPath"
+        }
+    }
+    catch {
+        Invoke-ErrorHandling -ErrorMessage "Failed to create ~/.config/fastfetch directory or copy config.jsonc." -ErrorRecord $_
     }
 }
 
@@ -546,6 +595,12 @@ Write-LogMessage -Message "Initializing the Starship configuration..."
 Invoke-Command -ScriptBlock ${function:Initialize-StarshipConfig} -ErrorAction Stop
 
 #---------------------------------------------------------------------------------------------------
+# Initialize the FastFetch configuration
+#---------------------------------------------------------------------------------------------------
+Write-LogMessage -Message "Initializing the FastFetch configuration..."
+Invoke-Command -ScriptBlock ${function:Initialize-FastFetchConfig} -ErrorAction Stop
+
+#---------------------------------------------------------------------------------------------------
 # Install the Cascadia Code font
 #---------------------------------------------------------------------------------------------------
 Write-LogMessage -Message "Installing the Cascadia Code font..."
@@ -568,7 +623,7 @@ Invoke-UpdateInstallPSModules -ModuleList $modules
 # Install or update required Chocolatey packages
 #---------------------------------------------------------------------------------------------------
 Write-LogMessage -Message "Installing or updating required Chocolatey packages..."
-$packages = @('starship', 'microsoft-windows-terminal', 'powershell-core', 'zoxide')
+$packages = @('fastfetch', 'microsoft-windows-terminal', 'powershell-core', 'starship', 'zoxide')
 Invoke-UpdateInstallChocoPackages -PackageList $packages
 
 #---------------------------------------------------------------------------------------------------

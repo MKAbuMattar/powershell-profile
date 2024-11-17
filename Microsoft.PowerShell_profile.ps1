@@ -38,7 +38,7 @@
 #       workflow.
 #
 # Created: 2021-09-01
-# Updated: 2024-07-26
+# Updated: 2024-11-17
 #
 # GitHub: https://github.com/MKAbuMattar/powershell-profile
 #
@@ -197,3 +197,11 @@ else { 'notepad' }
 # Set the editor alias
 #------------------------------------------------------
 Set-Alias -Name vim -Value $EDITOR
+
+#------------------------------------------------------
+# Run FastFetch
+#------------------------------------------------------
+if (Test-CommandExists FastFetch) {
+    Invoke-Expression -Command "clear"
+    Invoke-Expression -Command "FastFetch"
+}
