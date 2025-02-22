@@ -11,7 +11,18 @@
     'Set-FreshFile',
     'Get-Uptime',
     'Expand-File',
-    'Compress-Files'
+    'Compress-Files',
+    'Get-ContentMatching',
+    'Set-ContentMatching',
+    'Get-CommandDefinition',
+    'Set-EnvVar',
+    'Get-EnvVar',
+    'Get-AllProcesses',
+    'Get-ProcessByName',
+    'Get-ProcessByPort',
+    'Stop-ProcessByName',
+    'Stop-ProcessByPort',
+    'Get-RandomQuote'
   )
   CmdletsToExport   = @()
   VariablesToExport = '*'
@@ -22,6 +33,17 @@
     'touch',
     'uptime',
     'unzip',
-    'zip'
+    'zip',
+    'grep',
+    'sed',
+    'command-definition',
+    'set-env',
+    'get-env',
+    'pall',
+    'pgrep',
+    'portgrep',
+    'pkill',
+    'portkill',
+    'quote'
   )
 }

@@ -43,6 +43,28 @@ The Utility module provides a set of useful functions to enhance your PowerShell
   - Example: `unzip "file.zip"`
 - **Compress-Files** (Alias: `zip`): Compresses files into a zip archive.
   - Example: `zip -Files "file1.txt", "file2.txt" -Archive "files.zip"`
+- **Get-ContentMatching** (Alias: `grep`): Searches for text in files using regular expressions.
+  - Example: `grep -Pattern "pattern" -Path "file.txt"`
+- **Set-ContentMatching** (Alias: `sed`): Searches for a string in a file and replaces it with another string.
+  - Example: `sed -file "file.txt" -find "pattern" -replace "replacement"`
+- **Get-CommandDefinition** (Alias: `def`): Retrieves the definition of a command.
+  - Example: `def "ls"`
+- **Set-EnvVar** (Alias: `set-env`): Exports an environment variable.
+  - Example: `set-env "name" "value"`
+- **Get-EnvVar** (Alias: `get-env`): Retrieves the value of an environment variable.
+  - Example: `get-env "name"`
+- **Get-AllProcesses** (Alias: `pall`): Retrieves a list of all running processes.
+  - Example: `pall`
+- **Get-ProcessByName** (Alias: `pgrep`): Finds a process by name.
+  - Example: `pgrep "process"`
+- **Get-ProcessByPort** (Alias: `portgrep`): Finds a process by port.
+  - Example: `portgrep 80`
+- **Stop-ProcessByName** (Alias: `pkill`): Terminates a process by name.
+  - Example: `pkill "process"`
+- **Stop-ProcessByPort** (Alias: `portkill`): Terminates a process by port.
+  - Example: `portkill 80`
+- **Get-RandomQuote** (Alias: `quote`): Retrieves a random quote from an online API.
+  - Example: `quote`
 
 ## Contributing
 
