@@ -228,27 +228,16 @@ function Expand-File {
     [string]$File
   )
 
-  BEGIN {
-    Write-LogMessage -Message "Starting file extraction process..." -Level "INFO"
+  try {
+    Write-LogMessage -Message "Extracting file '$File' to '$PWD'..." -Level "INFO"
+    $FullFilePath = Get-Item -Path $File -ErrorAction Stop | Select-Object -ExpandProperty FullName
+    Expand-Archive -Path $FullFilePath -DestinationPath $PWD -Force -ErrorAction Stop
+    Write-LogMessage -Message "File extraction completed successfully." -Level "INFO"
   }
-
-  PROCESS {
-    try {
-      Write-LogMessage -Message "Extracting file '$File' to '$PWD'..." -Level "INFO"
-      $FullFilePath = Get-Item -Path $File -ErrorAction Stop | Select-Object -ExpandProperty FullName
-      Expand-Archive -Path $FullFilePath -DestinationPath $PWD -Force -ErrorAction Stop
-      Write-LogMessage -Message "File extraction completed successfully." -Level "INFO"
-    }
-    catch {
-      Write-LogMessage -Message "Failed to extract file '$File'." -Level "ERROR"
-    }
+  catch {
+    Write-LogMessage -Message "Failed to extract file '$File'." -Level "ERROR"
   }
-
-  END {
-    if (-not $Error) {
-      Write-LogMessage -Message "File extraction process completed." -Level "INFO"
-    }
-  }
+}
 }
 
 <#
@@ -289,25 +278,13 @@ function Compress-Files {
     [string]$Archive
   )
 
-  BEGIN {
-    Write-LogMessage -Message "Starting file compression process..." -Level "INFO"
+  try {
+    Write-LogMessage -Message "Compressing files '$Files' into '$Archive'..." -Level "INFO"
+    Compress-Archive -Path $Files -DestinationPath $Archive -Force -ErrorAction Stop
+    Write-LogMessage -Message "File compression completed successfully." -Level "INFO"
   }
-
-  PROCESS {
-    try {
-      Write-LogMessage -Message "Compressing files '$Files' into '$Archive'..." -Level "INFO"
-      Compress-Archive -Path $Files -DestinationPath $Archive -Force -ErrorAction Stop
-      Write-LogMessage -Message "File compression completed successfully." -Level "INFO"
-    }
-    catch {
-      Write-LogMessage -Message "Failed to compress files '$Files'." -Level "ERROR"
-    }
-  }
-
-  END {
-    if (-not $Error) {
-      Write-LogMessage -Message "File compression process completed." -Level "INFO"
-    }
+  catch {
+    Write-LogMessage -Message "Failed to compress files '$Files'." -Level "ERROR"
   }
 }
 
@@ -797,28 +774,18 @@ function Get-RandomQuote {
     [string]$ApiUrl = "http://api.quotable.io/random"
   )
 
-  BEGIN {
-    Write-LogMessage -Message "Starting random quote retrieval process..." -Level "INFO"
-  }
-
-  PROCESS {
-    try {
-      $response = Invoke-RestMethod -Uri $ApiUrl -Method Get -SkipCertificateCheck
-      if ($response) {
-        Write-Output "`"$($response.content)`""
-        Write-Output " - $($response.author)"
-        Write-LogMessage -Message "Random quote retrieved successfully." -Level "INFO"
-      }
-      else {
-        Write-LogMessage -Message "Failed to retrieve a random quote." -Level "ERROR"
-      }
+  try {
+    $response = Invoke-RestMethod -Uri $ApiUrl -Method Get -SkipCertificateCheck
+    if ($response) {
+      Write-Output "`"$($response.content)`""
+      Write-Output " - $($response.author)"
+      Write-LogMessage -Message "Random quote retrieved successfully." -Level "INFO"
     }
-    catch {
+    else {
       Write-LogMessage -Message "Failed to retrieve a random quote." -Level "ERROR"
     }
   }
-
-  END {
-    Write-LogMessage -Message "Random quote retrieval process completed." -Level "INFO"
+  catch {
+    Write-LogMessage -Message "Failed to retrieve a random quote." -Level "ERROR"
   }
 }
