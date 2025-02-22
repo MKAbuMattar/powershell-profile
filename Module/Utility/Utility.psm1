@@ -238,7 +238,6 @@ function Expand-File {
     Write-LogMessage -Message "Failed to extract file '$File'." -Level "ERROR"
   }
 }
-}
 
 <#
 .SYNOPSIS
