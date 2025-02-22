@@ -1,7 +1,7 @@
 #---------------------------------------------------------------------------------------------------
 # MKAbuMattar's PowerShell Profile
 #
-#                 
+#
 #                             .
 #         ..                .''
 #         .,'..,.         ..,;,'
@@ -38,11 +38,11 @@
 #       workflow.
 #
 # Created: 2021-09-01
-# Updated: 2024-11-17
+# Updated: 2025-02-22
 #
 # GitHub: https://github.com/MKAbuMattar/powershell-profile
 #
-# Version: 3.0.0-beta
+# Version: 3.0.0
 #---------------------------------------------------------------------------------------------------
 
 #---------------------------------------------------------------------------------------------------
@@ -54,35 +54,35 @@
 # Check if Terminal Icons module is installed
 #---------------------------------------------------------------------------------------------------
 if (-not (Get-Module -ListAvailable -Name Terminal-Icons)) {
-    Install-Module -Name Terminal-Icons -Scope CurrentUser -Force -SkipPublisherCheck
+  Install-Module -Name Terminal-Icons -Scope CurrentUser -Force -SkipPublisherCheck
 }
 
 #---------------------------------------------------------------------------------------------------
 # Check if PowerShellGet module is installed
 #---------------------------------------------------------------------------------------------------
 if (-not (Get-Module -ListAvailable -Name PowerShellGet)) {
-    Install-Module -Name PowerShellGet -Scope CurrentUser -Force -SkipPublisherCheck
+  Install-Module -Name PowerShellGet -Scope CurrentUser -Force -SkipPublisherCheck
 }
 
 #---------------------------------------------------------------------------------------------------
 # Check if CompletionPredictor module is installed
 #---------------------------------------------------------------------------------------------------
 if (-not (Get-Module -ListAvailable -Name CompletionPredictor)) {
-    Install-Module -Name CompletionPredictor -Scope CurrentUser -Force -SkipPublisherCheck
+  Install-Module -Name CompletionPredictor -Scope CurrentUser -Force -SkipPublisherCheck
 }
 
 #---------------------------------------------------------------------------------------------------
 # Check if PSReadLine module is installed
 #---------------------------------------------------------------------------------------------------
 if (-not (Get-Module -ListAvailable -Name PSReadLine)) {
-    Install-Module -Name PSReadLine -Scope CurrentUser -Force -SkipPublisherCheck
+  Install-Module -Name PSReadLine -Scope CurrentUser -Force -SkipPublisherCheck
 }
 
 #---------------------------------------------------------------------------------------------------
 # Check if Posh-Git module is installed
 #---------------------------------------------------------------------------------------------------
 if (-not (Get-Module -ListAvailable -Name Posh-Git)) {
-    Install-Module -Name Posh-Git -Scope CurrentUser -Force -SkipPublisherCheck
+  Install-Module -Name Posh-Git -Scope CurrentUser -Force -SkipPublisherCheck
 }
 
 #---------------------------------------------------------------------------------------------------
@@ -103,25 +103,25 @@ Set-PSReadLineOption -HistoryNoDuplicates
 Set-PSReadLineOption -BellStyle None
 Set-PSReadLineOption -Colors @{ "Selection" = "`e[7m" }
 Set-PSReadLineKeyHandler -Chord '"', "'" `
-    -BriefDescription SmartInsertQuote `
-    -LongDescription "Insert paired quotes if not already on a quote" `
-    -ScriptBlock {
-    param($key, $arg)
+  -BriefDescription SmartInsertQuote `
+  -LongDescription "Insert paired quotes if not already on a quote" `
+  -ScriptBlock {
+  param($key, $arg)
 
-    $line = $null
-    $cursor = $null
+  $line = $null
+  $cursor = $null
+  [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$line, [ref]$cursor)
+
+  if ($line.Length -gt $cursor -and $line[$cursor] -eq $key.KeyChar) {
+    # Just move the cursor
+    [Microsoft.PowerShell.PSConsoleReadLine]::SetCursorPosition($cursor + 1)
+  }
+  else {
+    # Insert matching quotes, move cursor to be in between the quotes
+    [Microsoft.PowerShell.PSConsoleReadLine]::Insert("$($key.KeyChar)" * 2)
     [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$line, [ref]$cursor)
-
-    if ($line.Length -gt $cursor -and $line[$cursor] -eq $key.KeyChar) {
-        # Just move the cursor
-        [Microsoft.PowerShell.PSConsoleReadLine]::SetCursorPosition($cursor + 1)
-    }
-    else {
-        # Insert matching quotes, move cursor to be in between the quotes
-        [Microsoft.PowerShell.PSConsoleReadLine]::Insert("$($key.KeyChar)" * 2)
-        [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$line, [ref]$cursor)
-        [Microsoft.PowerShell.PSConsoleReadLine]::SetCursorPosition($cursor - 1)
-    }
+    [Microsoft.PowerShell.PSConsoleReadLine]::SetCursorPosition($cursor - 1)
+  }
 }
 
 #---------------------------------------------------------------------------------------------------
@@ -161,28 +161,28 @@ $ChocolateyProfile = "$ENV:CHOCOLATEYINSTALL\helpers\chocolateyProfile.psm1"
 # Import Chocolatey Profile
 #---------------------------------------------------------------------------------------------------
 if (Test-Path $ChocolateyProfile) {
-    Import-Module $ChocolateyProfile
+  Import-Module $ChocolateyProfile
 }
 
 #---------------------------------------------------------------------------------------------------
 # Invoke the profile update function
 #---------------------------------------------------------------------------------------------------
 if ($global:AutoUpdateProfile -eq $true) {
-    Invoke-Command -ScriptBlock ${function:Update-LocalProfileModuleDirectory} -ErrorAction SilentlyContinue
+  Invoke-Command -ScriptBlock ${function:Update-LocalProfileModuleDirectory} -ErrorAction SilentlyContinue
 }
 
 #---------------------------------------------------------------------------------------------------
 # Invoke the profile update function
 #---------------------------------------------------------------------------------------------------
 if ($global:AutoUpdateProfile -eq $true) {
-    Invoke-Command -ScriptBlock ${function:Update-Profile} -ErrorAction SilentlyContinue
+  Invoke-Command -ScriptBlock ${function:Update-Profile} -ErrorAction SilentlyContinue
 }
 
 #---------------------------------------------------------------------------------------------------
 # Invoke the PowerShell update function
 #---------------------------------------------------------------------------------------------------
 if ($global:AutoUpdatePowerShell -eq $true) {
-    Invoke-Command -ScriptBlock ${function:Update-PowerShell} -ErrorAction SilentlyContinue
+  Invoke-Command -ScriptBlock ${function:Update-PowerShell} -ErrorAction SilentlyContinue
 }
 
 #------------------------------------------------------
@@ -202,6 +202,6 @@ Set-Alias -Name vim -Value $EDITOR
 # Run FastFetch
 #------------------------------------------------------
 if (Test-CommandExists FastFetch) {
-    Invoke-Expression -Command "clear"
-    Invoke-Expression -Command "FastFetch"
+  Invoke-Expression -Command "clear"
+  Invoke-Expression -Command "FastFetch"
 }

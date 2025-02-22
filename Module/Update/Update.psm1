@@ -23,84 +23,84 @@
     The local profile update function is disabled by default. To enable it, uncomment the line that invokes the function at the end of the script.
 #>
 function Update-LocalProfileModuleDirectory {
-    [CmdletBinding()]
-    [Alias("update-local-module")]
-    param (
-        [string]$LocalPath = "$HOME\Documents\PowerShell"
+  [CmdletBinding()]
+  [Alias("update-local-module")]
+  param (
+    [string]$LocalPath = "$HOME\Documents\PowerShell"
+  )
+
+  if (-not $global:CanConnectToGitHub) {
+    Write-LogMessage -Message "Skipping profile update check due to GitHub.com not responding within 1 second." -Level "WARNING"
+    return
+  }
+
+  try {
+    $baseRepoUrl = "https://github.com/MKAbuMattar/powershell-profile"
+    $moduleDirUrl = "$baseRepoUrl/raw/main/Module"
+
+    $localModuleDir = Join-Path -Path $LocalPath -ChildPath "Module"
+    if (-not (Test-Path -Path $localModuleDir)) {
+      New-Item -Path $localModuleDir -ItemType Directory -Force
+      Write-LogMessage -Message "Created directory: $localModuleDir"
+    }
+
+    $files = @(
+      "Environment/Environment.psm1",
+      "Environment/Environment.psd1",
+      "Logging/Logging.psm1",
+      "Logging/Logging.psd1",
+      "Starship/Starship.psm1",
+      "Starship/Starship.psd1",
+      "Update/Update.psm1",
+      "Update/Update.psd1",
+      "Utility/Utility.psm1",
+      "Utility/Utility.psd1"
     )
 
-    if (-not $global:CanConnectToGitHub) {
-        Write-LogMessage -Message "Skipping profile update check due to GitHub.com not responding within 1 second." -Level "WARNING"
-        return
-    }
+    foreach ($file in $files) {
+      $fileUrl = "$moduleDirUrl/$file"
+      $localFilePath = Join-Path -Path $localModuleDir -ChildPath $file
 
-    try {
-        $baseRepoUrl = "https://github.com/MKAbuMattar/powershell-profile"
-        $moduleDirUrl = "$baseRepoUrl/raw/main/Module"
+      $localFileDir = Split-Path -Path $localFilePath -Parent
+      if (-not (Test-Path -Path $localFileDir)) {
+        New-Item -Path $localFileDir -ItemType Directory -Force
+        Write-LogMessage -Message "Created directory: $localFileDir"
+      }
 
-        $localModuleDir = Join-Path -Path $LocalPath -ChildPath "Module"
-        if (-not (Test-Path -Path $localModuleDir)) {
-            New-Item -Path $localModuleDir -ItemType Directory -Force
-            Write-LogMessage -Message "Created directory: $localModuleDir"
+      $downloadFile = $true
+
+      if (Test-Path -Path $localFilePath) {
+        try {
+          $localFileHash = Get-FileHash -Path $localFilePath
+          $tempFilePath = [System.IO.Path]::GetTempFileName()
+          Invoke-WebRequest -Uri $fileUrl -OutFile $tempFilePath
+          $remoteFileHash = Get-FileHash -Path $tempFilePath
+
+          if ($localFileHash.Hash -eq $remoteFileHash.Hash) {
+            Write-LogMessage -Message "File $file is already up-to-date."
+            $downloadFile = $false
+          }
+          else {
+            Write-LogMessage -Message "Removing existing file: $localFilePath"
+            Remove-Item -Path $localFilePath -Force
+          }
+
+          Remove-Item -Path $tempFilePath -Force
         }
-
-        $files = @(
-            "Environment/Environment.psm1",
-            "Environment/Environment.psd1",
-            "Logging/Logging.psm1",
-            "Logging/Logging.psd1",
-            "Starship/Starship.psm1",
-            "Starship/Starship.psd1",
-            "Update/Update.psm1",
-            "Update/Update.psd1",
-            "Utility/Utility.psm1",
-            "Utility/Utility.psd1"
-        )
-
-        foreach ($file in $files) {
-            $fileUrl = "$moduleDirUrl/$file"
-            $localFilePath = Join-Path -Path $localModuleDir -ChildPath $file
-
-            $localFileDir = Split-Path -Path $localFilePath -Parent
-            if (-not (Test-Path -Path $localFileDir)) {
-                New-Item -Path $localFileDir -ItemType Directory -Force
-                Write-LogMessage -Message "Created directory: $localFileDir"
-            }
-
-            $downloadFile = $true
-
-            if (Test-Path -Path $localFilePath) {
-                try {
-                    $localFileHash = Get-FileHash -Path $localFilePath
-                    $tempFilePath = [System.IO.Path]::GetTempFileName()
-                    Invoke-WebRequest -Uri $fileUrl -OutFile $tempFilePath
-                    $remoteFileHash = Get-FileHash -Path $tempFilePath
-
-                    if ($localFileHash.Hash -eq $remoteFileHash.Hash) {
-                        Write-LogMessage -Message "File $file is already up-to-date."
-                        $downloadFile = $false
-                    }
-                    else {
-                        Write-LogMessage -Message "Removing existing file: $localFilePath"
-                        Remove-Item -Path $localFilePath -Force
-                    }
-
-                    Remove-Item -Path $tempFilePath -Force
-                }
-                catch {
-                    Invoke-ErrorHandling -ErrorMessage "Failed to compare hashes for $file." -ErrorRecord $_
-                }
-            }
-
-            if ($downloadFile) {
-                Invoke-WebRequest -Uri $fileUrl -OutFile $localFilePath
-                Write-LogMessage -Message "Copied $file to: $localFilePath"
-            }
+        catch {
+          Invoke-ErrorHandling -ErrorMessage "Failed to compare hashes for $file." -ErrorRecord $_
         }
+      }
+
+      if ($downloadFile) {
+        Invoke-WebRequest -Uri $fileUrl -OutFile $localFilePath
+        Write-LogMessage -Message "Copied $file to: $localFilePath"
+      }
     }
-    catch {
-        Invoke-ErrorHandling -ErrorMessage "Failed to copy Module directory from the repository." -ErrorRecord $_
-    }
+  }
+  catch {
+    Invoke-ErrorHandling -ErrorMessage "Failed to copy Module directory from the repository." -ErrorRecord $_
+  }
 }
 
 <#
@@ -128,33 +128,33 @@ function Update-LocalProfileModuleDirectory {
     The profile update function is disabled by default. To enable it, uncomment the line that invokes the function at the end of the script.
 #>
 function Update-Profile {
-    [CmdletBinding()]
-    [Alias("update-profile")]
-    param (
-        # This function does not accept any parameters
-    )
+  [CmdletBinding()]
+  [Alias("update-profile")]
+  param (
+    # This function does not accept any parameters
+  )
 
-    if (-not $global:CanConnectToGitHub) {
-        Write-LogMessage -Message "Skipping profile update check due to GitHub.com not responding within 1 second." -Level "WARNING"
-        return
-    }
+  if (-not $global:CanConnectToGitHub) {
+    Write-LogMessage -Message "Skipping profile update check due to GitHub.com not responding within 1 second." -Level "WARNING"
+    return
+  }
 
-    try {
-        $url = "https://raw.githubusercontent.com/MKAbuMattar/powershell-profile/main/Microsoft.PowerShell_profile.ps1"
-        $oldhash = Get-FileHash $PROFILE
-        Invoke-RestMethod $url -OutFile "$env:temp/Microsoft.PowerShell_profile.ps1"
-        $newhash = Get-FileHash "$env:temp/Microsoft.PowerShell_profile.ps1"
-        if ($newhash.Hash -ne $oldhash.Hash) {
-            Copy-Item -Path "$env:temp/Microsoft.PowerShell_profile.ps1" -Destination $PROFILE -Force
-            Write-LogMessage -Message "Profile has been updated. Please restart your shell to reflect changes" -Level "INFO"
-        }
+  try {
+    $url = "https://raw.githubusercontent.com/MKAbuMattar/powershell-profile/main/Microsoft.PowerShell_profile.ps1"
+    $oldhash = Get-FileHash $PROFILE
+    Invoke-RestMethod $url -OutFile "$env:temp/Microsoft.PowerShell_profile.ps1"
+    $newhash = Get-FileHash "$env:temp/Microsoft.PowerShell_profile.ps1"
+    if ($newhash.Hash -ne $oldhash.Hash) {
+      Copy-Item -Path "$env:temp/Microsoft.PowerShell_profile.ps1" -Destination $PROFILE -Force
+      Write-LogMessage -Message "Profile has been updated. Please restart your shell to reflect changes" -Level "INFO"
     }
-    catch {
-        Write-LogMessage -Message "Unable to check for `$profile updates" -Level "WARNING"
-    }
-    finally {
-        Remove-Item "$env:temp/Microsoft.PowerShell_profile.ps1" -ErrorAction SilentlyContinue
-    }
+  }
+  catch {
+    Write-LogMessage -Message "Unable to check for `$profile updates" -Level "WARNING"
+  }
+  finally {
+    Remove-Item "$env:temp/Microsoft.PowerShell_profile.ps1" -ErrorAction SilentlyContinue
+  }
 }
 
 <#
@@ -182,38 +182,38 @@ function Update-Profile {
     The PowerShell update function is disabled by default. To enable it, uncomment the line that invokes the function at the end of the script.
 #>
 function Update-PowerShell {
-    [CmdletBinding()]
-    [Alias("update-ps1")]
-    param (
-        # This function does not accept any parameters
-    )
+  [CmdletBinding()]
+  [Alias("update-ps1")]
+  param (
+    # This function does not accept any parameters
+  )
 
-    if (-not $global:CanConnectToGitHub) {
-        Write-LogMessage -Message "Skipping PowerShell update check due to GitHub.com not responding within 1 second." -Level "WARNING"
-        return
+  if (-not $global:CanConnectToGitHub) {
+    Write-LogMessage -Message "Skipping PowerShell update check due to GitHub.com not responding within 1 second." -Level "WARNING"
+    return
+  }
+
+  try {
+    Write-LogMessage -Message "Checking for PowerShell updates..." -Level "INFO"
+    $updateNeeded = $false
+    $currentVersion = $PSVersionTable.PSVersion.ToString()
+    $gitHubApiUrl = "https://api.github.com/repos/PowerShell/PowerShell/releases/latest"
+    $latestReleaseInfo = Invoke-RestMethod -Uri $gitHubApiUrl
+    $latestVersion = $latestReleaseInfo.tag_name.Trim('v')
+    if ($currentVersion -lt $latestVersion) {
+      $updateNeeded = $true
     }
 
-    try {
-        Write-LogMessage -Message "Checking for PowerShell updates..." -Level "INFO"
-        $updateNeeded = $false
-        $currentVersion = $PSVersionTable.PSVersion.ToString()
-        $gitHubApiUrl = "https://api.github.com/repos/PowerShell/PowerShell/releases/latest"
-        $latestReleaseInfo = Invoke-RestMethod -Uri $gitHubApiUrl
-        $latestVersion = $latestReleaseInfo.tag_name.Trim('v')
-        if ($currentVersion -lt $latestVersion) {
-            $updateNeeded = $true
-        }
-
-        if ($updateNeeded) {
-            Write-LogMessage -Message "Updating PowerShell..." -Level "INFO"
-            choco upgrade powershell -y
-            Write-LogMessage -Message "PowerShell has been updated. Please restart your shell to reflect changes" -Level "INFO"
-        }
-        else {
-            Write-LogMessage -Message "Your PowerShell is up to date." -Level "INFO"
-        }
+    if ($updateNeeded) {
+      Write-LogMessage -Message "Updating PowerShell..." -Level "INFO"
+      choco upgrade powershell -y
+      Write-LogMessage -Message "PowerShell has been updated. Please restart your shell to reflect changes" -Level "INFO"
     }
-    catch {
-        Write-LogMessage -Message "Failed to update PowerShell" -Level "WARNING"
+    else {
+      Write-LogMessage -Message "Your PowerShell is up to date." -Level "INFO"
     }
+  }
+  catch {
+    Write-LogMessage -Message "Failed to update PowerShell" -Level "WARNING"
+  }
 }

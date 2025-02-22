@@ -31,7 +31,7 @@ $global:AutoUpdatePowerShell = [bool]$false
 <#
 .SYNOPSIS
     Set environment variables for Testing GitHub connectivity.
-    
+
 .DESCRIPTION
     This script sets environment variables to test if the machine can connect to GitHub.
 

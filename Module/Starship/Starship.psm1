@@ -23,11 +23,11 @@
     This function is used to load the Starship prompt transiently without permanently modifying the PowerShell environment.
 #>
 function Invoke-StarshipTransientFunction {
-    [CmdletBinding()]
-    [Alias("starship-transient")]
-    param (
-        # This function does not accept any parameters
-    )
+  [CmdletBinding()]
+  [Alias("starship-transient")]
+  param (
+    # This function does not accept any parameters
+  )
 
-    &starship module character
+  &starship module character
 }

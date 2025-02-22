@@ -1,7 +1,7 @@
 #---------------------------------------------------------------------------------------------------
 # MKAbuMattar's PowerShell Profile
 #
-#                 
+#
 #                             .
 #         ..                .''
 #         .,'..,.         ..,;,'
@@ -34,11 +34,11 @@
 #       and tools.
 #
 # Created: 2021-09-01
-# Updated: 2024-11-17
+# Updated: 2025-02-22
 #
 # GitHub: https://github.com/MKAbuMattar/powershell-profile
 #
-# Version: 3.0.0-beta
+# Version: 3.0.0
 #---------------------------------------------------------------------------------------------------
 
 <#
@@ -66,14 +66,14 @@
     Logs a warning message with the log level "WARNING".
 #>
 function Write-LogMessage {
-    [CmdletBinding()]
-    param (
-        [string]$Message,
-        [string]$Level = "INFO"
-    )
+  [CmdletBinding()]
+  param (
+    [string]$Message,
+    [string]$Level = "INFO"
+  )
 
-    $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
-    Write-Output "[$timestamp][$Level] $Message"
+  $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+  Write-Output "[$timestamp][$Level] $Message"
 }
 
 <#
@@ -97,22 +97,22 @@ function Write-LogMessage {
     Logs an error message and the exception message and breaks the script.
 #>
 function Invoke-ErrorHandling {
-    [CmdletBinding()]
-    param (
-        [string]$ErrorMessage,
-        [System.Management.Automation.ErrorRecord]$ErrorRecord
-    )
+  [CmdletBinding()]
+  param (
+    [string]$ErrorMessage,
+    [System.Management.Automation.ErrorRecord]$ErrorRecord
+  )
 
-    Write-LogMessage -Message "$ErrorMessage`n$($ErrorRecord.Exception.Message)" -Level "ERROR"
-    break
+  Write-LogMessage -Message "$ErrorMessage`n$($ErrorRecord.Exception.Message)" -Level "ERROR"
+  break
 }
 
 #---------------------------------------------------------------------------------------------------
 # Check if the script is running as an Administrator
 #---------------------------------------------------------------------------------------------------
 if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
-    Write-LogMessage -Message "Please run this script as an Administrator!" -Level "WARNING"
-    break
+  Write-LogMessage -Message "Please run this script as an Administrator!" -Level "WARNING"
+  break
 }
 
 <#
@@ -133,26 +133,26 @@ if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdenti
     Checks for internet connection using the default host (www.google.com).
 #>
 function Test-InternetConnection {
-    [CmdletBinding()]
-    param(
-        [string]$HostName = "www.google.com"
-    )
+  [CmdletBinding()]
+  param(
+    [string]$HostName = "www.google.com"
+  )
 
-    try {
-        Test-Connection -ComputerName $HostName -Count 1 -ErrorAction Stop | Out-Null
-        return $true
-    }
-    catch {
-        Invoke-ErrorHandling -ErrorMessage "Internet connection is required but not available. Please check your connection." -ErrorRecord $_
-        return $false
-    }
+  try {
+    Test-Connection -ComputerName $HostName -Count 1 -ErrorAction Stop | Out-Null
+    return $true
+  }
+  catch {
+    Invoke-ErrorHandling -ErrorMessage "Internet connection is required but not available. Please check your connection." -ErrorRecord $_
+    return $false
+  }
 }
 
 #---------------------------------------------------------------------------------------------------
 # Check for internet connection before proceeding
 #---------------------------------------------------------------------------------------------------
 if (-not (Test-InternetConnection)) {
-    break
+  break
 }
 
 <#
@@ -173,61 +173,61 @@ if (-not (Test-InternetConnection)) {
     Copies the Module directory to the specified local path.
 #>
 function Copy-ModuleDirectory {
-    [CmdletBinding()]
-    param (
-        [string]$LocalPath = "$HOME\Documents\PowerShell"
+  [CmdletBinding()]
+  param (
+    [string]$LocalPath = "$HOME\Documents\PowerShell"
+  )
+
+  try {
+    $baseRepoUrl = "https://github.com/MKAbuMattar/powershell-profile"
+    $moduleDirUrl = "$baseRepoUrl/raw/main/Module"
+
+    # Create the local Module directory if it does not exist
+    $localModuleDir = Join-Path -Path $LocalPath -ChildPath "Module"
+    if (-not (Test-Path -Path $localModuleDir)) {
+      New-Item -Path $localModuleDir -ItemType Directory -Force
+      Write-LogMessage -Message "Created directory: $localModuleDir"
+    }
+
+    # Define the files to be copied from the Module directory
+    $files = @(
+      "Environment/Environment.psm1",
+      "Environment/Environment.psd1",
+      "Logging/Logging.psm1",
+      "Logging/Logging.psd1",
+      "Starship/Starship.psm1",
+      "Starship/Starship.psd1",
+      "Update/Update.psm1",
+      "Update/Update.psd1",
+      "Utility/Utility.psm1",
+      "Utility/Utility.psd1"
     )
 
-    try {
-        $baseRepoUrl = "https://github.com/MKAbuMattar/powershell-profile"
-        $moduleDirUrl = "$baseRepoUrl/raw/main/Module"
+    foreach ($file in $files) {
+      $fileUrl = "$moduleDirUrl/$file"
+      $localFilePath = Join-Path -Path $localModuleDir -ChildPath $file
 
-        # Create the local Module directory if it does not exist
-        $localModuleDir = Join-Path -Path $LocalPath -ChildPath "Module"
-        if (-not (Test-Path -Path $localModuleDir)) {
-            New-Item -Path $localModuleDir -ItemType Directory -Force
-            Write-LogMessage -Message "Created directory: $localModuleDir"
-        }
+      # Ensure the local directory for the file exists
+      $localFileDir = Split-Path -Path $localFilePath -Parent
+      if (-not (Test-Path -Path $localFileDir)) {
+        New-Item -Path $localFileDir -ItemType Directory -Force
+        Write-LogMessage -Message "Created directory: $localFileDir"
+      }
 
-        # Define the files to be copied from the Module directory
-        $files = @(
-            "Environment/Environment.psm1",
-            "Environment/Environment.psd1",
-            "Logging/Logging.psm1",
-            "Logging/Logging.psd1",
-            "Starship/Starship.psm1",
-            "Starship/Starship.psd1",
-            "Update/Update.psm1",
-            "Update/Update.psd1",
-            "Utility/Utility.psm1",
-            "Utility/Utility.psd1"
-        )
+      # Remove the file if it exists
+      if (Test-Path -Path $localFilePath) {
+        Remove-Item -Path $localFilePath -Force
+        Write-LogMessage -Message "Removed existing file: $localFilePath"
+      }
 
-        foreach ($file in $files) {
-            $fileUrl = "$moduleDirUrl/$file"
-            $localFilePath = Join-Path -Path $localModuleDir -ChildPath $file
-
-            # Ensure the local directory for the file exists
-            $localFileDir = Split-Path -Path $localFilePath -Parent
-            if (-not (Test-Path -Path $localFileDir)) {
-                New-Item -Path $localFileDir -ItemType Directory -Force
-                Write-LogMessage -Message "Created directory: $localFileDir"
-            }
-
-            # Remove the file if it exists
-            if (Test-Path -Path $localFilePath) {
-                Remove-Item -Path $localFilePath -Force
-                Write-LogMessage -Message "Removed existing file: $localFilePath"
-            }
-
-            # Copy the new file
-            Invoke-WebRequest -Uri $fileUrl -OutFile $localFilePath
-            Write-LogMessage -Message "Copied $file to: $localFilePath"
-        }
+      # Copy the new file
+      Invoke-WebRequest -Uri $fileUrl -OutFile $localFilePath
+      Write-LogMessage -Message "Copied $file to: $localFilePath"
     }
-    catch {
-        Invoke-ErrorHandling -ErrorMessage "Failed to copy Module directory from the repository." -ErrorRecord $_
-    }
+  }
+  catch {
+    Invoke-ErrorHandling -ErrorMessage "Failed to copy Module directory from the repository." -ErrorRecord $_
+  }
 }
 
 #---------------------------------------------------------------------------------------------------
@@ -251,38 +251,38 @@ Invoke-Command -ScriptBlock ${function:Copy-ModuleDirectory} -ErrorAction Stop
     Initializes the PowerShell profile by creating or updating the profile script.
 #>
 function Initialize-PowerShellProfile {
-    [CmdletBinding()]
-    param(
-        # This function does not accept any parameters
-    )
+  [CmdletBinding()]
+  param(
+    # This function does not accept any parameters
+  )
 
-    try {
-        if (!(Test-Path -Path $PROFILE -PathType Leaf)) {
-            $profilePath = if ($PSVersionTable.PSEdition -eq "Core") {
-                "$ENV:USERPROFILE\Documents\Powershell"
-            }
-            elseif ($PSVersionTable.PSEdition -eq "Desktop") {
-                "$ENV:USERPROFILE\Documents\WindowsPowerShell"
-            }
+  try {
+    if (!(Test-Path -Path $PROFILE -PathType Leaf)) {
+      $profilePath = if ($PSVersionTable.PSEdition -eq "Core") {
+        "$ENV:USERPROFILE\Documents\Powershell"
+      }
+      elseif ($PSVersionTable.PSEdition -eq "Desktop") {
+        "$ENV:USERPROFILE\Documents\WindowsPowerShell"
+      }
 
-            if (!(Test-Path -Path $profilePath)) {
-                New-Item -Path $profilePath -ItemType "directory"
-            }
+      if (!(Test-Path -Path $profilePath)) {
+        New-Item -Path $profilePath -ItemType "directory"
+      }
 
-            Invoke-RestMethod https://github.com/MKAbuMattar/powershell-profile/raw/main/Microsoft.PowerShell_profile.ps1 -OutFile $PROFILE
-            Write-LogMessage -Message "The profile @ [$PROFILE] has been created."
-            Write-LogMessage -Message "If you want to add any persistent components, please do so at [$profilePath\Profile.ps1] as there is an updater in the installed profile which uses the hash to update the profile and will lead to loss of changes."
-        }
-        else {
-            Get-Item -Path $PROFILE | Move-Item -Destination "oldprofile.ps1" -Force
-            Invoke-RestMethod https://github.com/MKAbuMattar/powershell-profile/raw/main/Microsoft.PowerShell_profile.ps1 -OutFile $PROFILE
-            Write-LogMessage -Message "The profile @ [$PROFILE] has been created and old profile removed."
-            Write-LogMessage -Message "Please back up any persistent components of your old profile to [$HOME\Documents\PowerShell\Profile.ps1] as there is an updater in the installed profile which uses the hash to update the profile and will lead to loss of changes."
-        }
+      Invoke-RestMethod https://github.com/MKAbuMattar/powershell-profile/raw/main/Microsoft.PowerShell_profile.ps1 -OutFile $PROFILE
+      Write-LogMessage -Message "The profile @ [$PROFILE] has been created."
+      Write-LogMessage -Message "If you want to add any persistent components, please do so at [$profilePath\Profile.ps1] as there is an updater in the installed profile which uses the hash to update the profile and will lead to loss of changes."
     }
-    catch {
-        Invoke-ErrorHandling -ErrorMessage "Failed to create or update the profile." -ErrorRecord $_
+    else {
+      Get-Item -Path $PROFILE | Move-Item -Destination "oldprofile.ps1" -Force
+      Invoke-RestMethod https://github.com/MKAbuMattar/powershell-profile/raw/main/Microsoft.PowerShell_profile.ps1 -OutFile $PROFILE
+      Write-LogMessage -Message "The profile @ [$PROFILE] has been created and old profile removed."
+      Write-LogMessage -Message "Please back up any persistent components of your old profile to [$HOME\Documents\PowerShell\Profile.ps1] as there is an updater in the installed profile which uses the hash to update the profile and will lead to loss of changes."
     }
+  }
+  catch {
+    Invoke-ErrorHandling -ErrorMessage "Failed to create or update the profile." -ErrorRecord $_
+  }
 }
 
 <#
@@ -299,33 +299,33 @@ function Initialize-PowerShellProfile {
     Initialize-StarshipConfig
     Initializes the Starship configuration by creating the ~/.config directory and copying the starship.toml file.
 #>
-function Initialize-StarshipConfig { 
-    [CmdletBinding()]
-    param(
-        # This function does not accept any parameters
-    )
+function Initialize-StarshipConfig {
+  [CmdletBinding()]
+  param(
+    # This function does not accept any parameters
+  )
 
-    try {
-        $configDir = "$ENV:USERPROFILE\.config"
-        if (!(Test-Path -Path $configDir -PathType Container)) {
-            New-Item -Path $configDir -ItemType Directory
-            Write-LogMessage -Message "Created directory: $configDir"
-        }
-
-        $starshipTomlUrl = "https://github.com/MKAbuMattar/powershell-profile/raw/main/.config/starship.toml"
-        $starshipTomlPath = Join-Path -Path $configDir -ChildPath "starship.toml"
-
-        if (!(Test-Path -Path $starshipTomlPath)) {
-            Invoke-WebRequest -Uri $starshipTomlUrl -OutFile $starshipTomlPath
-            Write-LogMessage -Message "Copied starship.toml to: $starshipTomlPath"
-        }
-        else {
-            Write-LogMessage -Message "starship.toml already exists in: $configDir"
-        }
+  try {
+    $configDir = "$ENV:USERPROFILE\.config"
+    if (!(Test-Path -Path $configDir -PathType Container)) {
+      New-Item -Path $configDir -ItemType Directory
+      Write-LogMessage -Message "Created directory: $configDir"
     }
-    catch {
-        Invoke-ErrorHandling -ErrorMessage "Failed to create ~/.config directory or copy starship.toml." -ErrorRecord $_
+
+    $starshipTomlUrl = "https://github.com/MKAbuMattar/powershell-profile/raw/main/.config/starship.toml"
+    $starshipTomlPath = Join-Path -Path $configDir -ChildPath "starship.toml"
+
+    if (!(Test-Path -Path $starshipTomlPath)) {
+      Invoke-WebRequest -Uri $starshipTomlUrl -OutFile $starshipTomlPath
+      Write-LogMessage -Message "Copied starship.toml to: $starshipTomlPath"
     }
+    else {
+      Write-LogMessage -Message "starship.toml already exists in: $configDir"
+    }
+  }
+  catch {
+    Invoke-ErrorHandling -ErrorMessage "Failed to create ~/.config directory or copy starship.toml." -ErrorRecord $_
+  }
 }
 
 <#
@@ -343,38 +343,38 @@ function Initialize-StarshipConfig {
     Initializes the FastFetch configuration by creating the ~/.config/fastfetch directory and copying the config.jsonc file.
 #>
 function Initialize-FastFetchConfig {
-    [CmdletBinding()]
-    param(
-        # This function does not accept any parameters
-    )
+  [CmdletBinding()]
+  param(
+    # This function does not accept any parameters
+  )
 
-    try {
-        $configDir = "$ENV:USERPROFILE\.config"
-        if (!(Test-Path -Path $configDir -PathType Container)) {
-            New-Item -Path $configDir -ItemType Directory
-            Write-LogMessage -Message "Created directory: $configDir"
-        }
-
-        $configPath = Join-Path -Path $configDir -ChildPath "fastfetch"
-        if (!(Test-Path -Path $configPath -PathType Container)) {
-            New-Item -Path $configPath -ItemType Directory
-            Write-LogMessage -Message "Created directory: $configPath"
-        }
-
-        $fastfetchConfigUrl = "https://github.com/MKAbuMattar/powershell-profile/raw/main/.config/fastfetch/config.jsonc"
-        $fastfetchConfigPath = Join-Path -Path $configPath -ChildPath "config.jsonc"
-
-        if (!(Test-Path -Path $fastfetchConfigPath)) {
-            Invoke-WebRequest -Uri $fastfetchConfigUrl -OutFile $fastfetchConfigPath
-            Write-LogMessage -Message "Copied config.jsonc to: $fastfetchConfigPath"
-        }
-        else {
-            Write-LogMessage -Message "config.jsonc already exists in: $configPath"
-        }
+  try {
+    $configDir = "$ENV:USERPROFILE\.config"
+    if (!(Test-Path -Path $configDir -PathType Container)) {
+      New-Item -Path $configDir -ItemType Directory
+      Write-LogMessage -Message "Created directory: $configDir"
     }
-    catch {
-        Invoke-ErrorHandling -ErrorMessage "Failed to create ~/.config/fastfetch directory or copy config.jsonc." -ErrorRecord $_
+
+    $configPath = Join-Path -Path $configDir -ChildPath "fastfetch"
+    if (!(Test-Path -Path $configPath -PathType Container)) {
+      New-Item -Path $configPath -ItemType Directory
+      Write-LogMessage -Message "Created directory: $configPath"
     }
+
+    $fastfetchConfigUrl = "https://github.com/MKAbuMattar/powershell-profile/raw/main/.config/fastfetch/config.jsonc"
+    $fastfetchConfigPath = Join-Path -Path $configPath -ChildPath "config.jsonc"
+
+    if (!(Test-Path -Path $fastfetchConfigPath)) {
+      Invoke-WebRequest -Uri $fastfetchConfigUrl -OutFile $fastfetchConfigPath
+      Write-LogMessage -Message "Copied config.jsonc to: $fastfetchConfigPath"
+    }
+    else {
+      Write-LogMessage -Message "config.jsonc already exists in: $configPath"
+    }
+  }
+  catch {
+    Invoke-ErrorHandling -ErrorMessage "Failed to create ~/.config/fastfetch directory or copy config.jsonc." -ErrorRecord $_
+  }
 }
 
 <#
@@ -405,46 +405,46 @@ function Initialize-FastFetchConfig {
     Installs the Cascadia Code font with the specified parameters.
 #>
 function Install-CascadiaCodeFont {
-    [CmdletBinding()]
-    param (
-        [string]$FontName = "CascadiaCode",
-        [string]$FontDisplayName = "CaskaydiaCove NF",
-        [string]$Version = "3.2.1"
-    )
+  [CmdletBinding()]
+  param (
+    [string]$FontName = "CascadiaCode",
+    [string]$FontDisplayName = "CaskaydiaCove NF",
+    [string]$Version = "3.2.1"
+  )
 
-    try {
-        [void] [System.Reflection.Assembly]::LoadWithPartialName("System.Drawing")
-        $fontFamilies = (New-Object System.Drawing.Text.InstalledFontCollection).Families.Name
-        if ($fontFamilies -notcontains "${FontDisplayName}") {
-            $fontZipUrl = "https://github.com/ryanoasis/nerd-fonts/releases/download/v${Version}/${FontName}.zip"
-            $zipFilePath = "$env:TEMP\${FontName}.zip"
-            $extractPath = "$env:TEMP\${FontName}"
+  try {
+    [void] [System.Reflection.Assembly]::LoadWithPartialName("System.Drawing")
+    $fontFamilies = (New-Object System.Drawing.Text.InstalledFontCollection).Families.Name
+    if ($fontFamilies -notcontains "${FontDisplayName}") {
+      $fontZipUrl = "https://github.com/ryanoasis/nerd-fonts/releases/download/v${Version}/${FontName}.zip"
+      $zipFilePath = "$env:TEMP\${FontName}.zip"
+      $extractPath = "$env:TEMP\${FontName}"
 
-            $webClient = New-Object System.Net.WebClient
-            $webClient.DownloadFileAsync((New-Object System.Uri($fontZipUrl)), $zipFilePath)
+      $webClient = New-Object System.Net.WebClient
+      $webClient.DownloadFileAsync((New-Object System.Uri($fontZipUrl)), $zipFilePath)
 
-            while ($webClient.IsBusy) {
-                Start-Sleep -Seconds 2
-            }
+      while ($webClient.IsBusy) {
+        Start-Sleep -Seconds 2
+      }
 
-            Expand-Archive -Path $zipFilePath -DestinationPath $extractPath -Force
-            $destination = (New-Object -ComObject Shell.Application).Namespace(0x14)
-            Get-ChildItem -Path $extractPath -Recurse -Filter "*.ttf" | ForEach-Object {
-                If (-not(Test-Path "C:\Windows\Fonts\$($_.Name)")) {
-                    $destination.CopyHere($_.FullName, 0x10)
-                }
-            }
-
-            Remove-Item -Path $extractPath -Recurse -Force
-            Remove-Item -Path $zipFilePath -Force
+      Expand-Archive -Path $zipFilePath -DestinationPath $extractPath -Force
+      $destination = (New-Object -ComObject Shell.Application).Namespace(0x14)
+      Get-ChildItem -Path $extractPath -Recurse -Filter "*.ttf" | ForEach-Object {
+        If (-not(Test-Path "C:\Windows\Fonts\$($_.Name)")) {
+          $destination.CopyHere($_.FullName, 0x10)
         }
-        else {
-            Write-LogMessage -Message "${FontDisplayName} font is already installed."
-        }
+      }
+
+      Remove-Item -Path $extractPath -Recurse -Force
+      Remove-Item -Path $zipFilePath -Force
     }
-    catch {
-        Invoke-ErrorHandling "Failed to download or install ${FontDisplayName} font. Error: $_"
+    else {
+      Write-LogMessage -Message "${FontDisplayName} font is already installed."
     }
+  }
+  catch {
+    Invoke-ErrorHandling "Failed to download or install ${FontDisplayName} font. Error: $_"
+  }
 }
 
 <#
@@ -462,19 +462,19 @@ function Install-CascadiaCodeFont {
     Installs the Chocolatey package manager.
 #>
 function Install-Chocolatey {
-    [CmdletBinding()]
-    param(
-        # This function does not accept any parameters
-    )
+  [CmdletBinding()]
+  param(
+    # This function does not accept any parameters
+  )
 
-    try {
-        Set-ExecutionPolicy Bypass -Scope Process -Force
-        [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
-        Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
-    }
-    catch {
-        Invoke-ErrorHandling -ErrorMessage "Failed to install Chocolatey." -ErrorRecord $_
-    }
+  try {
+    Set-ExecutionPolicy Bypass -Scope Process -Force
+    [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
+    Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+  }
+  catch {
+    Invoke-ErrorHandling -ErrorMessage "Failed to install Chocolatey." -ErrorRecord $_
+  }
 }
 
 <#
@@ -495,36 +495,36 @@ function Install-Chocolatey {
     Installs or updates the modules "Module1", "Module2", and "Module3".
 #>
 function Invoke-UpdateInstallPSModules {
-    [CmdletBinding()]
-    param (
-        [string[]]$ModuleList
-    )
+  [CmdletBinding()]
+  param (
+    [string[]]$ModuleList
+  )
 
-    foreach ($module in $ModuleList) {
-        Write-LogMessage -Message "Checking $module"
-        try {
-            $installedModule = Get-InstalledModule -Name $module -ErrorAction SilentlyContinue
-            if ($installedModule) {
-                $installedVersion = $installedModule.Version
-                $latestVersion = (Find-Module -Name $module).Version
+  foreach ($module in $ModuleList) {
+    Write-LogMessage -Message "Checking $module"
+    try {
+      $installedModule = Get-InstalledModule -Name $module -ErrorAction SilentlyContinue
+      if ($installedModule) {
+        $installedVersion = $installedModule.Version
+        $latestVersion = (Find-Module -Name $module).Version
 
-                if ($installedVersion -ne $latestVersion) {
-                    Write-LogMessage -Message "Updating $module from version $installedVersion to $latestVersion"
-                    Update-Module -Name $module -Force
-                }
-                else {
-                    Write-LogMessage -Message "$module is already up-to-date (version $installedVersion)"
-                }
-            }
-            else {
-                Write-LogMessage -Message "Installing $module"
-                Install-Module -Name $module -Force
-            }
+        if ($installedVersion -ne $latestVersion) {
+          Write-LogMessage -Message "Updating $module from version $installedVersion to $latestVersion"
+          Update-Module -Name $module -Force
         }
-        catch {
-            Invoke-ErrorHandling -ErrorMessage "Failed to process module $module." -ErrorRecord $_
+        else {
+          Write-LogMessage -Message "$module is already up-to-date (version $installedVersion)"
         }
+      }
+      else {
+        Write-LogMessage -Message "Installing $module"
+        Install-Module -Name $module -Force
+      }
     }
+    catch {
+      Invoke-ErrorHandling -ErrorMessage "Failed to process module $module." -ErrorRecord $_
+    }
+  }
 }
 
 <#
@@ -545,36 +545,36 @@ function Invoke-UpdateInstallPSModules {
     Installs or updates the packages "Package1", "Package2", and "Package3".
 #>
 function Invoke-UpdateInstallChocoPackages {
-    [CmdletBinding()]
-    param (
-        [string[]]$PackageList
-    )
+  [CmdletBinding()]
+  param (
+    [string[]]$PackageList
+  )
 
-    foreach ($package in $PackageList) {
-        Write-LogMessage -Message "Checking $package"
-        try {
-            $installedPackage = choco list --local-only --exact $package -r -e | Select-String -Pattern $package
-            if ($installedPackage) {
-                $installedVersion = $installedPackage.ToString().Split('|')[1].Trim()
-                $latestVersion = (choco search $package --exact --limit-output | Select-String -Pattern $package).ToString().Split('|')[1].Trim()
+  foreach ($package in $PackageList) {
+    Write-LogMessage -Message "Checking $package"
+    try {
+      $installedPackage = choco list --local-only --exact $package -r -e | Select-String -Pattern $package
+      if ($installedPackage) {
+        $installedVersion = $installedPackage.ToString().Split('|')[1].Trim()
+        $latestVersion = (choco search $package --exact --limit-output | Select-String -Pattern $package).ToString().Split('|')[1].Trim()
 
-                if ($installedVersion -ne $latestVersion) {
-                    Write-LogMessage -Message "Updating $package from version $installedVersion to $latestVersion"
-                    choco upgrade $package -y
-                }
-                else {
-                    Write-LogMessage -Message "$package is already up-to-date (version $installedVersion)"
-                }
-            }
-            else {
-                Write-LogMessage -Message "Installing $package"
-                choco install $package -y
-            }
+        if ($installedVersion -ne $latestVersion) {
+          Write-LogMessage -Message "Updating $package from version $installedVersion to $latestVersion"
+          choco upgrade $package -y
         }
-        catch {
-            Invoke-ErrorHandling -ErrorMessage "Failed to process package $package." -ErrorRecord $_
+        else {
+          Write-LogMessage -Message "$package is already up-to-date (version $installedVersion)"
         }
+      }
+      else {
+        Write-LogMessage -Message "Installing $package"
+        choco install $package -y
+      }
     }
+    catch {
+      Invoke-ErrorHandling -ErrorMessage "Failed to process package $package." -ErrorRecord $_
+    }
+  }
 }
 
 #---------------------------------------------------------------------------------------------------
@@ -635,8 +635,8 @@ Write-LogMessage -Message "Setup process completed successfully."
 # Check if the setup completed successfully
 #---------------------------------------------------------------------------------------------------
 if (Test-Path -Path $PROFILE) {
-    Write-LogMessage -Message "Setup completed successfully. Please restart your PowerShell session to apply changes."
+  Write-LogMessage -Message "Setup completed successfully. Please restart your PowerShell session to apply changes."
 }
 else {
-    Write-LogMessage -Message "Setup completed with errors. Please check the error messages above." -Level "WARNING"
+  Write-LogMessage -Message "Setup completed with errors. Please check the error messages above." -Level "WARNING"
 }

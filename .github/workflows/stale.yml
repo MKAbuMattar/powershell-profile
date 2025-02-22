@@ -1,0 +1,39 @@
+name: Stale Issues & PRs
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+
+permissions: write-all
+
+jobs:
+  mark_stale:
+    name: Mark issues and PRs as stale
+    runs-on: ubuntu-latest
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@4d991eb9b905ef189e4c376166672c3f2f230481 # v2.11.0
+        with:
+          egress-policy: audit
+
+      - name: Mark stale
+        uses: actions/stale@5bef64f19d7facfb25b37b414482c7164d639639 # v9.1.0
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          exempt-issue-labels: Not Stale
+          exempt-pr-labels: Not Stale
+          stale-issue-message: >
+            This issue is stale because it has been open for 60 days with no
+            activity. Remove the "Stale" label or comment on the issue, or it
+            will be closed in 7 days.
+          stale-pr-message: >
+            This pull request is stale because it has been open for 60 days
+            with no activity. Remove the "Stale" label or comment on the pull
+            request, or it will be closed in 7 days.
+          close-issue-message: >
+            This issue has been marked as stale and closed due to no activity
+            on it.
+          close-pr-message: >
+            This pull request has been marked as stale and closed due to no
+            activity on it.

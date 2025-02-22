@@ -16,15 +16,15 @@
     Checks if the "ls" command exists in the current environment.
 #>
 function Test-CommandExists {
-    [CmdletBinding()]
-    [Alias("command-exists")]
-    param (
-        [Parameter(Position = 0, Mandatory = $true)]
-        [string]$command
-    )
+  [CmdletBinding()]
+  [Alias("command-exists")]
+  param (
+    [Parameter(Position = 0, Mandatory = $true)]
+    [string]$command
+  )
 
-    $exists = $null -ne (Get-Command $command -ErrorAction SilentlyContinue)
-    return $exists
+  $exists = $null -ne (Get-Command $command -ErrorAction SilentlyContinue)
+  return $exists
 }
 
 <#
@@ -52,19 +52,19 @@ function Test-CommandExists {
     This function is useful for quickly reloading the PowerShell profile to apply changes without restarting the shell.
 #>
 function Invoke-ProfileReload {
-    [CmdletBinding()]
-    [Alias("reload-profile")]
-    param (
-        # This function does not accept any parameters
-    )
+  [CmdletBinding()]
+  [Alias("reload-profile")]
+  param (
+    # This function does not accept any parameters
+  )
 
-    try {
-        & $profile
-        Write-LogMessage -Message "PowerShell profile reloaded successfully." -Level "INFO"
-    }
-    catch {
-        Write-LogMessage -Message "Failed to reload the PowerShell profile." -Level "ERROR"
-    }
+  try {
+    & $profile
+    Write-LogMessage -Message "PowerShell profile reloaded successfully." -Level "INFO"
+  }
+  catch {
+    Write-LogMessage -Message "Failed to reload the PowerShell profile." -Level "ERROR"
+  }
 }
 
 <#
@@ -96,16 +96,16 @@ function Invoke-ProfileReload {
     This function is useful for quickly finding files that match a specific name pattern in the current directory and its subdirectories.
 #>
 function Find-Files {
-    [CmdletBinding()]
-    [Alias("ff")]
-    param (
-        [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
-        [string]$Name
-    )
+  [CmdletBinding()]
+  [Alias("ff")]
+  param (
+    [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [string]$Name
+  )
 
-    Get-ChildItem -Recurse -Filter $Name -ErrorAction SilentlyContinue | ForEach-Object {
-        Write-Output $_.FullName
-    }
+  Get-ChildItem -Recurse -Filter $Name -ErrorAction SilentlyContinue | ForEach-Object {
+    Write-Output $_.FullName
+  }
 }
 
 <#
@@ -137,19 +137,19 @@ function Find-Files {
     This function can be used as an alias "touch" to quickly create a new file or update the timestamp of an existing file.
 #>
 function Set-FreshFile {
-    [CmdletBinding()]
-    [Alias("touch")]
-    param (
-        [Parameter(Mandatory = $true)]
-        [string]$File
-    )
+  [CmdletBinding()]
+  [Alias("touch")]
+  param (
+    [Parameter(Mandatory = $true)]
+    [string]$File
+  )
 
-    if (Test-Path $File) {
+  if (Test-Path $File) {
         (Get-Item $File).LastWriteTime = Get-Date
-    }
-    else {
-        "" | Out-File $File -Encoding ASCII
-    }
+  }
+  else {
+    "" | Out-File $File -Encoding ASCII
+  }
 }
 
 <#
@@ -177,23 +177,23 @@ function Set-FreshFile {
     This function is useful for checking how long the system has been running since the last boot.
 #>
 function Get-Uptime {
-    [CmdletBinding()]
-    [Alias("uptime")]
-    param (
-        # This function does not accept any parameters
-    )
+  [CmdletBinding()]
+  [Alias("uptime")]
+  param (
+    # This function does not accept any parameters
+  )
 
-    if ($PSVersionTable.PSVersion.Major -eq 5) {
-        Get-WmiObject Win32_OperatingSystem | ForEach-Object {
-            $uptime = (Get-Date) - $_.ConvertToDateTime($_.LastBootUpTime)
-            [PSCustomObject]@{
-                Uptime = $uptime.Days, $uptime.Hours, $uptime.Minutes, $uptime.Seconds -join ':'
-            }
-        }
+  if ($PSVersionTable.PSVersion.Major -eq 5) {
+    Get-WmiObject Win32_OperatingSystem | ForEach-Object {
+      $uptime = (Get-Date) - $_.ConvertToDateTime($_.LastBootUpTime)
+      [PSCustomObject]@{
+        Uptime = $uptime.Days, $uptime.Hours, $uptime.Minutes, $uptime.Seconds -join ':'
+      }
     }
-    else {
-        net statistics workstation | Select-String "since" | ForEach-Object { $_.ToString().Replace('Statistics since ', '') }
-    }
+  }
+  else {
+    net statistics workstation | Select-String "since" | ForEach-Object { $_.ToString().Replace('Statistics since ', '') }
+  }
 }
 
 <#
@@ -221,34 +221,34 @@ function Get-Uptime {
     This function is useful for quickly extracting files to the current directory.
 #>
 function Expand-File {
-    [CmdletBinding()]
-    [Alias("unzip")]
-    param (
-        [Parameter(Mandatory = $true, Position = 0)]
-        [string]$File
-    )
+  [CmdletBinding()]
+  [Alias("unzip")]
+  param (
+    [Parameter(Mandatory = $true, Position = 0)]
+    [string]$File
+  )
 
-    BEGIN {
-        Write-LogMessage -Message "Starting file extraction process..." -Level "INFO"
-    }
+  BEGIN {
+    Write-LogMessage -Message "Starting file extraction process..." -Level "INFO"
+  }
 
-    PROCESS {
-        try {
-            Write-LogMessage -Message "Extracting file '$File' to '$PWD'..." -Level "INFO"
-            $FullFilePath = Get-Item -Path $File -ErrorAction Stop | Select-Object -ExpandProperty FullName
-            Expand-Archive -Path $FullFilePath -DestinationPath $PWD -Force -ErrorAction Stop
-            Write-LogMessage -Message "File extraction completed successfully." -Level "INFO"
-        }
-        catch {
-            Write-LogMessage -Message "Failed to extract file '$File'." -Level "ERROR"
-        }
+  PROCESS {
+    try {
+      Write-LogMessage -Message "Extracting file '$File' to '$PWD'..." -Level "INFO"
+      $FullFilePath = Get-Item -Path $File -ErrorAction Stop | Select-Object -ExpandProperty FullName
+      Expand-Archive -Path $FullFilePath -DestinationPath $PWD -Force -ErrorAction Stop
+      Write-LogMessage -Message "File extraction completed successfully." -Level "INFO"
     }
+    catch {
+      Write-LogMessage -Message "Failed to extract file '$File'." -Level "ERROR"
+    }
+  }
 
-    END {
-        if (-not $Error) {
-            Write-LogMessage -Message "File extraction process completed." -Level "INFO"
-        }
+  END {
+    if (-not $Error) {
+      Write-LogMessage -Message "File extraction process completed." -Level "INFO"
     }
+  }
 }
 
 <#
@@ -279,34 +279,34 @@ function Expand-File {
     This function is useful for quickly compressing files into a zip archive.
 #>
 function Compress-Files {
-    [CmdletBinding()]
-    [Alias("zip")]
-    param (
-        [Parameter(Mandatory = $true, Position = 0)]
-        [string[]]$Files,
+  [CmdletBinding()]
+  [Alias("zip")]
+  param (
+    [Parameter(Mandatory = $true, Position = 0)]
+    [string[]]$Files,
 
-        [Parameter(Mandatory = $true, Position = 1)]
-        [string]$Archive
-    )
+    [Parameter(Mandatory = $true, Position = 1)]
+    [string]$Archive
+  )
 
-    BEGIN {
-        Write-LogMessage -Message "Starting file compression process..." -Level "INFO"
+  BEGIN {
+    Write-LogMessage -Message "Starting file compression process..." -Level "INFO"
+  }
+
+  PROCESS {
+    try {
+      Write-LogMessage -Message "Compressing files '$Files' into '$Archive'..." -Level "INFO"
+      Compress-Archive -Path $Files -DestinationPath $Archive -Force -ErrorAction Stop
+      Write-LogMessage -Message "File compression completed successfully." -Level "INFO"
     }
-
-    PROCESS {
-        try {
-            Write-LogMessage -Message "Compressing files '$Files' into '$Archive'..." -Level "INFO"
-            Compress-Archive -Path $Files -DestinationPath $Archive -Force -ErrorAction Stop
-            Write-LogMessage -Message "File compression completed successfully." -Level "INFO"
-        }
-        catch {
-            Write-LogMessage -Message "Failed to compress files '$Files'." -Level "ERROR"
-        }
+    catch {
+      Write-LogMessage -Message "Failed to compress files '$Files'." -Level "ERROR"
     }
+  }
 
-    END {
-        if (-not $Error) {
-            Write-LogMessage -Message "File compression process completed." -Level "INFO"
-        }
+  END {
+    if (-not $Error) {
+      Write-LogMessage -Message "File compression process completed." -Level "INFO"
     }
+  }
 }
