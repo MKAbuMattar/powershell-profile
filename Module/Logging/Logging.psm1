@@ -30,13 +30,13 @@
     This function is used to log messages with a timestamp and log level.
 #>
 function Write-LogMessage {
-    [CmdletBinding()]
-    [Alias("log-message")]
-    param (
-        [string]$Message,
-        [string]$Level = "INFO"
-    )
+  [CmdletBinding()]
+  [Alias("log-message")]
+  param (
+    [string]$Message,
+    [string]$Level = "INFO"
+  )
 
-    $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
-    Write-Output "[$timestamp][$Level] $Message"
+  $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+  Write-Output "[$timestamp][$Level] $Message"
 }
