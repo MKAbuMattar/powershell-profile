@@ -310,3 +310,515 @@ function Compress-Files {
     }
   }
 }
+
+<#
+.SYNOPSIS
+    Searches for a string in a file and returns matching lines.
+
+.DESCRIPTION
+    This function searches for a specified string or regular expression pattern in a file or files within a directory. It returns the lines that contain the matching string or pattern. It is useful for finding occurrences of specific patterns in text files.
+
+.PARAMETER Pattern
+    Specifies the string or regular expression pattern to search for.
+
+.PARAMETER Path
+    Specifies the path to the file or directory to search in. If not provided, the function searches in the current directory.
+
+.OUTPUTS
+    The lines in the file(s) that match the specified string or regular expression pattern.
+
+.EXAMPLE
+    Get-ContentMatching "pattern" "file.txt"
+    Searches for occurrences of the pattern "pattern" in the file "file.txt" and returns matching lines.
+
+.ALIASES
+    grep -> Use the alias `grep` to quickly search for a string in a file.
+
+.NOTES
+    This function is useful for quickly searching for a string or regular expression pattern in a file or files within a directory.
+#>
+function Get-ContentMatching {
+  [CmdletBinding()]
+  [Alias("grep")]
+  param (
+    [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
+    [string]$Pattern,
+
+    [Parameter(Position = 1)]
+    [string]$Path = $PWD
+  )
+
+  try {
+    if (-not (Test-Path $Path)) {
+      Write-LogMessage -Message "The specified path '$Path' does not exist." -Level "ERROR"
+      return
+    }
+
+    if (Test-Path $Path -PathType Leaf) {
+      Get-Content -Path $Path | Select-String -Pattern $Pattern
+    }
+    elseif (Test-Path $Path -PathType Container) {
+      Get-ChildItem -Path $Path -Recurse -File | ForEach-Object {
+        Get-Content -Path $_.FullName | Select-String -Pattern $Pattern
+      }
+    }
+    else {
+      Write-LogMessage -Message "The specified path '$Path' is neither a file nor a directory." -Level "WARNING"
+    }
+  }
+  catch {
+    Write-LogMessage -Message "Failed to access path '$Path'." -Level "ERROR"
+    return
+  }
+}
+
+<#
+.SYNOPSIS
+    Searches for a string in a file and replaces it with another string.
+
+.DESCRIPTION
+    This function searches for a specified string in a file and replaces it with another string. It is useful for performing text replacements in files.
+
+.PARAMETER file
+    Specifies the file to search and perform replacements in.
+
+.PARAMETER find
+    Specifies the string to search for.
+
+.PARAMETER replace
+    Specifies the string to replace the found string with.
+
+.OUTPUTS None
+    This function does not return any output.
+
+.EXAMPLE
+    Set-ContentMatching "file.txt" "pattern" "replacement"
+    Searches for "pattern" in "file.txt" and replaces it with "replacement".
+
+.ALIASES
+    sed -> Use the alias `sed` to quickly perform text replacements.
+
+.NOTES
+    This function is useful for quickly performing text replacements in files.
+#>
+function Set-ContentMatching {
+  [CmdletBinding()]
+  [Alias("sed")]
+  param (
+    [Parameter(Mandatory = $true)]
+    [string]$file,
+
+    [Parameter(Mandatory = $true)]
+    [string]$find,
+
+    [Parameter(Mandatory = $true)]
+    [string]$replace
+  )
+
+  try {
+    $content = Get-Content $file -ErrorAction Stop
+    $content -replace $find, $replace | Set-Content $file -ErrorAction Stop
+  }
+  catch {
+    Write-LogMessage -Message "An error occurred while performing text replacement." -Level "ERROR"
+  }
+}
+
+<#
+.SYNOPSIS
+  Gets the definition of a command.
+
+.DESCRIPTION
+  This function retrieves the definition of a specified command. It is useful for understanding the functionality and usage of PowerShell cmdlets and functions.
+
+.PARAMETER name
+  Specifies the name of the command to retrieve the definition for.
+
+.OUTPUTS
+  The definition of the specified command.
+
+.EXAMPLE
+  Get-CommandDefinition "ls"
+  Retrieves the definition of the "ls" command.
+
+.ALIASES
+  def -> Use the alias `def` to quickly get the definition of a command.
+
+.NOTES
+  This function is useful for quickly retrieving the definition of a command.
+#>
+function Get-CommandDefinition {
+  [CmdletBinding()]
+  [Alias("def")]
+  param (
+    [Parameter(Mandatory = $true)]
+    [string]$name
+  )
+
+  try {
+    $definition = Get-Command $name -ErrorAction Stop | Select-Object -ExpandProperty Definition
+    if ($definition) {
+      Write-Output $definition
+    }
+    else {
+      Write-LogMessage -Message "Command '$name' not found." -Level "WARNING"
+    }
+  }
+  catch {
+    Write-LogMessage -Message "An error occurred while retrieving the definition of '$name'." -Level "ERROR"
+  }
+}
+
+<#
+.SYNOPSIS
+  Exports an environment variable.
+
+.DESCRIPTION
+  This function exports an environment variable with the specified name and value. It sets the specified environment variable with the provided value.
+
+.PARAMETER name
+  Specifies the name of the environment variable.
+
+.PARAMETER value
+  Specifies the value of the environment variable.
+
+.OUTPUTS None
+  This function does not return any output.
+
+.EXAMPLE
+  Set-EnvVar "name" "value"
+  Exports an environment variable named "name" with the value "value".
+
+.ALIASES
+  set-env -> Use the alias `set-env` to quickly export an environment variable.
+
+.NOTES
+  This function is useful for exporting environment variables within a PowerShell session.
+#>
+function Set-EnvVar {
+  [CmdletBinding()]
+  [Alias("set-env")]
+  param (
+    [Parameter(Mandatory = $true)]
+    [string]$name,
+
+    [Parameter(Mandatory = $true)]
+    [string]$value
+  )
+
+  try {
+    Set-Item -Force -Path "env:$name" -Value $value -ErrorAction Stop
+  }
+  catch {
+    Write-LogMessage -Message "Failed to export environment variable '$name'." -Level "ERROR"
+  }
+}
+
+<#
+.SYNOPSIS
+  Retrieves the value of an environment variable.
+
+.DESCRIPTION
+  This function retrieves the value of the specified environment variable. It returns the value of the environment variable if it exists.
+
+.PARAMETER name
+  Specifies the name of the environment variable to retrieve the value for.
+
+.OUTPUTS
+  The value of the specified environment variable.
+
+.EXAMPLE
+  Get-EnvVar "name"
+  Retrieves the value of the environment variable named "name".
+
+.ALIASES
+  get-env -> Use the alias `get-env` to quickly get the value of an environment variable.
+
+.NOTES
+  This function is useful for retrieving the value of environment variables within a PowerShell session.
+#>
+function Get-EnvVar {
+  [CmdletBinding()]
+  [Alias("get-env")]
+  param (
+    [Parameter(Mandatory = $true)]
+    [string]$name
+  )
+
+  try {
+    $value = Get-Item -Path "env:$name" -ErrorAction Stop | Select-Object -ExpandProperty Value
+    if ($value) {
+      Write-Output $value
+    }
+    else {
+      Write-LogMessage -Message "Environment variable '$name' not found." -Level "WARNING"
+    }
+  }
+  catch {
+    Write-LogMessage -Message "An error occurred while retrieving the value of environment variable '$name'." -Level "ERROR"
+  }
+}
+
+<#
+.SYNOPSIS
+    Retrieves a list of all running processes.
+
+.DESCRIPTION
+    This function retrieves information about all running processes on the system. It provides details such as the process name, ID, CPU usage, and memory usage.
+
+.PARAMETER Name
+    Specifies the name of a specific process to retrieve information for. If not provided, information for all processes is retrieved.
+
+.OUTPUTS
+    The process information for all running processes.
+
+.EXAMPLE
+    Get-AllProcesses
+    Retrieves information about all running processes.
+
+.ALIASES
+    pall -> Use the alias `pall` to quickly get information about all running processes.
+
+.NOTES
+    This function is useful for retrieving information about running processes on the system.
+#>
+function Get-AllProcesses {
+  [CmdletBinding()]
+  [Alias("pall")]
+  param (
+    [Parameter(Mandatory = $false)]
+    [string]$name
+  )
+
+  try {
+    if ($name) {
+      Get-Process $name -ErrorAction Stop
+    }
+    else {
+      Get-Process
+    }
+  }
+  catch {
+    Write-LogMessage -Message "Failed to retrieve process information." -Level "ERROR"
+  }
+}
+
+<#
+.SYNOPSIS
+  Finds a process by name.
+
+.DESCRIPTION
+  This function searches for a process by its name. It retrieves information about the specified process, if found.
+
+.PARAMETER name
+  Specifies the name of the process to find.
+
+.OUTPUTS
+  The process information if found.
+
+.EXAMPLE
+  Get-ProcessByName "process"
+  Retrieves information about the process named "process".
+
+.ALIASES
+  pgrep -> Use the alias `pgrep` to quickly find a process by name.
+
+.NOTES
+  This function is useful for quickly finding information about a process by its name.
+#>
+function Get-ProcessByName {
+  [CmdletBinding()]
+  [Alias("pgrep")]
+  param (
+    [Parameter(Mandatory = $true)]
+    [string]$name
+  )
+
+  try {
+    Get-Process $name -ErrorAction Stop
+  }
+  catch {
+    Write-Warning "No process with the name '$name' found."
+  }
+}
+
+<#
+.SYNOPSIS
+  Finds a process by port.
+
+.DESCRIPTION
+  This function searches for a process using a specific port. It retrieves information about the process using the specified port, if found.
+
+.PARAMETER port
+  Specifies the port number to search for.
+
+.OUTPUTS
+  The process information if found.
+
+.EXAMPLE
+  Get-ProcessByPort 80
+  Retrieves information about the process using port 80.
+
+.ALIASES
+  portgrep -> Use the alias `portgrep` to quickly find a process by port.
+
+.NOTES
+  This function is useful for quickly finding information about a process using a specific port.
+#>
+function Get-ProcessByPort {
+  [CmdletBinding()]
+  [Alias("portgrep")]
+  param (
+    [Parameter(Mandatory = $true)]
+    [int]$port
+  )
+
+  try {
+    Get-NetTCPConnection -LocalPort $port -ErrorAction Stop
+  }
+  catch {
+    Write-Warning "No process using port '$port' found."
+  }
+}
+
+<#
+.SYNOPSIS
+  Terminates a process by name.
+
+.DESCRIPTION
+  This function terminates a process by its name. It is useful for stopping processes that may be unresponsive or causing issues.
+
+.PARAMETER name
+  Specifies the name of the process to terminate.
+
+.OUTPUTS None
+  This function does not return any output.
+
+.EXAMPLE
+  Stop-ProcessByName "process"
+  Terminates the process named "process".
+
+.ALIASES
+  pkill -> Use the alias `pkill` to quickly stop a process by name.
+
+.NOTES
+  This function is useful for quickly terminating a process by its name.
+#>
+function Stop-ProcessByName {
+  [CmdletBinding()]
+  [Alias("pkill")]
+  param (
+    [Parameter(Mandatory = $true)]
+    [string]$name
+  )
+
+  $process = Get-Process $name -ErrorAction SilentlyContinue
+  if ($process) {
+    $process | Stop-Process -Force
+  }
+  else {
+    Write-LogMessage -Message "No process with the name '$name' found." -Level "WARNING"
+  }
+}
+
+<#
+.SYNOPSIS
+  Terminates a process by port.
+
+.DESCRIPTION
+  This function terminates a process using a specific port. It is useful for stopping processes that may be unresponsive or causing issues.
+
+.PARAMETER port
+  Specifies the port number of the process to terminate.
+
+.OUTPUTS None
+  This function does not return any output.
+
+.EXAMPLE
+  Stop-ProcessByPort 80
+  Terminates the process using port 80.
+
+.ALIASES
+  portkill -> Use the alias `portkill` to quickly stop a process by port.
+
+.NOTES
+  This function is useful for quickly terminating a process using a specific port.
+#>
+function Stop-ProcessByPort {
+  [CmdletBinding()]
+  [Alias("portkill")]
+  param (
+    [Parameter(Mandatory = $true)]
+    [int]$port
+  )
+
+  $process = Get-NetTCPConnection -LocalPort $port -ErrorAction SilentlyContinue
+  if ($process) {
+    $process | Stop-Process -Force
+  }
+  else {
+    Write-LogMessage -Message "No process using port '$port' found." -Level "WARNING"
+  }
+}
+
+<#
+.SYNOPSIS
+    Retrieves a random quote from an online API.
+
+.DESCRIPTION
+    This function retrieves a random quote from the specified API URL. It returns the quote content and author. If the API request fails, it logs an error message.
+
+.PARAMETER ApiUrl
+    Specifies the URL of the API to retrieve the random quote from. The default value is "http://api.quotable.io/random".
+
+.OUTPUTS
+    The random quote content and author.
+
+.EXAMPLE
+    Get-RandomQuote
+    Retrieves a random quote from the default API URL.
+
+.EXAMPLE
+    Get-RandomQuote -ApiUrl "http://example.com/api/random"
+    Retrieves a random quote from the specified API URL.
+
+.ALIASES
+    quote
+    Use the alias `quote` to quickly retrieve a random quote.
+
+.NOTES
+    This function is useful for retrieving random quotes from an online API.
+#>
+function Get-RandomQuote {
+  [CmdletBinding()]
+  [Alias("quote")]
+  param (
+    [Parameter(Position = 0)]
+    [string]$ApiUrl = "http://api.quotable.io/random"
+  )
+
+  BEGIN {
+    Write-LogMessage -Message "Starting random quote retrieval process..." -Level "INFO"
+  }
+
+  PROCESS {
+    try {
+      $response = Invoke-RestMethod -Uri $ApiUrl -Method Get -SkipCertificateCheck
+      if ($response) {
+        Write-Output "`"$($response.content)`""
+        Write-Output " - $($response.author)"
+        Write-LogMessage -Message "Random quote retrieved successfully." -Level "INFO"
+      }
+      else {
+        Write-LogMessage -Message "Failed to retrieve a random quote." -Level "ERROR"
+      }
+    }
+    catch {
+      Write-LogMessage -Message "Failed to retrieve a random quote." -Level "ERROR"
+    }
+  }
+
+  END {
+    Write-LogMessage -Message "Random quote retrieval process completed." -Level "INFO"
+  }
+}
