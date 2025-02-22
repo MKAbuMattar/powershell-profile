@@ -778,7 +778,6 @@ function Get-RandomQuote {
     if ($response) {
       Write-Output "`"$($response.content)`""
       Write-Output " - $($response.author)"
-      Write-LogMessage -Message "Random quote retrieved successfully." -Level "INFO"
     }
     else {
       Write-LogMessage -Message "Failed to retrieve a random quote." -Level "ERROR"
