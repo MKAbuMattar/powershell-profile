@@ -10,6 +10,13 @@ Jumpstart your PowerShell experience with just one command:
 irm "https://raw.githubusercontent.com/MKAbuMattar/powershell-profile/main/setup.ps1" | iex
 ```
 
+> [!WARNING]
+> If you're using the `develop` branch, you may encounter some issues and not all features may work as expected. It is recommended to use the `main` branch for a stable experience.
+
+```powershell
+irm "https://raw.githubusercontent.com/MKAbuMattar/powershell-profile/refs/heads/develop/setup.ps1" | iex
+```
+
 ## Features
 
 This PowerShell profile script includes:
