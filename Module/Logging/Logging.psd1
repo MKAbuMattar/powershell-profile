@@ -1,4 +1,5 @@
 @{
+  RootModule        = 'Logging.psm1'
   ModuleVersion     = '0.0.0'
   GUID              = '508e211f-6649-4616-9253-b4a803cdb653'
   Author            = 'Mohammad Abu Mattar'

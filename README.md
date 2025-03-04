@@ -72,6 +72,15 @@ The Utility module provides a set of useful functions to enhance your PowerShell
   - Example: `portkill 80`
 - **Get-RandomQuote** (Alias: `quote`): Retrieves a random quote from an online API.
   - Example: `quote`
+- **Get-WeatherForecast** (Alias: `weather`): Retrieves the weather forecast for a specified location.
+  - Example: `weather -Location "Amman"`
+- **Start-Countdown** (Alias: `countdown`): Starts a countdown timer.
+  - Example: `countdown -Duration "25s" -Title "Break Time"`
+  - Example: `-Duration "02:15PM" -Title "Lunch Time"`
+- **Start-Stopwatch** (Alias: `stopwatch`): Starts a stopwatch timer.
+  - Example: `stopwatch -Title "Workout"`
+- **Get-WallClock** (Alias: `clock`): Retrieves the current time in a specified timezone.
+  - Example: `clock -TimeZone "Asia/Amman"`
 
 ## Contributing
 
