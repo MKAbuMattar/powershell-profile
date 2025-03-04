@@ -1,4 +1,5 @@
 @{
+  RootModule        = 'Utility.psm1'
   ModuleVersion     = '0.0.0'
   GUID              = '69fba7f4-822d-4201-bec5-7f7f03edfca3'
   Author            = 'Mohammad Abu Mattar'
@@ -22,7 +23,10 @@
     'Get-ProcessByPort',
     'Stop-ProcessByName',
     'Stop-ProcessByPort',
-    'Get-RandomQuote'
+    'Get-RandomQuote',
+    "Get-WeatherForecast",
+    "Start-Countdown".
+    "Get-WallClock"
   )
   CmdletsToExport   = @()
   VariablesToExport = '*'
@@ -44,6 +48,9 @@
     'portgrep',
     'pkill',
     'portkill',
-    'quote'
+    'quote',
+    "weather",
+    "countdown"
+    "wallclock"
   )
 }

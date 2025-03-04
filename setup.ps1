@@ -34,7 +34,7 @@
 #       and tools.
 #
 # Created: 2021-09-01
-# Updated: 2025-02-22
+# Updated: 2025-03-04
 #
 # GitHub: https://github.com/MKAbuMattar/powershell-profile
 #
@@ -374,6 +374,55 @@ function Initialize-FastFetchConfig {
   }
   catch {
     Invoke-ErrorHandling -ErrorMessage "Failed to create ~/.config/fastfetch directory or copy config.jsonc." -ErrorRecord $_
+  }
+}
+
+<#
+.SYNOPSIS
+    Initializes the Figlet configuration by creating the ~/.config/.figlet directory and copying the ANSI_Shadow.flf file.
+
+.DESCRIPTION
+    This function initializes the Figlet configuration by creating the ~/.config/.figlet directory and copying the ANSI_Shadow.flf file from the GitHub repository.
+
+.OUTPUTS
+    The ~/.config/.figlet directory is created, and the ANSI_Shadow.flf file is copied.
+
+.EXAMPLE
+    Initialize-FigletConfig
+    Initializes the Figlet configuration by creating the ~/.config/.figlet directory and copying the ANSI_Shadow.flf file.
+#>
+function Initialize-FigletConfig {
+  [CmdletBinding()]
+  param(
+    # This function does not accept any parameters
+  )
+
+  try {
+    $configDir = "$ENV:USERPROFILE\.config"
+    if (!(Test-Path -Path $configDir -PathType Container)) {
+      New-Item -Path $configDir -ItemType Directory
+      Write-LogMessage -Message "Created directory: $configDir"
+    }
+
+    $configPath = Join-Path -Path $configDir -ChildPath ".figlet"
+    if (!(Test-Path -Path $configPath -PathType Container)) {
+      New-Item -Path $configPath -ItemType Directory
+      Write-LogMessage -Message "Created directory: $configPath"
+    }
+
+    $figletConfigUrl = "https://github.com/MKAbuMattar/powershell-profile/raw/main/.config/.figlet/ANSI_Shadow.flf"
+    $figletConfigPath = Join-Path -Path $configPath -ChildPath "ANSI_Shadow.flf"
+
+    if (!(Test-Path -Path $figletConfigPath)) {
+      Invoke-WebRequest -Uri $figletConfigUrl -OutFile $figletConfigPath
+      Write-LogMessage -Message "Copied ANSI_Shadow.flf to: $figletConfigPath"
+    }
+    else {
+      Write-LogMessage -Message "ANSI_Shadow.flf already exists in: $configPath"
+    }
+  }
+  catch {
+    Invoke-ErrorHandling -ErrorMessage "Failed to create ~/.config/.figlet directory or copy ANSI_Shadow.flf." -ErrorRecord $_
   }
 }
 

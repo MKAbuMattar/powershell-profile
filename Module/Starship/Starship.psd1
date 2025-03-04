@@ -1,4 +1,5 @@
 @{
+  RootModule        = 'Starship.psm1'
   ModuleVersion     = '0.0.0'
   GUID              = '1e2ead21-fa02-4d39-9c29-4c2d1b7d22d0'
   Author            = 'Mohammad Abu Mattar'
