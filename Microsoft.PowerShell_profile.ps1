@@ -127,19 +127,19 @@ Set-PSReadLineKeyHandler -Chord '"', "'" `
 #---------------------------------------------------------------------------------------------------
 # Import the custom modules
 #---------------------------------------------------------------------------------------------------
-$EnvironmentModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Environment/Environment.psm1'
+$EnvironmentModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Environment/Environment.psd1'
 Import-Module $EnvironmentModulePath -Force -ErrorAction SilentlyContinue
 
-$LoggingModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Logging/Logging.psm1'
+$LoggingModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Logging/Logging.psd1'
 Import-Module $LoggingModulePath -Force -ErrorAction SilentlyContinue
 
-$StarshipModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Starship/Starship.psm1'
+$StarshipModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Starship/Starship.psd1'
 Import-Module $StarshipModulePath -Force -ErrorAction SilentlyContinue
 
-$UpdateModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Update/Update.psm1'
+$UpdateModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Update/Update.psd1'
 Import-Module $UpdateModulePath -Force -ErrorAction SilentlyContinue
 
-$UtilityModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Utility/Utility.psm1'
+$UtilityModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Utility/Utility.psd1'
 Import-Module $UtilityModulePath -Force -ErrorAction SilentlyContinue
 
 #---------------------------------------------------------------------------------------------------

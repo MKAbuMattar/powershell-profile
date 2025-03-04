@@ -80,7 +80,7 @@ The Utility module provides a set of useful functions to enhance your PowerShell
 - **Start-Stopwatch** (Alias: `stopwatch`): Starts a stopwatch timer.
   - Example: `stopwatch -Title "Workout"`
 - **Get-WallClock** (Alias: `clock`): Retrieves the current time in a specified timezone.
-  - Example: `clock -TimeZone "Asia/Amman"`
+  - Example: `wallclock -TimeZone "Asia/Amman"`
 
 ## Contributing
 

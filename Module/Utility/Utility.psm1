@@ -1326,3 +1326,71 @@ function Get-WallClock {
     }
   }
 }
+
+<#
+.SYNOPSIS
+    Displays a matrix rain animation in the console.
+
+.DESCRIPTION
+    This function displays a matrix rain animation in the console. It simulates the falling green characters from the movie "The Matrix". The animation can be stopped by pressing Ctrl+C.
+
+.PARAMETER SleepTime
+    Specifies the time in milliseconds to wait between updating the animation. The default value is 1 millisecond.
+
+.OUTPUTS None
+    This function does not return any output.
+
+.EXAMPLE
+    Start-Matrix
+    Displays the matrix rain animation in the console.
+
+.EXAMPLE
+    Start-Matrix -SleepTime 10
+    Displays the matrix rain animation with a slower update speed.
+
+.ALIASES
+    matrixrain
+    Use the alias `matrixrain` to quickly start the matrix rain animation.
+
+.NOTES
+    This function is useful for displaying a matrix rain animation in the console.
+#>
+function Start-Matrix {
+  [CmdletBinding()]
+  [Alias("matrix")]
+  param (
+    [Parameter(Mandatory = $false)]
+    [int]$SleepTime = 1
+  )
+
+  $host.UI.RawUI.BackgroundColor = "Black"
+  $host.UI.RawUI.ForegroundColor = "Green"
+
+  $lines = [console]::WindowHeight
+  $cols = [console]::WindowWidth
+  $characters = "ァアィイゥウェエォオカガキギクグケゲコゴサコゴサザシジスズセゼソゾタダチヂッツヅテデトドナニヌネノハバパヒビピフブプヘベペホボポマミムメモャヤュユョヨラリルレロヮワヰヱヲンヴヵヶヷヸヹヺ・ーヽヾabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()"
+  $colsMap = @{}
+
+  Clear-Host
+
+  while ($true) {
+    $randomCol = Get-Random -Minimum 0 -Maximum $cols
+    $randomChar = $characters[(Get-Random -Minimum 0 -Maximum $characters.Length)]
+
+    if (-not $colsMap.ContainsKey($randomCol)) {
+      $colsMap[$randomCol] = 0
+    }
+
+    $line = $colsMap[$randomCol]
+    $colsMap[$randomCol]++
+
+    Write-Host "`e[$line;${randomCol}H`e[2;32m$randomChar" -NoNewline
+    Write-Host "`e[$($colsMap[$randomCol]);${randomCol}H`e[1;37m$randomChar`e[0;0H" -NoNewline
+
+    if ($colsMap[$randomCol] -ge $lines) {
+      $colsMap[$randomCol] = 0
+    }
+
+    Start-Sleep -Milliseconds $SleepTime
+  }
+}
