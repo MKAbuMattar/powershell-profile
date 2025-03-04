@@ -25,8 +25,10 @@
     'Stop-ProcessByPort',
     'Get-RandomQuote',
     "Get-WeatherForecast",
-    "Start-Countdown".
-    "Get-WallClock"
+    "Start-Countdown",
+    "Start-Stopwatch",
+    "Get-WallClock",
+    "Start-MatrixRain"
   )
   CmdletsToExport   = @()
   VariablesToExport = '*'
@@ -50,7 +52,9 @@
     'portkill',
     'quote',
     "weather",
-    "countdown"
-    "wallclock"
+    "countdown",
+    "stopwatch",
+    "wallclock",
+    "matrix"
   )
 }
