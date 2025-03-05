@@ -5,6 +5,7 @@
   Author            = 'Mohammad Abu Mattar'
   Copyright         = '(c) 2024 Mohammad Abu Mattar'
   Description       = 'Docs module'
+  PowerShellVersion = '5.0'
   FunctionsToExport = @(
     'Show-ProfileHelp'
   )
