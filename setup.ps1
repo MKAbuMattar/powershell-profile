@@ -191,16 +191,18 @@ function Copy-ModuleDirectory {
 
     # Define the files to be copied from the Module directory
     $files = @(
-      "Environment/Environment.psm1",
+      "Directory/Directory.psd1",
+      "Directory/Directory.psm1",
       "Environment/Environment.psd1",
-      "Logging/Logging.psm1",
+      "Environment/Environment.psm1",
       "Logging/Logging.psd1",
-      "Starship/Starship.psm1",
+      "Logging/Logging.psm1",
       "Starship/Starship.psd1",
-      "Update/Update.psm1",
+      "Starship/Starship.psm1",
       "Update/Update.psd1",
-      "Utility/Utility.psm1",
-      "Utility/Utility.psd1"
+      "Update/Update.psm1",
+      "Utility/Utility.psd1",
+      "Utility/Utility.psm1"
     )
 
     foreach ($file in $files) {
