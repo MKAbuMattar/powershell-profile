@@ -93,16 +93,55 @@ function Get-Uptime {
     # This function does not accept any parameters
   )
 
-  if ($PSVersionTable.PSVersion.Major -eq 5) {
-    Get-WmiObject Win32_OperatingSystem | ForEach-Object {
-      $uptime = (Get-Date) - $_.ConvertToDateTime($_.LastBootUpTime)
-      [PSCustomObject]@{
-        Uptime = $uptime.Days, $uptime.Hours, $uptime.Minutes, $uptime.Seconds -join ':'
-      }
+  try {
+    if ($PSVersionTable.PSVersion.Major -eq 5) {
+      $lastBoot = (Get-WmiObject win32_operatingsystem).LastBootUpTime
+      $bootTime = [System.Management.ManagementDateTimeConverter]::ToDateTime($lastBoot)
     }
+    else {
+      $lastBootStr = net statistics workstation | Select-String "since" | ForEach-Object { $_.ToString().Replace('Statistics since ', '') }
+      # check date format
+      if ($lastBootStr -match '^\d{2}/\d{2}/\d{4}') {
+        $dateFormat = 'dd/MM/yyyy'
+      }
+      elseif ($lastBootStr -match '^\d{2}-\d{2}-\d{4}') {
+        $dateFormat = 'dd-MM-yyyy'
+      }
+      elseif ($lastBootStr -match '^\d{4}/\d{2}/\d{2}') {
+        $dateFormat = 'yyyy/MM/dd'
+      }
+      elseif ($lastBootStr -match '^\d{4}-\d{2}-\d{2}') {
+        $dateFormat = 'yyyy-MM-dd'
+      }
+      elseif ($lastBootStr -match '^\d{2}\.\d{2}\.\d{4}') {
+        $dateFormat = 'dd.MM.yyyy'
+      }
+
+      if ($lastBootStr -match '\bAM\b' -or $lastBootStr -match '\bPM\b') {
+        $timeFormat = 'h:mm:ss tt'
+      }
+      else {
+        $timeFormat = 'HH:mm:ss'
+      }
+
+      $bootTime = [System.DateTime]::ParseExact($lastBootStr, "$dateFormat $timeFormat", [System.Globalization.CultureInfo]::InvariantCulture)
+    }
+
+
+    $formattedBootTime = $bootTime.ToString("dddd, MMMM dd, yyyy HH:mm:ss", [System.Globalization.CultureInfo]::InvariantCulture) + " [$lastBootStr]"
+    Write-Host ("System started on: {0}" -f $formattedBootTime) -ForegroundColor DarkGray
+
+    $uptime = (Get-Date) - $bootTime
+
+    $days = $uptime.Days
+    $hours = $uptime.Hours
+    $minutes = $uptime.Minutes
+    $seconds = $uptime.Seconds
+
+    Write-Host ("Uptime: {0} days, {1} hours, {2} minutes, {3} seconds" -f $days, $hours, $minutes, $seconds) -ForegroundColor Blue
   }
-  else {
-    net statistics workstation | Select-String "since" | ForEach-Object { $_.ToString().Replace('Statistics since ', '') }
+  catch {
+    Write-Error "An error occurred while retrieving system uptime."
   }
 }
 
@@ -174,6 +213,7 @@ function Get-CommandDefinition {
 function Set-EnvVar {
   [CmdletBinding()]
   [Alias("set-env")]
+  [Alias("export")]
   param (
     [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
     [string]$Name,
@@ -421,6 +461,124 @@ function Stop-ProcessByPort {
 
 <#
 .SYNOPSIS
+  Retrieves the system information.
+
+.DESCRIPTION
+  This function retrieves information about the system, including the operating system, architecture, and processor details.
+
+.PARAMETER None
+  This function does not accept any parameters.
+
+.OUTPUTS
+  The system information.
+
+.EXAMPLE
+  Get-SystemInfo
+  Retrieves information about the system.
+
+.NOTES
+  This function is useful for quickly retrieving information about the system.
+#>
+function Get-SystemInfo {
+  [CmdletBinding()]
+  [Alias("sysinfo")]
+  param (
+    # This function does not accept any parameters
+  )
+
+  try {
+    $os = Get-CimInstance -ClassName Win32_OperatingSystem
+    $processor = Get-CimInstance -ClassName Win32_Processor
+    $architecture = Get-CimInstance -ClassName Win32_ComputerSystem
+
+    [PSCustomObject]@{
+      "Operating System" = $os.Caption
+      "Version"          = $os.Version
+      "Architecture"     = $architecture.SystemType
+      "Processor"        = $processor.Name
+      "Cores"            = $processor.NumberOfCores
+      "Threads"          = $processor.NumberOfLogicalProcessors
+    }
+  }
+  catch {
+    Write-LogMessage -Message "Failed to retrieve system information." -Level "ERROR"
+  }
+}
+
+<#
+.SYNOPSIS
+  Clears windows cache, temp files, and internet explorer cache.
+
+.DESCRIPTION
+  This function clears the Windows cache, temporary files, and Internet Explorer cache. It is useful for freeing up disk space and improving system performance.
+
+.PARAMETER Type
+  Specifies the type of cache to clear. The available options are "All", "Prefetch", "WindowsTemp", "UserTemp", and "IECache". The default value is "All".
+
+.OUTPUTS
+  This function does not return any output.
+
+.EXAMPLE
+  Clear-Cache
+  Clears all caches (Windows Prefetch, Windows Temp, User Temp, and Internet Explorer Cache).
+  Clear-Cache -Type "Prefetch"
+  Clears the Windows Prefetch cache.
+  Clear-Cache -Type "WindowsTemp"
+  Clears the Windows Temp cache.
+  Clear-Cache -Type "UserTemp"
+  Clears the User Temp cache.
+  Clear-Cache -Type "IECache"
+  Clears the Internet Explorer Cache.
+
+.NOTES
+  This function is useful for clearing various caches on the system to free up disk space and improve performance.
+#>
+function Clear-Cache {
+  [CmdletBinding()]
+  [Alias("clear-cache")]
+  param (
+    [Parameter(Mandatory = $false, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [string]$Type = "All"
+  )
+
+  switch ($Type) {
+    "All" {
+      Write-LogMessage "Clearing Windows Prefetch..."
+      Remove-Item -Path "$env:SystemRoot\Prefetch\*" -Force -ErrorAction SilentlyContinue
+
+      Write-LogMessage "Clearing Windows Temp..."
+      Remove-Item -Path "$env:SystemRoot\Temp\*" -Recurse -Force -ErrorAction SilentlyContinue
+
+      Write-LogMessage "Clearing User Temp..."
+      Remove-Item -Path "$env:TEMP\*" -Recurse -Force -ErrorAction SilentlyContinue
+
+      Write-LogMessage "Clearing Internet Explorer Cache..."
+      Remove-Item -Path "$env:LOCALAPPDATA\Microsoft\Windows\INetCache\*" -Recurse -Force -ErrorAction SilentlyContinue
+    }
+    "Prefetch" {
+      Write-LogMessage "Clearing Windows Prefetch..."
+      Remove-Item -Path "$env:SystemRoot\Prefetch\*" -Force -ErrorAction SilentlyContinue
+    }
+    "WindowsTemp" {
+      Write-LogMessage "Clearing Windows Temp..."
+      Remove-Item -Path "$env:SystemRoot\Temp\*" -Recurse -Force -ErrorAction SilentlyContinue
+    }
+    "UserTemp" {
+      Write-LogMessage "Clearing User Temp..."
+      Remove-Item -Path "$env:TEMP\*" -Recurse -Force -ErrorAction SilentlyContinue
+    }
+    "IECache" {
+      Write-LogMessage "Clearing Internet Explorer Cache..."
+      Remove-Item -Path "$env:LOCALAPPDATA\Microsoft\Windows\INetCache\*" -Recurse -Force -ErrorAction SilentlyContinue
+    }
+    default {
+      Write-LogMessage "Invalid cache type: $Type" -Level "ERROR"
+    }
+  }
+}
+
+<#
+.SYNOPSIS
   Retrieves a random quote from an online API.
 
 .DESCRIPTION
@@ -574,7 +732,7 @@ function Read-FigletFont {
   )
 
   if (!(Test-Path $FontPath)) {
-    Write-Host "Error: Font file not found at $FontPath" -ForegroundColor Red
+    Write-Host ("Error: Font file not found at {0}" -f $FontPath) -ForegroundColor Red
     return $null
   }
 
@@ -770,7 +928,7 @@ function Start-Countdown {
     [double]::Parse($Duration.TrimEnd('s'))
   }
 
-  Write-Host "Starting Countdown: $Title" -ForegroundColor Cyan
+  Write-Host ("Starting Countdown: {0}" -f $Title) -ForegroundColor Cyan
 
   $isPaused = $false
   $elapsed = 0
@@ -855,7 +1013,7 @@ function Start-Stopwatch {
   $fontPath = "$env:USERPROFILE\.config\.figlet\ANSI_Shadow.flf"
   $font = Read-FigletFont -FontPath $fontPath
 
-  Write-Host "Starting Stopwatch: $Title" -ForegroundColor Cyan
+  Write-Host ("Starting Stopwatch: {0}" -f $Title) -ForegroundColor Cyan
 
   $isPaused = $false
   $elapsed = 0

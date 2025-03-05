@@ -5,6 +5,7 @@
   Author            = 'Mohammad Abu Mattar'
   Copyright         = '(c) 2024 Mohammad Abu Mattar'
   Description       = 'Utility module'
+  PowerShellVersion = '5.0'
   FunctionsToExport = @(
     'Test-CommandExists',
     'Invoke-ReloadProfile',
@@ -17,12 +18,14 @@
     'Get-ProcessByPort',
     'Stop-ProcessByName',
     'Stop-ProcessByPort',
+    'Get-SystemInfo',
+    'Clear-Cache',
     'Get-RandomQuote',
-    "Get-WeatherForecast",
-    "Start-Countdown",
-    "Start-Stopwatch",
-    "Get-WallClock",
-    "Start-Matrix"
+    'Get-WeatherForecast',
+    'Start-Countdown',
+    'Start-Stopwatch',
+    'Get-WallClock',
+    'Start-Matrix'
   )
   CmdletsToExport   = @()
   VariablesToExport = '*'
@@ -32,17 +35,30 @@
     'uptime',
     'command-definition',
     'set-env',
+    'export',
     'get-env',
     'pall',
     'pgrep',
     'portgrep',
     'pkill',
     'portkill',
+    'sysinfo',
+    'clear-cache',
     'quote',
-    "weather",
-    "countdown",
-    "stopwatch",
-    "wallclock",
-    "matrix"
+    'weather',
+    'countdown',
+    'stopwatch',
+    'wallclock',
+    'matrix'
   )
+  PrivateData       = @{
+    PSData = @{
+      Tags       = @(
+        'Utility',
+        'System'
+      )
+      LicenseUri = 'https://raw.githubusercontent.com/MKAbuMattar/powershell-profile/main/LICENSE'
+      ProjectUri = 'https://github.com/MKAbuMattar/powershell-profile'
+    }
+  }
 }

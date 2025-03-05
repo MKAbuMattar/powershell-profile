@@ -5,6 +5,16 @@
   Author            = 'Mohammad Abu Mattar'
   Copyright         = '(c) 2024 Mohammad Abu Mattar'
   Description       = 'Environment variables'
+  PowerShellVersion = '5.0'
   CmdletsToExport   = @()
   VariablesToExport = '*'
+  PrivateData       = @{
+    PSData = @{
+      Tags       = @(
+        'Environment variables'
+      )
+      LicenseUri = 'https://raw.githubusercontent.com/MKAbuMattar/powershell-profile/main/LICENSE'
+      ProjectUri = 'https://github.com/MKAbuMattar/powershell-profile'
+    }
+  }
 }

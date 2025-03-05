@@ -1,23 +1,25 @@
 @{
-  RootModule        = 'Docs.psm1'
+  RootModule        = 'Network.psm1'
   ModuleVersion     = '0.0.0'
-  GUID              = '8a971646-bb14-46e6-be7a-8a632a7e1e43'
+  GUID              = '7763387b-5179-43c4-84bc-f24a2f62b534'
   Author            = 'Mohammad Abu Mattar'
   Copyright         = '(c) 2024 Mohammad Abu Mattar'
-  Description       = 'Docs module'
+  Description       = 'Network module'
   PowerShellVersion = '5.0'
   FunctionsToExport = @(
-    'Show-ProfileHelp'
+    'Get-MyIPAddress',
+    'Clear-FlushDNS'
   )
   CmdletsToExport   = @()
   VariablesToExport = '*'
   AliasesToExport   = @(
-    'profile-help'
+    'my-ip',
+    'flush-dns'
   )
   PrivateData       = @{
     PSData = @{
       Tags       = @(
-        'Docs'
+        'Network'
       )
       LicenseUri = 'https://raw.githubusercontent.com/MKAbuMattar/powershell-profile/main/LICENSE'
       ProjectUri = 'https://github.com/MKAbuMattar/powershell-profile'

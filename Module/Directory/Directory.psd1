@@ -5,6 +5,7 @@
   Author            = 'Mohammad Abu Mattar'
   Copyright         = '(c) 2024 Mohammad Abu Mattar'
   Description       = 'Utility module'
+  PowerShellVersion = '5.0'
   FunctionsToExport = @(
     'Find-Files',
     "Set-FreshFile",
@@ -12,6 +13,9 @@
     "Compress-Files",
     "Get-ContentMatching",
     "Set-ContentMatching",
+    "Get-FileHash",
+    "Get-FileHead",
+    "Get-FileTail",
     "Invoke-UpOneDirectoryLevel",
     "Invoke-UpTwoDirectoryLevels",
     "Invoke-UpThreeDirectoryLevels",
@@ -27,6 +31,11 @@
     "zip",
     "grep",
     "sed",
+    "z",
+    "zi",
+    "fh",
+    "head",
+    "tail",
     "cd.1",
     ".."
     "cd.2"
@@ -38,4 +47,14 @@
     "cd.5",
     "......"
   )
+  PrivateData       = @{
+    PSData = @{
+      Tags       = @(
+        'Files Management',
+        'Directory Navigation'
+      )
+      LicenseUri = 'https://raw.githubusercontent.com/MKAbuMattar/powershell-profile/main/LICENSE'
+      ProjectUri = 'https://github.com/MKAbuMattar/powershell-profile'
+    }
+  }
 }
