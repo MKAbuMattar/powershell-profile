@@ -34,8 +34,20 @@ This PowerShell profile script includes:
 
 ## Directory Module
 
-The Directory module provides functions to navigate up multiple directory levels quickly:
+The Directory module provides functions to navigate directories and manage files:
 
+- **Find-Files** (Alias: `ff`): Finds files matching a specified name pattern in the current directory and its subdirectories.
+  - Example: `ff "*.ps1"`
+- **Set-FreshFile** (Alias: `touch`): Creates a new empty file or updates the timestamp of an existing file.
+  - Example: `touch "file.txt"`
+- **Expand-File** (Alias: `unzip`): Extracts a file to the current directory.
+  - Example: `unzip "file.zip"`
+- **Compress-Files** (Alias: `zip`): Compresses files into a zip archive.
+  - Example: `zip -Files "file1.txt", "file2.txt" -Archive "files.zip"`
+- **Get-ContentMatching** (Alias: `grep`): Searches for text in files using regular expressions.
+  - Example: `grep -Pattern "pattern" -Path "file.txt"`
+- **Set-ContentMatching** (Alias: `sed`): Searches for a string in a file and replaces it with another string.
+  - Example: `sed -file "file.txt" -find "pattern" -replace "replacement"`
 - **Invoke-UpOneDirectoryLevel** (Aliases: `cd.1`, `..`): Moves up one directory level.
   - Example: `cd.1`
 - **Invoke-UpTwoDirectoryLevels** (Aliases: `cd.2`, `...`): Moves up two directory levels.
@@ -53,22 +65,10 @@ The Utility module provides a set of useful functions to enhance your PowerShell
 
 - **Test-CommandExists** (Alias: `command-exists`): Checks if a command exists in the current environment.
   - Example: `command-exists "ls"`
-- **Invoke-ProfileReload** (Alias: `reload-profile`): Reloads the PowerShell profile to apply changes.
+- **Invoke-ReloadProfile** (Alias: `reload-profile`): Reloads the PowerShell profile to apply changes.
   - Example: `reload-profile`
-- **Find-Files** (Alias: `ff`): Finds files matching a specified name pattern in the current directory and its subdirectories.
-  - Example: `ff "*.ps1"`
-- **Set-FreshFile** (Alias: `touch`): Creates a new empty file or updates the timestamp of an existing file.
-  - Example: `touch "file.txt"`
 - **Get-Uptime** (Alias: `uptime`): Retrieves the system uptime in a human-readable format.
   - Example: `uptime`
-- **Expand-File** (Alias: `unzip`): Extracts a file to the current directory.
-  - Example: `unzip "file.zip"`
-- **Compress-Files** (Alias: `zip`): Compresses files into a zip archive.
-  - Example: `zip -Files "file1.txt", "file2.txt" -Archive "files.zip"`
-- **Get-ContentMatching** (Alias: `grep`): Searches for text in files using regular expressions.
-  - Example: `grep -Pattern "pattern" -Path "file.txt"`
-- **Set-ContentMatching** (Alias: `sed`): Searches for a string in a file and replaces it with another string.
-  - Example: `sed -file "file.txt" -find "pattern" -replace "replacement"`
 - **Get-CommandDefinition** (Alias: `def`): Retrieves the definition of a command.
   - Example: `def "ls"`
 - **Set-EnvVar** (Alias: `set-env`): Exports an environment variable.

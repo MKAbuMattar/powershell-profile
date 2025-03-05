@@ -43,32 +43,36 @@
 
 <#
 .SYNOPSIS
-    Logs a message with a timestamp and log level.
+  Logs a message with a timestamp and log level.
 
 .DESCRIPTION
-    This function logs a message with a timestamp and log level. The default log level is "INFO".
+  This function logs a message with a timestamp and log level. The default log level is "INFO".
 
 .PARAMETER Message
-    Specifies the message to log.
+  Specifies the message to log.
 
 .PARAMETER Level
-    Specifies the log level. Default is "INFO".
+  Specifies the log level. Default is "INFO".
 
 .OUTPUTS
-    A log message with a timestamp and log level.
+  A log message with a timestamp and log level.
 
 .EXAMPLE
-    Write-LogMessage -Message "This is an informational message."
-    Logs an informational message with the default log level "INFO".
+  Write-LogMessage -Message "This is an informational message."
+  Logs an informational message with the default log level "INFO".
+  Write-LogMessage -Message "This is a warning message." -Level "WARNING"
+  Logs a warning message with the log level "WARNING".
 
-.EXAMPLE
-    Write-LogMessage -Message "This is a warning message." -Level "WARNING"
-    Logs a warning message with the log level "WARNING".
+.NOTES
+  This function is used to log messages with a timestamp and log level.
 #>
 function Write-LogMessage {
   [CmdletBinding()]
   param (
+    [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
     [string]$Message,
+
+    [Parameter(Mandatory = $false, Position = 1, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
     [string]$Level = "INFO"
   )
 
@@ -78,28 +82,34 @@ function Write-LogMessage {
 
 <#
 .SYNOPSIS
-    Eeror handling function to log the error message and break the script.
+  Eeror handling function to log the error message and break the script.
 
 .DESCRIPTION
-    This function logs the error message and the exception message and then breaks the script.
+  This function logs the error message and the exception message and then breaks the script.
 
 .PARAMETER ErrorMessage
-    Specifies the error message to log.
+  Specifies the error message to log.
 
 .PARAMETER ErrorRecord
-    Specifies the error record object.
+  Specifies the error record object.
 
 .OUTPUTS
-    A log message with the error message and exception message.
+  A log message with the error message and exception message.
 
 .EXAMPLE
-    Invoke-ErrorHandling -ErrorMessage "An error occurred." -ErrorRecord $Error
-    Logs an error message and the exception message and breaks the script.
+  Invoke-ErrorHandling -ErrorMessage "An error occurred." -ErrorRecord $Error
+  Logs an error message and the exception message and breaks the script.
+
+.NOTES
+  This function is used to handle errors by logging the error message and exception message.
 #>
 function Invoke-ErrorHandling {
   [CmdletBinding()]
   param (
+    [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
     [string]$ErrorMessage,
+
+    [Parameter(Mandatory = $true, Position = 1, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
     [System.Management.Automation.ErrorRecord]$ErrorRecord
   )
 
@@ -117,24 +127,28 @@ if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdenti
 
 <#
 .SYNOPSIS
-    Checks if the script has an internet connection by attempting to ping a specified host.
+  Checks if the script has an internet connection by attempting to ping a specified host.
 
 .DESCRIPTION
-    This function attempts to ping a specified host (by default, www.google.com) to determine if the script has an internet connection. If the ping is successful, it returns $true; otherwise, it returns $false. If no internet connection is available, it displays a warning message.
+  This function attempts to ping a specified host (by default, www.google.com) to determine if the script has an internet connection. If the ping is successful, it returns $true; otherwise, it returns $false. If no internet connection is available, it displays a warning message.
 
 .PARAMETER HostName
-    Specifies the host to ping to check for internet connectivity. Default is www.google.com.
+  Specifies the host to ping to check for internet connectivity. Default is www.google.com.
 
 .OUTPUTS
-    $true if the internet connection is available; otherwise, $false.
+  $true if the internet connection is available; otherwise, $false.
 
 .EXAMPLE
-    Test-InternetConnection
-    Checks for internet connection using the default host (www.google.com).
+  Test-InternetConnection
+  Checks for internet connection using the default host (www.google.com).
+
+.NOTES
+  This function is used to check for internet connection before proceeding with the script.
 #>
 function Test-InternetConnection {
   [CmdletBinding()]
   param(
+    [Parameter(Mandatory = $false, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
     [string]$HostName = "www.google.com"
   )
 
@@ -157,24 +171,28 @@ if (-not (Test-InternetConnection)) {
 
 <#
 .SYNOPSIS
-    Copies the Module directory and its contents from the repository to the specified local path.
+  Copies the Module directory and its contents from the repository to the specified local path.
 
 .DESCRIPTION
-    This function copies the Module directory and its contents from the GitHub repository to the specified local path. If the file already exists, it will be removed before copying the new file.
+  This function copies the Module directory and its contents from the GitHub repository to the specified local path. If the file already exists, it will be removed before copying the new file.
 
 .PARAMETER LocalPath
-    Specifies the local path where the Module directory will be copied.
+  Specifies the local path where the Module directory will be copied.
 
 .OUTPUTS
-    The Module directory and its contents are copied to the specified local path.
+  The Module directory and its contents are copied to the specified local path.
 
 .EXAMPLE
-    Copy-ModuleDirectory -LocalPath "$HOME\Documents\PowerShell"
-    Copies the Module directory to the specified local path.
+  Copy-ModuleDirectory -LocalPath "$HOME\Documents\PowerShell"
+  Copies the Module directory to the specified local path.
+
+.NOTES
+  This function is used to copy the Module directory from the repository to the local path.
 #>
 function Copy-ModuleDirectory {
   [CmdletBinding()]
   param (
+    [Parameter(Mandatory = $false, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
     [string]$LocalPath = "$HOME\Documents\PowerShell"
   )
 
@@ -193,6 +211,8 @@ function Copy-ModuleDirectory {
     $files = @(
       "Directory/Directory.psd1",
       "Directory/Directory.psm1",
+      "Docs/Docs.psd1",
+      "Docs/Docs.psm1",
       "Environment/Environment.psd1",
       "Environment/Environment.psm1",
       "Logging/Logging.psd1",
@@ -240,17 +260,20 @@ Invoke-Command -ScriptBlock ${function:Copy-ModuleDirectory} -ErrorAction Stop
 
 <#
 .SYNOPSIS
-    Initializes the PowerShell profile by creating or updating the profile script.
+  Initializes the PowerShell profile by creating or updating the profile script.
 
 .DESCRIPTION
-    This function initializes the PowerShell profile by creating or updating the profile script. The profile script is downloaded from the GitHub repository and saved to the appropriate location based on the PowerShell edition (Core or Desktop). If the profile already exists, it is backed up before being updated.
+  This function initializes the PowerShell profile by creating or updating the profile script. The profile script is downloaded from the GitHub repository and saved to the appropriate location based on the PowerShell edition (Core or Desktop). If the profile already exists, it is backed up before being updated.
 
 .OUTPUTS
-    The required modules and tools are installed or updated.
+  The required modules and tools are installed or updated.
 
 .EXAMPLE
-    Initialize-PowerShellProfile
-    Initializes the PowerShell profile by creating or updating the profile script.
+  Initialize-PowerShellProfile
+  Initializes the PowerShell profile by creating or updating the profile script.
+
+.NOTES
+  This function is used to initialize the PowerShell profile by creating or updating the profile script.
 #>
 function Initialize-PowerShellProfile {
   [CmdletBinding()]
@@ -289,17 +312,20 @@ function Initialize-PowerShellProfile {
 
 <#
 .SYNOPSIS
-    Initializes the Starship configuration by creating the ~/.config directory and copying the starship.toml file.
+  Initializes the Starship configuration by creating the ~/.config directory and copying the starship.toml file.
 
 .DESCRIPTION
-    This function initializes the Starship configuration by creating the ~/.config directory and copying the starship.toml file from the GitHub repository.
+  This function initializes the Starship configuration by creating the ~/.config directory and copying the starship.toml file from the GitHub repository.
 
 .OUTPUTS
-    The ~/.config directory is created, and the starship.toml file is copied.
+  The ~/.config directory is created, and the starship.toml file is copied.
 
 .EXAMPLE
-    Initialize-StarshipConfig
-    Initializes the Starship configuration by creating the ~/.config directory and copying the starship.toml file.
+  Initialize-StarshipConfig
+  Initializes the Starship configuration by creating the ~/.config directory and copying the starship.toml file.
+
+.NOTES
+  This function is used to initialize the Starship configuration by creating the ~/.config directory and copying the starship.toml file.
 #>
 function Initialize-StarshipConfig {
   [CmdletBinding()]
@@ -332,17 +358,20 @@ function Initialize-StarshipConfig {
 
 <#
 .SYNOPSIS
-    Initializes the FastFetch configuration by creating the ~/.config/fastfetch directory and copying the config.jsonc file.
+  Initializes the FastFetch configuration by creating the ~/.config/fastfetch directory and copying the config.jsonc file.
 
 .DESCRIPTION
-    This function initializes the FastFetch configuration by creating the ~/.config/fastfetch directory and copying the config.jsonc file from the GitHub repository.
+  This function initializes the FastFetch configuration by creating the ~/.config/fastfetch directory and copying the config.jsonc file from the GitHub repository.
 
 .OUTPUTS
-    The ~/.config/fastfetch directory is created, and the config.jsonc file is copied.
+  The ~/.config/fastfetch directory is created, and the config.jsonc file is copied.
 
 .EXAMPLE
-    Initialize-FastFetchConfig
-    Initializes the FastFetch configuration by creating the ~/.config/fastfetch directory and copying the config.jsonc file.
+  Initialize-FastFetchConfig
+  Initializes the FastFetch configuration by creating the ~/.config/fastfetch directory and copying the config.jsonc file.
+
+.NOTES
+  This function is used to initialize the FastFetch configuration by creating the ~/.config/fastfetch directory and copying the config.jsonc file.
 #>
 function Initialize-FastFetchConfig {
   [CmdletBinding()]
@@ -381,17 +410,20 @@ function Initialize-FastFetchConfig {
 
 <#
 .SYNOPSIS
-    Initializes the Figlet configuration by creating the ~/.config/.figlet directory and copying the ANSI_Shadow.flf file.
+  Initializes the Figlet configuration by creating the ~/.config/.figlet directory and copying the ANSI_Shadow.flf file.
 
 .DESCRIPTION
-    This function initializes the Figlet configuration by creating the ~/.config/.figlet directory and copying the ANSI_Shadow.flf file from the GitHub repository.
+  This function initializes the Figlet configuration by creating the ~/.config/.figlet directory and copying the ANSI_Shadow.flf file from the GitHub repository.
 
 .OUTPUTS
-    The ~/.config/.figlet directory is created, and the ANSI_Shadow.flf file is copied.
+  The ~/.config/.figlet directory is created, and the ANSI_Shadow.flf file is copied.
 
 .EXAMPLE
-    Initialize-FigletConfig
-    Initializes the Figlet configuration by creating the ~/.config/.figlet directory and copying the ANSI_Shadow.flf file.
+  Initialize-FigletConfig
+  Initializes the Figlet configuration by creating the ~/.config/.figlet directory and copying the ANSI_Shadow.flf file.
+
+.NOTES
+  This function is used to initialize the Figlet configuration by creating the ~/.config/.figlet directory and copying the ANSI_Shadow.flf file.
 #>
 function Initialize-FigletConfig {
   [CmdletBinding()]
@@ -430,36 +462,42 @@ function Initialize-FigletConfig {
 
 <#
 .SYNOPSIS
-    Installs the Cascadia Code font if it is not already installed.
+  Installs the Cascadia Code font if it is not already installed.
 
 .DESCRIPTION
-    This function installs the Cascadia Code font if it is not already installed. The font is downloaded from the GitHub repository and installed in the Windows Fonts directory.
+  This function installs the Cascadia Code font if it is not already installed. The font is downloaded from the GitHub repository and installed in the Windows Fonts directory.
 
 .PARAMETER FontName
-    Specifies the name of the font to install. Default is "CascadiaCode".
+  Specifies the name of the font to install. Default is "CascadiaCode".
 
 .PARAMETER FontDisplayName
-    Specifies the display name of the font. Default is "CaskaydiaCove NF".
+  Specifies the display name of the font. Default is "CaskaydiaCove NF".
 
 .PARAMETER Version
-    Specifies the version of the font to download. Default is "3.2.1".
+  Specifies the version of the font to download. Default is "3.2.1".
 
 .OUTPUTS
-    The Cascadia Code font is installed.
+  The Cascadia Code font is installed.
 
 .EXAMPLE
-    Install-CascadiaCodeFont
-    Installs the Cascadia Code font with the default parameters.
+  Install-CascadiaCodeFont
+  Installs the Cascadia Code font with the default parameters.
+  Install-CascadiaCodeFont -FontName "CascadiaCode" -FontDisplayName "CaskaydiaCove NF" -Version "3.2.1"
+  Installs the Cascadia Code font with the specified parameters.
 
-.EXAMPLE
-    Install-CascadiaCodeFont -FontName "CascadiaCode" -FontDisplayName "CaskaydiaCove NF" -Version "3.2.1"
-    Installs the Cascadia Code font with the specified parameters.
+.NOTES
+  This function is used to install the Cascadia Code font if it is not already installed.
 #>
 function Install-CascadiaCodeFont {
   [CmdletBinding()]
   param (
+    [Parameter(Mandatory = $false, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
     [string]$FontName = "CascadiaCode",
+
+    [Parameter(Mandatory = $false, Position = 1, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
     [string]$FontDisplayName = "CaskaydiaCove NF",
+
+    [Parameter(Mandatory = $false, Position = 2, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
     [string]$Version = "3.2.1"
   )
 
@@ -500,17 +538,20 @@ function Install-CascadiaCodeFont {
 
 <#
 .SYNOPSIS
-    Installs Chocolatey package manager.
+  Installs Chocolatey package manager.
 
 .DESCRIPTION
-    This function installs the Chocolatey package manager by setting the execution policy to Bypass, updating the security protocol, and invoking the Chocolatey installation script.
+  This function installs the Chocolatey package manager by setting the execution policy to Bypass, updating the security protocol, and invoking the Chocolatey installation script.
 
 .OUTPUTS
-    The Chocolatey package manager is installed.
+  The Chocolatey package manager is installed.
 
 .EXAMPLE
-    Install-Chocolatey
-    Installs the Chocolatey package manager.
+  Install-Chocolatey
+  Installs the Chocolatey package manager.
+
+.NOTES
+  This function is used to install the Chocolatey package manager.
 #>
 function Install-Chocolatey {
   [CmdletBinding()]
@@ -530,24 +571,28 @@ function Install-Chocolatey {
 
 <#
 .SYNOPSIS
-    Installs or updates the required PowerShell modules.
+  Installs or updates the required PowerShell modules.
 
 .DESCRIPTION
-    This function installs or updates the required PowerShell modules based on the provided module list. If the module is not found, it is installed; otherwise, it is updated.
+  This function installs or updates the required PowerShell modules based on the provided module list. If the module is not found, it is installed; otherwise, it is updated.
 
 .PARAMETER ModuleList
-    Specifies the list of modules to install or update.
+  Specifies the list of modules to install or update.
 
 .OUTPUTS
-    The required modules are installed or updated.
+  The required modules are installed or updated.
 
 .EXAMPLE
-    Invoke-UpdateInstallPSModules -ModuleList @("Module1", "Module2", "Module3")
-    Installs or updates the modules "Module1", "Module2", and "Module3".
+  Invoke-UpdateInstallPSModules -ModuleList @("Module1", "Module2", "Module3")
+  Installs or updates the modules "Module1", "Module2", and "Module3".
+
+.NOTES
+  This function is used to install or update the required PowerShell modules.
 #>
 function Invoke-UpdateInstallPSModules {
   [CmdletBinding()]
   param (
+    [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
     [string[]]$ModuleList
   )
 
@@ -580,24 +625,28 @@ function Invoke-UpdateInstallPSModules {
 
 <#
 .SYNOPSIS
-    Installs or updates the required Chocolatey packages.
+  Installs or updates the required Chocolatey packages.
 
 .DESCRIPTION
-    This function installs or updates the required Chocolatey packages based on the provided package list. If the package is not found, it is installed; otherwise, it is updated if it is outdated.
+  This function installs or updates the required Chocolatey packages based on the provided package list. If the package is not found, it is installed; otherwise, it is updated if it is outdated.
 
 .PARAMETER PackageList
-    Specifies the list of packages to install or update.
+  Specifies the list of packages to install or update.
 
 .OUTPUTS
-    The required packages are installed or updated.
+  The required packages are installed or updated.
 
 .EXAMPLE
-    Invoke-UpdateInstallChocoPackages -PackageList @("Package1", "Package2", "Package3")
-    Installs or updates the packages "Package1", "Package2", and "Package3".
+  Invoke-UpdateInstallChocoPackages -PackageList @("Package1", "Package2", "Package3")
+  Installs or updates the packages "Package1", "Package2", and "Package3".
+
+.NOTES
+  This function is used to install or update the required Chocolatey packages.
 #>
 function Invoke-UpdateInstallChocoPackages {
   [CmdletBinding()]
   param (
+    [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
     [string[]]$PackageList
   )
 

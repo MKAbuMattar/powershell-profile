@@ -6,6 +6,12 @@
   Copyright         = '(c) 2024 Mohammad Abu Mattar'
   Description       = 'Utility module'
   FunctionsToExport = @(
+    'Find-Files',
+    "Set-FreshFile",
+    "Expand-File",
+    "Compress-Files",
+    "Get-ContentMatching",
+    "Set-ContentMatching",
     "Invoke-UpOneDirectoryLevel",
     "Invoke-UpTwoDirectoryLevels",
     "Invoke-UpThreeDirectoryLevels",
@@ -15,6 +21,12 @@
   CmdletsToExport   = @()
   VariablesToExport = '*'
   AliasesToExport   = @(
+    'ff',
+    "touch",
+    "unzip",
+    "zip",
+    "grep",
+    "sed",
     "cd.1",
     ".."
     "cd.2"
