@@ -53,10 +53,10 @@ $($PSStyle.Foreground.Yellow)Module Directory$($PSStyle.Reset)
     $($PSStyle.Foreground.Magenta)sed$($PSStyle.Reset) <File> <Find> <Replace>
         Searches for a string in a file and replaces it with another string.
 
-    $($PSStyle.Foreground.Magenta)z$($PSStyle.Reset)
+    $($PSStyle.Foreground.Magenta)z$($PSStyle.Reset) <Path>
         Windows equivalent of the 'cd' command, z will print the matched directory before navigating to it.
 
-    $($PSStyle.Foreground.Magenta)zi$($PSStyle.Reset)
+    $($PSStyle.Foreground.Magenta)zi$($PSStyle.Reset) <Path>
         Windows equivalent of the 'cd' command, but with interactive selection (using fzf).
 
     $($PSStyle.Foreground.Green)Get-FileHash$($PSStyle.Reset) <Path> <Algorithm>
