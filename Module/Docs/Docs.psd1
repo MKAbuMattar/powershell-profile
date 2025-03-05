@@ -6,11 +6,20 @@
   Copyright         = '(c) 2024 Mohammad Abu Mattar'
   Description       = 'Docs module'
   FunctionsToExport = @(
-    "Show-ProfileHelp"
+    'Show-ProfileHelp'
   )
   CmdletsToExport   = @()
   VariablesToExport = '*'
   AliasesToExport   = @(
-    "profile-help"
+    'profile-help'
   )
+  PrivateData       = @{
+    PSData = @{
+      Tags       = @(
+        'Docs'
+      )
+      LicenseUri = 'https://raw.githubusercontent.com/MKAbuMattar/powershell-profile/main/LICENSE'
+      ProjectUri = 'https://github.com/MKAbuMattar/powershell-profile'
+    }
+  }
 }

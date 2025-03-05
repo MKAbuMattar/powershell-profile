@@ -5,8 +5,21 @@
   Author            = 'Mohammad Abu Mattar'
   Copyright         = '(c) 2024 Mohammad Abu Mattar'
   Description       = 'Logging module'
-  FunctionsToExport = @('Write-LogMessage')
+  FunctionsToExport = @(
+    'Write-LogMessage'
+  )
   CmdletsToExport   = @()
   VariablesToExport = '*'
-  AliasesToExport   = @('log-message')
+  AliasesToExport   = @(
+    'log-message'
+  )
+  PrivateData       = @{
+    PSData = @{
+      Tags       = @(
+        'Logging'
+      )
+      LicenseUri = 'https://raw.githubusercontent.com/MKAbuMattar/powershell-profile/main/LICENSE'
+      ProjectUri = 'https://github.com/MKAbuMattar/powershell-profile'
+    }
+  }
 }

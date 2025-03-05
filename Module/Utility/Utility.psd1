@@ -50,4 +50,14 @@
     'wallclock',
     'matrix'
   )
+  PrivateData       = @{
+    PSData = @{
+      Tags       = @(
+        'Utility',
+        'System'
+      )
+      LicenseUri = 'https://raw.githubusercontent.com/MKAbuMattar/powershell-profile/main/LICENSE'
+      ProjectUri = 'https://github.com/MKAbuMattar/powershell-profile'
+    }
+  }
 }

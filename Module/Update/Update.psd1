@@ -17,4 +17,14 @@
     'update-profile',
     'update-ps1'
   )
+  PrivateData       = @{
+    PSData = @{
+      Tags       = @(
+        'Update',
+        'System'
+      )
+      LicenseUri = 'https://raw.githubusercontent.com/MKAbuMattar/powershell-profile/main/LICENSE'
+      ProjectUri = 'https://github.com/MKAbuMattar/powershell-profile'
+    }
+  }
 }

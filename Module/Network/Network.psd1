@@ -6,13 +6,22 @@
   Copyright         = '(c) 2024 Mohammad Abu Mattar'
   Description       = 'Network module'
   FunctionsToExport = @(
-    "Get-MyIPAddress",
-    "Clear-FlushDNS"
+    'Get-MyIPAddress',
+    'Clear-FlushDNS'
   )
   CmdletsToExport   = @()
   VariablesToExport = '*'
   AliasesToExport   = @(
-    "my-ip",
-    "flush-dns"
+    'my-ip',
+    'flush-dns'
   )
+  PrivateData       = @{
+    PSData = @{
+      Tags       = @(
+        'Network'
+      )
+      LicenseUri = 'https://raw.githubusercontent.com/MKAbuMattar/powershell-profile/main/LICENSE'
+      ProjectUri = 'https://github.com/MKAbuMattar/powershell-profile'
+    }
+  }
 }

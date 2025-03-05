@@ -7,4 +7,13 @@
   Description       = 'Environment variables'
   CmdletsToExport   = @()
   VariablesToExport = '*'
+  PrivateData       = @{
+    PSData = @{
+      Tags       = @(
+        'Environment variables'
+      )
+      LicenseUri = 'https://raw.githubusercontent.com/MKAbuMattar/powershell-profile/main/LICENSE'
+      ProjectUri = 'https://github.com/MKAbuMattar/powershell-profile'
+    }
+  }
 }

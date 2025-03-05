@@ -46,4 +46,14 @@
     "cd.5",
     "......"
   )
+  PrivateData       = @{
+    PSData = @{
+      Tags       = @(
+        'Files Management',
+        'Directory Navigation'
+      )
+      LicenseUri = 'https://raw.githubusercontent.com/MKAbuMattar/powershell-profile/main/LICENSE'
+      ProjectUri = 'https://github.com/MKAbuMattar/powershell-profile'
+    }
+  }
 }

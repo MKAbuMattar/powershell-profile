@@ -5,8 +5,21 @@
   Author            = 'Mohammad Abu Mattar'
   Copyright         = '(c) 2024 Mohammad Abu Mattar'
   Description       = 'Starship module'
-  FunctionsToExport = @('Invoke-StarshipTransientFunction')
+  FunctionsToExport = @(
+    'Invoke-StarshipTransientFunction'
+  )
   CmdletsToExport   = @()
   VariablesToExport = '*'
-  AliasesToExport   = @('starship-transient')
+  AliasesToExport   = @(
+    'starship-transient'
+  )
+  PrivateData       = @{
+    PSData = @{
+      Tags       = @(
+        'Starship'
+      )
+      LicenseUri = 'https://raw.githubusercontent.com/MKAbuMattar/powershell-profile/main/LICENSE'
+      ProjectUri = 'https://github.com/MKAbuMattar/powershell-profile'
+    }
+  }
 }
