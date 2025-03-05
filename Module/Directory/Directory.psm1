@@ -263,6 +263,34 @@ function Set-ContentMatching {
 
 <#
 .SYNOPSIS
+  Initializes and configures the zoxide tool for PowerShell.
+
+.DESCRIPTION
+  This function checks if the zoxide tool is installed and initializes it for use in PowerShell. If the tool is not installed, it attempts to install it using the winget package manager.
+
+.NOTES
+  This function is useful for setting up the zoxide tool for directory navigation in PowerShell.
+#>
+if (Get-Command zoxide -ErrorAction SilentlyContinue) {
+  Invoke-Expression (& { (zoxide init --cmd cd powershell | Out-String) })
+}
+else {
+  Write-Host "zoxide command not found. Attempting to install via winget..."
+  try {
+    winget install -e --id ajeetdsouza.zoxide
+    Write-Host "zoxide installed successfully. Initializing..."
+    Invoke-Expression (& { (zoxide init powershell | Out-String) })
+  }
+  catch {
+    Write-Error "Failed to install zoxide. Error: $_"
+  }
+}
+
+Set-Alias -Name z -Value __zoxide_z -Option AllScope -Scope Global -Force
+Set-Alias -Name zi -Value __zoxide_zi -Option AllScope -Scope Global -Force
+
+<#
+.SYNOPSIS
     Moves up one directory level.
 
 .DESCRIPTION
