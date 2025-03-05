@@ -422,6 +422,124 @@ function Stop-ProcessByPort {
 
 <#
 .SYNOPSIS
+  Retrieves the system information.
+
+.DESCRIPTION
+  This function retrieves information about the system, including the operating system, architecture, and processor details.
+
+.PARAMETER None
+  This function does not accept any parameters.
+
+.OUTPUTS
+  The system information.
+
+.EXAMPLE
+  Get-SystemInfo
+  Retrieves information about the system.
+
+.NOTES
+  This function is useful for quickly retrieving information about the system.
+#>
+function Get-SystemInfo {
+  [CmdletBinding()]
+  [Alias("sysinfo")]
+  param (
+    # This function does not accept any parameters
+  )
+
+  try {
+    $os = Get-CimInstance -ClassName Win32_OperatingSystem
+    $processor = Get-CimInstance -ClassName Win32_Processor
+    $architecture = Get-CimInstance -ClassName Win32_ComputerSystem
+
+    [PSCustomObject]@{
+      "Operating System" = $os.Caption
+      "Version"          = $os.Version
+      "Architecture"     = $architecture.SystemType
+      "Processor"        = $processor.Name
+      "Cores"            = $processor.NumberOfCores
+      "Threads"          = $processor.NumberOfLogicalProcessors
+    }
+  }
+  catch {
+    Write-LogMessage -Message "Failed to retrieve system information." -Level "ERROR"
+  }
+}
+
+<#
+.SYNOPSIS
+  Clears windows cache, temp files, and internet explorer cache.
+
+.DESCRIPTION
+  This function clears the Windows cache, temporary files, and Internet Explorer cache. It is useful for freeing up disk space and improving system performance.
+
+.PARAMETER Type
+  Specifies the type of cache to clear. The available options are "All", "Prefetch", "WindowsTemp", "UserTemp", and "IECache". The default value is "All".
+
+.OUTPUTS
+  This function does not return any output.
+
+.EXAMPLE
+  Clear-Cache
+  Clears all caches (Windows Prefetch, Windows Temp, User Temp, and Internet Explorer Cache).
+  Clear-Cache -Type "Prefetch"
+  Clears the Windows Prefetch cache.
+  Clear-Cache -Type "WindowsTemp"
+  Clears the Windows Temp cache.
+  Clear-Cache -Type "UserTemp"
+  Clears the User Temp cache.
+  Clear-Cache -Type "IECache"
+  Clears the Internet Explorer Cache.
+
+.NOTES
+  This function is useful for clearing various caches on the system to free up disk space and improve performance.
+#>
+function Clear-Cache {
+  [CmdletBinding()]
+  [Alias("clear-cache")]
+  param (
+    [Parameter(Mandatory = $false, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [string]$Type = "All"
+  )
+
+  switch ($Type) {
+    "All" {
+      Write-LogMessage "Clearing Windows Prefetch..."
+      Remove-Item -Path "$env:SystemRoot\Prefetch\*" -Force -ErrorAction SilentlyContinue
+
+      Write-LogMessage "Clearing Windows Temp..."
+      Remove-Item -Path "$env:SystemRoot\Temp\*" -Recurse -Force -ErrorAction SilentlyContinue
+
+      Write-LogMessage "Clearing User Temp..."
+      Remove-Item -Path "$env:TEMP\*" -Recurse -Force -ErrorAction SilentlyContinue
+
+      Write-LogMessage "Clearing Internet Explorer Cache..."
+      Remove-Item -Path "$env:LOCALAPPDATA\Microsoft\Windows\INetCache\*" -Recurse -Force -ErrorAction SilentlyContinue
+    }
+    "Prefetch" {
+      Write-LogMessage "Clearing Windows Prefetch..."
+      Remove-Item -Path "$env:SystemRoot\Prefetch\*" -Force -ErrorAction SilentlyContinue
+    }
+    "WindowsTemp" {
+      Write-LogMessage "Clearing Windows Temp..."
+      Remove-Item -Path "$env:SystemRoot\Temp\*" -Recurse -Force -ErrorAction SilentlyContinue
+    }
+    "UserTemp" {
+      Write-LogMessage "Clearing User Temp..."
+      Remove-Item -Path "$env:TEMP\*" -Recurse -Force -ErrorAction SilentlyContinue
+    }
+    "IECache" {
+      Write-LogMessage "Clearing Internet Explorer Cache..."
+      Remove-Item -Path "$env:LOCALAPPDATA\Microsoft\Windows\INetCache\*" -Recurse -Force -ErrorAction SilentlyContinue
+    }
+    default {
+      Write-LogMessage "Invalid cache type: $Type" -Level "ERROR"
+    }
+  }
+}
+
+<#
+.SYNOPSIS
   Retrieves a random quote from an online API.
 
 .DESCRIPTION

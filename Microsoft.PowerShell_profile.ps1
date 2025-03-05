@@ -139,6 +139,9 @@ Import-Module $EnvironmentModulePath -Force -ErrorAction SilentlyContinue
 $LoggingModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Logging/Logging.psd1'
 Import-Module $LoggingModulePath -Force -ErrorAction SilentlyContinue
 
+$LoggingModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Network/Network.psd1'
+Import-Module $LoggingModulePath -Force -ErrorAction SilentlyContinue
+
 $StarshipModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Starship/Starship.psd1'
 Import-Module $StarshipModulePath -Force -ErrorAction SilentlyContinue
 
@@ -194,9 +197,13 @@ if ($global:AutoUpdatePowerShell -eq $true) {
 #------------------------------------------------------
 # Editor Configuration
 #------------------------------------------------------
-$EDITOR = if (Test-CommandExists nvim) { 'vim' }
+$EDITOR = if (Test-CommandExists nvim) { 'nvim' }
+elseif (Test-CommandExists pvim) { 'pvim' }
+elseif (Test-CommandExists vim) { 'vim' }
 elseif (Test-CommandExists vi) { 'vi' }
 elseif (Test-CommandExists code) { 'code' }
+elseif (Test-CommandExists notepad++) { 'notepad++' }
+elseif (Test-CommandExists sublime_text) { 'sublime_text' }
 else { 'notepad' }
 
 #------------------------------------------------------

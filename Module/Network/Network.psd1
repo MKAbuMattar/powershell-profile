@@ -1,16 +1,18 @@
 @{
-  RootModule        = 'Docs.psm1'
+  RootModule        = 'Network.psm1'
   ModuleVersion     = '0.0.0'
-  GUID              = '8a971646-bb14-46e6-be7a-8a632a7e1e43'
+  GUID              = '508e211f-6649-4616-9253-b4a803cdb653'
   Author            = 'Mohammad Abu Mattar'
   Copyright         = '(c) 2024 Mohammad Abu Mattar'
-  Description       = 'Docs module'
+  Description       = 'Network module'
   FunctionsToExport = @(
-    "Show-ProfileHelp"
+    "Get-MyIPAddress",
+    "Clear-FlushDNS"
   )
   CmdletsToExport   = @()
   VariablesToExport = '*'
   AliasesToExport   = @(
-    "profile-help"
+    "my-ip",
+    "flush-dns"
   )
 }

@@ -217,6 +217,8 @@ function Copy-ModuleDirectory {
       "Environment/Environment.psm1",
       "Logging/Logging.psd1",
       "Logging/Logging.psm1",
+      "Network/Network.psd1",
+      "Network/Network.psm1",
       "Starship/Starship.psd1",
       "Starship/Starship.psm1",
       "Update/Update.psd1",

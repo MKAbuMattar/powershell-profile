@@ -28,7 +28,7 @@ function Show-ProfileHelp {
   Write-Host @"
 $($PSStyle.Foreground.Cyan)PowerShell Profile Helper$($PSStyle.Reset)
 
-$($PSStyle.Foreground.Yellow)Module Directory$($PSStyle.Reset)
+$($PSStyle.Foreground.Yellow)Directory Module$($PSStyle.Reset)
     $($PSStyle.Foreground.Green)Find-Files$($PSStyle.Reset) <Name>
     $($PSStyle.Foreground.Magenta)ff$($PSStyle.Reset) <Name>
         Finds files matching a specified name pattern in the current directory and its subdirectories.
@@ -100,7 +100,16 @@ $($PSStyle.Foreground.Yellow)Module Directory$($PSStyle.Reset)
     $($PSStyle.Foreground.Magenta)......$($PSStyle.Reset)
         Moves up five directory levels.
 
-$($PSStyle.Foreground.Yellow)Module Update$($PSStyle.Reset)
+$($PSStyle.Foreground.Yellow)Network Module$($PSStyle.Reset)
+    $($PSStyle.Foreground.Green)Get-MyIPAddress$($PSStyle.Reset) <Local> <IPv4> <IPv6> <ComputerName>
+    $($PSStyle.Foreground.Magenta)my-ip$($PSStyle.Reset) <Local> <IPv4> <IPv6> <ComputerName>
+        Retrieves the IP address of the local machine, and public IPv4 and IPv6 addresses.
+
+    $($PSStyle.Foreground.Green)Clear-FlushDNS$($PSStyle.Reset)
+    $($PSStyle.Foreground.Magenta)flush-dns$($PSStyle.Reset)
+        Flushes the DNS cache.
+
+$($PSStyle.Foreground.Yellow)Update Module$($PSStyle.Reset)
     $($PSStyle.Foreground.Green)Update-LocalProfileModuleDirectory$($PSStyle.Reset) <LocalPath>
     $($PSStyle.Foreground.Magenta)update-local-module$($PSStyle.Reset) <LocalPath>
         Updates the Modules directory in the local profile with the latest version from the GitHub repository.
@@ -159,7 +168,15 @@ $($PSStyle.Foreground.Yellow)Module Utility$($PSStyle.Reset)
     $($PSStyle.Foreground.Magenta)portkill$($PSStyle.Reset) <Port>
         Terminates a process by port.
 
-    $($PSStyle.Foreground.Green)Get-RandomQuote$($PSStyle.Reset)
+    $($PSStyle.Foreground.Green)Get-SystemInfo$($PSStyle.Reset)
+    $($PSStyle.Foreground.Magenta)sysinfo$($PSStyle.Reset)
+        Retrieves the system information.
+
+    $($PSStyle.Foreground.Green)Clear-Cache$($PSStyle.Reset) <Type>
+    $($PSStyle.Foreground.Magenta)clear-cache$($PSStyle.Reset) <Type>
+        Clears windows cache, temp files, and internet explorer cache.
+
+    $($PSStyle.Foreground.Green)Clear-Cache$($PSStyle.Reset)
     $($PSStyle.Foreground.Magenta)quote$($PSStyle.Reset)
         Retrieves a random quote from an online API.
 

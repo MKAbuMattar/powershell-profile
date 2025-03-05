@@ -17,12 +17,14 @@
     'Get-ProcessByPort',
     'Stop-ProcessByName',
     'Stop-ProcessByPort',
+    'Get-SystemInfo',
+    'Clear-Cache',
     'Get-RandomQuote',
-    "Get-WeatherForecast",
-    "Start-Countdown",
-    "Start-Stopwatch",
-    "Get-WallClock",
-    "Start-Matrix"
+    'Get-WeatherForecast',
+    'Start-Countdown',
+    'Start-Stopwatch',
+    'Get-WallClock',
+    'Start-Matrix'
   )
   CmdletsToExport   = @()
   VariablesToExport = '*'
@@ -32,18 +34,20 @@
     'uptime',
     'command-definition',
     'set-env',
-    "export",
+    'export',
     'get-env',
     'pall',
     'pgrep',
     'portgrep',
     'pkill',
     'portkill',
+    'sysinfo',
+    'clear-cache',
     'quote',
-    "weather",
-    "countdown",
-    "stopwatch",
-    "wallclock",
-    "matrix"
+    'weather',
+    'countdown',
+    'stopwatch',
+    'wallclock',
+    'matrix'
   )
 }

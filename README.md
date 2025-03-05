@@ -30,6 +30,9 @@ This PowerShell profile script includes:
 - **Auto Updates**: Invokes functions to update the profile and PowerShell if the auto-update flags are set.
 - **Editor Configuration**: Sets the default editor based on availability (nvim, vi, code, notepad).
 - **FastFetch**: Runs FastFetch if available to quickly fetch and display system information.
+- **Directory Modules**: Imports directory modules for file management and navigation.
+- **Network Modules**: Imports network modules for network-related functions and aliases.
+<!-- - **Process Modules**: Imports process modules for process management and monitoring. -->
 - **Utility Modules**: Imports utility modules for additional functions and aliases.
 
 ## Directory Module
@@ -73,6 +76,15 @@ The Directory module provides functions to navigate directories and manage files
 - **Invoke-UpFiveDirectoryLevels** (Aliases: `cd.5`, `......`): Moves up five directory levels.
   - Example: `cd.5`
 
+## Network Module
+
+The Network module provides functions to manage network settings and perform network-related tasks:
+
+- **Get-IPAddress** (Alias: `my-ip`): Retrieves the IP address of the current machine.
+  - Example: `my-ip -IPv4`
+- **Clear-FlushDNS** (Alias: `flush-dns`): Clears and flushes the DNS cache.
+  - Example: `flush-dns`
+
 ## Utility Module
 
 The Utility module provides a set of useful functions to enhance your PowerShell experience:
@@ -97,6 +109,10 @@ The Utility module provides a set of useful functions to enhance your PowerShell
   - Example: `portgrep 80`
 - **Stop-ProcessByName** (Alias: `pkill`): Terminates a process by name.
   - Example: `pkill "process"`
+- **Get-SystemInfo** (Alias: `sysinfo`): Retrieves system information.
+  - Example: `sysinfo`
+- **Clear-Cache** (Alias: `cache-clear`): Clears the cache of a specified application.
+  - Example: `cache-clear "All"`
 - **Stop-ProcessByPort** (Alias: `portkill`): Terminates a process by port.
   - Example: `portkill 80`
 - **Get-RandomQuote** (Alias: `quote`): Retrieves a random quote from an online API.
