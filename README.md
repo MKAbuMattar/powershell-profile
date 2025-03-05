@@ -32,6 +32,21 @@ This PowerShell profile script includes:
 - **FastFetch**: Runs FastFetch if available to quickly fetch and display system information.
 - **Utility Modules**: Imports utility modules for additional functions and aliases.
 
+## Directory Module
+
+The Directory module provides functions to navigate up multiple directory levels quickly:
+
+- **Invoke-UpOneDirectoryLevel** (Aliases: `cd.1`, `..`): Moves up one directory level.
+  - Example: `cd.1`
+- **Invoke-UpTwoDirectoryLevels** (Aliases: `cd.2`, `...`): Moves up two directory levels.
+  - Example: `cd.2`
+- **Invoke-UpThreeDirectoryLevels** (Aliases: `cd.3`, `....`): Moves up three directory levels.
+  - Example: `cd.3`
+- **Invoke-UpFourDirectoryLevels** (Aliases: `cd.4`, `.....`): Moves up four directory levels.
+  - Example: `cd.4`
+- **Invoke-UpFiveDirectoryLevels** (Aliases: `cd.5`, `......`): Moves up five directory levels.
+  - Example: `cd.5`
+
 ## Utility Module
 
 The Utility module provides a set of useful functions to enhance your PowerShell experience:
@@ -76,7 +91,7 @@ The Utility module provides a set of useful functions to enhance your PowerShell
   - Example: `weather -Location "Amman"`
 - **Start-Countdown** (Alias: `countdown`): Starts a countdown timer.
   - Example: `countdown -Duration "25s" -Title "Break Time"`
-  - Example: `-Duration "02:15PM" -Title "Lunch Time"`
+  - Example: `countdown -Duration "02:15PM" -Title "Lunch Time"`
 - **Start-Stopwatch** (Alias: `stopwatch`): Starts a stopwatch timer.
   - Example: `stopwatch -Title "Workout"`
 - **Get-WallClock** (Alias: `clock`): Retrieves the current time in a specified timezone.

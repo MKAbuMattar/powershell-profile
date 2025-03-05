@@ -127,6 +127,9 @@ Set-PSReadLineKeyHandler -Chord '"', "'" `
 #---------------------------------------------------------------------------------------------------
 # Import the custom modules
 #---------------------------------------------------------------------------------------------------
+$DirectorytModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Directory/Directory.psd1'
+Import-Module $DirectorytModulePath -Force -ErrorAction SilentlyContinue
+
 $EnvironmentModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Environment/Environment.psd1'
 Import-Module $EnvironmentModulePath -Force -ErrorAction SilentlyContinue
 

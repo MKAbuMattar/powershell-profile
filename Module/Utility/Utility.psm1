@@ -14,6 +14,13 @@
 .EXAMPLE
     Test-CommandExists "ls"
     Checks if the "ls" command exists in the current environment.
+
+.ALIASES
+    command-exists
+    Use the alias `command-exists` to quickly check if a command exists.
+
+.NOTES
+    This function is useful for verifying the availability of commands in the current environment.
 #>
 function Test-CommandExists {
   [CmdletBinding()]
