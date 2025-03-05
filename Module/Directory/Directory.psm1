@@ -1,5 +1,268 @@
 <#
 .SYNOPSIS
+  Finds files matching a specified name pattern in the current directory and its subdirectories.
+
+.DESCRIPTION
+  This function searches for files that match the specified name pattern in the current directory and its subdirectories. It returns the full path of each file found. If no matching files are found, it does not output anything.
+
+.PARAMETER Name
+  Specifies the name pattern to search for. You can use wildcard characters such as '*' and '?' to represent multiple characters or single characters in the file name.
+
+.OUTPUTS
+  This function does not return any output directly. It writes the full paths of matching files to the pipeline.
+
+.EXAMPLE
+  Find-Files "file.txt"
+  Searches for files matching the pattern "file.txt" and returns their full paths.
+  Find-Files "*.ps1"
+  Searches for files with the extension ".ps1" and returns their full paths.
+
+.NOTES
+  This function is useful for quickly finding files that match a specific name pattern in the current directory and its subdirectories.
+#>
+function Find-Files {
+  [CmdletBinding()]
+  [Alias("ff")]
+  param (
+    [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [string]$Name
+  )
+
+  Get-ChildItem -Recurse -Filter $Name -ErrorAction SilentlyContinue | ForEach-Object {
+    Write-Output $_.FullName
+  }
+}
+
+<#
+.SYNOPSIS
+  Creates a new empty file or updates the timestamp of an existing file with the specified name.
+
+.DESCRIPTION
+  This function serves a dual purpose: it can create a new empty file with the specified name, or if a file with the same name already exists, it updates the timestamp of that file to reflect the current time. This operation is particularly useful in scenarios where you want to ensure a file's existence or update its timestamp without modifying its content. The function utilizes the Out-File cmdlet to achieve this.
+
+.PARAMETER File
+  Specifies the name of the file to create or update. If the file already exists, its timestamp will be updated.
+
+.OUTPUTS
+  This function does not return any output.
+
+.EXAMPLE
+  Set-FreshFile "file.txt"
+  Creates a new empty file named "file.txt" if it doesn't exist. If "file.txt" already exists, its timestamp is updated.
+  Set-FreshFile "existing_file.txt"
+  Updates the timestamp of the existing file named "existing_file.txt" without modifying its content.
+
+.NOTES
+  This function can be used as an alias "touch" to quickly create a new file or update the timestamp of an existing file.
+#>
+function Set-FreshFile {
+  [CmdletBinding()]
+  [Alias("touch")]
+  param (
+    [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [string]$File
+  )
+
+  if (Test-Path $File) {
+        (Get-Item $File).LastWriteTime = Get-Date
+  }
+  else {
+    "" | Out-File $File -Encoding ASCII
+  }
+}
+
+<#
+.SYNOPSIS
+  Extracts a file to the current directory.
+
+.DESCRIPTION
+  This function extracts the specified file to the current directory using the Expand-Archive cmdlet.
+
+.PARAMETER File
+  Specifies the file to extract.
+
+.OUTPUTS
+  This function does not return any output.
+
+.EXAMPLE
+  Expand-File "file.zip"
+  Extracts the file "file.zip" to the current directory.
+
+.NOTES
+  This function is useful for quickly extracting files to the current directory.
+#>
+function Expand-File {
+  [CmdletBinding()]
+  [Alias("unzip")]
+  param (
+    [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [string]$File
+  )
+
+  try {
+    Write-LogMessage -Message "Extracting file '$File' to '$PWD'..." -Level "INFO"
+    $FullFilePath = Get-Item -Path $File -ErrorAction Stop | Select-Object -ExpandProperty FullName
+    Expand-Archive -Path $FullFilePath -DestinationPath $PWD -Force -ErrorAction Stop
+    Write-LogMessage -Message "File extraction completed successfully." -Level "INFO"
+  }
+  catch {
+    Write-LogMessage -Message "Failed to extract file '$File'." -Level "ERROR"
+  }
+}
+
+<#
+.SYNOPSIS
+  Compresses files into a zip archive.
+
+.DESCRIPTION
+  This function compresses the specified files into a zip archive using the Compress-Archive cmdlet.
+
+.PARAMETER Files
+  Specifies the files to compress into a zip archive.
+
+.PARAMETER Archive
+  Specifies the name of the zip archive to create.
+
+.OUTPUTS
+  This function does not return any output.
+
+.EXAMPLE
+  Compress-Files -Files "file1.txt", "file2.txt" -Archive "files.zip"
+  Compresses "file1.txt" and "file2.txt" into a zip archive named "files.zip".
+
+.NOTES
+  This function is useful for quickly compressing files into a zip archive.
+#>
+function Compress-Files {
+  [CmdletBinding()]
+  [Alias("zip")]
+  param (
+    [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [string[]]$Files,
+
+    [Parameter(Mandatory = $true, Position = 1, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [string]$Archive
+  )
+
+  try {
+    Write-LogMessage -Message "Compressing files '$Files' into '$Archive'..." -Level "INFO"
+    Compress-Archive -Path $Files -DestinationPath $Archive -Force -ErrorAction Stop
+    Write-LogMessage -Message "File compression completed successfully." -Level "INFO"
+  }
+  catch {
+    Write-LogMessage -Message "Failed to compress files '$Files'." -Level "ERROR"
+  }
+}
+
+<#
+.SYNOPSIS
+  Searches for a string in a file and returns matching lines.
+
+.DESCRIPTION
+  This function searches for a specified string or regular expression pattern in a file or files within a directory. It returns the lines that contain the matching string or pattern. It is useful for finding occurrences of specific patterns in text files.
+
+.PARAMETER Pattern
+  Specifies the string or regular expression pattern to search for.
+
+.PARAMETER Path
+  Specifies the path to the file or directory to search in. If not provided, the function searches in the current directory.
+
+.OUTPUTS
+  The lines in the file(s) that match the specified string or regular expression pattern.
+
+.EXAMPLE
+  Get-ContentMatching "pattern" "file.txt"
+  Searches for occurrences of the pattern "pattern" in the file "file.txt" and returns matching lines.
+
+.NOTES
+  This function is useful for quickly searching for a string or regular expression pattern in a file or files within a directory.
+#>
+function Get-ContentMatching {
+  [CmdletBinding()]
+  [Alias("grep")]
+  param (
+    [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [string]$Pattern,
+
+    [Parameter(Mandatory = $false, Position = 1, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [string]$Path = $PWD
+  )
+
+  try {
+    if (-not (Test-Path $Path)) {
+      Write-LogMessage -Message "The specified path '$Path' does not exist." -Level "ERROR"
+      return
+    }
+
+    if (Test-Path $Path -PathType Leaf) {
+      Get-Content -Path $Path | Select-String -Pattern $Pattern
+    }
+    elseif (Test-Path $Path -PathType Container) {
+      Get-ChildItem -Path $Path -Recurse -File | ForEach-Object {
+        Get-Content -Path $_.FullName | Select-String -Pattern $Pattern
+      }
+    }
+    else {
+      Write-LogMessage -Message "The specified path '$Path' is neither a file nor a directory." -Level "WARNING"
+    }
+  }
+  catch {
+    Write-LogMessage -Message "Failed to access path '$Path'." -Level "ERROR"
+    return
+  }
+}
+
+<#
+.SYNOPSIS
+  Searches for a string in a file and replaces it with another string.
+
+.DESCRIPTION
+  This function searches for a specified string in a file and replaces it with another string. It is useful for performing text replacements in files.
+
+.PARAMETER File
+  Specifies the file to search and perform replacements in.
+
+.PARAMETER Find
+  Specifies the string to search for.
+
+.PARAMETER Replace
+  Specifies the string to replace the found string with.
+
+.OUTPUTS
+  This function does not return any output.
+
+.EXAMPLE
+  Set-ContentMatching "file.txt" "pattern" "replacement"
+  Searches for "pattern" in "file.txt" and replaces it with "replacement".
+
+.NOTES
+  This function is useful for quickly performing text replacements in files.
+#>
+function Set-ContentMatching {
+  [CmdletBinding()]
+  [Alias("sed")]
+  param (
+    [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [string]$File,
+
+    [Parameter(Mandatory = $true, Position = 1, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [string]$Find,
+
+    [Parameter(Mandatory = $true, Position = 2, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [string]$Replace
+  )
+
+  try {
+    $content = Get-Content $File -ErrorAction Stop
+    $content -replace $Find, $Replace | Set-Content $File -ErrorAction Stop
+  }
+  catch {
+    Write-LogMessage -Message "An error occurred while performing text replacement." -Level "ERROR"
+  }
+}
+
+<#
+.SYNOPSIS
     Moves up one directory level.
 
 .DESCRIPTION
@@ -8,16 +271,12 @@
 .PARAMETER None
     This function does not accept any parameters.
 
-.OUTPUTS None
+.OUTPUTS
     This function does not return any output.
 
 .EXAMPLE
     Invoke-UpOneDirectoryLevel
     Moves up one directory level.
-
-.ALIASES
-    cd.1 -> Use the alias `cd.1` to quickly move up one directory level.
-    .. -> Use the alias `..` to quickly move up one directory level.
 
 .NOTES
     This function is useful for navigating up one level in the directory structure.
@@ -43,16 +302,12 @@ function Invoke-UpOneDirectoryLevel {
 .PARAMETER None
   This function does not accept any parameters.
 
-.OUTPUTS None
+.OUTPUTS
   This function does not return any output.
 
 .EXAMPLE
   Invoke-UpTwoDirectoryLevels
   Moves up two directory levels.
-
-.ALIASES
-  cd.2 -> Use the alias `cd.2` to quickly move up two directory levels.
-  ... -> Use the alias `...` to quickly move up two directory levels.
 
 .NOTES
   This function is useful for navigating up two levels in the directory structure.
@@ -78,16 +333,12 @@ function Invoke-UpTwoDirectoryLevels {
 .PARAMETER None
   This function does not accept any parameters.
 
-.OUTPUTS None
+.OUTPUTS
   This function does not return any output.
 
 .EXAMPLE
   Invoke-UpThreeDirectoryLevels
   Moves up three directory levels.
-
-.ALIASES
-  cd.3 -> Use the alias `cd.3` to quickly move up three directory levels.
-  .... -> Use the alias `....` to quickly move up three directory levels.
 
 .NOTES
   This function is useful for navigating up three levels in the directory structure.
@@ -113,16 +364,12 @@ function Invoke-UpThreeDirectoryLevels {
 .PARAMETER None
   This function does not accept any parameters.
 
-.OUTPUTS None
+.OUTPUTS
   This function does not return any output.
 
 .EXAMPLE
   Invoke-UpFourDirectoryLevels
   Moves up four directory levels.
-
-.ALIASES
-  cd.4 -> Use the alias `cd.4` to quickly move up four directory levels.
-  ..... -> Use the alias `.....` to quickly move up four directory levels.
 
 .NOTES
   This function is useful for navigating up four levels in the directory structure.
@@ -148,16 +395,12 @@ function Invoke-UpFourDirectoryLevels {
 .PARAMETER None
   This function does not accept any parameters.
 
-.OUTPUTS None
+.OUTPUTS
   This function does not return any output.
 
 .EXAMPLE
   Invoke-UpFiveDirectoryLevels
   Moves up five directory levels.
-
-.ALIASES
-  cd.5 -> Use the alias `cd.5` to quickly move up five directory levels.
-  ...... -> Use the alias `......` to quickly move up five directory levels.
 
 .NOTES
   This function is useful for navigating up five levels in the directory structure.

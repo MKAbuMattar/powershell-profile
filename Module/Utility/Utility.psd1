@@ -7,14 +7,8 @@
   Description       = 'Utility module'
   FunctionsToExport = @(
     'Test-CommandExists',
-    'Invoke-ProfileReload',
-    'Find-Files',
-    'Set-FreshFile',
+    'Invoke-ReloadProfile',
     'Get-Uptime',
-    'Expand-File',
-    'Compress-Files',
-    'Get-ContentMatching',
-    'Set-ContentMatching',
     'Get-CommandDefinition',
     'Set-EnvVar',
     'Get-EnvVar',
@@ -28,20 +22,14 @@
     "Start-Countdown",
     "Start-Stopwatch",
     "Get-WallClock",
-    "Start-MatrixRain"
+    "Start-Matrix"
   )
   CmdletsToExport   = @()
   VariablesToExport = '*'
   AliasesToExport   = @(
     'command-exists',
     'reload-profile',
-    'ff',
-    'touch',
     'uptime',
-    'unzip',
-    'zip',
-    'grep',
-    'sed',
     'command-definition',
     'set-env',
     'get-env',

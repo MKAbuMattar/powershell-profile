@@ -1,31 +1,28 @@
 <#
 .SYNOPSIS
-    Updates the Modules directory in the local profile with the latest version from the GitHub repository.
+  Updates the Modules directory in the local profile with the latest version from the GitHub repository.
 
 .DESCRIPTION
-    This function checks for updates to the Modules directory in the local profile from the GitHub repository specified in the script. It compares the hash of the local Modules directory with the hash of the Modules directory on GitHub. If updates are found, it downloads the updated Modules directory and replaces the local Modules directory with the updated one. The function provides feedback on whether the Modules directory has been updated and prompts the user to restart the shell to reflect changes.
+  This function checks for updates to the Modules directory in the local profile from the GitHub repository specified in the script. It compares the hash of the local Modules directory with the hash of the Modules directory on GitHub. If updates are found, it downloads the updated Modules directory and replaces the local Modules directory with the updated one. The function provides feedback on whether the Modules directory has been updated and prompts the user to restart the shell to reflect changes.
 
 .PARAMETER LocalPath
-    Specifies the local path where the Modules directory should be updated. The default value is "$HOME\Documents\PowerShell".
+  Specifies the local path where the Modules directory should be updated. The default value is "$HOME\Documents\PowerShell".
 
 .OUTPUTS
-    This function does not return any output.
+  This function does not return any output.
 
 .EXAMPLE
-    Update-LocalProfileModuleDirectory
-    Checks for updates to the Modules directory in the local profile and updates the local Modules directory if changes are detected.
-
-.ALIASES
-    update-local-module
-    Use the alias `update-local-module` to quickly check for updates to the Modules directory in the local profile.
+  Update-LocalProfileModuleDirectory
+  Checks for updates to the Modules directory in the local profile and updates the local Modules directory if changes are detected.
 
 .NOTES
-    The local profile update function is disabled by default. To enable it, uncomment the line that invokes the function at the end of the script.
+  The local profile update function is disabled by default. To enable it, uncomment the line that invokes the function at the end of the script.
 #>
 function Update-LocalProfileModuleDirectory {
   [CmdletBinding()]
   [Alias("update-local-module")]
   param (
+    [Parameter(Mandatory = $false, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
     [string]$LocalPath = "$HOME\Documents\PowerShell"
   )
 
@@ -45,16 +42,20 @@ function Update-LocalProfileModuleDirectory {
     }
 
     $files = @(
-      "Environment/Environment.psm1",
+      "Directory/Directory.psd1",
+      "Directory/Directory.psm1",
+      "Docs/Docs.psd1",
+      "Docs/Docs.psm1",
       "Environment/Environment.psd1",
-      "Logging/Logging.psm1",
+      "Environment/Environment.psm1",
       "Logging/Logging.psd1",
-      "Starship/Starship.psm1",
+      "Logging/Logging.psm1",
       "Starship/Starship.psd1",
-      "Update/Update.psm1",
+      "Starship/Starship.psm1",
       "Update/Update.psd1",
-      "Utility/Utility.psm1",
-      "Utility/Utility.psd1"
+      "Update/Update.psm1",
+      "Utility/Utility.psd1",
+      "Utility/Utility.psm1"
     )
 
     foreach ($file in $files) {
@@ -105,27 +106,23 @@ function Update-LocalProfileModuleDirectory {
 
 <#
 .SYNOPSIS
-    Checks for updates to the PowerShell profile from a specified GitHub repository and updates the local profile if changes are detected.
+  Checks for updates to the PowerShell profile from a specified GitHub repository and updates the local profile if changes are detected.
 
 .DESCRIPTION
-    This function checks for updates to the PowerShell profile from the GitHub repository specified in the script. It compares the hash of the local profile with the hash of the profile on GitHub. If updates are found, it downloads the updated profile and replaces the local profile with the updated one. The function provides feedback on whether the profile has been updated and prompts the user to restart the shell to reflect changes.
+  This function checks for updates to the PowerShell profile from the GitHub repository specified in the script. It compares the hash of the local profile with the hash of the profile on GitHub. If updates are found, it downloads the updated profile and replaces the local profile with the updated one. The function provides feedback on whether the profile has been updated and prompts the user to restart the shell to reflect changes.
 
 .PARAMETER None
-    This function does not accept any parameters.
+  This function does not accept any parameters.
 
 .OUTPUTS
-    This function does not return any output.
+  This function does not return any output.
 
 .EXAMPLE
-    Update-Profile
-    Checks for updates to the PowerShell profile and updates the local profile if changes are detected.
-
-.ALIASES
-    update-profile
-    Use the alias `update-profile` to quickly check for updates to the PowerShell profile.
+  Update-Profile
+  Checks for updates to the PowerShell profile and updates the local profile if changes are detected.
 
 .NOTES
-    The profile update function is disabled by default. To enable it, uncomment the line that invokes the function at the end of the script.
+  The profile update function is disabled by default. To enable it, uncomment the line that invokes the function at the end of the script.
 #>
 function Update-Profile {
   [CmdletBinding()]
@@ -159,27 +156,23 @@ function Update-Profile {
 
 <#
 .SYNOPSIS
-    Checks for updates to PowerShell and upgrades to the latest version if available.
+  Checks for updates to PowerShell and upgrades to the latest version if available.
 
 .DESCRIPTION
-    This function checks for updates to PowerShell by querying the GitHub releases. If updates are found, it upgrades PowerShell to the latest version using the Windows Package Manager (winget). It provides information about the update process and whether the system is already up to date.
+  This function checks for updates to PowerShell by querying the GitHub releases. If updates are found, it upgrades PowerShell to the latest version using the Windows Package Manager (winget). It provides information about the update process and whether the system is already up to date.
 
 .PARAMETER None
-    This function does not accept any parameters.
+  This function does not accept any parameters.
 
 .OUTPUTS
-    This function does not return any output.
+  This function does not return any output.
 
 .EXAMPLE
-    Update-PowerShell
-    Checks for updates to PowerShell and upgrades to the latest version if available.
-
-.ALIASES
-    update-ps1
-    Use the alias `update-ps1` to quickly check for updates to PowerShell.
+  Update-PowerShell
+  Checks for updates to PowerShell and upgrades to the latest version if available.
 
 .NOTES
-    The PowerShell update function is disabled by default. To enable it, uncomment the line that invokes the function at the end of the script.
+  The PowerShell update function is disabled by default. To enable it, uncomment the line that invokes the function at the end of the script.
 #>
 function Update-PowerShell {
   [CmdletBinding()]
