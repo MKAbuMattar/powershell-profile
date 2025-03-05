@@ -17,6 +17,92 @@ irm "https://raw.githubusercontent.com/MKAbuMattar/powershell-profile/main/setup
 irm "https://raw.githubusercontent.com/MKAbuMattar/powershell-profile/refs/heads/develop/setup.ps1" | iex
 ```
 
+## The Profile Architecture
+
+```mermaid
+graph TB
+    User((User))
+
+    subgraph "PowerShell Profile System"
+        subgraph "Core Profile Container"
+            ProfileScript["Profile Script<br>PowerShell"]
+
+            subgraph "Profile Components"
+                EnvManager["Environment Manager<br>PowerShell Module"]
+                LogManager["Logging Manager<br>PowerShell Module"]
+                StarshipIntegration["Starship Integration<br>PowerShell Module"]
+                UpdateManager["Update Manager<br>PowerShell Module"]
+                UtilityManager["Utility Manager<br>PowerShell Module"]
+            end
+        end
+
+        subgraph "Configuration Container"
+            ConfigFiles["Configuration Files<br>TOML/JSONC"]
+
+            subgraph "Config Components"
+                StarshipConfig["Starship Config<br>TOML"]
+                FastFetchConfig["FastFetch Config<br>JSONC"]
+            end
+        end
+
+        subgraph "External Tools Container"
+            ExternalTools["External Tools<br>Various"]
+
+            subgraph "Tool Components"
+                Starship["Starship Prompt<br>Rust"]
+                FastFetch["System Info Display<br>C++"]
+                PowerShellCore["PowerShell Core<br>.NET"]
+                WindowsTerminal["Windows Terminal<br>C++"]
+                Zoxide["Directory Navigator<br>Rust"]
+            end
+        end
+
+        subgraph "Module Management Container"
+            ModuleSystem["Module System<br>PowerShell"]
+
+            subgraph "Module Components"
+                TerminalIcons["Terminal Icons<br>PowerShell Module"]
+                PSReadLine["PSReadLine<br>PowerShell Module"]
+                PoshGit["Posh-Git<br>PowerShell Module"]
+                CompletionPredictor["Completion Predictor<br>PowerShell Module"]
+            end
+        end
+    end
+
+    subgraph "External Services"
+        GitHub["GitHub Repository<br>Git"]
+        Chocolatey["Package Manager<br>Chocolatey"]
+    end
+
+    User -->|Interacts with| ProfileScript
+    ProfileScript -->|Loads| EnvManager
+    ProfileScript -->|Uses| LogManager
+    ProfileScript -->|Configures| StarshipIntegration
+    ProfileScript -->|Manages| UpdateManager
+    ProfileScript -->|Utilizes| UtilityManager
+
+    ConfigFiles -->|Configures| StarshipConfig
+    ConfigFiles -->|Configures| FastFetchConfig
+
+    StarshipIntegration -->|Uses| Starship
+    ProfileScript -->|Displays| FastFetch
+    ProfileScript -->|Runs on| PowerShellCore
+    ProfileScript -->|Integrates with| WindowsTerminal
+    ProfileScript -->|Uses| Zoxide
+
+    ModuleSystem -->|Loads| TerminalIcons
+    ModuleSystem -->|Configures| PSReadLine
+    ModuleSystem -->|Integrates| PoshGit
+    ModuleSystem -->|Uses| CompletionPredictor
+
+    UpdateManager -->|Checks| GitHub
+    UpdateManager -->|Uses| Chocolatey
+    Chocolatey -->|Installs| ExternalTools
+
+    StarshipConfig -->|Customizes| Starship
+    FastFetchConfig -->|Customizes| FastFetch
+```
+
 ## Features
 
 This PowerShell profile script includes:
