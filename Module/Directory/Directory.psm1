@@ -291,6 +291,182 @@ Set-Alias -Name zi -Value __zoxide_zi -Option AllScope -Scope Global -Force
 
 <#
 .SYNOPSIS
+  Calculates the hash value of a file using the specified algorithm.
+
+.DESCRIPTION
+  This function calculates the hash value of a file using the specified algorithm. It supports various hash algorithms such as MD5, SHA1, SHA256, SHA384, SHA512, and more.
+
+.PARAMETER File
+  Specifies the path to the file for which the hash value should be calculated.
+
+.PARAMETER Algorithm
+  Specifies the hash algorithm to use for calculating the hash value.
+
+.OUTPUTS
+  The hash value of the file calculated using the specified algorithm.
+
+.EXAMPLE
+  Get-FileHash "file.txt" "SHA256"
+  Calculates the SHA256 hash value of the file "file.txt".
+
+.NOTES
+  This function is useful for quickly calculating the hash value of a file using different algorithms.
+#>
+function Get-FileHash {
+  [CmdletBinding()]
+  [Alias("fh")]
+  param (
+    [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [string]$Path,
+
+    [Parameter(Mandatory = $true, Position = 1, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [string]$Algorithm
+  )
+
+  try {
+    $hash = Get-FileHash -Path $Path -Algorithm $Algorithm -ErrorAction Stop
+    Write-Output $hash.Hash
+  }
+  catch {
+    Write-LogMessage -Message "Failed to calculate hash for path '$Path'." -Level "ERROR"
+  }
+}
+
+<#
+.SYNOPSIS
+  Determines the encoding of a file.
+
+.DESCRIPTION
+  This function determines the encoding of a file by analyzing its byte order mark (BOM) or by examining the file contents. It returns the name of the encoding used in the file.
+
+.PARAMETER Path
+  Specifies the path to the file for which the encoding should be determined.
+
+.OUTPUTS
+  The name of the encoding used in the file.
+
+.EXAMPLE
+  Get-FileEncoding "file.txt"
+  Determines the encoding of the file "file.txt" and returns the name of the encoding.
+
+.NOTES
+  This function is useful for quickly determining the encoding of a file.
+#>
+function Get-FileEncoding {
+  [CmdletBinding()]
+  [Alias("fe")]
+  param (
+    [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [string]$Path
+  )
+
+  try {
+    $encoding = Get-FileEncoding -Path $Path -ErrorAction Stop
+    Write-Output $encoding.EncodingName
+  }
+  catch {
+    Write-LogMessage -Message "Failed to determine encoding for file '$Path'." -Level "ERROR"
+  }
+}
+
+<#
+.SYNOPSIS
+  Reads the first few lines of a file.
+
+.DESCRIPTION
+  This function reads the first few lines of a file and outputs them to the pipeline. It is useful for quickly previewing the contents of a file.
+
+.PARAMETER Path
+  Specifies the path to the file to read.
+
+.PARAMETER Lines
+  Specifies the number of lines to read from the beginning of the file. The default value is 10.
+
+.OUTPUTS
+  The first few lines of the file.
+
+.EXAMPLE
+  Get-FileHead "file.txt"
+  Reads the first 10 lines of the file "file.txt" and outputs them.
+  Get-FileHead "file.txt" 5
+  Reads the first 5 lines of the file "file.txt" and outputs them.
+
+.NOTES
+  This function is useful for quickly previewing the contents of a file.
+#>
+function Get-FileHead {
+  [CmdletBinding()]
+  [Alias("head")]
+  param (
+    [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [string]$Path,
+
+    [Parameter(Mandatory = $false, Position = 1, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [int]$Lines = 10
+  )
+
+  try {
+    Get-Content -Path $Path -TotalCount $Lines -ErrorAction Stop
+  }
+  catch {
+    Write-LogMessage -Message "Failed to read the first $Lines lines of file '$Path'." -Level "ERROR"
+  }
+}
+
+<#
+.SYNOPSIS
+  Reads the last few lines of a file.
+
+.DESCRIPTION
+  This function reads the last few lines of a file and outputs them to the pipeline. It is useful for quickly previewing the end of a file or monitoring log files.
+
+.PARAMETER Path
+  Specifies the path to the file to read.
+
+.PARAMETER Lines
+  Specifies the number of lines to read from the end of the file. The default value is 10.
+
+.PARAMETER Wait
+  Indicates whether the function should wait for new lines to be added to the file. If specified, the function will continue to output new lines as they are added to the file.
+
+.OUTPUTS
+  The last few lines of the file.
+
+.EXAMPLE
+  Get-FileTail "file.txt"
+  Reads the last 10 lines of the file "file.txt" and outputs them.
+  Get-FileTail "file.txt" 5
+  Reads the last 5 lines of the file "file.txt" and outputs them.
+  Get-FileTail "log.txt" -Wait
+  Reads the last 10 lines of the file "log.txt" and continues to output new lines as they are added to the file.
+
+.NOTES
+  This function is useful for quickly previewing the end of a file or monitoring log files.
+#>
+function Get-FileTail {
+  [CmdletBinding()]
+  [Alias("tail")]
+  param (
+    [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [string]$Path,
+
+    [Parameter(Mandatory = $false, Position = 1, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [int]$Lines = 10,
+
+    [Parameter(Mandatory = $false, Position = 2, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [switch]$Wait = $false
+  )
+
+  try {
+    Get-Content -Path $Path -Tail $Lines -Wait:$Wait -ErrorAction Stop
+  }
+  catch {
+    Write-LogMessage -Message "Failed to read the last $Lines lines of file '$Path'." -Level "ERROR"
+  }
+}
+
+<#
+.SYNOPSIS
     Moves up one directory level.
 
 .DESCRIPTION

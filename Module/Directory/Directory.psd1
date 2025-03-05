@@ -12,6 +12,9 @@
     "Compress-Files",
     "Get-ContentMatching",
     "Set-ContentMatching",
+    "Get-FileHash",
+    "Get-FileHead",
+    "Get-FileTail",
     "Invoke-UpOneDirectoryLevel",
     "Invoke-UpTwoDirectoryLevels",
     "Invoke-UpThreeDirectoryLevels",
@@ -29,6 +32,9 @@
     "sed",
     "z",
     "zi",
+    "fh",
+    "head",
+    "tail",
     "cd.1",
     ".."
     "cd.2"

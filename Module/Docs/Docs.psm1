@@ -57,7 +57,23 @@ $($PSStyle.Foreground.Yellow)Module Directory$($PSStyle.Reset)
         Windows equivalent of the 'cd' command, z will print the matched directory before navigating to it.
 
     $($PSStyle.Foreground.Magenta)zi$($PSStyle.Reset)
-        Windows equivalent of the 'cd' command, but with interactive selection (using fzf)
+        Windows equivalent of the 'cd' command, but with interactive selection (using fzf).
+
+    $($PSStyle.Foreground.Green)Get-FileHash$($PSStyle.Reset) <Path> <Algorithm>
+    $($PSStyle.Foreground.Magenta)fh$($PSStyle.Reset) <Path> <Algorithm>
+        Gets the hash value of a file using a specified algorithm.
+
+    $($PSStyle.Foreground.Green)Get-FileEncoding$($PSStyle.Reset) <Path>
+    $($PSStyle.Foreground.Magenta)fe$($PSStyle.Reset) <Path>
+        Determines the encoding of a file.
+
+    $($PSStyle.Foreground.Green)Get-FileHead$($PSStyle.Reset) <Path> <Lines>
+    $($PSStyle.Foreground.Magenta)head$($PSStyle.Reset) <Path> <Lines>
+        Reads the first few lines of a file.
+
+    $($PSStyle.Foreground.Green)Get-FileTail$($PSStyle.Reset) <Path> <Lines>
+    $($PSStyle.Foreground.Magenta)tail$($PSStyle.Reset) <Path> <Lines>
+        Reads the last few lines of a file.
 
     $($PSStyle.Foreground.Green)Invoke-UpOneDirectoryLevel$($PSStyle.Reset)
     $($PSStyle.Foreground.Magenta)cd.1$($PSStyle.Reset)
@@ -115,6 +131,7 @@ $($PSStyle.Foreground.Yellow)Module Utility$($PSStyle.Reset)
         Gets the definition of a command.
 
     $($PSStyle.Foreground.Green)Set-EnvVar$($PSStyle.Reset) <Name> <Value>
+    $($PSStyle.Foreground.Magenta)export$($PSStyle.Reset)  <Name> <Value>
     $($PSStyle.Foreground.Magenta)set-env$($PSStyle.Reset)  <Name> <Value>
         Exports an environment variable.
 

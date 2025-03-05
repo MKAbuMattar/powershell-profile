@@ -48,6 +48,20 @@ The Directory module provides functions to navigate directories and manage files
   - Example: `grep -Pattern "pattern" -Path "file.txt"`
 - **Set-ContentMatching** (Alias: `sed`): Searches for a string in a file and replaces it with another string.
   - Example: `sed -file "file.txt" -find "pattern" -replace "replacement"`
+- **z**: Windows equivalent of the 'cd' command, z will print the matched directory before navigating to it.
+  - Example: `z ~/Documents`
+- **zi**: Windows equivalent of the 'cd' command, but with interactive selection (using fzf)
+  - Example: `zi ~/doc/my-pjet`
+- **Get-FileHash** (Alias: `hash`): Retrieves the hash value of a file.
+  - Example: `hash "file.txt"`
+- **Get-FileEncoding** (Alias: `encoding`): Retrieves the encoding of a file.
+  - Example: `encoding "file.txt"`
+- **Get-FilePermissions** (Alias: `perms`): Retrieves the permissions of a file.
+  - Example: `perms "file.txt"`
+- **Get-FileHead** (Alias: `head`): Retrieves the first few lines of a file.
+  - Example: `head "file.txt"`
+- **Get-FileTail** (Alias: `tail`): Retrieves the last few lines of a file.
+  - Example: `tail "file.txt"`
 - **Invoke-UpOneDirectoryLevel** (Aliases: `cd.1`, `..`): Moves up one directory level.
   - Example: `cd.1`
 - **Invoke-UpTwoDirectoryLevels** (Aliases: `cd.2`, `...`): Moves up two directory levels.

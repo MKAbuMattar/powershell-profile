@@ -32,6 +32,7 @@
     'uptime',
     'command-definition',
     'set-env',
+    "export",
     'get-env',
     'pall',
     'pgrep',

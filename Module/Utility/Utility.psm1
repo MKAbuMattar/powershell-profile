@@ -174,6 +174,7 @@ function Get-CommandDefinition {
 function Set-EnvVar {
   [CmdletBinding()]
   [Alias("set-env")]
+  [Alias("export")]
   param (
     [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
     [string]$Name,
