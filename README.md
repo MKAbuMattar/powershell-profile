@@ -118,7 +118,6 @@ This PowerShell profile script includes:
 - **FastFetch**: Runs FastFetch if available to quickly fetch and display system information.
 - **Directory Modules**: Imports directory modules for file management and navigation.
 - **Network Modules**: Imports network modules for network-related functions and aliases.
-<!-- - **Process Modules**: Imports process modules for process management and monitoring. -->
 - **Utility Modules**: Imports utility modules for additional functions and aliases.
 
 ## Directory Module
@@ -141,12 +140,6 @@ The Directory module provides functions to navigate directories and manage files
   - Example: `z ~/Documents`
 - **zi**: Windows equivalent of the 'cd' command, but with interactive selection (using fzf)
   - Example: `zi ~/doc/my-pjet`
-- **Get-FileHash** (Alias: `hash`): Retrieves the hash value of a file.
-  - Example: `hash "file.txt"`
-- **Get-FileEncoding** (Alias: `encoding`): Retrieves the encoding of a file.
-  - Example: `encoding "file.txt"`
-- **Get-FilePermissions** (Alias: `perms`): Retrieves the permissions of a file.
-  - Example: `perms "file.txt"`
 - **Get-FileHead** (Alias: `head`): Retrieves the first few lines of a file.
   - Example: `head "file.txt"`
 - **Get-FileTail** (Alias: `tail`): Retrieves the last few lines of a file.
