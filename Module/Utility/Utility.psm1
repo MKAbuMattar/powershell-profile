@@ -533,7 +533,7 @@ function Get-SystemInfo {
 .NOTES
   This function is useful for clearing various caches on the system to free up disk space and improve performance.
 #>
-function Clear-Cache {
+function Invoke-ClearCache {
   [CmdletBinding()]
   [Alias("clear-cache")]
   param (

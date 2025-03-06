@@ -164,11 +164,11 @@ $($PSStyle.Foreground.Yellow)Module Utility$($PSStyle.Reset)
     $($PSStyle.Foreground.Magenta)sysinfo$($PSStyle.Reset)
         Retrieves the system information.
 
-    $($PSStyle.Foreground.Green)Clear-Cache$($PSStyle.Reset) <Type>
+    $($PSStyle.Foreground.Green)Invoke-ClearCache$($PSStyle.Reset) <Type>
     $($PSStyle.Foreground.Magenta)clear-cache$($PSStyle.Reset) <Type>
         Clears windows cache, temp files, and internet explorer cache.
 
-    $($PSStyle.Foreground.Green)Clear-Cache$($PSStyle.Reset)
+    $($PSStyle.Foreground.Green)Get-RandomQuote$($PSStyle.Reset)
     $($PSStyle.Foreground.Magenta)quote$($PSStyle.Reset)
         Retrieves a random quote from an online API.
 

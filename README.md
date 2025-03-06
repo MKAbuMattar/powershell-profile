@@ -176,7 +176,7 @@ The Utility module provides a set of useful functions to enhance your PowerShell
   - Example: `uptime`
 - **Get-CommandDefinition** (Alias: `def`): Retrieves the definition of a command.
   - Example: `def "ls"`
-- **Set-EnvVar** (Alias: `set-env`): Exports an environment variable.
+- **Set-EnvVar** (Alias: `export`, `set-env`): Exports an environment variable.
   - Example: `set-env "name" "value"`
 - **Get-EnvVar** (Alias: `get-env`): Retrieves the value of an environment variable.
   - Example: `get-env "name"`
@@ -190,7 +190,7 @@ The Utility module provides a set of useful functions to enhance your PowerShell
   - Example: `pkill "process"`
 - **Get-SystemInfo** (Alias: `sysinfo`): Retrieves system information.
   - Example: `sysinfo`
-- **Clear-Cache** (Alias: `cache-clear`): Clears the cache of a specified application.
+- **Invoke-ClearCache** (Alias: `cache-clear`): Clears the cache of a specified application.
   - Example: `cache-clear "All"`
 - **Stop-ProcessByPort** (Alias: `portkill`): Terminates a process by port.
   - Example: `portkill 80`

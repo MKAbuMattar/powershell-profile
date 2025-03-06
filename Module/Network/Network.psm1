@@ -38,7 +38,7 @@ function Get-MyIPAddress {
   [Alias("my-ip")]
   param (
     [Parameter(Mandatory = $false, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
-    [switch]$Local = $false,
+    [switch]$Local = $true,
 
     [Parameter(Mandatory = $false, Position = 1, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
     [switch]$IPv4 = $false,
@@ -49,8 +49,6 @@ function Get-MyIPAddress {
     [Parameter(Mandatory = $false, Position = 3, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
     [string]$ComputerName = $env:COMPUTERNAME
   )
-
-  $IPAddress = @()
 
   try {
     if ($Local) {
