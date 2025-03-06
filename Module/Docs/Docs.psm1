@@ -59,14 +59,6 @@ $($PSStyle.Foreground.Yellow)Directory Module$($PSStyle.Reset)
     $($PSStyle.Foreground.Magenta)zi$($PSStyle.Reset) <Path>
         Windows equivalent of the 'cd' command, but with interactive selection (using fzf).
 
-    $($PSStyle.Foreground.Green)Get-FileHash$($PSStyle.Reset) <Path> <Algorithm>
-    $($PSStyle.Foreground.Magenta)fh$($PSStyle.Reset) <Path> <Algorithm>
-        Gets the hash value of a file using a specified algorithm.
-
-    $($PSStyle.Foreground.Green)Get-FileEncoding$($PSStyle.Reset) <Path>
-    $($PSStyle.Foreground.Magenta)fe$($PSStyle.Reset) <Path>
-        Determines the encoding of a file.
-
     $($PSStyle.Foreground.Green)Get-FileHead$($PSStyle.Reset) <Path> <Lines>
     $($PSStyle.Foreground.Magenta)head$($PSStyle.Reset) <Path> <Lines>
         Reads the first few lines of a file.
