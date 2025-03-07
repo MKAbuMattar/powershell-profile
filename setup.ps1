@@ -274,8 +274,12 @@ function Copy-ModuleDirectory {
       }
 
       if (Test-Path -Path $localFilePath) {
-        Remove-Item -Path $localFilePath -Force
-        Write-LogMessage -Message "Removed existing file: $localFilePath"
+        $tmpDir = "$HOME\.tmp"
+        if (-not (Test-Path -Path $tmpDir)) {
+          New-Item -Path $tmpDir -ItemType Directory -Force
+        }
+        Get-Item -Path $localFilePath | Move-Item -Destination "$tmpDir\$($file -replace '/', '_').old" -Force
+        Write-LogMessage -Message "Backed up existing file: $localFilePath to $tmpDir\$($file -replace '/', '_').old"
       }
 
       Invoke-WebRequest -Uri $fileUrl -OutFile $localFilePath
@@ -325,13 +329,17 @@ function Initialize-PowerShellProfile {
 
       Invoke-RestMethod https://github.com/MKAbuMattar/powershell-profile/raw/main/Microsoft.PowerShell_profile.ps1 -OutFile $PROFILE
       Write-LogMessage -Message "The profile @ [$PROFILE] has been created."
-      Write-LogMessage -Message "If you want to add any persistent components, please do so at [$profilePath\Profile.ps1] as there is an updater in the installed profile which uses the hash to update the profile and will lead to loss of changes."
+      Write-LogMessage -Message "If you want to add any persistent components, please do so at [$profilePath\Microsoft.PowerShell_profile.ps1] as there is an updater in the installed profile which uses the hash to update the profile and will lead to loss of changes."
     }
     else {
-      Get-Item -Path $PROFILE | Move-Item -Destination "oldprofile.ps1" -Force
+      $tmpDir = "$HOME\.tmp"
+      if (-not (Test-Path -Path $tmpDir)) {
+        New-Item -Path $tmpDir -ItemType Directory -Force
+      }
+      Get-Item -Path $PROFILE | Move-Item -Destination "$tmpDir\Microsoft.PowerShell_profile.ps1.old" -Force
       Invoke-RestMethod https://github.com/MKAbuMattar/powershell-profile/raw/main/Microsoft.PowerShell_profile.ps1 -OutFile $PROFILE
-      Write-LogMessage -Message "The profile @ [$PROFILE] has been created and old profile removed."
-      Write-LogMessage -Message "Please back up any persistent components of your old profile to [$HOME\Documents\PowerShell\Profile.ps1] as there is an updater in the installed profile which uses the hash to update the profile and will lead to loss of changes."
+      Write-LogMessage -Message "The profile @ [$PROFILE] has been created and old profile moved to $tmpDir\Microsoft.PowerShell_profile.ps1.old."
+      Write-LogMessage -Message "Please back up any persistent components of your old profile to [$HOME\Documents\PowerShell\Microsoft.PowerShell_profile.ps1] as there is an updater in the installed profile which uses the hash to update the profile and will lead to loss of changes."
     }
   }
   catch {
@@ -364,24 +372,30 @@ function Initialize-StarshipConfig {
 
   try {
     $configDir = "$ENV:USERPROFILE\.config"
-    if (!(Test-Path -Path $configDir -PathType Container)) {
-      New-Item -Path $configDir -ItemType Directory
-      Write-LogMessage -Message "Created directory: $configDir"
-    }
-
-    $starshipTomlUrl = "https://github.com/MKAbuMattar/powershell-profile/raw/main/.config/starship.toml"
     $starshipTomlPath = Join-Path -Path $configDir -ChildPath "starship.toml"
 
-    if (!(Test-Path -Path $starshipTomlPath)) {
-      Invoke-WebRequest -Uri $starshipTomlUrl -OutFile $starshipTomlPath
-      Write-LogMessage -Message "Copied starship.toml to: $starshipTomlPath"
+    if (!(Test-Path -Path $starshipTomlPath -PathType Leaf)) {
+      if (!(Test-Path -Path $configDir)) {
+        New-Item -Path $configDir -ItemType "directory"
+      }
+
+      Invoke-RestMethod https://github.com/MKAbuMattar/powershell-profile/raw/main/.config/starship.toml -OutFile $starshipTomlPath
+      Write-LogMessage -Message "The starship.toml @ [$starshipTomlPath] has been created."
+      Write-LogMessage -Message "If you want to add any persistent components, please do so at [$configDir\starship.toml] as there is an updater in the installed profile which uses the hash to update the profile and will lead to loss of changes."
     }
     else {
-      Write-LogMessage -Message "starship.toml already exists in: $configDir"
+      $tmpDir = "$HOME\.tmp"
+      if (-not (Test-Path -Path $tmpDir)) {
+        New-Item -Path $tmpDir -ItemType Directory -Force
+      }
+      Get-Item -Path $starshipTomlPath | Move-Item -Destination "$tmpDir\starship.toml.old" -Force
+      Invoke-RestMethod https://github.com/MKAbuMattar/powershell-profile/raw/main/.config/starship.toml -OutFile $starshipTomlPath
+      Write-LogMessage -Message "The starship.toml @ [$starshipTomlPath] has been created and old starship.toml moved to $tmpDir\starship.toml.old."
+      Write-LogMessage -Message "Please back up any persistent components of your old starship.toml to [$configDir\starship.toml] as there is an updater in the installed profile which uses the hash to update the profile and will lead to loss of changes."
     }
   }
   catch {
-    Invoke-ErrorHandling -ErrorMessage "Failed to create ~/.config directory or copy starship.toml." -ErrorRecord $_
+    Invoke-ErrorHandling -ErrorMessage "Failed to create or update the starship.toml." -ErrorRecord $_
   }
 }
 
@@ -410,30 +424,35 @@ function Initialize-FastFetchConfig {
 
   try {
     $configDir = "$ENV:USERPROFILE\.config"
-    if (!(Test-Path -Path $configDir -PathType Container)) {
-      New-Item -Path $configDir -ItemType Directory
-      Write-LogMessage -Message "Created directory: $configDir"
-    }
-
     $configPath = Join-Path -Path $configDir -ChildPath "fastfetch"
-    if (!(Test-Path -Path $configPath -PathType Container)) {
-      New-Item -Path $configPath -ItemType Directory
-      Write-LogMessage -Message "Created directory: $configPath"
-    }
-
-    $fastfetchConfigUrl = "https://github.com/MKAbuMattar/powershell-profile/raw/main/.config/fastfetch/config.jsonc"
     $fastfetchConfigPath = Join-Path -Path $configPath -ChildPath "config.jsonc"
 
-    if (!(Test-Path -Path $fastfetchConfigPath)) {
-      Invoke-WebRequest -Uri $fastfetchConfigUrl -OutFile $fastfetchConfigPath
-      Write-LogMessage -Message "Copied config.jsonc to: $fastfetchConfigPath"
+    if (!(Test-Path -Path $fastfetchConfigPath -PathType Leaf)) {
+      if (!(Test-Path -Path $configDir)) {
+        New-Item -Path $configDir -ItemType "directory"
+      }
+
+      if (!(Test-Path -Path $configPath)) {
+        New-Item -Path $configPath -ItemType "directory"
+      }
+
+      Invoke-RestMethod https://github.com/MKAbuMattar/powershell-profile/raw/main/.config/fastfetch/config.jsonc -OutFile $fastfetchConfigPath
+      Write-LogMessage -Message "The config.jsonc @ [$fastfetchConfigPath] has been created."
+      Write-LogMessage -Message "If you want to add any persistent components, please do so at [$configPath\config.jsonc] as there is an updater in the installed profile which uses the hash to update the profile and will lead to loss of changes."
     }
     else {
-      Write-LogMessage -Message "config.jsonc already exists in: $configPath"
+      $tmpDir = "$HOME\.tmp"
+      if (-not (Test-Path -Path $tmpDir)) {
+        New-Item -Path $tmpDir -ItemType Directory -Force
+      }
+      Get-Item -Path $fastfetchConfigPath | Move-Item -Destination "$tmpDir\config.jsonc.old" -Force
+      Invoke-RestMethod https://github.com/MKAbuMattar/powershell-profile/raw/main/.config/fastfetch/config.jsonc -OutFile $fastfetchConfigPath
+      Write-LogMessage -Message "The config.jsonc @ [$fastfetchConfigPath] has been created and old config.jsonc moved to $tmpDir\config.jsonc.old."
+      Write-LogMessage -Message "Please back up any persistent components of your old config.jsonc to [$configPath\config.jsonc] as there is an updater in the installed profile which uses the hash to update the profile and will lead to loss of changes."
     }
   }
   catch {
-    Invoke-ErrorHandling -ErrorMessage "Failed to create ~/.config/fastfetch directory or copy config.jsonc." -ErrorRecord $_
+    Invoke-ErrorHandling -ErrorMessage "Failed to create or update the config.jsonc." -ErrorRecord $_
   }
 }
 
@@ -462,30 +481,35 @@ function Initialize-FigletConfig {
 
   try {
     $configDir = "$ENV:USERPROFILE\.config"
-    if (!(Test-Path -Path $configDir -PathType Container)) {
-      New-Item -Path $configDir -ItemType Directory
-      Write-LogMessage -Message "Created directory: $configDir"
-    }
-
     $configPath = Join-Path -Path $configDir -ChildPath ".figlet"
-    if (!(Test-Path -Path $configPath -PathType Container)) {
-      New-Item -Path $configPath -ItemType Directory
-      Write-LogMessage -Message "Created directory: $configPath"
-    }
-
-    $figletConfigUrl = "https://github.com/MKAbuMattar/powershell-profile/raw/main/.config/.figlet/ANSI_Shadow.flf"
     $figletConfigPath = Join-Path -Path $configPath -ChildPath "ANSI_Shadow.flf"
 
-    if (!(Test-Path -Path $figletConfigPath)) {
-      Invoke-WebRequest -Uri $figletConfigUrl -OutFile $figletConfigPath
-      Write-LogMessage -Message "Copied ANSI_Shadow.flf to: $figletConfigPath"
+    if (!(Test-Path -Path $figletConfigPath -PathType Leaf)) {
+      if (!(Test-Path -Path $configDir)) {
+        New-Item -Path $configDir -ItemType "directory"
+      }
+
+      if (!(Test-Path -Path $configPath)) {
+        New-Item -Path $configPath -ItemType "directory"
+      }
+
+      Invoke-RestMethod https://github.com/MKAbuMattar/powershell-profile/raw/main/.config/.figlet/ANSI_Shadow.flf -OutFile $figletConfigPath
+      Write-LogMessage -Message "The ANSI_Shadow.flf @ [$figletConfigPath] has been created."
+      Write-LogMessage -Message "If you want to add any persistent components, please do so at [$configPath\ANSI_Shadow.flf] as there is an updater in the installed profile which uses the hash to update the profile and will lead to loss of changes."
     }
     else {
-      Write-LogMessage -Message "ANSI_Shadow.flf already exists in: $configPath"
+      $tmpDir = "$HOME\.tmp"
+      if (-not (Test-Path -Path $tmpDir)) {
+        New-Item -Path $tmpDir -ItemType Directory -Force
+      }
+      Get-Item -Path $figletConfigPath | Move-Item -Destination "$tmpDir\ANSI_Shadow.flf.old" -Force
+      Invoke-RestMethod https://github.com/MKAbuMattar/powershell-profile/raw/main/.config/.figlet/ANSI_Shadow.flf -OutFile $figletConfigPath
+      Write-LogMessage -Message "The ANSI_Shadow.flf @ [$figletConfigPath] has been created and old ANSI_Shadow.flf moved to $tmpDir\ANSI_Shadow.flf.old."
+      Write-LogMessage -Message "Please back up any persistent components of your old ANSI_Shadow.flf to [$configPath\ANSI_Shadow.flf] as there is an updater in the installed profile which uses the hash to update the profile and will lead to loss of changes."
     }
   }
   catch {
-    Invoke-ErrorHandling -ErrorMessage "Failed to create ~/.config/.figlet directory or copy ANSI_Shadow.flf." -ErrorRecord $_
+    Invoke-ErrorHandling -ErrorMessage "Failed to create or update the ANSI_Shadow.flf." -ErrorRecord $_
   }
 }
 
@@ -511,6 +535,8 @@ function Initialize-FigletConfig {
 .EXAMPLE
   Install-CascadiaCodeFont
   Installs the Cascadia Code font with the default parameters.
+
+.EXAMPLE
   Install-CascadiaCodeFont -FontName "CascadiaCode" -FontDisplayName "CaskaydiaCove NF" -Version "3.2.1"
   Installs the Cascadia Code font with the specified parameters.
 
@@ -786,22 +812,29 @@ function Initialize-WindowsTerminalConfig {
   )
 
   try {
-    $destinationDir = Split-Path -Path $DestinationPath -Parent
-    if (-not (Test-Path -Path $destinationDir)) {
-      New-Item -Path $destinationDir -ItemType Directory -Force
-      Write-LogMessage -Message "Created directory: $destinationDir"
-    }
+    if (!(Test-Path -Path $DestinationPath -PathType Leaf)) {
+      $destinationDir = Split-Path -Path $DestinationPath -Parent
+      if (!(Test-Path -Path $destinationDir)) {
+        New-Item -Path $destinationDir -ItemType "directory"
+      }
 
-    if (Test-Path -Path $DestinationPath) {
-      Remove-Item -Path $DestinationPath -Force
-      Write-LogMessage -Message "Removed existing file: $DestinationPath"
+      Invoke-RestMethod $SourceUrl -OutFile $DestinationPath
+      Write-LogMessage -Message "The settings.json @ [$DestinationPath] has been created."
+      Write-LogMessage -Message "If you want to add any persistent components, please do so at [$destinationDir\settings.json] as there is an updater in the installed profile which uses the hash to update the profile and will lead to loss of changes."
     }
-
-    Invoke-WebRequest -Uri $SourceUrl -OutFile $DestinationPath
-    Write-LogMessage -Message "Copied settings.json to: $DestinationPath"
+    else {
+      $tmpDir = "$HOME\.tmp"
+      if (-not (Test-Path -Path $tmpDir)) {
+        New-Item -Path $tmpDir -ItemType Directory -Force
+      }
+      Get-Item -Path $DestinationPath | Move-Item -Destination "$tmpDir\settings.json.old" -Force
+      Invoke-RestMethod $SourceUrl -OutFile $DestinationPath
+      Write-LogMessage -Message "The settings.json @ [$DestinationPath] has been created and old settings.json moved to $tmpDir\settings.json.old."
+      Write-LogMessage -Message "Please back up any persistent components of your old settings.json to [$destinationDir\settings.json] as there is an updater in the installed profile which uses the hash to update the profile and will lead to loss of changes."
+    }
   }
   catch {
-    Invoke-ErrorHandling -ErrorMessage "Failed to download or save settings.json." -ErrorRecord $_
+    Invoke-ErrorHandling -ErrorMessage "Failed to create or update the settings.json." -ErrorRecord $_
   }
 }
 
