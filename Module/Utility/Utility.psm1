@@ -8,21 +8,28 @@
 .PARAMETER Command
   Specifies the command to check for existence.
 
+.INPUTS
+  Command: (Required) The command to check for existence.
+
 .OUTPUTS
   $exists: True if the command exists, false otherwise.
+
+.NOTES
+  This function is useful for verifying the availability of commands in the current environment.
 
 .EXAMPLE
   Test-CommandExists "ls"
   Checks if the "ls" command exists in the current environment.
 
-.NOTES
-  This function is useful for verifying the availability of commands in the current environment.
+.LINK
+  https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
 #>
 function Test-CommandExists {
   [CmdletBinding()]
   [Alias("command-exists")]
   param (
     [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [Alias("c")]
     [string]$Command
   )
 
@@ -40,15 +47,21 @@ function Test-CommandExists {
 .PARAMETER None
   This function does not accept any parameters.
 
+.INPUTS
+  This function does not accept any input.
+
 .OUTPUTS
   This function does not return any output.
+
+.NOTES
+  This function is useful for quickly reloading the PowerShell profile to apply changes without restarting the shell.
 
 .EXAMPLE
   Invoke-ProfileReload
   Reloads the PowerShell profile.
 
-.NOTES
-  This function is useful for quickly reloading the PowerShell profile to apply changes without restarting the shell.
+.LINK
+  https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
 #>
 function Invoke-ReloadProfile {
   [CmdletBinding()]
@@ -76,15 +89,21 @@ function Invoke-ReloadProfile {
 .PARAMETER None
   This function does not accept any parameters.
 
+.INPUTS
+  This function does not accept any input.
+
 .OUTPUTS
   The system uptime in a human-readable format.
+
+.NOTES
+  This function is useful for checking how long the system has been running since the last boot.
 
 .EXAMPLE
   Get-Uptime
   Retrieves the system uptime.
 
-.NOTES
-  This function is useful for checking how long the system has been running since the last boot.
+.LINK
+  https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
 #>
 function Get-Uptime {
   [CmdletBinding()]
@@ -155,21 +174,28 @@ function Get-Uptime {
 .PARAMETER Name
   Specifies the name of the command to retrieve the definition for.
 
+.INPUTS
+  Name: (Required) The name of the command to retrieve the definition for.
+
 .OUTPUTS
   The definition of the specified command.
+
+.NOTES
+  This function is useful for quickly retrieving the definition of a command.
 
 .EXAMPLE
   Get-CommandDefinition "ls"
   Retrieves the definition of the "ls" command.
 
-.NOTES
-  This function is useful for quickly retrieving the definition of a command.
+.LINK
+  https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
 #>
 function Get-CommandDefinition {
   [CmdletBinding()]
   [Alias("def")]
   param (
     [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [Alias("n")]
     [string]$Name
   )
 
@@ -200,15 +226,22 @@ function Get-CommandDefinition {
 .PARAMETER Value
   Specifies the value of the environment variable.
 
+.INPUTS
+  Name: (Required) The name of the environment variable to export.
+  Value: (Required) The value of the environment variable to export.
+
 .OUTPUTS
   This function does not return any output.
+
+.NOTES
+  This function is useful for exporting environment variables within a PowerShell session.
 
 .EXAMPLE
   Set-EnvVar "name" "value"
   Exports an environment variable named "name" with the value "value".
 
-.NOTES
-  This function is useful for exporting environment variables within a PowerShell session.
+.LINK
+  https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
 #>
 function Set-EnvVar {
   [CmdletBinding()]
@@ -216,9 +249,11 @@ function Set-EnvVar {
   [Alias("export")]
   param (
     [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [Alias("n")]
     [string]$Name,
 
     [Parameter(Mandatory = $true, Position = 1, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [Alias("v")]
     [string]$Value
   )
 
@@ -240,21 +275,28 @@ function Set-EnvVar {
 .PARAMETER Name
   Specifies the name of the environment variable to retrieve the value for.
 
+.INPUTS
+  Name: (Required) The name of the environment variable to retrieve the value for.
+
 .OUTPUTS
   The value of the specified environment variable.
+
+.NOTES
+  This function is useful for retrieving the value of environment variables within a PowerShell session.
 
 .EXAMPLE
   Get-EnvVar "name"
   Retrieves the value of the environment variable named "name".
 
-.NOTES
-  This function is useful for retrieving the value of environment variables within a PowerShell session.
+.LINK
+  https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
 #>
 function Get-EnvVar {
   [CmdletBinding()]
   [Alias("get-env")]
   param (
     [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [Alias("n")]
     [string]$Name
   )
 
@@ -282,21 +324,28 @@ function Get-EnvVar {
 .PARAMETER Name
   Specifies the name of a specific process to retrieve information for. If not provided, information for all processes is retrieved.
 
+.INPUTS
+  Name: (Optional) The name of a specific process to retrieve information for.
+
 .OUTPUTS
   The process information for all running processes.
+
+.NOTES
+  This function is useful for retrieving information about running processes on the system.
 
 .EXAMPLE
   Get-AllProcesses
   Retrieves information about all running processes.
 
-.NOTES
-  This function is useful for retrieving information about running processes on the system.
+.LINK
+  https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
 #>
 function Get-AllProcesses {
   [CmdletBinding()]
   [Alias("pall")]
   param (
     [Parameter(Mandatory = $false, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [Alias("n")]
     [string]$Name
   )
 
@@ -323,21 +372,28 @@ function Get-AllProcesses {
 .PARAMETER Name
   Specifies the name of the process to find.
 
+.INPUTS
+  Name: (Required) The name of the process to find.
+
 .OUTPUTS
   The process information if found.
+
+.NOTES
+  This function is useful for quickly finding information about a process by its name.
 
 .EXAMPLE
   Get-ProcessByName "process"
   Retrieves information about the process named "process".
 
-.NOTES
-  This function is useful for quickly finding information about a process by its name.
+.LINK
+  https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
 #>
 function Get-ProcessByName {
   [CmdletBinding()]
   [Alias("pgrep")]
   param (
     [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [Alias("n")]
     [string]$Name
   )
 
@@ -359,21 +415,28 @@ function Get-ProcessByName {
 .PARAMETER Port
   Specifies the port number to search for.
 
+.INPUTS
+  Port: (Required) The port number to search for.
+
 .OUTPUTS
   The process information if found.
+
+.NOTES
+  This function is useful for quickly finding information about a process using a specific port.
 
 .EXAMPLE
   Get-ProcessByPort 80
   Retrieves information about the process using port 80.
 
-.NOTES
-  This function is useful for quickly finding information about a process using a specific port.
+.LINK
+  https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
 #>
 function Get-ProcessByPort {
   [CmdletBinding()]
   [Alias("portgrep")]
   param (
     [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [Alias("p")]
     [int]$Port
   )
 
@@ -395,21 +458,28 @@ function Get-ProcessByPort {
 .PARAMETER Name
   Specifies the name of the process to terminate.
 
+.INPUTS
+  Name: (Required) The name of the process to terminate.
+
 .OUTPUTS
   This function does not return any output.
+
+.NOTES
+  This function is useful for quickly terminating a process by its name.
 
 .EXAMPLE
   Stop-ProcessByName "process"
   Terminates the process named "process".
 
-.NOTES
-  This function is useful for quickly terminating a process by its name.
+.LINK
+  https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
 #>
 function Stop-ProcessByName {
   [CmdletBinding()]
   [Alias("pkill")]
   param (
     [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [Alias("n")]
     [string]$Name
   )
 
@@ -432,21 +502,28 @@ function Stop-ProcessByName {
 .PARAMETER Port
   Specifies the port number of the process to terminate.
 
+.INPUTS
+  Port: (Required) The port number of the process to terminate.
+
 .OUTPUTS
   This function does not return any output.
+
+.NOTES
+  This function is useful for quickly terminating a process using a specific port.
 
 .EXAMPLE
   Stop-ProcessByPort 80
   Terminates the process using port 80.
 
-.NOTES
-  This function is useful for quickly terminating a process using a specific port.
+.LINK
+  https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
 #>
 function Stop-ProcessByPort {
   [CmdletBinding()]
   [Alias("portkill")]
   param (
     [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [Alias("p")]
     [int]$Port
   )
 
@@ -469,15 +546,21 @@ function Stop-ProcessByPort {
 .PARAMETER None
   This function does not accept any parameters.
 
+.INPUTS
+  This function does not accept any input.
+
 .OUTPUTS
   The system information.
+
+.NOTES
+  This function is useful for quickly retrieving information about the system.
 
 .EXAMPLE
   Get-SystemInfo
   Retrieves information about the system.
 
-.NOTES
-  This function is useful for quickly retrieving information about the system.
+.LINK
+  https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
 #>
 function Get-SystemInfo {
   [CmdletBinding()]
@@ -515,29 +598,45 @@ function Get-SystemInfo {
 .PARAMETER Type
   Specifies the type of cache to clear. The available options are "All", "Prefetch", "WindowsTemp", "UserTemp", and "IECache". The default value is "All".
 
+.INPUTS
+  Type: (Optional) The type of cache to clear. The default value is "All".
+
 .OUTPUTS
   This function does not return any output.
+
+.NOTES
+  This function is useful for clearing various caches on the system to free up disk space and improve performance.
 
 .EXAMPLE
   Clear-Cache
   Clears all caches (Windows Prefetch, Windows Temp, User Temp, and Internet Explorer Cache).
+
+.EXAMPLE
   Clear-Cache -Type "Prefetch"
   Clears the Windows Prefetch cache.
+
+.EXAMPLE
   Clear-Cache -Type "WindowsTemp"
   Clears the Windows Temp cache.
+
+.EXAMPLE
   Clear-Cache -Type "UserTemp"
   Clears the User Temp cache.
+
+.EXAMPLE
   Clear-Cache -Type "IECache"
   Clears the Internet Explorer Cache.
 
-.NOTES
-  This function is useful for clearing various caches on the system to free up disk space and improve performance.
+.LINK
+  https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
 #>
 function Invoke-ClearCache {
   [CmdletBinding()]
   [Alias("clear-cache")]
   param (
     [Parameter(Mandatory = $false, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [ValidateSet("All", "Prefetch", "WindowsTemp", "UserTemp", "IECache")]
+    [Alias("c")]
     [string]$Type = "All"
   )
 
@@ -582,33 +681,37 @@ function Invoke-ClearCache {
   Retrieves a random quote from an online API.
 
 .DESCRIPTION
-  This function retrieves a random quote from the specified API URL. It returns the quote content and author. If the API request fails, it logs an error message.
+  This function retrieves a random quote from an online API. It returns the quote content and author.
 
-.PARAMETER ApiUrl
-  Specifies the URL of the API to retrieve the random quote from. The default value is "http://api.quotable.io/random".
+.PARAMETER None
+  This function does not accept any parameters.
+
+.INPUTS
+  This function does not accept any input.
 
 .OUTPUTS
   The random quote content and author.
 
+.NOTES
+  This function is useful for displaying random quotes in the PowerShell console.
+
 .EXAMPLE
   Get-RandomQuote
   Retrieves a random quote from the default API URL.
-  Get-RandomQuote -ApiUrl "http://example.com/api/random"
-  Retrieves a random quote from the specified API URL.
 
-.NOTES
-  This function is useful for retrieving random quotes from an online API.
+.LINK
+  https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
 #>
 function Get-RandomQuote {
   [CmdletBinding()]
   [Alias("quote")]
   param (
-    [Parameter(Mandatory = $false, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
-    [string]$ApiUrl = "http://api.quotable.io/random"
+    # This function does not accept any parameters
   )
+  $url = "http://api.quotable.io/random"
 
   try {
-    $response = Invoke-RestMethod -Uri $ApiUrl -Method Get -SkipCertificateCheck
+    $response = Invoke-RestMethod -Uri $url -Method Get -SkipCertificateCheck
 
     if ($response) {
       Write-Output "`"$($response.content)`""
@@ -645,35 +748,60 @@ function Get-RandomQuote {
 .PARAMETER Lang
   Specifies the language for the weather forecast. The default language is "en".
 
+.INPUTS
+  Location: (Optional) The location to retrieve the weather forecast for. If not provided, the default location is used.
+  Glyphs: (Optional) Indicates whether to display weather glyphs in the forecast. The default value is $true.
+  Moon: (Optional) Indicates whether to display moon phases in the forecast. The default value is $false.
+  Format: (Optional) A custom format for the weather forecast. The default format is used if not provided.
+  Lang: (Optional) The language for the weather forecast. The default language is "en".
+
 .OUTPUTS
   The weather forecast in ASCII art format.
+
+.NOTES
+  This function is useful for retrieving the weather forecast in ASCII art format for a specified location.
 
 .EXAMPLE
   Get-WeatherForecast -Location "Amman"
   Retrieves the weather forecast for Amman.
+
+.EXAMPLE
   Get-WeatherForecast -Location "New York" -Glyphs $false
   Retrieves the weather forecast for New York without weather glyphs.
 
-.NOTES
-  This function is useful for retrieving the weather forecast in ASCII art format for a specified location.
+.EXAMPLE
+  Get-WeatherForecast -Moon
+  Retrieves the moon phase forecast.
+
+.EXAMPLE
+  Get-WeatherForecast -Location "Paris" -Format "3"
+  Retrieves the weather forecast for Paris with a custom format.
+
+.LINK
+  https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
 #>
 function Get-WeatherForecast {
   [CmdletBinding()]
   [Alias("weather")]
   param (
     [Parameter(Mandatory = $false, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [Alias("l")]
     [string]$Location = $null,
 
     [Parameter(Mandatory = $false, Position = 1, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
-    [bool]$Glyphs = $true,
+    [Alias("g")]
+    [switch]$Glyphs = $true,
 
     [Parameter(Mandatory = $false, Position = 2, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
-    [bool]$Moon = $false,
+    [Alias("m")]
+    [switch]$Moon = $false,
 
     [Parameter(Mandatory = $false, Position = 3, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [Alias("f")]
     [string]$Format = $null,
 
     [Parameter(Mandatory = $false, Position = 4, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [ValidateSet("en", "ar", "de", "es", "fr", "it", "nl", "pl", "pt", "ro", "ru", "tr")]
     [string]$Lang = "en"
   )
 
@@ -714,20 +842,27 @@ function Get-WeatherForecast {
 .PARAMETER FontPath
   Specifies the path to the FIGlet font file to read.
 
+.INPUTS
+  FontPath: (Required) The path to the FIGlet font file to read.
+
 .OUTPUTS
   The font data extracted from the FIGlet font file.
+
+.NOTES
+  This function is useful for reading FIGlet font files to extract font data for ASCII art conversion.
 
 .EXAMPLE
   Read-FigletFont -FontPath "font.flf"
   Reads the contents of the FIGlet font file "font.flf" and extracts the font data.
 
-.NOTES
-  This function is useful for reading FIGlet font files to extract font data for ASCII art conversion.
+.LINK
+  https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
 #>
 function Read-FigletFont {
   [CmdletBinding()]
   param (
     [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [Alias("f")]
     [string]$FontPath
   )
 
@@ -778,23 +913,32 @@ function Read-FigletFont {
 .PARAMETER Font
   Specifies the FIGlet font data extracted from a font file.
 
+.INPUTS
+  Text: (Required) The text to convert to ASCII art.
+  Font: (Required) The FIGlet font data extracted from a font file.
+
 .OUTPUTS
   The ASCII art representation of the text using the specified font.
+
+.NOTES
+  This function is useful for converting text to ASCII art using FIGlet fonts.
 
 .EXAMPLE
   Convert-TextToAscii -Text "Hello" -Font $fontData
   Converts the text "Hello" to ASCII art using the specified font data.
 
-.NOTES
-  This function is useful for converting text to ASCII art using FIGlet fonts.
+.LINK
+  https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
 #>
 function Convert-TextToAscii {
   [CmdletBinding()]
   param (
     [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [Alias("t")]
     [string]$Text,
 
     [Parameter(Mandatory = $true, Position = 1, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [Alias("f")]
     [hashtable]$Font
   )
 
@@ -830,20 +974,27 @@ function Convert-TextToAscii {
 .PARAMETER TimeString
   Specifies the time string to parse.
 
+.INPUTS
+  TimeString: (Required) The time string to parse. The time string should be in the format "HH:mm" or "HH:mmAM/PM".
+
 .OUTPUTS
   The DateTime object representing the parsed time.
+
+.NOTES
+  This function is useful for parsing time strings into DateTime objects.
 
 .EXAMPLE
   Get-ParseTime -TimeString "12:30PM"
   Parses the time string "12:30PM" into a DateTime object.
 
-.NOTES
-  This function is useful for parsing time strings into DateTime objects.
+.LINK
+  https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
 #>
 function Get-ParseTime {
   [CmdletBinding()]
   param (
     [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [Alias("t")]
     [string]$TimeString
   )
   try {
@@ -877,35 +1028,54 @@ function Get-ParseTime {
 .PARAMETER Title
   Specifies the title to display above the countdown timer.
 
+.INPUTS
+  Duration: (Required) The duration of the countdown in seconds or in the format "HH:mm" or "HH:mmAM/PM".
+  CountUp: (Optional) Indicates whether the countdown should count up instead of down. The default value is $false.
+  Title: (Optional) The title to display above the countdown timer. The default value is an empty string.
+
 .OUTPUTS
   This function does not return any output.
+
+.NOTES
+  This function is useful for starting countdown timers with a visual display.
 
 .EXAMPLE
   Start-Countdown -Duration "25s" -Title "Break Time"
   Starts a 25-second countdown with the title "Break Time".
+
+.EXAMPLE
   Start-Countdown -Duration "5m" -Title "Meeting"
   Starts a 5-minute countdown with the title "Meeting".
+
+.EXAMPLE
   Start-Countdown -Duration "1h" -Title "Workout"
   Starts a 1-hour countdown with the title "Workout".
+
+.EXAMPLE
   Start-Countdown -Duration "02:15PM" -Title "Lunch Time"
   Starts a countdown until 2:15 PM with the title "Lunch Time".
+
+.EXAMPLE
   Start-Countdown -Duration "02:15PM" -Title "Lunch Time" -CountUp
   Starts a count-up timer from 00:00:00 until 2:15 PM with the title "Lunch Time".
 
-.NOTES
-  This function is useful for starting countdown timers with a visual display.
+.LINK
+  https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
 #>
 function Start-Countdown {
   [CmdletBinding()]
   [Alias("countdown")]
   param (
     [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [Alias("d")]
     [string]$Duration,
 
     [Parameter(Mandatory = $false, Position = 1, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [Alias("u")]
     [switch]$CountUp = $false,
 
     [Parameter(Mandatory = $false, Position = 2, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [Alias("t")]
     [string]$Title = ""
   )
 
@@ -989,21 +1159,32 @@ function Start-Countdown {
 .PARAMETER Title
   Specifies the title to display above the stopwatch.
 
+.INPUTS
+  Title: (Optional) The title to display above the stopwatch. The default value is an empty string.
+
 .OUTPUTS
   This function does not return any output.
 
-.EXAMPLE
-  Start-Stopwatch -Title "Workout Timer"
-  Starts a stopwatch with the title "Workout Timer".
-
 .NOTES
   This function is useful for starting a stopwatch with a visual display.
+
+.EXAMPLE
+  Start-Stopwatch
+  Starts a stopwatch with no title.
+
+.EXAMPLE
+  Start-Stopwatch -Title "Workout"
+  Starts a stopwatch with the title "Workout".
+
+.LINK
+  https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
 #>
 function Start-Stopwatch {
   [CmdletBinding()]
   [Alias("stopwatch")]
   param (
     [Parameter(Mandatory = $false, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [Alias("t")]
     [string]$Title = $null
   )
 
@@ -1075,28 +1256,41 @@ function Start-Stopwatch {
 .PARAMETER TimeZone
   Specifies the time zone to display the time in. If not specified, the local time zone is used.
 
+.INPUTS
+  Title: (Optional) The title to display above the clock. The default value is an empty string.
+  TimeZone: (Optional) The time zone to display the time in. The default value is "Local".
+
 .OUTPUTS
   This function does not return any output.
+
+.NOTES
+  This function is useful for displaying the current time in a visual format.
 
 .EXAMPLE
   Get-WallClock -Title "Current Time"
   Displays the current time with the title "Current Time".
+
+.EXAMPLE
   Get-WallClock -Title "Current Time" -Use24HourFormat
   Displays the current time in 24-hour format with the title "Current Time".
+
+.EXAMPLE
   Get-WallClock -Title "Current Time" -TimeZone "UTC"
   Displays the current time in UTC with the title "Current Time".
 
-.NOTES
-  This function is useful for displaying the current time in a visual format.
+.LINK
+  https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
 #>
 function Get-WallClock {
   [CmdletBinding()]
   [Alias("wallclock")]
   param (
     [Parameter(Mandatory = $false, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [Alias("t")]
     [string]$Title = "",
 
     [Parameter(Mandatory = $false, Position = 1, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [Alias("z")]
     [string]$TimeZone = "Local"
   )
 
@@ -1152,28 +1346,37 @@ function Get-WallClock {
   Displays a matrix rain animation in the console.
 
 .DESCRIPTION
-  This function displays a matrix rain animation in the console. It simulates the falling green characters from the movie "The Matrix". The animation can be stopped by pressing Ctrl+C.
+  This function displays a matrix rain animation in the console. It simulates the falling green characters from the movie "The Matrix". The animation can be stopped by pressing the "Q" key.
 
 .PARAMETER SleepTime
   Specifies the time in milliseconds to wait between updating the animation. The default value is 1 millisecond.
 
+.INPUTS
+  SleepTime: (Optional) The time in milliseconds to wait between updating the animation. The default value is 1 millisecond.
+
 .OUTPUTS
   This function does not return any output.
+
+.NOTES
+  This function is useful for displaying a matrix rain animation in the console.
 
 .EXAMPLE
   Start-Matrix
   Displays the matrix rain animation in the console.
+
+.EXAMPLE
   Start-Matrix -SleepTime 10
   Displays the matrix rain animation with a slower update speed.
 
-.NOTES
-  This function is useful for displaying a matrix rain animation in the console.
+.LINK
+  https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
 #>
 function Start-Matrix {
   [CmdletBinding()]
   [Alias("matrix")]
   param (
     [Parameter(Mandatory = $false, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [Alias("s")]
     [double]$SleepTime = 0.5
   )
 
