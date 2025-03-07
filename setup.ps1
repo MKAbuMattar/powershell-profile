@@ -868,6 +868,12 @@ Write-LogMessage -Message "Initializing the FastFetch configuration..."
 Invoke-Command -ScriptBlock ${function:Initialize-FastFetchConfig} -ErrorAction Stop
 
 #---------------------------------------------------------------------------------------------------
+# Initialize the Figlet configuration
+#---------------------------------------------------------------------------------------------------
+Write-LogMessage -Message "Initializing the Figlet configuration..."
+Invoke-Command -ScriptBlock ${function:Initialize-FigletConfig} -ErrorAction Stop
+
+#---------------------------------------------------------------------------------------------------
 # Install the Cascadia Code font
 #---------------------------------------------------------------------------------------------------
 Write-LogMessage -Message "Installing the Cascadia Code font..."
