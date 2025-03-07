@@ -33,16 +33,34 @@ function Show-ProfileHelp {
   [Alias("profile-help")]
   [OutputType([void])]
   param (
-    [Parameter(Mandatory = $false, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
-    [ValidateSet('All', 'Directory', 'Docs', 'Environment', 'Logging', 'Network', 'Starship', 'Update', 'Utility')]
+    [Parameter(
+      Mandatory = $false,
+      Position = 0,
+      ValueFromPipeline = $true,
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "Specifies the section of the documentation to display."
+    )]
+    [ValidateSet(
+      'All',
+      'Directory',
+      'Docs',
+      'Environment',
+      'Logging',
+      'Network',
+      'Process',
+      'Starship',
+      'Update',
+      'Utility'
+    )]
     [string]$Section = 'All'
   )
-
-  $Title = @"
+  Begin {}
+  Process {
+    $Title = @"
 $($PSStyle.Foreground.Cyan)PowerShell Profile Helper$($PSStyle.Reset)
 "@
 
-  $Directory = @"
+    $Directory = @"
 $($PSStyle.Foreground.Yellow)Directory Module$($PSStyle.Reset)
     $($PSStyle.Foreground.Green)Find-Files$($PSStyle.Reset) -Name <Name>
     $($PSStyle.Foreground.Magenta)ff$($PSStyle.Reset) -Name <Name>
@@ -82,6 +100,10 @@ $($PSStyle.Foreground.Yellow)Directory Module$($PSStyle.Reset)
     $($PSStyle.Foreground.Magenta)tail$($PSStyle.Reset) -Path <Path> [-Lines <Lines>] [-Wait]
         Reads the last few lines of a file.
 
+    $($PSStyle.Foreground.Green)Get-ShortPath$($PSStyle.Reset) -Path <Path>
+    $($PSStyle.Foreground.Magenta)shortpath$($PSStyle.Reset) -Path <Path>
+        Retrieves the short path of a file or directory.
+
     $($PSStyle.Foreground.Green)Invoke-UpOneDirectoryLevel$($PSStyle.Reset)
     $($PSStyle.Foreground.Magenta)cd.1$($PSStyle.Reset)
     $($PSStyle.Foreground.Magenta)..$($PSStyle.Reset)
@@ -108,15 +130,34 @@ $($PSStyle.Foreground.Yellow)Directory Module$($PSStyle.Reset)
         Moves up five directory levels.
 "@
 
-  $Docs = @"
+    $Docs = @"
 $($PSStyle.Foreground.Yellow)Docs Module$($PSStyle.Reset)
     $($PSStyle.Foreground.Green)Show-ProfileHelp$($PSStyle.Reset)
     $($PSStyle.Foreground.Magenta)profile-help$($PSStyle.Reset)
         Displays the help documentation for the PowerShell Profile Helper module.
 "@
 
-  $Environment = @"
+    $Environment = @"
 $($PSStyle.Foreground.Yellow)Environment Module$($PSStyle.Reset)
+    $($PSStyle.Foreground.Green)Invoke-ReloadPathEnvironmentVariable$($PSStyle.Reset)
+    $($PSStyle.Foreground.Magenta)reload-env-path$($PSStyle.Reset)
+    $($PSStyle.Foreground.Magenta)reload-path$($PSStyle.Reset)
+        Reloads the PATH environment variable.
+
+    $($PSStyle.Foreground.Green)Get-PathEnvironmentVariable$($PSStyle.Reset) [-Scope <Scope>]
+    $($PSStyle.Foreground.Magenta)get-env-path$($PSStyle.Reset) [-Scope <Scope>]
+    $($PSStyle.Foreground.Magenta)get-path$($PSStyle.Reset) [-Scope <Scope>]
+        Retrieves the PATH environment variable.
+
+    $($PSStyle.Foreground.Green)Add-PathEnvironmentVariable$($PSStyle.Reset) -Path <Path> [-Scope <Scope>] [-Append] [-Prepend] [-MakeShort] [-Quiet]
+    $($PSStyle.Foreground.Magenta)add-path$($PSStyle.Reset) -Path <Path> [-Scope <Scope>] [-Append] [-Prepend] [-MakeShort] [-Quiet]
+    $($PSStyle.Foreground.Magenta)set-path$($PSStyle.Reset) -Path <Path> [-Scope <Scope>] [-Append] [-Prepend] [-MakeShort] [-Quiet]
+        Sets the PATH environment variable.
+
+    $($PSStyle.Foreground.Green)Remove-PathEnvironmentVariable$($PSStyle.Reset) -Path <Path> [-Scope <Scope>] [-Force]
+    $($PSStyle.Foreground.Magenta)remove-path$($PSStyle.Reset) -Path <Path> [-Scope <Scope>] [-Force]
+        Removes a path from the PATH environment variable.
+
     $($PSStyle.Foreground.Green)Set-EnvVar$($PSStyle.Reset) -Name <Name> -Value <Value>
     $($PSStyle.Foreground.Magenta)set-env$($PSStyle.Reset) -Name <Name> -Value <Value>
     $($PSStyle.Foreground.Magenta)export$($PSStyle.Reset) -Name <Name> -Value <Value>
@@ -136,14 +177,14 @@ $($PSStyle.Foreground.Yellow)Environment Module$($PSStyle.Reset)
         Global variable to test if the machine can connect to GitHub.
 "@
 
-  $Logging = @"
+    $Logging = @"
 $($PSStyle.Foreground.Yellow)Logging Module$($PSStyle.Reset)
     $($PSStyle.Foreground.Green)Write-LogMessage$($PSStyle.Reset) -Message <Message> [-Level <Level>]
     $($PSStyle.Foreground.Magenta)log-message$($PSStyle.Reset) -Message <Message> [-Level <Level>]
         Logs a message with a timestamp and log level. The default log level is "INFO".
 "@
 
-  $Network = @"
+    $Network = @"
 $($PSStyle.Foreground.Yellow)Network Module$($PSStyle.Reset)
     $($PSStyle.Foreground.Green)Get-MyIPAddress$($PSStyle.Reset) [-Local] [-IPv4] [-IPv6] [-ComputerName <ComputerName>]
     $($PSStyle.Foreground.Magenta)my-ip$($PSStyle.Reset) [-Local] [-IPv4] [-IPv6] [-ComputerName <ComputerName>]
@@ -154,45 +195,11 @@ $($PSStyle.Foreground.Yellow)Network Module$($PSStyle.Reset)
         Flushes the DNS cache.
 "@
 
-  $Starship = @"
-$($PSStyle.Foreground.Yellow)Starship Module$($PSStyle.Reset)
-    $($PSStyle.Foreground.Green)Invoke-StarshipTransientFunction$($PSStyle.Reset)
-    $($PSStyle.Foreground.Magenta)starship-transient$($PSStyle.Reset)
-        Invokes the Starship module transiently to load the Starship prompt, enhancing the appearance and functionality of the PowerShell prompt.
-"@
-
-  $Update = @"
-$($PSStyle.Foreground.Yellow)Update Module$($PSStyle.Reset)
-    $($PSStyle.Foreground.Green)Update-LocalProfileModuleDirectory$($PSStyle.Reset) [-LocalPath <LocalPath>]
-    $($PSStyle.Foreground.Magenta)update-local-module$($PSStyle.Reset) [-LocalPath <LocalPath>]
-        Updates the Modules directory in the local profile with the latest version from the GitHub repository.
-
-    $($PSStyle.Foreground.Green)Update-Profile$($PSStyle.Reset)
-    $($PSStyle.Foreground.Magenta)update-profile$($PSStyle.Reset)
-        Checks for updates to the PowerShell profile and updates the local profile if changes are detected.
-
-    $($PSStyle.Foreground.Green)Update-PowerShell$($PSStyle.Reset)
-    $($PSStyle.Foreground.Magenta)update-ps1$($PSStyle.Reset)
-        Checks for updates to PowerShell and upgrades to the latest version if available.
-"@
-
-  $Utility = @"
-$($PSStyle.Foreground.Yellow)Utility Module$($PSStyle.Reset)
-    $($PSStyle.Foreground.Green)Test-CommandExists$($PSStyle.Reset) -Command <Command>
-    $($PSStyle.Foreground.Magenta)command-exists$($PSStyle.Reset) -Command <Command>
-        Checks if a command exists in the current environment.
-
-    $($PSStyle.Foreground.Green)Invoke-ReloadProfile$($PSStyle.Reset)
-    $($PSStyle.Foreground.Magenta)reload-profile$($PSStyle.Reset)
-        Reloads the PowerShell profile to apply changes.
-
-    $($PSStyle.Foreground.Green)Get-Uptime$($PSStyle.Reset)
-    $($PSStyle.Foreground.Magenta)uptime$($PSStyle.Reset)
-        Retrieves the system uptime in a human-readable format.
-
-    $($PSStyle.Foreground.Green)Get-CommandDefinition$($PSStyle.Reset) -Name <Name>
-    $($PSStyle.Foreground.Magenta)def$($PSStyle.Reset) -Name <Name>
-        Gets the definition of a command.
+    $Process = @"
+$($PSStyle.Foreground.Yellow)Process Module$($PSStyle.Reset)
+    $($PSStyle.Foreground.Green)Get-SystemInfo$($PSStyle.Reset)
+    $($PSStyle.Foreground.Magenta)sysinfo$($PSStyle.Reset)
+        Retrieves the system information.
 
     $($PSStyle.Foreground.Green)Get-AllProcesses$($PSStyle.Reset) [-Name <Name>]
     $($PSStyle.Foreground.Magenta)pall$($PSStyle.Reset) [-Name <Name>]
@@ -214,13 +221,54 @@ $($PSStyle.Foreground.Yellow)Utility Module$($PSStyle.Reset)
     $($PSStyle.Foreground.Magenta)portkill$($PSStyle.Reset) -Port <Port>
         Terminates a process by port.
 
-    $($PSStyle.Foreground.Green)Get-SystemInfo$($PSStyle.Reset)
-    $($PSStyle.Foreground.Magenta)sysinfo$($PSStyle.Reset)
-        Retrieves the system information.
-
     $($PSStyle.Foreground.Green)Invoke-ClearCache$($PSStyle.Reset) [-Type <Type>]
     $($PSStyle.Foreground.Magenta)clear-cache$($PSStyle.Reset) [-Type <Type>]
         Clears windows cache, temp files, and internet explorer cache.
+"@
+
+    $Starship = @"
+$($PSStyle.Foreground.Yellow)Starship Module$($PSStyle.Reset)
+    $($PSStyle.Foreground.Green)Invoke-StarshipTransientFunction$($PSStyle.Reset)
+    $($PSStyle.Foreground.Magenta)starship-transient$($PSStyle.Reset)
+        Invokes the Starship module transiently to load the Starship prompt, enhancing the appearance and functionality of the PowerShell prompt.
+"@
+
+    $Update = @"
+$($PSStyle.Foreground.Yellow)Update Module$($PSStyle.Reset)
+    $($PSStyle.Foreground.Green)Update-LocalProfileModuleDirectory$($PSStyle.Reset) [-LocalPath <LocalPath>]
+    $($PSStyle.Foreground.Magenta)update-local-module$($PSStyle.Reset) [-LocalPath <LocalPath>]
+        Updates the Modules directory in the local profile with the latest version from the GitHub repository.
+
+    $($PSStyle.Foreground.Green)Update-Profile$($PSStyle.Reset)
+    $($PSStyle.Foreground.Magenta)update-profile$($PSStyle.Reset)
+        Checks for updates to the PowerShell profile and updates the local profile if changes are detected.
+
+    $($PSStyle.Foreground.Green)Update-PowerShell$($PSStyle.Reset)
+    $($PSStyle.Foreground.Magenta)update-ps1$($PSStyle.Reset)
+        Checks for updates to PowerShell and upgrades to the latest version if available.
+"@
+
+    $Utility = @"
+$($PSStyle.Foreground.Yellow)Utility Module$($PSStyle.Reset)
+    $($PSStyle.Foreground.Green)Test-Administrator$($PSStyle.Reset)
+    $($PSStyle.Foreground.Magenta)is-admin$($PSStyle.Reset)
+        Checks if the current user has administrator privileges.
+
+    $($PSStyle.Foreground.Green)Test-CommandExists$($PSStyle.Reset) -Command <Command>
+    $($PSStyle.Foreground.Magenta)command-exists$($PSStyle.Reset) -Command <Command>
+        Checks if a command exists in the current environment.
+
+    $($PSStyle.Foreground.Green)Invoke-ReloadProfile$($PSStyle.Reset)
+    $($PSStyle.Foreground.Magenta)reload-profile$($PSStyle.Reset)
+        Reloads the PowerShell profile to apply changes.
+
+    $($PSStyle.Foreground.Green)Get-Uptime$($PSStyle.Reset)
+    $($PSStyle.Foreground.Magenta)uptime$($PSStyle.Reset)
+        Retrieves the system uptime in a human-readable format.
+
+    $($PSStyle.Foreground.Green)Get-CommandDefinition$($PSStyle.Reset) -Name <Name>
+    $($PSStyle.Foreground.Magenta)def$($PSStyle.Reset) -Name <Name>
+        Gets the definition of a command.
 
     $($PSStyle.Foreground.Green)Get-RandomQuote$($PSStyle.Reset)
     $($PSStyle.Foreground.Magenta)quote$($PSStyle.Reset)
@@ -247,53 +295,60 @@ $($PSStyle.Foreground.Yellow)Utility Module$($PSStyle.Reset)
         Displays a matrix rain animation in the console.
 "@
 
-  switch ($Section) {
-    'All' {
-      Write-Host $Title
-      Write-Host $Directory
-      Write-Host $Docs
-      Write-Host $Environment
-      Write-Host $Logging
-      Write-Host $Network
-      Write-Host $Starship
-      Write-Host $Update
-      Write-Host $Utility
-    }
-    'Directory' {
-      Write-Host $Title
-      Write-Host $Directory
-    }
-    'Docs' {
-      Write-Host $Title
-      Write-Host $Docs
-    }
-    'Environment' {
-      Write-Host $Title
-      Write-Host $Environment
-    }
-    'Logging' {
-      Write-Host $Title
-      Write-Host $Logging
-    }
-    'Network' {
-      Write-Host $Title
-      Write-Host $Network
-    }
-    'Starship' {
-      Write-Host $Title
-      Write-Host $Starship
-    }
-    'Update' {
-      Write-Host $Title
-      Write-Host $Update
-    }
-    'Utility' {
-      Write-Host $Title
-      Write-Host $Utility
-    }
-    Default {
-      Write-Host $Title
-      Write-Host $Docs
+    switch ($Section) {
+      'All' {
+        Write-Host $Title
+        Write-Host $Directory
+        Write-Host $Docs
+        Write-Host $Environment
+        Write-Host $Logging
+        Write-Host $Network
+        Write-Host $Process
+        Write-Host $Starship
+        Write-Host $Update
+        Write-Host $Utility
+      }
+      'Directory' {
+        Write-Host $Title
+        Write-Host $Directory
+      }
+      'Docs' {
+        Write-Host $Title
+        Write-Host $Docs
+      }
+      'Environment' {
+        Write-Host $Title
+        Write-Host $Environment
+      }
+      'Logging' {
+        Write-Host $Title
+        Write-Host $Logging
+      }
+      'Network' {
+        Write-Host $Title
+        Write-Host $Network
+      }
+      'Process' {
+        Write-Host $Title
+        Write-Host $Process
+      }
+      'Starship' {
+        Write-Host $Title
+        Write-Host $Starship
+      }
+      'Update' {
+        Write-Host $Title
+        Write-Host $Update
+      }
+      'Utility' {
+        Write-Host $Title
+        Write-Host $Utility
+      }
+      Default {
+        Write-Host $Title
+        Write-Host $Docs
+      }
     }
   }
+  End {}
 }

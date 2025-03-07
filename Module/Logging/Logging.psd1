@@ -11,7 +11,7 @@
     'Write-LogMessage'
   )
   CmdletsToExport   = @()
-  VariablesToExport = '*'
+  VariablesToExport = @()
   AliasesToExport   = @(
     'log-message'
   )

@@ -37,13 +37,33 @@ function Write-LogMessage {
   [Alias("log-message")]
   [OutputType([string])]
   param (
-    [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [Parameter(
+      Mandatory = $true,
+      Position = 0,
+      ValueFromPipeline = $true,
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "The message to log."
+    )]
     [string]$Message,
 
-    [Parameter(Mandatory = $false, Position = 1, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [Parameter(
+      Mandatory = $false,
+      Position = 1,
+      ValueFromPipeline = $true,
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "The log level. Default is 'INFO'."
+    )]
+    [ValidateSet(
+      "INFO",
+      "WARNING",
+      "ERROR"
+    )]
     [string]$Level = "INFO"
   )
-
-  $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
-  Write-Output "[$timestamp][$Level] $Message"
+  Begin {}
+  Process {
+    $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+    Write-Output "[$timestamp][$Level] $Message"
+  }
+  End {}
 }

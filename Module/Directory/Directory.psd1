@@ -15,6 +15,7 @@
     'Set-ContentMatching',
     'Get-FileHead',
     'Get-FileTail',
+    'Get-ShortPath',
     'Invoke-UpOneDirectoryLevel',
     'Invoke-UpTwoDirectoryLevels',
     'Invoke-UpThreeDirectoryLevels',
@@ -22,7 +23,7 @@
     'Invoke-UpFiveDirectoryLevels'
   )
   CmdletsToExport   = @()
-  VariablesToExport = '*'
+  VariablesToExport = @()
   AliasesToExport   = @(
     'ff',
     'touch',
@@ -34,6 +35,7 @@
     'zi',
     'head',
     'tail',
+    'shortpath',
     'cd.1',
     '..',
     'cd.2',

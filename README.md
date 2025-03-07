@@ -13,6 +13,7 @@ Welcome to my PowerShell profile! Here, you'll find a curated collection of func
   - [Environment Module](#environment-module)
   - [Logging Module](#logging-module)
   - [Network Module](#network-module)
+  - [Process Module](#process-module)
   - [Starship Module](#starship-module)
   - [Update Module](#update-module)
   - [Utility Module](#utility-module)
@@ -24,111 +25,6 @@ Jumpstart your PowerShell experience with just one command:
 
 ```powershell
 irm "https://raw.githubusercontent.com/MKAbuMattar/powershell-profile/main/setup.ps1" | iex
-```
-
-## The Profile Architecture
-
-The PowerShell profile system is designed to enhance the PowerShell experience by providing a set of functions, aliases, and settings that improve productivity and streamline common tasks. The profile is organized into several components, each serving a specific purpose:
-
-```mermaid
-graph TB
-    User((User))
-
-    subgraph "PowerShell Profile System"
-        subgraph "Core Profile Container"
-            ProfileScript["Profile Script<br>PowerShell"]
-
-            subgraph "Core Components"
-                EnvManager["Environment Manager<br>PowerShell Module"]
-                LogManager["Logging Manager<br>PowerShell Module"]
-                DirManager["Directory Manager<br>PowerShell Module"]
-                NetworkManager["Network Manager<br>PowerShell Module"]
-                UpdateManager["Update Manager<br>PowerShell Module"]
-                UtilityManager["Utility Manager<br>PowerShell Module"]
-                DocsManager["Documentation Manager<br>PowerShell Module"]
-            end
-        end
-
-        subgraph "Shell Enhancement Container"
-            ShellEnhancements["Shell Enhancements<br>PowerShell"]
-
-            subgraph "Shell Components"
-                StarshipPrompt["Starship Prompt<br>Rust"]
-                PSReadLineConfig["PSReadLine Config<br>PowerShell"]
-                TerminalIconsModule["Terminal Icons<br>PowerShell Module"]
-                PoshGitModule["Posh-Git<br>PowerShell Module"]
-                CompletionPredictorModule["Completion Predictor<br>PowerShell Module"]
-                ZoxideNav["Zoxide Navigator<br>Rust"]
-            end
-        end
-
-        subgraph "Configuration Container"
-            ConfigManager["Configuration Manager<br>PowerShell"]
-
-            subgraph "Config Components"
-                StarshipConfig["Starship Config<br>TOML"]
-                FastFetchConfig["FastFetch Config<br>JSONC"]
-                ProfileSettings["Profile Settings<br>PowerShell"]
-                EditorConfig["Editor Config<br>JSON"]
-            end
-        end
-
-        subgraph "System Tools Container"
-            SystemTools["System Tools<br>Various"]
-
-            subgraph "Tool Components"
-                ProcessManager["Process Manager<br>PowerShell"]
-                NetworkTools["Network Tools<br>PowerShell"]
-                FileSystem["File System Tools<br>PowerShell"]
-                SystemInfo["System Info Display<br>C++"]
-                TimeTools["Time Management Tools<br>PowerShell"]
-                WeatherTool["Weather Tool<br>PowerShell"]
-            end
-        end
-    end
-
-    subgraph "External Services"
-        GitHub["GitHub Repository<br>Git"]
-        Chocolatey["Package Manager<br>Chocolatey"]
-        WeatherAPI["Weather Service<br>wttr.in"]
-        QuoteAPI["Quote Service<br>quotable.io"]
-    end
-
-    User -->|"Interacts with"| ProfileScript
-    ProfileScript -->|"Loads"| EnvManager
-    ProfileScript -->|"Uses"| LogManager
-    ProfileScript -->|"Manages"| DirManager
-    ProfileScript -->|"Configures"| NetworkManager
-    ProfileScript -->|"Updates via"| UpdateManager
-    ProfileScript -->|"Utilizes"| UtilityManager
-    ProfileScript -->|"Documents via"| DocsManager
-
-    ShellEnhancements -->|"Customizes"| StarshipPrompt
-    ShellEnhancements -->|"Configures"| PSReadLineConfig
-    ShellEnhancements -->|"Enhances with"| TerminalIconsModule
-    ShellEnhancements -->|"Integrates"| PoshGitModule
-    ShellEnhancements -->|"Assists with"| CompletionPredictorModule
-    ShellEnhancements -->|"Navigates via"| ZoxideNav
-
-    ConfigManager -->|"Manages"| StarshipConfig
-    ConfigManager -->|"Manages"| FastFetchConfig
-    ConfigManager -->|"Manages"| ProfileSettings
-    ConfigManager -->|"Manages"| EditorConfig
-
-    SystemTools -->|"Manages"| ProcessManager
-    SystemTools -->|"Utilizes"| NetworkTools
-    SystemTools -->|"Handles"| FileSystem
-    SystemTools -->|"Displays"| SystemInfo
-    SystemTools -->|"Manages"| TimeTools
-    SystemTools -->|"Fetches"| WeatherTool
-
-    UpdateManager -->|"Checks"| GitHub
-    UpdateManager -->|"Uses"| Chocolatey
-    WeatherTool -->|"Queries"| WeatherAPI
-    UtilityManager -->|"Fetches from"| QuoteAPI
-
-    StarshipConfig -->|"Configures"| StarshipPrompt
-    FastFetchConfig -->|"Configures"| SystemInfo
 ```
 
 ## Features
@@ -174,6 +70,8 @@ The Directory module provides functions to navigate directories and manage files
   - Example: `head "file.txt"`
 - **Get-FileTail** (Alias: `tail`): Retrieves the last few lines of a file.
   - Example: `tail "file.txt"`
+- **Get-ShortPath** (Alias: `shortpath`): Retrieves the short path of a file or directory.
+  - Example: `shortpath "C:\Users\Username\Documents"`
 - **Invoke-UpOneDirectoryLevel** (Aliases: `cd.1`, `..`): Moves up one directory level.
   - Example: `cd.1`
 - **Invoke-UpTwoDirectoryLevels** (Aliases: `cd.2`, `...`): Moves up two directory levels.
@@ -195,8 +93,16 @@ The Docs module provides functions to display help documentation for the PowerSh
 
 ### Environment Module
 
-The Environment module provides functions to manage environment variables and test GitHub connectivity:
+The Environment module provides functions to manage environment variables, test GitHub connectivity, and manipulate the PATH environment variable:
 
+- **Invoke-ReloadPathEnvironmentVariable** (Aliases: `reload-env-path`, `reload-path`): Reloads the PATH environment variable.
+  - Example: `reload-path`
+- **Get-PathEnvironmentVariable** (Aliases: `get-env-path`, `get-path`): Retrieves the PATH environment variable.
+  - Example: `get-path`
+- **Add-PathEnvironmentVariable** (Aliases: `add-path`, `set-path`): Sets the PATH environment variable.
+  - Example: `add-path "C:\Program Files\Example"`
+- **Remove-PathEnvironmentVariable**: Removes a path from the PATH environment variable.
+  - Example: `Remove-PathEnvironmentVariable "C:\Program Files\Example"`
 - **Set-EnvVar** (Aliases: `export`, `set-env`): Exports an environment variable.
   - Example: `set-env "name" "value"`
 - **Get-EnvVar** (Alias: `get-env`): Retrieves the value of an environment variable.
@@ -225,6 +131,25 @@ The Network module provides functions to manage network settings and perform net
 - **Clear-FlushDNS** (Alias: `flush-dns`): Clears and flushes the DNS cache.
   - Example: `flush-dns`
 
+### Process Module
+
+The Process module provides functions to manage processes and retrieve process information:
+
+- **Get-SystemInfo** (Alias: `sysinfo`): Retrieves system information.
+  - Example: `sysinfo`
+- **Get-AllProcesses** (Alias: `pall`): Retrieves a list of all running processes.
+  - Example: `pall`
+- **Get-ProcessByName** (Alias: `pgrep`): Finds a process by name.
+  - Example: `pgrep "process"`
+- **Get-ProcessByPort** (Alias: `portgrep`): Finds a process by port.
+  - Example: `portgrep 80`
+- **Stop-ProcessByName** (Alias: `pkill`): Terminates a process by name.
+  - Example: `pkill "process"`
+- **Stop-ProcessByPort** (Alias: `portkill`): Terminates a process by port.
+  - Example: `portkill 80`
+- **Invoke-ClearCache** (Alias: `cache-clear`): Clears the cache of a specified application.
+  - Example: `cache-clear "All"`
+
 ### Starship Module
 
 The Starship module provides functions to transiently invoke the Starship prompt:
@@ -247,6 +172,8 @@ The Update module provides functions to update the local profile module director
 
 The Utility module provides a set of useful functions to enhance your PowerShell experience:
 
+- **Test-Administrator** (Alias: `is-admin`): Checks if the current user has administrator privileges.
+  - Example: `is-admin`
 - **Test-CommandExists** (Alias: `command-exists`): Checks if a command exists in the current environment.
   - Example: `command-exists "ls"`
 - **Invoke-ReloadProfile** (Alias: `reload-profile`): Reloads the PowerShell profile to apply changes.
@@ -255,20 +182,6 @@ The Utility module provides a set of useful functions to enhance your PowerShell
   - Example: `uptime`
 - **Get-CommandDefinition** (Alias: `def`): Retrieves the definition of a command.
   - Example: `def "ls"`
-- **Get-AllProcesses** (Alias: `pall`): Retrieves a list of all running processes.
-  - Example: `pall`
-- **Get-ProcessByName** (Alias: `pgrep`): Finds a process by name.
-  - Example: `pgrep "process"`
-- **Get-ProcessByPort** (Alias: `portgrep`): Finds a process by port.
-  - Example: `portgrep 80`
-- **Stop-ProcessByName** (Alias: `pkill`): Terminates a process by name.
-  - Example: `pkill "process"`
-- **Get-SystemInfo** (Alias: `sysinfo`): Retrieves system information.
-  - Example: `sysinfo`
-- **Invoke-ClearCache** (Alias: `cache-clear`): Clears the cache of a specified application.
-  - Example: `cache-clear "All"`
-- **Stop-ProcessByPort** (Alias: `portkill`): Terminates a process by port.
-  - Example: `portkill 80`
 - **Get-RandomQuote** (Alias: `quote`): Retrieves a random quote from an online API.
   - Example: `quote`
 - **Get-WeatherForecast** (Alias: `weather`): Retrieves the weather forecast for a specified location.

@@ -139,8 +139,11 @@ Import-Module $EnvironmentModulePath -Force -ErrorAction SilentlyContinue
 $LoggingModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Logging/Logging.psd1'
 Import-Module $LoggingModulePath -Force -ErrorAction SilentlyContinue
 
-$LoggingModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Network/Network.psd1'
-Import-Module $LoggingModulePath -Force -ErrorAction SilentlyContinue
+$NetworkModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Network/Network.psd1'
+Import-Module $NetworkModulePath -Force -ErrorAction SilentlyContinue
+
+$ProcessModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Process/Process.psd1'
+Import-Module $ProcessModulePath -Force -ErrorAction SilentlyContinue
 
 $StarshipModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Starship/Starship.psd1'
 Import-Module $StarshipModulePath -Force -ErrorAction SilentlyContinue

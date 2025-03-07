@@ -10,7 +10,7 @@
     'Show-ProfileHelp'
   )
   CmdletsToExport   = @()
-  VariablesToExport = '*'
+  VariablesToExport = @()
   AliasesToExport   = @(
     'profile-help'
   )

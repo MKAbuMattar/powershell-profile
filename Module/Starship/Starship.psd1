@@ -10,7 +10,7 @@
     'Invoke-StarshipTransientFunction'
   )
   CmdletsToExport   = @()
-  VariablesToExport = '*'
+  VariablesToExport = @()
   AliasesToExport   = @(
     'starship-transient'
   )

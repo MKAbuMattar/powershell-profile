@@ -11,7 +11,7 @@
     'Clear-FlushDNS'
   )
   CmdletsToExport   = @()
-  VariablesToExport = '*'
+  VariablesToExport = @()
   AliasesToExport   = @(
     'my-ip',
     'flush-dns'
