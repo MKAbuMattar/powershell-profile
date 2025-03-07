@@ -299,12 +299,6 @@ function Copy-ModuleDirectory {
   End {}
 }
 
-#---------------------------------------------------------------------------------------------------
-# Copy the Module directory from the repository to the local path
-#---------------------------------------------------------------------------------------------------
-Write-LogMessage -Message "Copying the Module directory from the repository to the local path..."
-Invoke-Command -ScriptBlock ${function:Copy-ModuleDirectory} -ErrorAction Stop
-
 <#
 .SYNOPSIS
   Initializes the PowerShell profile by creating or updating the profile script.
@@ -784,34 +778,40 @@ function Invoke-UpdateInstallChocoPackages {
 Write-LogMessage -Message "Starting the setup process..."
 
 #---------------------------------------------------------------------------------------------------
+# Copy the Module directory from the repository to the local path
+#---------------------------------------------------------------------------------------------------
+Write-LogMessage -Message "Copying the Module directory from the repository to the local path..."
+& ${function:Copy-ModuleDirectory} -ErrorAction Stop
+
+#---------------------------------------------------------------------------------------------------
 # Initialize the PowerShell profile
 #---------------------------------------------------------------------------------------------------
 Write-LogMessage -Message "Initializing the PowerShell profile..."
-Invoke-Command -ScriptBlock ${function:Initialize-PowerShellProfile} -ErrorAction Stop
+& ${function:Initialize-PowerShellProfile} -ErrorAction Stop
 
 #---------------------------------------------------------------------------------------------------
 # Initialize the Starship configuration
 #---------------------------------------------------------------------------------------------------
 Write-LogMessage -Message "Initializing the Starship configuration..."
-Invoke-Command -ScriptBlock ${function:Initialize-StarshipConfig} -ErrorAction Stop
+& ${function:Initialize-StarshipConfig} -ErrorAction Stop
 
 #---------------------------------------------------------------------------------------------------
 # Initialize the FastFetch configuration
 #---------------------------------------------------------------------------------------------------
 Write-LogMessage -Message "Initializing the FastFetch configuration..."
-Invoke-Command -ScriptBlock ${function:Initialize-FastFetchConfig} -ErrorAction Stop
+& ${function:Initialize-FastFetchConfig} -ErrorAction Stop
 
 #---------------------------------------------------------------------------------------------------
 # Install the Cascadia Code font
 #---------------------------------------------------------------------------------------------------
 Write-LogMessage -Message "Installing the Cascadia Code font..."
-Invoke-Command -ScriptBlock ${function:Install-CascadiaCodeFont} -ErrorAction Stop
+& ${function:Install-CascadiaCodeFont} -ErrorAction Stop
 
 #---------------------------------------------------------------------------------------------------
 # Install Chocolatey package manager
 #---------------------------------------------------------------------------------------------------
 Write-LogMessage -Message "Installing Chocolatey..."
-Invoke-Command -ScriptBlock ${function:Install-Chocolatey} -ErrorAction Stop
+& ${function:Install-Chocolatey} -ErrorAction Stop
 
 #---------------------------------------------------------------------------------------------------
 # Install or update required PowerShell modules
@@ -824,7 +824,7 @@ $modules = @(
   'Posh-Git',
   'CompletionPredictor'
 )
-Invoke-UpdateInstallPSModules -ModuleList $modules
+& ${function:Invoke-UpdateInstallPSModules} -ModuleList $modules
 
 #---------------------------------------------------------------------------------------------------
 # Install or update required Chocolatey packages
@@ -836,7 +836,7 @@ $packages = @(
   'starship',
   'zoxide'
 )
-Invoke-UpdateInstallChocoPackages -PackageList $packages
+& ${function:Invoke-UpdateInstallChocoPackages} -PackageList $packages
 
 #---------------------------------------------------------------------------------------------------
 # End the setup process
