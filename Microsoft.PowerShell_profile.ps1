@@ -157,7 +157,7 @@ Import-Module $UtilityModulePath -Force -ErrorAction SilentlyContinue
 #---------------------------------------------------------------------------------------------------
 # Invoke Starship Transient Function
 #---------------------------------------------------------------------------------------------------
-Invoke-Command -ScriptBlock ${function:Invoke-StarshipTransientFunction} -ErrorAction SilentlyContinue
+&${function:Invoke-StarshipTransientFunction} -ErrorAction SilentlyContinue
 
 #---------------------------------------------------------------------------------------------------
 # Load Starship
@@ -180,21 +180,21 @@ if (Test-Path $ChocolateyProfile) {
 # Invoke the profile update function
 #---------------------------------------------------------------------------------------------------
 if ($global:AutoUpdateProfile -eq $true) {
-  Invoke-Command -ScriptBlock ${function:Update-LocalProfileModuleDirectory} -ErrorAction SilentlyContinue
+  &${function:Update-LocalProfileModuleDirectory} -ErrorAction SilentlyContinue
 }
 
 #---------------------------------------------------------------------------------------------------
 # Invoke the profile update function
 #---------------------------------------------------------------------------------------------------
 if ($global:AutoUpdateProfile -eq $true) {
-  Invoke-Command -ScriptBlock ${function:Update-Profile} -ErrorAction SilentlyContinue
+  &${function:Update-Profile} -ErrorAction SilentlyContinue
 }
 
 #---------------------------------------------------------------------------------------------------
 # Invoke the PowerShell update function
 #---------------------------------------------------------------------------------------------------
 if ($global:AutoUpdatePowerShell -eq $true) {
-  Invoke-Command -ScriptBlock ${function:Update-PowerShell} -ErrorAction SilentlyContinue
+  &${function:Update-PowerShell} -ErrorAction SilentlyContinue
 }
 
 #------------------------------------------------------
