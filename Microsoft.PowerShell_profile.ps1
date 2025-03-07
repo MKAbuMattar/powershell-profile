@@ -38,11 +38,11 @@
 #       workflow.
 #
 # Created: 2021-09-01
-# Updated: 2025-03-06
+# Updated: 2025-03-07
 #
 # GitHub: https://github.com/MKAbuMattar/powershell-profile
 #
-# Version: 3.0.0
+# Version: 4.0.0
 #---------------------------------------------------------------------------------------------------
 
 #---------------------------------------------------------------------------------------------------
@@ -157,7 +157,7 @@ Import-Module $UtilityModulePath -Force -ErrorAction SilentlyContinue
 #---------------------------------------------------------------------------------------------------
 # Invoke Starship Transient Function
 #---------------------------------------------------------------------------------------------------
-&${function:Invoke-StarshipTransientFunction} -ErrorAction SilentlyContinue
+Invoke-Command -ScriptBlock ${function:Invoke-StarshipTransientFunction} -ErrorAction Stop
 
 #---------------------------------------------------------------------------------------------------
 # Load Starship
@@ -218,6 +218,6 @@ Set-Alias -Name vim -Value $EDITOR
 # Run FastFetch
 #------------------------------------------------------
 if (Test-CommandExists FastFetch) {
-  Invoke-Expression -Command "clear"
+  Invoke-Expression -Command "Clear-Host"
   Invoke-Expression -Command "FastFetch"
 }

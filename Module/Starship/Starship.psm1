@@ -31,9 +31,6 @@ function Invoke-StarshipTransientFunction {
   param (
     # This function does not accept any parameters
   )
-  Begin {}
-  Process {
-    &starship module character
-  }
-  End {}
+
+  &starship module character
 }
