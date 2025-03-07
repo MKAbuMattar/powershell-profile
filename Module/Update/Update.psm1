@@ -8,19 +8,26 @@
 .PARAMETER LocalPath
   Specifies the local path where the Modules directory should be updated. The default value is "$HOME\Documents\PowerShell".
 
+.INPUTS
+  LocalPath: (Required) Specifies the local path where the Modules directory should be updated.
+
 .OUTPUTS
   This function does not return any output.
+
+.NOTES
+  The local profile update function is disabled by default. To enable it, uncomment the line that invokes the function at the end of the script.
 
 .EXAMPLE
   Update-LocalProfileModuleDirectory
   Checks for updates to the Modules directory in the local profile and updates the local Modules directory if changes are detected.
 
-.NOTES
-  The local profile update function is disabled by default. To enable it, uncomment the line that invokes the function at the end of the script.
+.LINK
+  https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
 #>
 function Update-LocalProfileModuleDirectory {
   [CmdletBinding()]
   [Alias("update-local-module")]
+  [OutputType([void])]
   param (
     [Parameter(Mandatory = $false, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
     [string]$LocalPath = "$HOME\Documents\PowerShell"
@@ -129,6 +136,7 @@ function Update-LocalProfileModuleDirectory {
 function Update-Profile {
   [CmdletBinding()]
   [Alias("update-profile")]
+  [OutputType([void])]
   param (
     # This function does not accept any parameters
   )
@@ -179,6 +187,7 @@ function Update-Profile {
 function Update-PowerShell {
   [CmdletBinding()]
   [Alias("update-ps1")]
+  [OutputType([void])]
   param (
     # This function does not accept any parameters
   )

@@ -155,14 +155,62 @@ The Directory module provides functions to navigate directories and manage files
 - **Invoke-UpFiveDirectoryLevels** (Aliases: `cd.5`, `......`): Moves up five directory levels.
   - Example: `cd.5`
 
+## Docs Module
+
+The Docs module provides functions to display help documentation for the PowerShell Profile Helper module:
+
+- **Show-ProfileHelp** (Alias: `profile-help`): Displays the help documentation for the PowerShell Profile Helper module.
+  - Example: `Show-ProfileHelp`
+
+## Environment Module
+
+The Environment module provides functions to manage environment variables and test GitHub connectivity:
+
+- **Set-EnvVar** (Aliases: `export`, `set-env`): Exports an environment variable.
+  - Example: `set-env "name" "value"`
+- **Get-EnvVar** (Alias: `get-env`): Retrieves the value of an environment variable.
+  - Example: `get-env "name"`
+- **AutoUpdateProfile**: A global variable to disable/enable the Auto Update feature for the PowerShell profile.
+- **AutoUpdatePowerShell**: A global variable to disable/enable the Auto Update feature for PowerShell.
+- **CanConnectToGitHub**: A global variable to test if the machine can connect to GitHub.
+
+## Logging Module
+
+The Logging module provides functions to log messages with a timestamp and log level:
+
+- **Write-LogMessage** (Alias: `log-message`): Logs a message with a timestamp and log level. The default log level is "INFO".
+  - Example: `Write-LogMessage -Message "This is an informational message."`
+  - Example: `Write-LogMessage -Message "This is a warning message." -Level "WARNING"`
+
 ## Network Module
 
 The Network module provides functions to manage network settings and perform network-related tasks:
 
-- **Get-IPAddress** (Alias: `my-ip`): Retrieves the IP address of the current machine.
-  - Example: `my-ip -IPv4`
+- **Get-MyIPAddress** (Alias: `my-ip`): Retrieves the IP address of the local machine, and public IPv4 and IPv6 addresses.
+  - Example: `Get-MyIPAddress -Local -IPv4 -IPv6`
+  - Example: `Get-MyIPAddress -Local`
+  - Example: `Get-MyIPAddress -IPv4`
+  - Example: `Get-MyIPAddress -IPv6`
 - **Clear-FlushDNS** (Alias: `flush-dns`): Clears and flushes the DNS cache.
   - Example: `flush-dns`
+
+## Starship Module
+
+The Starship module provides functions to transiently invoke the Starship prompt:
+
+- **Invoke-StarshipTransientFunction** (Alias: `starship-transient`): Invokes the Starship module transiently to load the Starship prompt.
+  - Example: `Invoke-StarshipTransientFunction`
+
+## Update Module
+
+The Update module provides functions to update the local profile module directory, profile, and PowerShell:
+
+- **Update-LocalProfileModuleDirectory** (Alias: `update-local-module`): Updates the Modules directory in the local profile with the latest version from the GitHub repository.
+  - Example: `Update-LocalProfileModuleDirectory`
+- **Update-Profile** (Alias: `update-profile`): Checks for updates to the PowerShell profile from a specified GitHub repository and updates the local profile if changes are detected.
+  - Example: `Update-Profile`
+- **Update-PowerShell** (Alias: `update-ps1`): Checks for updates to PowerShell and upgrades to the latest version if available.
+  - Example: `Update-PowerShell`
 
 ## Utility Module
 
@@ -176,10 +224,6 @@ The Utility module provides a set of useful functions to enhance your PowerShell
   - Example: `uptime`
 - **Get-CommandDefinition** (Alias: `def`): Retrieves the definition of a command.
   - Example: `def "ls"`
-- **Set-EnvVar** (Alias: `export`, `set-env`): Exports an environment variable.
-  - Example: `set-env "name" "value"`
-- **Get-EnvVar** (Alias: `get-env`): Retrieves the value of an environment variable.
-  - Example: `get-env "name"`
 - **Get-AllProcesses** (Alias: `pall`): Retrieves a list of all running processes.
   - Example: `pall`
 - **Get-ProcessByName** (Alias: `pgrep`): Finds a process by name.
@@ -205,6 +249,8 @@ The Utility module provides a set of useful functions to enhance your PowerShell
   - Example: `stopwatch -Title "Workout"`
 - **Get-WallClock** (Alias: `clock`): Retrieves the current time in a specified timezone.
   - Example: `wallclock -TimeZone "Asia/Amman"`
+- **Start-Matrix** (Alias: `matrix`): Displays a matrix rain animation in the console.
+  - Example: `matrix`
 
 ## Contributing
 

@@ -11,20 +11,30 @@
 .OUTPUTS
   This function does not return any output directly. It writes the full paths of matching files to the pipeline.
 
-.EXAMPLE
-  Find-Files "file.txt"
-  Searches for files matching the pattern "file.txt" and returns their full paths.
-  Find-Files "*.ps1"
-  Searches for files with the extension ".ps1" and returns their full paths.
+.INPUTS
+  Name: (Required) The name pattern to search for.
 
 .NOTES
   This function is useful for quickly finding files that match a specific name pattern in the current directory and its subdirectories.
+
+.EXAMPLE
+  Find-Files "file.txt"
+  Searches for files matching the pattern "file.txt" and returns their full paths.
+
+.EXAMPLE
+  Find-Files "*.ps1"
+  Searches for files with the extension ".ps1" and returns their full paths.
+
+.LINK
+  https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
 #>
 function Find-Files {
   [CmdletBinding()]
   [Alias("ff")]
+  [OutputType([string])]
   param (
     [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [Alias("n")]
     [string]$Name
   )
 
@@ -46,20 +56,27 @@ function Find-Files {
 .OUTPUTS
   This function does not return any output.
 
+.NOTES
+  This function can be used as an alias "touch" to quickly create a new file or update the timestamp of an existing file.
+
 .EXAMPLE
   Set-FreshFile "file.txt"
   Creates a new empty file named "file.txt" if it doesn't exist. If "file.txt" already exists, its timestamp is updated.
+
+.EXAMPLE
   Set-FreshFile "existing_file.txt"
   Updates the timestamp of the existing file named "existing_file.txt" without modifying its content.
 
-.NOTES
-  This function can be used as an alias "touch" to quickly create a new file or update the timestamp of an existing file.
+.LINK
+  https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
 #>
 function Set-FreshFile {
   [CmdletBinding()]
   [Alias("touch")]
+  [OutputType([void])]
   param (
     [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [Alias("f")]
     [string]$File
   )
 
@@ -81,19 +98,26 @@ function Set-FreshFile {
 .PARAMETER File
   Specifies the file to extract.
 
+.INPUTS
+  File: (Required) The file to extract.
+
 .OUTPUTS
   This function does not return any output.
+
+.NOTES
+  This function is useful for quickly extracting files to the current directory.
 
 .EXAMPLE
   Expand-File "file.zip"
   Extracts the file "file.zip" to the current directory.
 
-.NOTES
-  This function is useful for quickly extracting files to the current directory.
+.LINK
+  https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
 #>
 function Expand-File {
   [CmdletBinding()]
   [Alias("unzip")]
+  [OutputType([void])]
   param (
     [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
     [string]$File
@@ -123,24 +147,34 @@ function Expand-File {
 .PARAMETER Archive
   Specifies the name of the zip archive to create.
 
+.INPUTS
+  Files: (Required) The files to compress into the zip archive.
+  Archive: (Required) The name of the zip archive to create.
+
 .OUTPUTS
   This function does not return any output.
+
+.NOTES
+  This function is useful for quickly compressing files into a zip archive.
 
 .EXAMPLE
   Compress-Files -Files "file1.txt", "file2.txt" -Archive "files.zip"
   Compresses "file1.txt" and "file2.txt" into a zip archive named "files.zip".
 
-.NOTES
-  This function is useful for quickly compressing files into a zip archive.
+.LINK
+  https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
 #>
 function Compress-Files {
   [CmdletBinding()]
   [Alias("zip")]
+  [OutputType([void])]
   param (
     [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [Alias("f")]
     [string[]]$Files,
 
     [Parameter(Mandatory = $true, Position = 1, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [Alias("a")]
     [string]$Archive
   )
 
@@ -167,24 +201,34 @@ function Compress-Files {
 .PARAMETER Path
   Specifies the path to the file or directory to search in. If not provided, the function searches in the current directory.
 
+.INPUTS
+  Pattern: (Required) The string or regular expression pattern to search for.
+  Path: (Optional) The path to the file or directory to search in.
+
 .OUTPUTS
   The lines in the file(s) that match the specified string or regular expression pattern.
+
+.NOTES
+  This function is useful for quickly searching for a string or regular expression pattern in a file or files within a directory.
 
 .EXAMPLE
   Get-ContentMatching "pattern" "file.txt"
   Searches for occurrences of the pattern "pattern" in the file "file.txt" and returns matching lines.
 
-.NOTES
-  This function is useful for quickly searching for a string or regular expression pattern in a file or files within a directory.
+.LINK
+  https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
 #>
 function Get-ContentMatching {
   [CmdletBinding()]
   [Alias("grep")]
+  [OutputType([string])]
   param (
     [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [Alias("p")]
     [string]$Pattern,
 
     [Parameter(Mandatory = $false, Position = 1, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [Alias("f")]
     [string]$Path = $PWD
   )
 
@@ -228,27 +272,39 @@ function Get-ContentMatching {
 .PARAMETER Replace
   Specifies the string to replace the found string with.
 
+.INPUTS
+  File: (Required) The file to search and perform replacements in.
+  Find: (Required) The string to search for.
+  Replace: (Required) The string to replace the found string with.
+
 .OUTPUTS
   This function does not return any output.
+
+.NOTES
+  This function is useful for quickly performing text replacements in files.
 
 .EXAMPLE
   Set-ContentMatching "file.txt" "pattern" "replacement"
   Searches for "pattern" in "file.txt" and replaces it with "replacement".
 
-.NOTES
-  This function is useful for quickly performing text replacements in files.
+.LINK
+  https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
 #>
 function Set-ContentMatching {
   [CmdletBinding()]
   [Alias("sed")]
+  [OutputType([void])]
   param (
     [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [Alias("f")]
     [string]$File,
 
     [Parameter(Mandatory = $true, Position = 1, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [Alias("s")]
     [string]$Find,
 
     [Parameter(Mandatory = $true, Position = 2, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [Alias("r")]
     [string]$Replace
   )
 
@@ -305,23 +361,31 @@ Set-Alias -Name zi -Value __zoxide_zi -Option AllScope -Scope Global -Force
 .OUTPUTS
   The first few lines of the file.
 
+.NOTES
+  This function is useful for quickly previewing the contents of a file.
+
 .EXAMPLE
   Get-FileHead "file.txt"
   Reads the first 10 lines of the file "file.txt" and outputs them.
+
+.EXAMPLE
   Get-FileHead "file.txt" 5
   Reads the first 5 lines of the file "file.txt" and outputs them.
 
-.NOTES
-  This function is useful for quickly previewing the contents of a file.
+.LINK
+  https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
 #>
 function Get-FileHead {
   [CmdletBinding()]
   [Alias("head")]
+  [OutputType([string])]
   param (
     [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [Alias("f")]
     [string]$Path,
 
     [Parameter(Mandatory = $false, Position = 1, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [Alias("n")]
     [int]$Lines = 10
   )
 
@@ -349,31 +413,47 @@ function Get-FileHead {
 .PARAMETER Wait
   Indicates whether the function should wait for new lines to be added to the file. If specified, the function will continue to output new lines as they are added to the file.
 
+.INPUTS
+  Path: (Required) The path to the file to read.
+  Lines: (Optional) The number of lines to read from the end of the file. The default value is 10.
+  Wait: (Optional) Indicates whether to wait for new lines to be added to the file. The default value is $false.s
+
 .OUTPUTS
   The last few lines of the file.
+
+.NOTES
+  This function is useful for quickly previewing the end of a file or monitoring log files.
 
 .EXAMPLE
   Get-FileTail "file.txt"
   Reads the last 10 lines of the file "file.txt" and outputs them.
+
+.EXAMPLE
   Get-FileTail "file.txt" 5
   Reads the last 5 lines of the file "file.txt" and outputs them.
+
+.EXAMPLE
   Get-FileTail "log.txt" -Wait
   Reads the last 10 lines of the file "log.txt" and continues to output new lines as they are added to the file.
 
-.NOTES
-  This function is useful for quickly previewing the end of a file or monitoring log files.
+.LINK
+  https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
 #>
 function Get-FileTail {
   [CmdletBinding()]
   [Alias("tail")]
+  [OutputType([string])]
   param (
     [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [Alias("f")]
     [string]$Path,
 
     [Parameter(Mandatory = $false, Position = 1, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [Alias("n")]
     [int]$Lines = 10,
 
     [Parameter(Mandatory = $false, Position = 2, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [Alias("w")]
     [switch]$Wait = $false
   )
 
@@ -387,28 +467,34 @@ function Get-FileTail {
 
 <#
 .SYNOPSIS
-    Moves up one directory level.
+  Moves up one directory level.
 
 .DESCRIPTION
-    This function changes the current working directory to the parent directory of the current directory. It is useful for navigating up one level in the directory structure.
+  This function changes the current working directory to the parent directory of the current directory. It is useful for navigating up one level in the directory structure.
 
 .PARAMETER None
-    This function does not accept any parameters.
+  This function does not accept any parameters.
+
+.INPUTS
+  This function does not accept any input.
 
 .OUTPUTS
-    This function does not return any output.
-
-.EXAMPLE
-    Invoke-UpOneDirectoryLevel
-    Moves up one directory level.
+  This function does not return any output.
 
 .NOTES
-    This function is useful for navigating up one level in the directory structure.
+  This function is useful for navigating up one level in the directory structure.
+
+.EXAMPLE
+  Invoke-UpOneDirectoryLevel
+  Moves up one directory level.
+
+.LINK
+  https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
 #>
 function Invoke-UpOneDirectoryLevel {
   [CmdletBinding()]
-  [Alias("cd.1")]
-  [Alias("..")]
+  [Alias("cd.1", "..")]
+  [OutputType([void])]
   param (
     # This function does not accept any parameters
   )
@@ -426,20 +512,26 @@ function Invoke-UpOneDirectoryLevel {
 .PARAMETER None
   This function does not accept any parameters.
 
+.INPUTS
+  This function does not accept any input.
+
 .OUTPUTS
   This function does not return any output.
+
+.NOTES
+  This function is useful for navigating up two levels in the directory structure.
 
 .EXAMPLE
   Invoke-UpTwoDirectoryLevels
   Moves up two directory levels.
 
-.NOTES
-  This function is useful for navigating up two levels in the directory structure.
+.LINK
+  https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
 #>
 function Invoke-UpTwoDirectoryLevels {
   [CmdletBinding()]
-  [Alias("cd.2")]
-  [Alias("...")]
+  [Alias("cd.2", "...")]
+  [OutputType([void])]
   param (
     # This function does not accept any parameters
   )
@@ -457,20 +549,26 @@ function Invoke-UpTwoDirectoryLevels {
 .PARAMETER None
   This function does not accept any parameters.
 
+.INPUTS
+  This function does not accept any input.
+
 .OUTPUTS
   This function does not return any output.
+
+.NOTES
+  This function is useful for navigating up three levels in the directory structure.
 
 .EXAMPLE
   Invoke-UpThreeDirectoryLevels
   Moves up three directory levels.
 
-.NOTES
-  This function is useful for navigating up three levels in the directory structure.
+.LINK
+  https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
 #>
 function Invoke-UpThreeDirectoryLevels {
   [CmdletBinding()]
-  [Alias("cd.3")]
-  [Alias("....")]
+  [Alias("cd.3", "....")]
+  [OutputType([void])]
   param (
     # This function does not accept any parameters
   )
@@ -488,20 +586,26 @@ function Invoke-UpThreeDirectoryLevels {
 .PARAMETER None
   This function does not accept any parameters.
 
+.INPUTS
+  This function does not accept any input.
+
 .OUTPUTS
   This function does not return any output.
+
+.NOTES
+  This function is useful for navigating up four levels in the directory structure.
 
 .EXAMPLE
   Invoke-UpFourDirectoryLevels
   Moves up four directory levels.
 
-.NOTES
-  This function is useful for navigating up four levels in the directory structure.
+.LINK
+  https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
 #>
 function Invoke-UpFourDirectoryLevels {
   [CmdletBinding()]
-  [Alias("cd.4")]
-  [Alias(".....")]
+  [Alias("cd.4", ".....")]
+  [OutputType([void])]
   param (
     # This function does not accept any parameters
   )
@@ -519,20 +623,26 @@ function Invoke-UpFourDirectoryLevels {
 .PARAMETER None
   This function does not accept any parameters.
 
+.INPUTS
+  This function does not accept any input.
+
 .OUTPUTS
   This function does not return any output.
+
+.NOTES
+  This function is useful for navigating up five levels in the directory structure.
 
 .EXAMPLE
   Invoke-UpFiveDirectoryLevels
   Moves up five directory levels.
 
-.NOTES
-  This function is useful for navigating up five levels in the directory structure.
+.LINK
+  https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
 #>
 function Invoke-UpFiveDirectoryLevels {
   [CmdletBinding()]
-  [Alias("cd.5")]
-  [Alias("......")]
+  [Alias("cd.5", "......")]
+  [OutputType([void])]
   param (
     # This function does not accept any parameters
   )

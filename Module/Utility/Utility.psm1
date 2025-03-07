@@ -27,6 +27,7 @@
 function Test-CommandExists {
   [CmdletBinding()]
   [Alias("command-exists")]
+  [OutputType([bool])]
   param (
     [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
     [Alias("c")]
@@ -66,6 +67,7 @@ function Test-CommandExists {
 function Invoke-ReloadProfile {
   [CmdletBinding()]
   [Alias("reload-profile")]
+  [OutputType([void])]
   param (
     # This function does not accept any parameters
   )
@@ -108,6 +110,7 @@ function Invoke-ReloadProfile {
 function Get-Uptime {
   [CmdletBinding()]
   [Alias("uptime")]
+  [OutputType([void])]
   param (
     # This function does not accept any parameters
   )
@@ -193,6 +196,7 @@ function Get-Uptime {
 function Get-CommandDefinition {
   [CmdletBinding()]
   [Alias("def")]
+  [OutputType([string])]
   param (
     [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
     [Alias("n")]
@@ -210,107 +214,6 @@ function Get-CommandDefinition {
   }
   catch {
     Write-LogMessage -Message "An error occurred while retrieving the definition of '$Name'." -Level "ERROR"
-  }
-}
-
-<#
-.SYNOPSIS
-  Exports an environment variable.
-
-.DESCRIPTION
-  This function exports an environment variable with the specified name and value. It sets the specified environment variable with the provided value.
-
-.PARAMETER Name
-  Specifies the name of the environment variable.
-
-.PARAMETER Value
-  Specifies the value of the environment variable.
-
-.INPUTS
-  Name: (Required) The name of the environment variable to export.
-  Value: (Required) The value of the environment variable to export.
-
-.OUTPUTS
-  This function does not return any output.
-
-.NOTES
-  This function is useful for exporting environment variables within a PowerShell session.
-
-.EXAMPLE
-  Set-EnvVar "name" "value"
-  Exports an environment variable named "name" with the value "value".
-
-.LINK
-  https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
-#>
-function Set-EnvVar {
-  [CmdletBinding()]
-  [Alias("set-env")]
-  [Alias("export")]
-  param (
-    [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
-    [Alias("n")]
-    [string]$Name,
-
-    [Parameter(Mandatory = $true, Position = 1, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
-    [Alias("v")]
-    [string]$Value
-  )
-
-  try {
-    Set-Item -Force -Path "env:$Name" -Value $Value -ErrorAction Stop
-  }
-  catch {
-    Write-LogMessage -Message "Failed to export environment variable '$Name'." -Level "ERROR"
-  }
-}
-
-<#
-.SYNOPSIS
-  Retrieves the value of an environment variable.
-
-.DESCRIPTION
-  This function retrieves the value of the specified environment variable. It returns the value of the environment variable if it exists.
-
-.PARAMETER Name
-  Specifies the name of the environment variable to retrieve the value for.
-
-.INPUTS
-  Name: (Required) The name of the environment variable to retrieve the value for.
-
-.OUTPUTS
-  The value of the specified environment variable.
-
-.NOTES
-  This function is useful for retrieving the value of environment variables within a PowerShell session.
-
-.EXAMPLE
-  Get-EnvVar "name"
-  Retrieves the value of the environment variable named "name".
-
-.LINK
-  https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
-#>
-function Get-EnvVar {
-  [CmdletBinding()]
-  [Alias("get-env")]
-  param (
-    [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
-    [Alias("n")]
-    [string]$Name
-  )
-
-  try {
-    $value = Get-Item -Path "env:$Name" -ErrorAction Stop | Select-Object -ExpandProperty Value
-    if ($value) {
-      Write-Output $value
-    }
-    else {
-      Write-LogMessage -Message "Environment variable '$Name' not found." -Level "WARNING"
-    }
-  }
-  catch {
-    Write-LogMessage -Message "An error occurred while retrieving the value of environment variable '$Name'." -Level "ERROR"
   }
 }
 
@@ -343,6 +246,7 @@ function Get-EnvVar {
 function Get-AllProcesses {
   [CmdletBinding()]
   [Alias("pall")]
+  [OutputType([System.Diagnostics.Process[]])]
   param (
     [Parameter(Mandatory = $false, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
     [Alias("n")]
@@ -391,6 +295,7 @@ function Get-AllProcesses {
 function Get-ProcessByName {
   [CmdletBinding()]
   [Alias("pgrep")]
+  [OutputType([System.Diagnostics.Process[]])]
   param (
     [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
     [Alias("n")]
@@ -434,6 +339,7 @@ function Get-ProcessByName {
 function Get-ProcessByPort {
   [CmdletBinding()]
   [Alias("portgrep")]
+  [OutputType([System.Diagnostics.Process[]])]
   param (
     [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
     [Alias("p")]
@@ -477,6 +383,7 @@ function Get-ProcessByPort {
 function Stop-ProcessByName {
   [CmdletBinding()]
   [Alias("pkill")]
+  [OutputType([void])]
   param (
     [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
     [Alias("n")]
@@ -521,6 +428,7 @@ function Stop-ProcessByName {
 function Stop-ProcessByPort {
   [CmdletBinding()]
   [Alias("portkill")]
+  [OutputType([void])]
   param (
     [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
     [Alias("p")]
@@ -565,6 +473,7 @@ function Stop-ProcessByPort {
 function Get-SystemInfo {
   [CmdletBinding()]
   [Alias("sysinfo")]
+  [OutputType([PSCustomObject])]
   param (
     # This function does not accept any parameters
   )
@@ -633,6 +542,7 @@ function Get-SystemInfo {
 function Invoke-ClearCache {
   [CmdletBinding()]
   [Alias("clear-cache")]
+  [OutputType([void])]
   param (
     [Parameter(Mandatory = $false, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
     [ValidateSet("All", "Prefetch", "WindowsTemp", "UserTemp", "IECache")]
@@ -705,6 +615,7 @@ function Invoke-ClearCache {
 function Get-RandomQuote {
   [CmdletBinding()]
   [Alias("quote")]
+  [OutputType([string])]
   param (
     # This function does not accept any parameters
   )
@@ -783,6 +694,7 @@ function Get-RandomQuote {
 function Get-WeatherForecast {
   [CmdletBinding()]
   [Alias("weather")]
+  [OutputType([string])]
   param (
     [Parameter(Mandatory = $false, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
     [Alias("l")]
@@ -860,6 +772,7 @@ function Get-WeatherForecast {
 #>
 function Read-FigletFont {
   [CmdletBinding()]
+  [OutputType([hashtable])]
   param (
     [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
     [Alias("f")]
@@ -932,6 +845,7 @@ function Read-FigletFont {
 #>
 function Convert-TextToAscii {
   [CmdletBinding()]
+  [OutputType([string])]
   param (
     [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
     [Alias("t")]
@@ -992,6 +906,7 @@ function Convert-TextToAscii {
 #>
 function Get-ParseTime {
   [CmdletBinding()]
+  [OutputType([datetime])]
   param (
     [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
     [Alias("t")]
@@ -1065,6 +980,7 @@ function Get-ParseTime {
 function Start-Countdown {
   [CmdletBinding()]
   [Alias("countdown")]
+  [OutputType([void])]
   param (
     [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
     [Alias("d")]
@@ -1182,6 +1098,7 @@ function Start-Countdown {
 function Start-Stopwatch {
   [CmdletBinding()]
   [Alias("stopwatch")]
+  [OutputType([void])]
   param (
     [Parameter(Mandatory = $false, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
     [Alias("t")]
@@ -1284,6 +1201,7 @@ function Start-Stopwatch {
 function Get-WallClock {
   [CmdletBinding()]
   [Alias("wallclock")]
+  [OutputType([void])]
   param (
     [Parameter(Mandatory = $false, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
     [Alias("t")]
@@ -1374,10 +1292,11 @@ function Get-WallClock {
 function Start-Matrix {
   [CmdletBinding()]
   [Alias("matrix")]
+  [OutputType([void])]
   param (
     [Parameter(Mandatory = $false, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
     [Alias("s")]
-    [double]$SleepTime = 0.5
+    [double]$SleepTime = 0.8
   )
 
   $host.UI.RawUI.BackgroundColor = "Black"
