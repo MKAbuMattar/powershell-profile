@@ -99,6 +99,10 @@ $($PSStyle.Foreground.Yellow)Directory Module$($PSStyle.Reset)
     $($PSStyle.Foreground.Magenta)tail$($PSStyle.Reset) -Path <Path> [-Lines <Lines>] [-Wait]
         Reads the last few lines of a file.
 
+    $($PSStyle.Foreground.Green)Get-ShortPath$($PSStyle.Reset) -Path <Path>
+    $($PSStyle.Foreground.Magenta)shortpath$($PSStyle.Reset) -Path <Path>
+        Retrieves the short path of a file or directory.
+
     $($PSStyle.Foreground.Green)Invoke-UpOneDirectoryLevel$($PSStyle.Reset)
     $($PSStyle.Foreground.Magenta)cd.1$($PSStyle.Reset)
     $($PSStyle.Foreground.Magenta)..$($PSStyle.Reset)
@@ -134,6 +138,25 @@ $($PSStyle.Foreground.Yellow)Docs Module$($PSStyle.Reset)
 
     $Environment = @"
 $($PSStyle.Foreground.Yellow)Environment Module$($PSStyle.Reset)
+    $($PSStyle.Foreground.Green)Invoke-ReloadPathEnvironmentVariable$($PSStyle.Reset)
+    $($PSStyle.Foreground.Magenta)reload-env-path$($PSStyle.Reset)
+    $($PSStyle.Foreground.Magenta)reload-path$($PSStyle.Reset)
+        Reloads the PATH environment variable.
+
+    $($PSStyle.Foreground.Green)Get-PathEnvironmentVariable$($PSStyle.Reset) [-Scope <Scope>]
+    $($PSStyle.Foreground.Magenta)get-env-path$($PSStyle.Reset) [-Scope <Scope>]
+    $($PSStyle.Foreground.Magenta)get-path$($PSStyle.Reset) [-Scope <Scope>]
+        Retrieves the PATH environment variable.
+
+    $($PSStyle.Foreground.Green)Add-PathEnvironmentVariable$($PSStyle.Reset) -Path <Path> [-Scope <Scope>] [-Append] [-Prepend] [-MakeShort] [-Quiet]
+    $($PSStyle.Foreground.Magenta)add-path$($PSStyle.Reset) -Path <Path> [-Scope <Scope>] [-Append] [-Prepend] [-MakeShort] [-Quiet]
+    $($PSStyle.Foreground.Magenta)set-path$($PSStyle.Reset) -Path <Path> [-Scope <Scope>] [-Append] [-Prepend] [-MakeShort] [-Quiet]
+        Sets the PATH environment variable.
+
+    $($PSStyle.Foreground.Green)Remove-PathEnvironmentVariable$($PSStyle.Reset) -Path <Path> [-Scope <Scope>] [-Force]
+    $($PSStyle.Foreground.Magenta)remove-path$($PSStyle.Reset) -Path <Path> [-Scope <Scope>] [-Force]
+        Removes a path from the PATH environment variable.
+
     $($PSStyle.Foreground.Green)Set-EnvVar$($PSStyle.Reset) -Name <Name> -Value <Value>
     $($PSStyle.Foreground.Magenta)set-env$($PSStyle.Reset) -Name <Name> -Value <Value>
     $($PSStyle.Foreground.Magenta)export$($PSStyle.Reset) -Name <Name> -Value <Value>

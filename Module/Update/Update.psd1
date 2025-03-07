@@ -12,7 +12,7 @@
     'Update-PowerShell'
   )
   CmdletsToExport   = @()
-  VariablesToExport = '*'
+  VariablesToExport = @()
   AliasesToExport   = @(
     'update-local-module',
     'update-profile',

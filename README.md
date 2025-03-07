@@ -13,6 +13,7 @@ Welcome to my PowerShell profile! Here, you'll find a curated collection of func
   - [Environment Module](#environment-module)
   - [Logging Module](#logging-module)
   - [Network Module](#network-module)
+  - [Process Module](#process-module)
   - [Starship Module](#starship-module)
   - [Update Module](#update-module)
   - [Utility Module](#utility-module)
@@ -69,6 +70,8 @@ The Directory module provides functions to navigate directories and manage files
   - Example: `head "file.txt"`
 - **Get-FileTail** (Alias: `tail`): Retrieves the last few lines of a file.
   - Example: `tail "file.txt"`
+- **Get-ShortPath** (Alias: `shortpath`): Retrieves the short path of a file or directory.
+  - Example: `shortpath "C:\Users\Username\Documents"`
 - **Invoke-UpOneDirectoryLevel** (Aliases: `cd.1`, `..`): Moves up one directory level.
   - Example: `cd.1`
 - **Invoke-UpTwoDirectoryLevels** (Aliases: `cd.2`, `...`): Moves up two directory levels.
@@ -90,8 +93,16 @@ The Docs module provides functions to display help documentation for the PowerSh
 
 ### Environment Module
 
-The Environment module provides functions to manage environment variables and test GitHub connectivity:
+The Environment module provides functions to manage environment variables, test GitHub connectivity, and manipulate the PATH environment variable:
 
+- **Invoke-ReloadPathEnvironmentVariable** (Aliases: `reload-env-path`, `reload-path`): Reloads the PATH environment variable.
+  - Example: `reload-path`
+- **Get-PathEnvironmentVariable** (Aliases: `get-env-path`, `get-path`): Retrieves the PATH environment variable.
+  - Example: `get-path`
+- **Add-PathEnvironmentVariable** (Aliases: `add-path`, `set-path`): Sets the PATH environment variable.
+  - Example: `add-path "C:\Program Files\Example"`
+- **Remove-PathEnvironmentVariable**: Removes a path from the PATH environment variable.
+  - Example: `Remove-PathEnvironmentVariable "C:\Program Files\Example"`
 - **Set-EnvVar** (Aliases: `export`, `set-env`): Exports an environment variable.
   - Example: `set-env "name" "value"`
 - **Get-EnvVar** (Alias: `get-env`): Retrieves the value of an environment variable.

@@ -19,7 +19,7 @@
     'Start-Matrix'
   )
   CmdletsToExport   = @()
-  VariablesToExport = '*'
+  VariablesToExport = @()
   AliasesToExport   = @(
     'command-exists',
     'reload-profile',

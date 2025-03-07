@@ -567,6 +567,66 @@ function Get-FileTail {
 
 <#
 .SYNOPSIS
+  Gets the short path of a file or directory.
+
+.DESCRIPTION
+  This function retrieves the short path of a file or directory. The short path is the 8.3 format path that conforms to the MS-DOS naming convention. It is useful for working with legacy applications that require short paths.
+
+.PARAMETER Path
+  Specifies the path of the file or directory to retrieve the short path for. If not provided, the function uses the current location.
+
+.INPUTS
+  Path: (Optional) The path of the file or directory to retrieve the short path for.
+
+.OUTPUTS
+  The short path of the file or directory.
+
+.NOTES
+  This function is useful for retrieving the short path of a file or directory.
+
+.EXAMPLE
+  Get-ShortPath "C:\Program Files\Example"
+  Retrieves the short path of the directory "C:\Program Files\Example".
+
+.LINK
+  https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
+#>
+function Get-ShortPath {
+  [CmdletBinding()]
+  [Alias("shortpath")]
+  [OutputType([string])]
+  Param (
+    [Parameter(
+      Mandatory = $false,
+      Position = 0,
+      ValueFromPipeline = $true,
+      ValueFromPipelineByPropertyName = $true
+    )]
+    [string]$Path = (Get-Location)
+  )
+  Begin {}
+  Process {
+    Write-Verbose "Make short path from: $Path"
+    if ($Path -and (Test-Path $Path)) {
+      $fso = New-Object -ComObject Scripting.FileSystemObject
+      $short = if ((Get-item $Path).PSIsContainer) {
+        $fso.GetFolder($Path).ShortPath
+      }
+      else {
+        $fso.GetFile($Path).ShortPath
+      }
+      Write-Output $short
+    }
+    else {
+      Write-Verbose "Ignoring $Path"
+      Write-Output $null
+    }
+  }
+  End {}
+}
+
+<#
+.SYNOPSIS
   Moves up one directory level.
 
 .DESCRIPTION

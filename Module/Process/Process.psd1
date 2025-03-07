@@ -16,7 +16,7 @@
     'Invoke-ClearCache'
   )
   CmdletsToExport   = @()
-  VariablesToExport = '*'
+  VariablesToExport = @()
   AliasesToExport   = @(
     'sysinfo',
     'pall',
