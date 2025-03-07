@@ -749,13 +749,9 @@ function Invoke-UpdateInstallChocoPackages {
 .PARAMETER DestinationPath
   Specifies the destination path where the settings.json file will be saved. Default is "$env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json".
 
-.PARAMETER Force
-  Specifies whether to overwrite the destination file if it already exists. Default is $false.
-
 .INPUTS
   SourceUrl: (Optional) The URL of the settings.json file to download.
   DestinationPath: (Optional) The destination path where the settings.json file will be saved.
-  Force: (Optional) Whether to overwrite the destination file if it already exists.
 
 .OUTPUTS
   The settings.json file is downloaded and saved to the destination path.
@@ -768,6 +764,7 @@ function Invoke-UpdateInstallChocoPackages {
   This function is used to initialize the Windows Terminal configuration by downloading the settings.json file from the GitHub repository.
 #>
 function Initialize-WindowsTerminalConfig {
+  [CmdletBinding()]
   param (
     [Parameter(
       Mandatory = $false,
@@ -785,32 +782,26 @@ function Initialize-WindowsTerminalConfig {
       ValueFromPipelineByPropertyName = $true,
       HelpMessage = "The destination path where the settings.json file will be saved."
     )]
-    [string]$DestinationPath = "$env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json",
-
-    [Parameter(
-      Mandatory = $false,
-      Position = 2,
-      ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true,
-      HelpMessage = "Whether to overwrite the destination file if it already exists."
-    )]
-    [switch]$Force = $true
+    [string]$DestinationPath = "$env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json"
   )
 
-  if (Test-Path $DestinationPath -or $Force) {
-    try {
-      Write-Host "Downloading Windows Terminal config from $SourceUrl..." -ForegroundColor Cyan
-      Invoke-WebRequest -Uri $SourceUrl -OutFile $DestinationPath -UseBasicParsing
+  try {
+    $destinationDir = Split-Path -Path $DestinationPath -Parent
+    if (-not (Test-Path -Path $destinationDir)) {
+      New-Item -Path $destinationDir -ItemType Directory -Force
+      Write-LogMessage -Message "Created directory: $destinationDir"
+    }
 
-      Write-Host "Windows Terminal config updated successfully!" -ForegroundColor Green
-      Write-Host "Restart Windows Terminal to apply changes." -ForegroundColor Yellow
+    if (Test-Path -Path $DestinationPath) {
+      Remove-Item -Path $DestinationPath -Force
+      Write-LogMessage -Message "Removed existing file: $DestinationPath"
     }
-    catch {
-      Write-Host "Failed to update Windows Terminal config: $_" -ForegroundColor Red
-    }
+
+    Invoke-WebRequest -Uri $SourceUrl -OutFile $DestinationPath
+    Write-LogMessage -Message "Copied settings.json to: $DestinationPath"
   }
-  else {
-    Write-Host "Config file not found at $DestinationPath. Use -Force to create it." -ForegroundColor Yellow
+  catch {
+    Invoke-ErrorHandling -ErrorMessage "Failed to download or save settings.json." -ErrorRecord $_
   }
 }
 
