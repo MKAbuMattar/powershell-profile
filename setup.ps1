@@ -200,14 +200,12 @@ function Copy-ModuleDirectory {
     $baseRepoUrl = "https://github.com/MKAbuMattar/powershell-profile"
     $moduleDirUrl = "$baseRepoUrl/raw/main/Module"
 
-    # Create the local Module directory if it does not exist
     $localModuleDir = Join-Path -Path $LocalPath -ChildPath "Module"
     if (-not (Test-Path -Path $localModuleDir)) {
       New-Item -Path $localModuleDir -ItemType Directory -Force
       Write-LogMessage -Message "Created directory: $localModuleDir"
     }
 
-    # Define the files to be copied from the Module directory
     $files = @(
       "Directory/Directory.psd1",
       "Directory/Directory.psm1",
@@ -219,6 +217,8 @@ function Copy-ModuleDirectory {
       "Logging/Logging.psm1",
       "Network/Network.psd1",
       "Network/Network.psm1",
+      "Process/Process.psd1",
+      "Process/Process.psm1",
       "Starship/Starship.psd1",
       "Starship/Starship.psm1",
       "Update/Update.psd1",
@@ -226,25 +226,21 @@ function Copy-ModuleDirectory {
       "Utility/Utility.psd1",
       "Utility/Utility.psm1"
     )
-
     foreach ($file in $files) {
       $fileUrl = "$moduleDirUrl/$file"
       $localFilePath = Join-Path -Path $localModuleDir -ChildPath $file
 
-      # Ensure the local directory for the file exists
       $localFileDir = Split-Path -Path $localFilePath -Parent
       if (-not (Test-Path -Path $localFileDir)) {
         New-Item -Path $localFileDir -ItemType Directory -Force
         Write-LogMessage -Message "Created directory: $localFileDir"
       }
 
-      # Remove the file if it exists
       if (Test-Path -Path $localFilePath) {
         Remove-Item -Path $localFilePath -Force
         Write-LogMessage -Message "Removed existing file: $localFilePath"
       }
 
-      # Copy the new file
       Invoke-WebRequest -Uri $fileUrl -OutFile $localFilePath
       Write-LogMessage -Message "Copied $file to: $localFilePath"
     }

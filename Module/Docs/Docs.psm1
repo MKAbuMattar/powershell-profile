@@ -34,7 +34,18 @@ function Show-ProfileHelp {
   [OutputType([void])]
   param (
     [Parameter(Mandatory = $false, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
-    [ValidateSet('All', 'Directory', 'Docs', 'Environment', 'Logging', 'Network', 'Starship', 'Update', 'Utility')]
+    [ValidateSet(
+      'All',
+      'Directory',
+      'Docs',
+      'Environment',
+      'Logging',
+      'Network',
+      'Process',
+      'Starship',
+      'Update',
+      'Utility'
+    )]
     [string]$Section = 'All'
   )
 
@@ -154,6 +165,39 @@ $($PSStyle.Foreground.Yellow)Network Module$($PSStyle.Reset)
         Flushes the DNS cache.
 "@
 
+
+
+  $Process = @"
+$($PSStyle.Foreground.Yellow)Process Module$($PSStyle.Reset)
+    $($PSStyle.Foreground.Green)Get-SystemInfo$($PSStyle.Reset)
+    $($PSStyle.Foreground.Magenta)sysinfo$($PSStyle.Reset)
+        Retrieves the system information.
+
+    $($PSStyle.Foreground.Green)Get-AllProcesses$($PSStyle.Reset) [-Name <Name>]
+    $($PSStyle.Foreground.Magenta)pall$($PSStyle.Reset) [-Name <Name>]
+        Retrieves a list of all running processes.
+
+    $($PSStyle.Foreground.Green)Get-ProcessByName$($PSStyle.Reset) -Name <Name>
+    $($PSStyle.Foreground.Magenta)pgrep$($PSStyle.Reset) -Name <Name>
+        Finds a process by name.
+
+    $($PSStyle.Foreground.Green)Get-ProcessByPort$($PSStyle.Reset) -Port <Port>
+    $($PSStyle.Foreground.Magenta)portgrep$($PSStyle.Reset) -Port <Port>
+        Finds a process by port.
+
+    $($PSStyle.Foreground.Green)Stop-ProcessByName$($PSStyle.Reset) -Name <Name>
+    $($PSStyle.Foreground.Magenta)pkill$($PSStyle.Reset) -Name <Name>
+        Terminates a process by name.
+
+    $($PSStyle.Foreground.Green)Stop-ProcessByPort$($PSStyle.Reset) -Port <Port>
+    $($PSStyle.Foreground.Magenta)portkill$($PSStyle.Reset) -Port <Port>
+        Terminates a process by port.
+
+    $($PSStyle.Foreground.Green)Invoke-ClearCache$($PSStyle.Reset) [-Type <Type>]
+    $($PSStyle.Foreground.Magenta)clear-cache$($PSStyle.Reset) [-Type <Type>]
+        Clears windows cache, temp files, and internet explorer cache.
+"@
+
   $Starship = @"
 $($PSStyle.Foreground.Yellow)Starship Module$($PSStyle.Reset)
     $($PSStyle.Foreground.Green)Invoke-StarshipTransientFunction$($PSStyle.Reset)
@@ -194,34 +238,6 @@ $($PSStyle.Foreground.Yellow)Utility Module$($PSStyle.Reset)
     $($PSStyle.Foreground.Magenta)def$($PSStyle.Reset) -Name <Name>
         Gets the definition of a command.
 
-    $($PSStyle.Foreground.Green)Get-AllProcesses$($PSStyle.Reset) [-Name <Name>]
-    $($PSStyle.Foreground.Magenta)pall$($PSStyle.Reset) [-Name <Name>]
-        Retrieves a list of all running processes.
-
-    $($PSStyle.Foreground.Green)Get-ProcessByName$($PSStyle.Reset) -Name <Name>
-    $($PSStyle.Foreground.Magenta)pgrep$($PSStyle.Reset) -Name <Name>
-        Finds a process by name.
-
-    $($PSStyle.Foreground.Green)Get-ProcessByPort$($PSStyle.Reset) -Port <Port>
-    $($PSStyle.Foreground.Magenta)portgrep$($PSStyle.Reset) -Port <Port>
-        Finds a process by port.
-
-    $($PSStyle.Foreground.Green)Stop-ProcessByName$($PSStyle.Reset) -Name <Name>
-    $($PSStyle.Foreground.Magenta)pkill$($PSStyle.Reset) -Name <Name>
-        Terminates a process by name.
-
-    $($PSStyle.Foreground.Green)Stop-ProcessByPort$($PSStyle.Reset) -Port <Port>
-    $($PSStyle.Foreground.Magenta)portkill$($PSStyle.Reset) -Port <Port>
-        Terminates a process by port.
-
-    $($PSStyle.Foreground.Green)Get-SystemInfo$($PSStyle.Reset)
-    $($PSStyle.Foreground.Magenta)sysinfo$($PSStyle.Reset)
-        Retrieves the system information.
-
-    $($PSStyle.Foreground.Green)Invoke-ClearCache$($PSStyle.Reset) [-Type <Type>]
-    $($PSStyle.Foreground.Magenta)clear-cache$($PSStyle.Reset) [-Type <Type>]
-        Clears windows cache, temp files, and internet explorer cache.
-
     $($PSStyle.Foreground.Green)Get-RandomQuote$($PSStyle.Reset)
     $($PSStyle.Foreground.Magenta)quote$($PSStyle.Reset)
         Retrieves a random quote from an online API.
@@ -255,6 +271,7 @@ $($PSStyle.Foreground.Yellow)Utility Module$($PSStyle.Reset)
       Write-Host $Environment
       Write-Host $Logging
       Write-Host $Network
+      Write-Host $Process
       Write-Host $Starship
       Write-Host $Update
       Write-Host $Utility
@@ -278,6 +295,10 @@ $($PSStyle.Foreground.Yellow)Utility Module$($PSStyle.Reset)
     'Network' {
       Write-Host $Title
       Write-Host $Network
+    }
+    'Process' {
+      Write-Host $Title
+      Write-Host $Process
     }
     'Starship' {
       Write-Host $Title

@@ -59,6 +59,8 @@ function Update-LocalProfileModuleDirectory {
       "Logging/Logging.psm1",
       "Network/Network.psd1",
       "Network/Network.psm1",
+      "Process/Process.psd1",
+      "Process/Process.psm1",
       "Starship/Starship.psd1",
       "Starship/Starship.psm1",
       "Update/Update.psd1",
