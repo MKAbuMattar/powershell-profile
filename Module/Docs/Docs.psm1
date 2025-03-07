@@ -249,6 +249,10 @@ $($PSStyle.Foreground.Yellow)Update Module$($PSStyle.Reset)
 
     $Utility = @"
 $($PSStyle.Foreground.Yellow)Utility Module$($PSStyle.Reset)
+    $($PSStyle.Foreground.Green)Test-Administrator$($PSStyle.Reset)
+    $($PSStyle.Foreground.Magenta)is-admin$($PSStyle.Reset)
+        Checks if the current user has administrator privileges.
+
     $($PSStyle.Foreground.Green)Test-CommandExists$($PSStyle.Reset) -Command <Command>
     $($PSStyle.Foreground.Magenta)command-exists$($PSStyle.Reset) -Command <Command>
         Checks if a command exists in the current environment.

@@ -1,5 +1,47 @@
 <#
 .SYNOPSIS
+  Test if the current user has administrator privileges.
+
+.DESCRIPTION
+  This function checks if the current user has administrator privileges. It returns a boolean value indicating whether the user is an administrator.
+
+.PARAMETER None
+  This function does not accept any parameters.
+
+.INPUTS
+  This function does not accept any input.
+
+.OUTPUTS
+  $true: If the user has administrator privileges.
+  $false: If the user does not have administrator privileges.
+
+.NOTES
+  This function is useful for determining if the current user has administrator privileges.
+
+.EXAMPLE
+  Test-Administrator
+  Checks if the current user has administrator privileges.
+
+.LINK
+  https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
+#>
+function Test-Administrator {
+  [CmdletBinding()]
+  [Alias("is-admin")]
+  [OutputType([bool])]
+  param (
+    # This function does not accept any parameters
+  )
+  Begin {}
+  Process {
+    $user = [Security.Principal.WindowsIdentity]::GetCurrent()
+    (New-Object Security.Principal.WindowsPrincipal $user).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)
+  }
+  End {}
+}
+
+<#
+.SYNOPSIS
   Checks if a command exists in the current environment.
 
 .DESCRIPTION

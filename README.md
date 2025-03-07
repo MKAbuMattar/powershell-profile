@@ -172,6 +172,8 @@ The Update module provides functions to update the local profile module director
 
 The Utility module provides a set of useful functions to enhance your PowerShell experience:
 
+- **Test-Administrator** (Alias: `is-admin`): Checks if the current user has administrator privileges.
+  - Example: `is-admin`
 - **Test-CommandExists** (Alias: `command-exists`): Checks if a command exists in the current environment.
   - Example: `command-exists "ls"`
 - **Invoke-ReloadProfile** (Alias: `reload-profile`): Reloads the PowerShell profile to apply changes.

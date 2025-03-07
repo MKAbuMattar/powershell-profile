@@ -7,6 +7,7 @@
   Description       = 'A collection of utility functions for system and process management.'
   PowerShellVersion = '5.0'
   FunctionsToExport = @(
+    'Test-Administrator',
     'Test-CommandExists',
     'Invoke-ReloadProfile',
     'Get-Uptime',
@@ -21,6 +22,7 @@
   CmdletsToExport   = @()
   VariablesToExport = @()
   AliasesToExport   = @(
+    'is-admin',
     'command-exists',
     'reload-profile',
     'uptime',

@@ -266,6 +266,7 @@ function Copy-ModuleDirectory {
         "Utility/Utility.psd1",
         "Utility/Utility.psm1"
       )
+
       foreach ($file in $files) {
         $fileUrl = "$moduleDirUrl/$file"
         $localFilePath = Join-Path -Path $localModuleDir -ChildPath $file
