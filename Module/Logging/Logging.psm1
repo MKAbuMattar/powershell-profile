@@ -60,10 +60,7 @@ function Write-LogMessage {
     )]
     [string]$Level = "INFO"
   )
-  Begin {}
-  Process {
-    $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
-    Write-Output "[$timestamp][$Level] $Message"
-  }
-  End {}
+
+  $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+  Write-Output "[$timestamp][$Level] $Message"
 }

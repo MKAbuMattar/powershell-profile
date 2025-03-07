@@ -46,11 +46,11 @@
 #         - Character
 #
 # Created: 2021-09-01
-# Updated: 2025-02-22
+# Updated: 2025-03-07
 #
 # GitHub: https://github.com/MKAbuMattar/powershell-profile
 #
-# Version: 3.0.0
+# Version: 4.0.0
 #---------------------------------------------------------------------------------------------------
 
 # Get editor completions based on the config schema

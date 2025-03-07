@@ -85,11 +85,8 @@ function Invoke-ReloadPathEnvironmentVariable {
   param (
     # This function does not accept any parameters
   )
-  Begin {}
-  Process {
-    $env:Path = (Get-PathEnvironmentVariable | Select-Object -ExpandProperty Path) -join ';'
-  }
-  End {}
+
+  $env:Path = (Get-PathEnvironmentVariable | Select-Object -ExpandProperty Path) -join ';'
 }
 
 <#
@@ -147,39 +144,36 @@ function Get-PathEnvironmentVariable {
     [string]
     $Scope = 'All'
   )
-  Begin {}
-  Process {
-    $machine_paths = try {
-      [System.Environment]::GetEnvironmentVariable('Path', 'Machine').Split(';') `
+
+  $machine_paths = try {
+    [System.Environment]::GetEnvironmentVariable('Path', 'Machine').Split(';') `
     | Select-Object @{name = 'Path'; exp = { $_ } }, @{name = 'Scope'; exp = { 'Machine' } } `
     | Where-Object { $_.Path }
-    }
-    catch {
-      $null
-    }
+  }
+  catch {
+    $null
+  }
 
-    $user_paths = try {
-      [System.Environment]::GetEnvironmentVariable('Path', 'User').Split(';') `
+  $user_paths = try {
+    [System.Environment]::GetEnvironmentVariable('Path', 'User').Split(';') `
     | Select-Object @{name = 'Path'; exp = { $_ } }, @{name = 'Scope'; exp = { 'User' } } `
     | Where-Object { $_.Path }
-    }
-    catch {
-      $null
-    }
+  }
+  catch {
+    $null
+  }
 
-    switch ($Scope) {
-      'User' {
-        return $user_paths
-      }
-      'Machine' {
-        return $machine_paths
-      }
-      Default {
-        return $machine_paths + $user_paths
-      }
+  switch ($Scope) {
+    'User' {
+      return $user_paths
+    }
+    'Machine' {
+      return $machine_paths
+    }
+    Default {
+      return $machine_paths + $user_paths
     }
   }
-  End {}
 }
 
 <#
@@ -325,53 +319,50 @@ function Add-PathEnvironmentVariable {
     [Alias('q')]
     [switch]$Quiet
   )
-  Begin {}
-  Process {
-    $machine_paths = @(Get-PathEnvironmentVariable -Scope Machine | Select-Object -ExpandProperty Path)
-    $user_paths = @(Get-PathEnvironmentVariable -Scope User | Select-Object -ExpandProperty Path)
 
-    if ($MakeShort) {
-      $Path = $Path | Get-ShortPath
+  $machine_paths = @(Get-PathEnvironmentVariable -Scope Machine | Select-Object -ExpandProperty Path)
+  $user_paths = @(Get-PathEnvironmentVariable -Scope User | Select-Object -ExpandProperty Path)
+
+  if ($MakeShort) {
+    $Path = $Path | Get-ShortPath
+  }
+
+  switch ($Scope) {
+    'User' {
+      if ($Prepend) {
+        $user_paths = $Path + $user_paths
+      }
+      else {
+        $user_paths = $user_paths + $Path
+      }
+      Set-PathEnvironmentVariable -Path $user_paths -Scope 'User' -ErrorAction Stop
+      Reload-PathEnvironmentVariable
     }
-
-    switch ($Scope) {
-      'User' {
-        if ($Prepend) {
-          $user_paths = $Path + $user_paths
-        }
-        else {
-          $user_paths = $user_paths + $Path
-        }
-        Set-PathEnvironmentVariable -Path $user_paths -Scope 'User' -ErrorAction Stop
-        Reload-PathEnvironmentVariable
+    'Machine' {
+      if ($Prepend) {
+        $machine_paths = $Path + $machine_paths
       }
-      'Machine' {
-        if ($Prepend) {
-          $machine_paths = $Path + $machine_paths
-        }
-        else {
-          $machine_paths = $machine_paths + $Path
-        }
-        Set-PathEnvironmentVariable -Path $machine_paths -Scope 'Machine' -ErrorAction Stop
-        Reload-PathEnvironmentVariable
+      else {
+        $machine_paths = $machine_paths + $Path
       }
-      Default {
-        if ($Prepend) {
-          $env:Path = ($Path + $env:Path.Split(';') ) -join ';'
-        }
-        else {
-          $env:Path = ($env:Path.Split(';') + $Path) -join ';'
-        }
-      }
+      Set-PathEnvironmentVariable -Path $machine_paths -Scope 'Machine' -ErrorAction Stop
+      Reload-PathEnvironmentVariable
     }
-
-    if (-not $Quiet) {
-      Write-Host "Added the following path(s) to PATH environment variable of scope " -NoNewline
-      Write-Host "$Scope`n`t" -NoNewline -ForegroundColor Yellow
-      Write-Host $Path -Separator "`n`t" -ForegroundColor Yellow
+    Default {
+      if ($Prepend) {
+        $env:Path = ($Path + $env:Path.Split(';') ) -join ';'
+      }
+      else {
+        $env:Path = ($env:Path.Split(';') + $Path) -join ';'
+      }
     }
   }
-  End {}
+
+  if (-not $Quiet) {
+    Write-Host "Added the following path(s) to PATH environment variable of scope " -NoNewline
+    Write-Host "$Scope`n`t" -NoNewline -ForegroundColor Yellow
+    Write-Host $Path -Separator "`n`t" -ForegroundColor Yellow
+  }
 }
 
 <#
@@ -456,46 +447,43 @@ function Remove-PathEnvironmentVariable {
     [Alias('f')]
     [switch]$Force
   )
-  begin {
-    $old_paths = switch ($Scope) {
-      'Process' { $env:Path -split ';' }
-      Default { Get-PathEnvironmentVariable -Scope $Scope | Select-Object -ExpandProperty Path }
-    }
-    $requested_paths = @()
-    Write-Verbose "Old paths of scope $Scope`:"
-    $old_paths | Write-Verbose
-  }
-  process {
-    $requested_paths += $Path
-  }
-  end {
-    Write-Verbose "Request to remove paths:"
-    $requested_paths | Write-Verbose
-    $notfound_paths = $requested_paths | Where-Object { $_ -notin $old_paths }
-    $toberemoved_paths = $requested_paths | Where-Object { $_ -in $old_paths }
 
-    if ($notfound_paths) {
-      Write-Host "Could not find the following path(s) in PATH environment variable of scope " -NoNewline
-      Write-Host "$Scope`n`t" -NoNewline -ForegroundColor Yellow
-      Write-Host $notfound_paths -ForegroundColor Red -Separator "`n`t"
-    }
+  $old_paths = switch ($Scope) {
+    'Process' { $env:Path -split ';' }
+    Default { Get-PathEnvironmentVariable -Scope $Scope | Select-Object -ExpandProperty Path }
+  }
+  $requested_paths = @()
+  Write-Verbose "Old paths of scope $Scope`:"
+  $old_paths | Write-Verbose
 
-    if ($toberemoved_paths) {
-      $new_paths = $old_paths | Where-Object { $_ -and ($_ -notin $requested_paths) }
-      Write-Verbose "Paths to remove:"
-      $toberemoved_paths | Write-Verbose
-      Write-Verbose "New paths of scope $Scope`:"
-      $new_paths | Write-Verbose
-      try {
-        Set-PathEnvironmentVariable -Path $new_paths -Scope $Scope
-      }
-      catch {
-        return
-      }
-      Write-Host "Removed the following path(s) from PATH environment variable of scope " -NoNewline
-      Write-Host "$Scope`n`t" -NoNewline -ForegroundColor Yellow
-      Write-Host $toberemoved_paths -ForegroundColor Yellow -Separator "`n`t"
+  $requested_paths += $Path
+
+  Write-Verbose "Request to remove paths:"
+  $requested_paths | Write-Verbose
+  $notfound_paths = $requested_paths | Where-Object { $_ -notin $old_paths }
+  $toberemoved_paths = $requested_paths | Where-Object { $_ -in $old_paths }
+
+  if ($notfound_paths) {
+    Write-Host "Could not find the following path(s) in PATH environment variable of scope " -NoNewline
+    Write-Host "$Scope`n`t" -NoNewline -ForegroundColor Yellow
+    Write-Host $notfound_paths -ForegroundColor Red -Separator "`n`t"
+  }
+
+  if ($toberemoved_paths) {
+    $new_paths = $old_paths | Where-Object { $_ -and ($_ -notin $requested_paths) }
+    Write-Verbose "Paths to remove:"
+    $toberemoved_paths | Write-Verbose
+    Write-Verbose "New paths of scope $Scope`:"
+    $new_paths | Write-Verbose
+    try {
+      Set-PathEnvironmentVariable -Path $new_paths -Scope $Scope
     }
+    catch {
+      return
+    }
+    Write-Host "Removed the following path(s) from PATH environment variable of scope " -NoNewline
+    Write-Host "$Scope`n`t" -NoNewline -ForegroundColor Yellow
+    Write-Host $toberemoved_paths -ForegroundColor Yellow -Separator "`n`t"
   }
 }
 
@@ -557,16 +545,13 @@ function Set-EnvVar {
     [Alias("v")]
     [string]$Value
   )
-  Begin {}
-  Process {
-    try {
-      Set-Item -Force -Path "env:$Name" -Value $Value -ErrorAction Stop
-    }
-    catch {
-      Write-LogMessage -Message "Failed to export environment variable '$Name'." -Level "ERROR"
-    }
+
+  try {
+    Set-Item -Force -Path "env:$Name" -Value $Value -ErrorAction Stop
   }
-  End {}
+  catch {
+    Write-LogMessage -Message "Failed to export environment variable '$Name'." -Level "ERROR"
+  }
 }
 
 <#
@@ -610,20 +595,17 @@ function Get-EnvVar {
     [Alias("n")]
     [string]$Name
   )
-  Begin {}
-  Process {
-    try {
-      $value = Get-Item -Path "env:$Name" -ErrorAction Stop | Select-Object -ExpandProperty Value
-      if ($value) {
-        Write-Output $value
-      }
-      else {
-        Write-LogMessage -Message "Environment variable '$Name' not found." -Level "WARNING"
-      }
+
+  try {
+    $value = Get-Item -Path "env:$Name" -ErrorAction Stop | Select-Object -ExpandProperty Value
+    if ($value) {
+      Write-Output $value
     }
-    catch {
-      Write-LogMessage -Message "An error occurred while retrieving the value of environment variable '$Name'." -Level "ERROR"
+    else {
+      Write-LogMessage -Message "Environment variable '$Name' not found." -Level "WARNING"
     }
   }
-  End {}
+  catch {
+    Write-LogMessage -Message "An error occurred while retrieving the value of environment variable '$Name'." -Level "ERROR"
+  }
 }

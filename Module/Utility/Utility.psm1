@@ -32,12 +32,9 @@ function Test-Administrator {
   param (
     # This function does not accept any parameters
   )
-  Begin {}
-  Process {
-    $user = [Security.Principal.WindowsIdentity]::GetCurrent()
+
+  $user = [Security.Principal.WindowsIdentity]::GetCurrent()
     (New-Object Security.Principal.WindowsPrincipal $user).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)
-  }
-  End {}
 }
 
 <#
@@ -81,12 +78,9 @@ function Test-CommandExists {
     [Alias("c")]
     [string]$Command
   )
-  Begin {}
-  Process {
-    $exists = $null -ne (Get-Command $Command -ErrorAction SilentlyContinue)
-    return $exists
-  }
-  End {}
+
+  $exists = $null -ne (Get-Command $Command -ErrorAction SilentlyContinue)
+  return $exists
 }
 
 <#
@@ -122,17 +116,14 @@ function Invoke-ReloadProfile {
   param (
     # This function does not accept any parameters
   )
-  Begin {}
-  Process {
-    try {
-      & $profile
-      Write-LogMessage -Message "PowerShell profile reloaded successfully." -Level "INFO"
-    }
-    catch {
-      Write-LogMessage -Message "Failed to reload the PowerShell profile." -Level "ERROR"
-    }
+
+  try {
+    & $profile
+    Write-LogMessage -Message "PowerShell profile reloaded successfully." -Level "INFO"
   }
-  End {}
+  catch {
+    Write-LogMessage -Message "Failed to reload the PowerShell profile." -Level "ERROR"
+  }
 }
 
 <#
@@ -168,59 +159,56 @@ function Get-Uptime {
   param (
     # This function does not accept any parameters
   )
-  Begin {}
-  Process {
-    try {
-      if ($PSVersionTable.PSVersion.Major -eq 5) {
-        $lastBoot = (Get-WmiObject win32_operatingsystem).LastBootUpTime
-        $bootTime = [System.Management.ManagementDateTimeConverter]::ToDateTime($lastBoot)
+
+  try {
+    if ($PSVersionTable.PSVersion.Major -eq 5) {
+      $lastBoot = (Get-WmiObject win32_operatingsystem).LastBootUpTime
+      $bootTime = [System.Management.ManagementDateTimeConverter]::ToDateTime($lastBoot)
+    }
+    else {
+      $lastBootStr = net statistics workstation | Select-String "since" | ForEach-Object { $_.ToString().Replace('Statistics since ', '') }
+      if ($lastBootStr -match '^\d{2}/\d{2}/\d{4}') {
+        $dateFormat = 'dd/MM/yyyy'
+      }
+      elseif ($lastBootStr -match '^\d{2}-\d{2}-\d{4}') {
+        $dateFormat = 'dd-MM-yyyy'
+      }
+      elseif ($lastBootStr -match '^\d{4}/\d{2}/\d{2}') {
+        $dateFormat = 'yyyy/MM/dd'
+      }
+      elseif ($lastBootStr -match '^\d{4}-\d{2}-\d{2}') {
+        $dateFormat = 'yyyy-MM-dd'
+      }
+      elseif ($lastBootStr -match '^\d{2}\.\d{2}\.\d{4}') {
+        $dateFormat = 'dd.MM.yyyy'
+      }
+
+      if ($lastBootStr -match '\bAM\b' -or $lastBootStr -match '\bPM\b') {
+        $timeFormat = 'h:mm:ss tt'
       }
       else {
-        $lastBootStr = net statistics workstation | Select-String "since" | ForEach-Object { $_.ToString().Replace('Statistics since ', '') }
-        if ($lastBootStr -match '^\d{2}/\d{2}/\d{4}') {
-          $dateFormat = 'dd/MM/yyyy'
-        }
-        elseif ($lastBootStr -match '^\d{2}-\d{2}-\d{4}') {
-          $dateFormat = 'dd-MM-yyyy'
-        }
-        elseif ($lastBootStr -match '^\d{4}/\d{2}/\d{2}') {
-          $dateFormat = 'yyyy/MM/dd'
-        }
-        elseif ($lastBootStr -match '^\d{4}-\d{2}-\d{2}') {
-          $dateFormat = 'yyyy-MM-dd'
-        }
-        elseif ($lastBootStr -match '^\d{2}\.\d{2}\.\d{4}') {
-          $dateFormat = 'dd.MM.yyyy'
-        }
-
-        if ($lastBootStr -match '\bAM\b' -or $lastBootStr -match '\bPM\b') {
-          $timeFormat = 'h:mm:ss tt'
-        }
-        else {
-          $timeFormat = 'HH:mm:ss'
-        }
-
-        $bootTime = [System.DateTime]::ParseExact($lastBootStr, "$dateFormat $timeFormat", [System.Globalization.CultureInfo]::InvariantCulture)
+        $timeFormat = 'HH:mm:ss'
       }
 
-
-      $formattedBootTime = $bootTime.ToString("dddd, MMMM dd, yyyy HH:mm:ss", [System.Globalization.CultureInfo]::InvariantCulture) + " [$lastBootStr]"
-      Write-Host ("System started on: {0}" -f $formattedBootTime) -ForegroundColor DarkGray
-
-      $uptime = (Get-Date) - $bootTime
-
-      $days = $uptime.Days
-      $hours = $uptime.Hours
-      $minutes = $uptime.Minutes
-      $seconds = $uptime.Seconds
-
-      Write-Host ("Uptime: {0} days, {1} hours, {2} minutes, {3} seconds" -f $days, $hours, $minutes, $seconds) -ForegroundColor Blue
+      $bootTime = [System.DateTime]::ParseExact($lastBootStr, "$dateFormat $timeFormat", [System.Globalization.CultureInfo]::InvariantCulture)
     }
-    catch {
-      Write-Error "An error occurred while retrieving system uptime."
-    }
+
+
+    $formattedBootTime = $bootTime.ToString("dddd, MMMM dd, yyyy HH:mm:ss", [System.Globalization.CultureInfo]::InvariantCulture) + " [$lastBootStr]"
+    Write-Host ("System started on: {0}" -f $formattedBootTime) -ForegroundColor DarkGray
+
+    $uptime = (Get-Date) - $bootTime
+
+    $days = $uptime.Days
+    $hours = $uptime.Hours
+    $minutes = $uptime.Minutes
+    $seconds = $uptime.Seconds
+
+    Write-Host ("Uptime: {0} days, {1} hours, {2} minutes, {3} seconds" -f $days, $hours, $minutes, $seconds) -ForegroundColor Blue
   }
-  End {}
+  catch {
+    Write-Error "An error occurred while retrieving system uptime."
+  }
 }
 
 <#
@@ -264,22 +252,19 @@ function Get-CommandDefinition {
     [Alias("n")]
     [string]$Name
   )
-  Begin {}
-  Process {
-    try {
-      $definition = Get-Command $Name -ErrorAction Stop | Select-Object -ExpandProperty Definition
-      if ($definition) {
-        Write-Output $definition
-      }
-      else {
-        Write-LogMessage -Message "Command '$Name' not found." -Level "WARNING"
-      }
+
+  try {
+    $definition = Get-Command $Name -ErrorAction Stop | Select-Object -ExpandProperty Definition
+    if ($definition) {
+      Write-Output $definition
     }
-    catch {
-      Write-LogMessage -Message "An error occurred while retrieving the definition of '$Name'." -Level "ERROR"
+    else {
+      Write-LogMessage -Message "Command '$Name' not found." -Level "WARNING"
     }
   }
-  End {}
+  catch {
+    Write-LogMessage -Message "An error occurred while retrieving the definition of '$Name'." -Level "ERROR"
+  }
 }
 
 <#
@@ -315,27 +300,23 @@ function Get-RandomQuote {
   param (
     # This function does not accept any parameters
   )
-  Begin {
-    $url = "http://api.quotable.io/random"
-  }
-  Process {
 
-    try {
-      $response = Invoke-RestMethod -Uri $url -Method Get -SkipCertificateCheck
+  $url = "http://api.quotable.io/random"
 
-      if ($response) {
-        Write-Output "`"$($response.content)`""
-        Write-Output " - $($response.author)"
-      }
-      else {
-        Write-LogMessage -Message "Failed to retrieve a random quote." -Level "ERROR"
-      }
+  try {
+    $response = Invoke-RestMethod -Uri $url -Method Get -SkipCertificateCheck
+
+    if ($response) {
+      Write-Output "`"$($response.content)`""
+      Write-Output " - $($response.author)"
     }
-    catch {
+    else {
       Write-LogMessage -Message "Failed to retrieve a random quote." -Level "ERROR"
     }
   }
-  End {}
+  catch {
+    Write-LogMessage -Message "Failed to retrieve a random quote." -Level "ERROR"
+  }
 }
 
 <#
@@ -460,35 +441,32 @@ function Get-WeatherForecast {
     )]
     [string]$Lang = "en"
   )
-  Begin {
-    $url = "https://wttr.in/"
-  }
-  Process {
-    try {
-      switch ($true) {
-        { $Moon -eq $false && $Location } { $url += $Location }
-        { $Moon -eq $true } { $url += "Moon" }
-        { $Glyphs -eq $true } { $url += "?d" }
-        { $Glyphs -eq $false } { $url += "?T" }
-        { $Format } { $url += "&&format=$Format" }
-        { $Lang } { $url += "&&lang=$Lang" }
-        default { $url += "" }
-      }
 
-      $response = Invoke-RestMethod -Uri $url -Method Get -SkipCertificateCheck
+  $url = "https://wttr.in/"
 
-      if ($response) {
-        Write-Output $response
-      }
-      else {
-        Write-LogMessage -Message "Failed to retrieve the weather forecast." -Level "ERROR"
-      }
+  try {
+    switch ($true) {
+      { $Moon -eq $false && $Location } { $url += $Location }
+      { $Moon -eq $true } { $url += "Moon" }
+      { $Glyphs -eq $true } { $url += "?d" }
+      { $Glyphs -eq $false } { $url += "?T" }
+      { $Format } { $url += "&&format=$Format" }
+      { $Lang } { $url += "&&lang=$Lang" }
+      default { $url += "" }
     }
-    catch {
+
+    $response = Invoke-RestMethod -Uri $url -Method Get -SkipCertificateCheck
+
+    if ($response) {
+      Write-Output $response
+    }
+    else {
       Write-LogMessage -Message "Failed to retrieve the weather forecast." -Level "ERROR"
     }
   }
-  End {}
+  catch {
+    Write-LogMessage -Message "Failed to retrieve the weather forecast." -Level "ERROR"
+  }
 }
 
 <#
@@ -531,42 +509,39 @@ function Read-FigletFont {
     [Alias("f")]
     [string]$FontPath
   )
-  Begin {}
-  Process {
-    if (!(Test-Path $FontPath)) {
-      Write-Host ("Error: Font file not found at {0}" -f $FontPath) -ForegroundColor Red
-      return $null
-    }
 
-    $lines = Get-Content -Path $FontPath -Encoding UTF8
-    if ($lines.Count -eq 0) {
-      Write-Host "Error: Font file is empty or unreadable." -ForegroundColor Red
-      return $null
-    }
-
-    $fontData = @{}
-    $header = $lines[0] -split " "
-    $hardBlank = $header[0][4]
-    $charHeight = [int]$header[1]
-    $charStartIndex = 1
-
-    for ($i = 32; $i -lt 127; $i++) {
-      $charLines = @()
-      for ($j = 0; $j -lt $charHeight; $j++) {
-        $lineIndex = $charStartIndex + ($i - 32) * $charHeight + $j
-        if ($lineIndex -ge $lines.Count) { continue }
-        $charLine = $lines[$lineIndex] -replace "[@$hardBlank]", " "
-        $charLines += $charLine -replace ".$", ""
-      }
-      $fontData[[char]$i] = $charLines
-    }
-
-    return @{
-      "fontData"   = $fontData
-      "charHeight" = $charHeight
-    }
+  if (!(Test-Path $FontPath)) {
+    Write-Host ("Error: Font file not found at {0}" -f $FontPath) -ForegroundColor Red
+    return $null
   }
-  End {}
+
+  $lines = Get-Content -Path $FontPath -Encoding UTF8
+  if ($lines.Count -eq 0) {
+    Write-Host "Error: Font file is empty or unreadable." -ForegroundColor Red
+    return $null
+  }
+
+  $fontData = @{}
+  $header = $lines[0] -split " "
+  $hardBlank = $header[0][4]
+  $charHeight = [int]$header[1]
+  $charStartIndex = 1
+
+  for ($i = 32; $i -lt 127; $i++) {
+    $charLines = @()
+    for ($j = 0; $j -lt $charHeight; $j++) {
+      $lineIndex = $charStartIndex + ($i - 32) * $charHeight + $j
+      if ($lineIndex -ge $lines.Count) { continue }
+      $charLine = $lines[$lineIndex] -replace "[@$hardBlank]", " "
+      $charLines += $charLine -replace ".$", ""
+    }
+    $fontData[[char]$i] = $charLines
+  }
+
+  return @{
+    "fontData"   = $fontData
+    "charHeight" = $charHeight
+  }
 }
 
 <#
@@ -623,30 +598,27 @@ function Convert-TextToAscii {
     [Alias("f")]
     [hashtable]$Font
   )
-  Begin {}
-  Process {
-    if ($null -eq $Font) {
-      Write-Host "Error: Font data is empty. Check font file." -ForegroundColor Red
-      return
-    }
 
-    $output = @()
-    for ($i = 0; $i -lt $Font.charHeight; $i++) {
-      $line = ""
-      foreach ($char in $Text.ToCharArray()) {
-        if ($Font.fontData.ContainsKey($char)) {
-          $line += $Font.fontData[$char][$i] + "  "
-        }
-        else {
-          $line += " " * 8
-        }
-      }
-      $output += $line
-    }
-
-    return $output -join "`n"
+  if ($null -eq $Font) {
+    Write-Host "Error: Font data is empty. Check font file." -ForegroundColor Red
+    return
   }
-  End {}
+
+  $output = @()
+  for ($i = 0; $i -lt $Font.charHeight; $i++) {
+    $line = ""
+    foreach ($char in $Text.ToCharArray()) {
+      if ($Font.fontData.ContainsKey($char)) {
+        $line += $Font.fontData[$char][$i] + "  "
+      }
+      else {
+        $line += " " * 8
+      }
+    }
+    $output += $line
+  }
+
+  return $output -join "`n"
 }
 
 <#
@@ -689,23 +661,20 @@ function Get-ParseTime {
     [Alias("t")]
     [string]$TimeString
   )
-  Begin {}
-  Process {
+
+  try {
+    $targetTime = [datetime]::ParseExact($TimeString, "h:mmtt", $null)
+  }
+  catch {
     try {
-      $targetTime = [datetime]::ParseExact($TimeString, "h:mmtt", $null)
+      $targetTime = [datetime]::ParseExact($TimeString, "HH:mm", $null)
     }
     catch {
-      try {
-        $targetTime = [datetime]::ParseExact($TimeString, "HH:mm", $null)
-      }
-      catch {
-        Write-LogMessage -Message "Invalid duration or time format: $TimeString" -Level "ERROR"
-        exit 1
-      }
+      Write-LogMessage -Message "Invalid duration or time format: $TimeString" -Level "ERROR"
+      exit 1
     }
-    return $targetTime
   }
-  End {}
+  return $targetTime
 }
 
 <#
@@ -793,78 +762,75 @@ function Start-Countdown {
     [Alias("t")]
     [string]$Title = ""
   )
-  Begin {}
-  Process {
-    $width = $host.UI.RawUI.WindowSize.Width
-    $height = $host.UI.RawUI.WindowSize.Height
 
-    $timeLeft = if ($Duration -match "^\d{1,2}:\d{2}(AM|PM)?$") {
-      $targetTime = Get-ParseTime -TimeString $Duration
-      $now = Get-Date
-      if ($targetTime -lt $now) { $targetTime = $targetTime.AddDays(1) }
+  $width = $host.UI.RawUI.WindowSize.Width
+  $height = $host.UI.RawUI.WindowSize.Height
+
+  $timeLeft = if ($Duration -match "^\d{1,2}:\d{2}(AM|PM)?$") {
+    $targetTime = Get-ParseTime -TimeString $Duration
+    $now = Get-Date
+    if ($targetTime -lt $now) { $targetTime = $targetTime.AddDays(1) }
     ($targetTime - $now).TotalSeconds
-    }
-    elseif ($Duration -match "^\d+m$") {
-      [double]::Parse($Duration.TrimEnd('m')) * 60
-    }
-    elseif ($Duration -match "^\d+h$") {
-      [double]::Parse($Duration.TrimEnd('h')) * 3600
-    }
-    else {
-      [double]::Parse($Duration.TrimEnd('s'))
-    }
-
-    Write-Host ("Starting Countdown: {0}" -f $Title) -ForegroundColor Cyan
-
-    $isPaused = $false
-    $elapsed = 0
-    $paddingTop = [math]::Max(0, ($height - 1) / 2)
-    $fontPath = "$env:USERPROFILE\.config\.figlet\ANSI_Shadow.flf"
-    $font = Read-FigletFont -FontPath $fontPath
-
-    while ($timeLeft -gt 0) {
-      if (-not $isPaused) {
-        $displayTime = if ($CountUp) { $elapsed } else { $timeLeft }
-        $timeStr = [TimeSpan]::FromSeconds($displayTime).ToString("hh\:mm\:ss")
-        $figletTimeStr = Convert-TextToAscii -Text "$timeStr" -Font $font
-
-        $host.UI.RawUI.CursorPosition = [System.Management.Automation.Host.Coordinates]::new(0, 0)
-
-        Clear-Host
-
-        for ($i = 0; $i -lt $paddingTop; $i++) {
-          Write-Host ""
-        }
-
-        $figletTimeStr.Split("`n") | ForEach-Object {
-          $paddingLeft = [math]::Max(0, ($width - $_.Length) / 2)
-          Write-Host (" " * $paddingLeft + $_) -ForegroundColor Green
-        }
-
-        if ($Title) {
-          $paddingLeft = [math]::Max(0, ($width - $Title.Length) / 2)
-          Write-Host (" " * $paddingLeft + $Title) -ForegroundColor Yellow
-        }
-
-        Start-Sleep -Seconds 1
-        $timeLeft--
-        if ($CountUp) { $elapsed++ }
-      }
-
-      if ([System.Console]::KeyAvailable) {
-        $key = [System.Console]::ReadKey($true).Key
-        if ($key -eq [System.ConsoleKey]::Q) {
-          Clear-Host
-          Write-Host "`nCountdown Aborted!" -ForegroundColor Red
-          return
-        }
-      }
-    }
-
-    Clear-Host
-    Write-Host "`nCountdown Complete!" -ForegroundColor Magenta
   }
-  End {}
+  elseif ($Duration -match "^\d+m$") {
+    [double]::Parse($Duration.TrimEnd('m')) * 60
+  }
+  elseif ($Duration -match "^\d+h$") {
+    [double]::Parse($Duration.TrimEnd('h')) * 3600
+  }
+  else {
+    [double]::Parse($Duration.TrimEnd('s'))
+  }
+
+  Write-Host ("Starting Countdown: {0}" -f $Title) -ForegroundColor Cyan
+
+  $isPaused = $false
+  $elapsed = 0
+  $paddingTop = [math]::Max(0, ($height - 1) / 2)
+  $fontPath = "$env:USERPROFILE\.config\.figlet\ANSI_Shadow.flf"
+  $font = Read-FigletFont -FontPath $fontPath
+
+  while ($timeLeft -gt 0) {
+    if (-not $isPaused) {
+      $displayTime = if ($CountUp) { $elapsed } else { $timeLeft }
+      $timeStr = [TimeSpan]::FromSeconds($displayTime).ToString("hh\:mm\:ss")
+      $figletTimeStr = Convert-TextToAscii -Text "$timeStr" -Font $font
+
+      $host.UI.RawUI.CursorPosition = [System.Management.Automation.Host.Coordinates]::new(0, 0)
+
+      Clear-Host
+
+      for ($i = 0; $i -lt $paddingTop; $i++) {
+        Write-Host ""
+      }
+
+      $figletTimeStr.Split("`n") | ForEach-Object {
+        $paddingLeft = [math]::Max(0, ($width - $_.Length) / 2)
+        Write-Host (" " * $paddingLeft + $_) -ForegroundColor Green
+      }
+
+      if ($Title) {
+        $paddingLeft = [math]::Max(0, ($width - $Title.Length) / 2)
+        Write-Host (" " * $paddingLeft + $Title) -ForegroundColor Yellow
+      }
+
+      Start-Sleep -Seconds 1
+      $timeLeft--
+      if ($CountUp) { $elapsed++ }
+    }
+
+    if ([System.Console]::KeyAvailable) {
+      $key = [System.Console]::ReadKey($true).Key
+      if ($key -eq [System.ConsoleKey]::Q) {
+        Clear-Host
+        Write-Host "`nCountdown Aborted!" -ForegroundColor Red
+        return
+      }
+    }
+  }
+
+  Clear-Host
+  Write-Host "`nCountdown Complete!" -ForegroundColor Magenta
 }
 
 <#
@@ -912,60 +878,57 @@ function Start-Stopwatch {
     [Alias("t")]
     [string]$Title = $null
   )
-  Begin {}
-  Process {
-    $width = $host.UI.RawUI.WindowSize.Width
-    $height = $host.UI.RawUI.WindowSize.Height
-    $paddingTop = [math]::Max(0, ($height - 1) / 2)
-    $fontPath = "$env:USERPROFILE\.config\.figlet\ANSI_Shadow.flf"
-    $font = Read-FigletFont -FontPath $fontPath
 
-    Write-Host ("Starting Stopwatch: {0}" -f $Title) -ForegroundColor Cyan
+  $width = $host.UI.RawUI.WindowSize.Width
+  $height = $host.UI.RawUI.WindowSize.Height
+  $paddingTop = [math]::Max(0, ($height - 1) / 2)
+  $fontPath = "$env:USERPROFILE\.config\.figlet\ANSI_Shadow.flf"
+  $font = Read-FigletFont -FontPath $fontPath
 
-    $isPaused = $false
-    $elapsed = 0
+  Write-Host ("Starting Stopwatch: {0}" -f $Title) -ForegroundColor Cyan
 
-    while ($true) {
-      if (-not $isPaused) {
-        $timeStr = [TimeSpan]::FromSeconds($elapsed).ToString("hh\:mm\:ss")
-        $figletTimeStr = Convert-TextToAscii -Text "$timeStr" -Font $font
+  $isPaused = $false
+  $elapsed = 0
 
-        $host.UI.RawUI.CursorPosition = [System.Management.Automation.Host.Coordinates]::new(0, 0)
+  while ($true) {
+    if (-not $isPaused) {
+      $timeStr = [TimeSpan]::FromSeconds($elapsed).ToString("hh\:mm\:ss")
+      $figletTimeStr = Convert-TextToAscii -Text "$timeStr" -Font $font
 
-        Clear-Host
+      $host.UI.RawUI.CursorPosition = [System.Management.Automation.Host.Coordinates]::new(0, 0)
 
-        for ($i = 0; $i -lt $paddingTop; $i++) {
-          Write-Host ""
-        }
+      Clear-Host
 
-        $figletTimeStr.Split("`n") | ForEach-Object {
-          $paddingLeft = [math]::Max(0, ($width - $_.Length) / 2)
-          Write-Host (" " * $paddingLeft + $_) -ForegroundColor Green
-        }
-
-        if ($Title) {
-          $paddingLeft = [math]::Max(0, ($width - $Title.Length) / 2)
-          Write-Host (" " * $paddingLeft + $Title) -ForegroundColor Yellow
-        }
-
-        Start-Sleep -Seconds 1
-        $elapsed++
+      for ($i = 0; $i -lt $paddingTop; $i++) {
+        Write-Host ""
       }
 
-      if ([System.Console]::KeyAvailable) {
-        $key = [System.Console]::ReadKey($true).Key
-        if ($key -eq [System.ConsoleKey]::Q) {
-          Clear-Host
-          Write-Host "`nStopwatch Aborted!" -ForegroundColor Red
-          return
-        }
-        elseif ($key -eq [System.ConsoleKey]::P) {
-          $isPaused = -not $isPaused
-        }
+      $figletTimeStr.Split("`n") | ForEach-Object {
+        $paddingLeft = [math]::Max(0, ($width - $_.Length) / 2)
+        Write-Host (" " * $paddingLeft + $_) -ForegroundColor Green
+      }
+
+      if ($Title) {
+        $paddingLeft = [math]::Max(0, ($width - $Title.Length) / 2)
+        Write-Host (" " * $paddingLeft + $Title) -ForegroundColor Yellow
+      }
+
+      Start-Sleep -Seconds 1
+      $elapsed++
+    }
+
+    if ([System.Console]::KeyAvailable) {
+      $key = [System.Console]::ReadKey($true).Key
+      if ($key -eq [System.ConsoleKey]::Q) {
+        Clear-Host
+        Write-Host "`nStopwatch Aborted!" -ForegroundColor Red
+        return
+      }
+      elseif ($key -eq [System.ConsoleKey]::P) {
+        $isPaused = -not $isPaused
       }
     }
   }
-  End {}
 }
 
 <#
@@ -1034,55 +997,52 @@ function Get-WallClock {
     [Alias("z")]
     [string]$TimeZone = "Local"
   )
-  Begin {}
-  Process {
-    $width = $host.UI.RawUI.WindowSize.Width
-    $height = $host.UI.RawUI.WindowSize.Height
-    $paddingTop = [math]::Max(0, ($height - 1) / 2)
-    $fontPath = "$env:USERPROFILE\.config\.figlet\ANSI_Shadow.flf"
-    $font = Read-FigletFont -FontPath $fontPath
 
-    while ($true) {
-      $timeFormat = if ($Use24HourFormat) { "HH:mm:ss" } else { "hh:mm:ss tt" }
-      $currentTime = if ($TimeZone -eq "Local") {
-        Get-Date -Format $timeFormat
-      }
-      else {
-        [System.TimeZoneInfo]::ConvertTimeBySystemTimeZoneId([System.DateTime]::UtcNow, $TimeZone).ToString($timeFormat)
-      }
-      $figletTimeStr = Convert-TextToAscii -Text "$currentTime" -Font $font
+  $width = $host.UI.RawUI.WindowSize.Width
+  $height = $host.UI.RawUI.WindowSize.Height
+  $paddingTop = [math]::Max(0, ($height - 1) / 2)
+  $fontPath = "$env:USERPROFILE\.config\.figlet\ANSI_Shadow.flf"
+  $font = Read-FigletFont -FontPath $fontPath
 
-      $host.UI.RawUI.CursorPosition = [System.Management.Automation.Host.Coordinates]::new(0, 0)
+  while ($true) {
+    $timeFormat = if ($Use24HourFormat) { "HH:mm:ss" } else { "hh:mm:ss tt" }
+    $currentTime = if ($TimeZone -eq "Local") {
+      Get-Date -Format $timeFormat
+    }
+    else {
+      [System.TimeZoneInfo]::ConvertTimeBySystemTimeZoneId([System.DateTime]::UtcNow, $TimeZone).ToString($timeFormat)
+    }
+    $figletTimeStr = Convert-TextToAscii -Text "$currentTime" -Font $font
 
-      Clear-Host
+    $host.UI.RawUI.CursorPosition = [System.Management.Automation.Host.Coordinates]::new(0, 0)
 
-      for ($i = 0; $i -lt $paddingTop; $i++) {
-        Write-Host ""
-      }
+    Clear-Host
 
-      $figletTimeStr.Split("`n") | ForEach-Object {
-        $paddingLeft = [math]::Max(0, ($width - $_.Length) / 2)
-        Write-Host (" " * $paddingLeft + $_) -ForegroundColor Green
-      }
+    for ($i = 0; $i -lt $paddingTop; $i++) {
+      Write-Host ""
+    }
 
-      if ($Title) {
-        $paddingLeft = [math]::Max(0, ($width - $Title.Length) / 2)
-        Write-Host (" " * $paddingLeft + $Title) -ForegroundColor Yellow
-      }
+    $figletTimeStr.Split("`n") | ForEach-Object {
+      $paddingLeft = [math]::Max(0, ($width - $_.Length) / 2)
+      Write-Host (" " * $paddingLeft + $_) -ForegroundColor Green
+    }
 
-      Start-Sleep -Seconds 1
+    if ($Title) {
+      $paddingLeft = [math]::Max(0, ($width - $Title.Length) / 2)
+      Write-Host (" " * $paddingLeft + $Title) -ForegroundColor Yellow
+    }
 
-      if ([System.Console]::KeyAvailable) {
-        $key = [System.Console]::ReadKey($true).Key
-        if ($key -eq [System.ConsoleKey]::Q) {
-          Clear-Host
-          Write-Host "`nClock Display Aborted!" -ForegroundColor Red
-          return
-        }
+    Start-Sleep -Seconds 1
+
+    if ([System.Console]::KeyAvailable) {
+      $key = [System.Console]::ReadKey($true).Key
+      if ($key -eq [System.ConsoleKey]::Q) {
+        Clear-Host
+        Write-Host "`nClock Display Aborted!" -ForegroundColor Red
+        return
       }
     }
   }
-  End {}
 }
 
 <#
@@ -1128,49 +1088,46 @@ function Start-Matrix {
       HelpMessage = "The time in milliseconds to wait between updating the animation."
     )]
     [Alias("s")]
-    [double]$SleepTime = 0.7
+    [double]$SleepTime = 0.6
   )
-  Begin {}
-  Process {
-    $host.UI.RawUI.BackgroundColor = "Black"
-    $host.UI.RawUI.ForegroundColor = "Green"
 
-    $lines = [console]::WindowHeight
-    $cols = [console]::WindowWidth
-    $characters = "ァアィイゥウェエォオカガキギクグケゲコゴサコゴサザシジスズセゼソゾタダチヂッツヅテデトドナニヌネノハバパヒビピフブプヘベペホボポマミムメモャヤュユョヨラリルレロヮワヰヱヲンヴヵヶヷヸヹヺ・ーヽヾabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()"
-    $colsMap = @{}
+  $host.UI.RawUI.BackgroundColor = "Black"
+  $host.UI.RawUI.ForegroundColor = "Green"
 
-    Clear-Host
+  $lines = [console]::WindowHeight
+  $cols = [console]::WindowWidth
+  $characters = "ァアィイゥウェエォオカガキギクグケゲコゴサコゴサザシジスズセゼソゾタダチヂッツヅテデトドナニヌネノハバパヒビピフブプヘベペホボポマミムメモャヤュユョヨラリルレロヮワヰヱヲンヴヵヶヷヸヹヺ・ーヽヾabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()"
+  $colsMap = @{}
 
-    while ($true) {
-      $randomCol = Get-Random -Minimum 0 -Maximum $cols
-      $randomChar = $characters[(Get-Random -Minimum 0 -Maximum $characters.Length)]
+  Clear-Host
 
-      if (-not $colsMap.ContainsKey($randomCol)) {
-        $colsMap[$randomCol] = 0
-      }
+  while ($true) {
+    $randomCol = Get-Random -Minimum 0 -Maximum $cols
+    $randomChar = $characters[(Get-Random -Minimum 0 -Maximum $characters.Length)]
 
-      $line = $colsMap[$randomCol]
-      $colsMap[$randomCol]++
+    if (-not $colsMap.ContainsKey($randomCol)) {
+      $colsMap[$randomCol] = 0
+    }
 
-      Write-Host "`e[$line;${randomCol}H`e[2;32m$randomChar" -NoNewline
-      Write-Host "`e[$($colsMap[$randomCol]);${randomCol}H`e[1;37m$randomChar`e[0;0H" -NoNewline
+    $line = $colsMap[$randomCol]
+    $colsMap[$randomCol]++
 
-      if ($colsMap[$randomCol] -ge $lines) {
-        $colsMap[$randomCol] = 0
-      }
+    Write-Host "`e[$line;${randomCol}H`e[2;32m$randomChar" -NoNewline
+    Write-Host "`e[$($colsMap[$randomCol]);${randomCol}H`e[1;37m$randomChar`e[0;0H" -NoNewline
 
-      Start-Sleep -Milliseconds $SleepTime
+    if ($colsMap[$randomCol] -ge $lines) {
+      $colsMap[$randomCol] = 0
+    }
 
-      if ([System.Console]::KeyAvailable) {
-        $key = [System.Console]::ReadKey($true).Key
-        if ($key -eq [System.ConsoleKey]::Q) {
-          Clear-Host
-          Write-Host "`nMatrix Animation Stopped!" -ForegroundColor Red
-          return
-        }
+    Start-Sleep -Milliseconds $SleepTime
+
+    if ([System.Console]::KeyAvailable) {
+      $key = [System.Console]::ReadKey($true).Key
+      if ($key -eq [System.ConsoleKey]::Q) {
+        Clear-Host
+        Write-Host "`nMatrix Animation Stopped!" -ForegroundColor Red
+        return
       }
     }
   }
-  End {}
 }

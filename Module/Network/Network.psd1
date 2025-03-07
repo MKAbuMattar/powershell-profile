@@ -1,6 +1,6 @@
 @{
   RootModule        = 'Network.psm1'
-  ModuleVersion     = '0.0.0'
+  ModuleVersion     = '4.0.0'
   GUID              = '7763387b-5179-43c4-84bc-f24a2f62b534'
   Author            = 'Mohammad Abu Mattar'
   Copyright         = '(c) 2024 Mohammad Abu Mattar'
