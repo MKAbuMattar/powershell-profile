@@ -30,12 +30,8 @@
 #
 # Description:
 #       This PowerShell profile script is crafted by
-#       Mohammad Abu Mattar to tailor and optimize the
-#       PowerShell environment according to specific
-#       preferences and requirements. It includes various
-#       settings, module imports, utility functions, and
-#       shortcuts to enhance productivity and streamline
-#       workflow.
+#       Mohammad Abu Mattar to enhance the PowerShell
+#       experience and productivity.
 #
 # Created: 2021-09-01
 # Updated: 2025-03-07

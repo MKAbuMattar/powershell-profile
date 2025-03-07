@@ -736,6 +736,84 @@ function Invoke-UpdateInstallChocoPackages {
   }
 }
 
+<#
+.SYNOPSIS
+  Initializes the Windows Terminal configuration by downloading the settings.json file from the GitHub repository.
+
+.DESCRIPTION
+  This function initializes the Windows Terminal configuration by downloading the settings.json file from the GitHub repository and saving it to the appropriate location. If the destination file already exists, it will be overwritten.
+
+.PARAMETER SourceUrl
+  Specifies the URL of the settings.json file to download. Default is "https://github.com/MKAbuMattar/powershell-profile/raw/main/.config/windows-terminal/settings.json".
+
+.PARAMETER DestinationPath
+  Specifies the destination path where the settings.json file will be saved. Default is "$env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json".
+
+.PARAMETER Force
+  Specifies whether to overwrite the destination file if it already exists. Default is $false.
+
+.INPUTS
+  SourceUrl: (Optional) The URL of the settings.json file to download.
+  DestinationPath: (Optional) The destination path where the settings.json file will be saved.
+  Force: (Optional) Whether to overwrite the destination file if it already exists.
+
+.OUTPUTS
+  The settings.json file is downloaded and saved to the destination path.
+
+.EXAMPLE
+  Initialize-WindowsTerminalConfig
+  Initializes the Windows Terminal configuration by downloading the settings.json file from the GitHub repository.
+
+.NOTES
+  This function is used to initialize the Windows Terminal configuration by downloading the settings.json file from the GitHub repository.
+#>
+function Initialize-WindowsTerminalConfig {
+  param (
+    [Parameter(
+      Mandatory = $false,
+      Position = 0,
+      ValueFromPipeline = $true,
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "The URL of the settings.json file to download."
+    )]
+    [string]$SourceUrl = "https://github.com/MKAbuMattar/powershell-profile/raw/main/.config/windows-terminal/settings.json",
+
+    [Parameter(
+      Mandatory = $false,
+      Position = 1,
+      ValueFromPipeline = $true,
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "The destination path where the settings.json file will be saved."
+    )]
+    [string]$DestinationPath = "$env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json",
+
+    [Parameter(
+      Mandatory = $false,
+      Position = 2,
+      ValueFromPipeline = $true,
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "Whether to overwrite the destination file if it already exists."
+    )]
+    [switch]$Force = $true
+  )
+
+  if (Test-Path $DestinationPath -or $Force) {
+    try {
+      Write-Host "Downloading Windows Terminal config from $SourceUrl..." -ForegroundColor Cyan
+      Invoke-WebRequest -Uri $SourceUrl -OutFile $DestinationPath -UseBasicParsing
+
+      Write-Host "Windows Terminal config updated successfully!" -ForegroundColor Green
+      Write-Host "Restart Windows Terminal to apply changes." -ForegroundColor Yellow
+    }
+    catch {
+      Write-Host "Failed to update Windows Terminal config: $_" -ForegroundColor Red
+    }
+  }
+  else {
+    Write-Host "Config file not found at $DestinationPath. Use -Force to create it." -ForegroundColor Yellow
+  }
+}
+
 #---------------------------------------------------------------------------------------------------
 # Start the setup process
 #---------------------------------------------------------------------------------------------------
@@ -801,6 +879,12 @@ $packages = @(
   'zoxide'
 )
 Invoke-Command -ScriptBlock ${function:Invoke-UpdateInstallChocoPackages} -ArgumentList $packages
+
+#---------------------------------------------------------------------------------------------------
+# Initialize the Windows Terminal configuration
+#---------------------------------------------------------------------------------------------------
+Write-LogMessage -Message "Initializing the Windows Terminal configuration..."
+Invoke-Command -ScriptBlock ${function:Initialize-WindowsTerminalConfig} -ErrorAction Stop
 
 #---------------------------------------------------------------------------------------------------
 # End the setup process
