@@ -53,6 +53,7 @@ function Find-Files {
   End {}
 }
 
+Remove-Alias touch -ErrorAction SilentlyContinue
 <#
 .SYNOPSIS
   Creates a new empty file or updates the timestamp of an existing file with the specified name.
