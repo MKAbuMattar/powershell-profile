@@ -41,7 +41,8 @@ function Write-LogMessage {
       Mandatory = $true,
       Position = 0,
       ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "The message to log."
     )]
     [string]$Message,
 
@@ -49,7 +50,8 @@ function Write-LogMessage {
       Mandatory = $false,
       Position = 1,
       ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "The log level. Default is 'INFO'."
     )]
     [ValidateSet(
       "INFO",

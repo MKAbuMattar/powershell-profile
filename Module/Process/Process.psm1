@@ -85,7 +85,13 @@ function Get-AllProcesses {
   [Alias("pall")]
   [OutputType([System.Diagnostics.Process[]])]
   param (
-    [Parameter(Mandatory = $false, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [Parameter(
+      Mandatory = $false,
+      Position = 0,
+      ValueFromPipeline = $true,
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "The name of a specific process to retrieve information for."
+    )]
     [Alias("n")]
     [string]$Name
   )
@@ -137,7 +143,13 @@ function Get-ProcessByName {
   [Alias("pgrep")]
   [OutputType([System.Diagnostics.Process[]])]
   param (
-    [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [Parameter(
+      Mandatory = $true,
+      Position = 0,
+      ValueFromPipeline = $true,
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "The name of the process to find."
+    )]
     [Alias("n")]
     [string]$Name
   )
@@ -188,7 +200,8 @@ function Get-ProcessByPort {
       Mandatory = $true,
       Position = 0,
       ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "The port number to search for."
     )]
     [Alias("p")]
     [int]$Port
@@ -240,7 +253,8 @@ function Stop-ProcessByName {
       Mandatory = $true,
       Position = 0,
       ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "The name of the process to terminate."
     )]
     [Alias("n")]
     [string]$Name
@@ -293,7 +307,8 @@ function Stop-ProcessByPort {
       Mandatory = $true,
       Position = 0,
       ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "The port number of the process to terminate."
     )]
     [Alias("p")]
     [int]$Port
@@ -362,7 +377,8 @@ function Invoke-ClearCache {
       Mandatory = $false,
       Position = 0,
       ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "The type of cache to clear."
     )]
     [ValidateSet(
       "All",

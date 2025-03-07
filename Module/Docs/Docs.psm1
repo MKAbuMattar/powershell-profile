@@ -37,7 +37,8 @@ function Show-ProfileHelp {
       Mandatory = $false,
       Position = 0,
       ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "Specifies the section of the documentation to display."
     )]
     [ValidateSet(
       'All',

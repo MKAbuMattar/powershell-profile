@@ -75,7 +75,8 @@ function Test-CommandExists {
       Mandatory = $true,
       Position = 0,
       ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "The command to check for existence."
     )]
     [Alias("c")]
     [string]$Command
@@ -257,7 +258,8 @@ function Get-CommandDefinition {
       Mandatory = $true,
       Position = 0,
       ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "The name of the command to retrieve the definition for."
     )]
     [Alias("n")]
     [string]$Name
@@ -399,7 +401,8 @@ function Get-WeatherForecast {
       Mandatory = $false,
       Position = 0,
       ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "The location to retrieve the weather forecast for."
     )]
     [Alias("l")]
     [string]$Location = $null,
@@ -408,7 +411,8 @@ function Get-WeatherForecast {
       Mandatory = $false,
       Position = 1,
       ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "Indicates whether to display weather glyphs in the forecast."
     )]
     [Alias("g")]
     [switch]$Glyphs = $true,
@@ -417,7 +421,8 @@ function Get-WeatherForecast {
       Mandatory = $false,
       Position = 2,
       ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "Indicates whether to display moon phases in the forecast."
     )]
     [Alias("m")]
     [switch]$Moon = $false,
@@ -426,7 +431,8 @@ function Get-WeatherForecast {
       Mandatory = $false,
       Position = 3,
       ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "A custom format for the weather forecast."
     )]
     [Alias("f")]
     [string]$Format = $null,
@@ -435,7 +441,8 @@ function Get-WeatherForecast {
       Mandatory = $false,
       Position = 4,
       ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "The language for the weather forecast."
     )]
     [ValidateSet(
       "en",
@@ -518,7 +525,8 @@ function Read-FigletFont {
       Mandatory = $true,
       Position = 0,
       ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "The path to the FIGlet font file to read."
     )]
     [Alias("f")]
     [string]$FontPath
@@ -599,7 +607,8 @@ function Convert-TextToAscii {
       Mandatory = $true,
       Position = 0,
       ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "The text to convert to ASCII art."
     )]
     [Alias("t")]
     [string]$Text,
@@ -608,7 +617,8 @@ function Convert-TextToAscii {
       Mandatory = $true,
       Position = 1,
       ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "The FIGlet font data extracted from a font file."
     )]
     [Alias("f")]
     [hashtable]$Font
@@ -673,7 +683,8 @@ function Get-ParseTime {
       Mandatory = $true,
       Position = 0,
       ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "The time string to parse."
     )]
     [Alias("t")]
     [string]$TimeString
@@ -756,7 +767,8 @@ function Start-Countdown {
       Mandatory = $true,
       Position = 0,
       ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "The duration of the countdown in seconds or in the format 'HH:mm' or 'HH:mmAM/PM'."
     )]
     [Alias("d")]
     [string]$Duration,
@@ -765,7 +777,8 @@ function Start-Countdown {
       Mandatory = $false,
       Position = 1,
       ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "Indicates whether the countdown should count up instead of down."
     )]
     [Alias("u")]
     [switch]$CountUp = $false,
@@ -774,7 +787,8 @@ function Start-Countdown {
       Mandatory = $false,
       Position = 2,
       ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "The title to display above the countdown timer."
     )]
     [Alias("t")]
     [string]$Title = ""
@@ -892,7 +906,8 @@ function Start-Stopwatch {
       Mandatory = $false,
       Position = 0,
       ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "The title to display above the stopwatch."
     )]
     [Alias("t")]
     [string]$Title = $null
@@ -1003,7 +1018,8 @@ function Get-WallClock {
       Mandatory = $false,
       Position = 0,
       ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "The title to display above the clock."
     )]
     [Alias("t")]
     [string]$Title = "",
@@ -1012,7 +1028,8 @@ function Get-WallClock {
       Mandatory = $false,
       Position = 1,
       ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "Indicates whether to display the time in 24-hour format."
     )]
     [Alias("z")]
     [string]$TimeZone = "Local"
@@ -1107,7 +1124,8 @@ function Start-Matrix {
       Mandatory = $false,
       Position = 0,
       ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "The time in milliseconds to wait between updating the animation."
     )]
     [Alias("s")]
     [double]$SleepTime = 0.7

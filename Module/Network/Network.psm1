@@ -57,7 +57,8 @@ function Get-MyIPAddress {
       Mandatory = $false,
       Position = 0,
       ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "Switch to retrieve the local IP address."
     )]
     [Alias("l")]
     [switch]$Local = $true,
@@ -66,7 +67,8 @@ function Get-MyIPAddress {
       Mandatory = $false,
       Position = 1,
       ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "Switch to retrieve the public IPv4 address."
     )]
     [Alias("4")]
     [switch]$IPv4 = $false,
@@ -75,7 +77,8 @@ function Get-MyIPAddress {
       Mandatory = $false,
       Position = 2,
       ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "Switch to retrieve the public IPv6 address."
     )]
     [Alias("6")]
     [switch]$IPv6 = $false,
@@ -84,7 +87,8 @@ function Get-MyIPAddress {
       Mandatory = $false,
       Position = 3,
       ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "The name of the computer to retrieve the IP address from."
     )]
     [Alias("c")]
     [string]$ComputerName = $env:COMPUTERNAME

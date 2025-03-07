@@ -73,7 +73,8 @@ function Write-LogMessage {
       Mandatory = $true,
       Position = 0,
       ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "The message to log."
     )]
     [string]$Message,
 
@@ -81,7 +82,8 @@ function Write-LogMessage {
       Mandatory = $false,
       Position = 1,
       ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "The log level. Default is 'INFO'."
     )]
     [string]$Level = "INFO"
   )
@@ -123,7 +125,8 @@ function Invoke-ErrorHandling {
       Mandatory = $true,
       Position = 0,
       ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "The error message to log."
     )]
     [string]$ErrorMessage,
 
@@ -131,7 +134,8 @@ function Invoke-ErrorHandling {
       Mandatory = $true,
       Position = 1,
       ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "The error record object."
     )]
     [System.Management.Automation.ErrorRecord]$ErrorRecord
   )
@@ -178,7 +182,8 @@ function Test-InternetConnection {
       Mandatory = $false,
       Position = 0,
       ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "The host to ping to check for internet connectivity."
     )]
     [string]$HostName = "www.google.com"
   )
@@ -230,7 +235,8 @@ function Copy-ModuleDirectory {
       Mandatory = $false,
       Position = 0,
       ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "The local path where the Module directory will be copied."
     )]
     [string]$LocalPath = "$HOME\Documents\PowerShell"
   )
@@ -548,7 +554,8 @@ function Install-CascadiaCodeFont {
       Mandatory = $false,
       Position = 0,
       ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "The name of the font to install."
     )]
     [string]$FontName = "CascadiaCode",
 
@@ -556,7 +563,8 @@ function Install-CascadiaCodeFont {
       Mandatory = $false,
       Position = 1,
       ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "The display name of the font."
     )]
     [string]$FontDisplayName = "CaskaydiaCove NF",
 
@@ -564,7 +572,8 @@ function Install-CascadiaCodeFont {
       Mandatory = $false,
       Position = 2,
       ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "The version of the font to download."
     )]
     [string]$Version = "3.3.0"
   )
@@ -670,7 +679,8 @@ function Invoke-UpdateInstallPSModules {
       Mandatory = $true,
       Position = 0,
       ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "The list of modules to install or update."
     )]
     [string[]]$ModuleList
   )
@@ -732,7 +742,8 @@ function Invoke-UpdateInstallChocoPackages {
       Mandatory = $true,
       Position = 0,
       ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "The list of packages to install or update."
     )]
     [string[]]$PackageList
   )

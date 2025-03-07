@@ -37,7 +37,8 @@ function Find-Files {
       Mandatory = $true,
       Position = 0,
       ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "The name pattern to search for."
     )]
     [Alias("n")]
     [string]$Name
@@ -88,7 +89,8 @@ function Set-FreshFile {
       Mandatory = $true,
       Position = 0,
       ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "The name of the file to create or update."
     )]
     [Alias("f")]
     [string]$File
@@ -140,7 +142,8 @@ function Expand-File {
       Mandatory = $true,
       Position = 0,
       ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "The file to extract."
     )]
     [string]$File
   )
@@ -198,7 +201,8 @@ function Compress-Files {
       Mandatory = $true,
       Position = 0,
       ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "The files to compress into the zip archive."
     )]
     [Alias("f")]
     [string[]]$Files,
@@ -207,7 +211,8 @@ function Compress-Files {
       Mandatory = $true,
       Position = 1,
       ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "The name of the zip archive to create."
     )]
     [Alias("a")]
     [string]$Archive
@@ -265,7 +270,8 @@ function Get-ContentMatching {
       Mandatory = $true,
       Position = 0,
       ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "The string or regular expression pattern to search for."
     )]
     [Alias("p")]
     [string]$Pattern,
@@ -274,7 +280,8 @@ function Get-ContentMatching {
       Mandatory = $false,
       Position = 1,
       ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "The path to the file or directory to search in."
     )]
     [Alias("f")]
     [string]$Path = $PWD
@@ -350,7 +357,8 @@ function Set-ContentMatching {
       Mandatory = $true,
       Position = 0,
       ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "The file to search and perform replacements in."
     )]
     [Alias("f")]
     [string]$File,
@@ -359,7 +367,8 @@ function Set-ContentMatching {
       Mandatory = $true,
       Position = 1,
       ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "The string to search for."
     )]
     [Alias("s")]
     [string]$Find,
@@ -368,7 +377,8 @@ function Set-ContentMatching {
       Mandatory = $true,
       Position = 2,
       ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "The string to replace the found string with."
     )]
     [Alias("r")]
     [string]$Replace
@@ -453,7 +463,8 @@ function Get-FileHead {
       Mandatory = $true,
       Position = 0,
       ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "The path to the file to read."
     )]
     [Alias("f")]
     [string]$Path,
@@ -462,7 +473,8 @@ function Get-FileHead {
       Mandatory = $false,
       Position = 1,
       ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "The number of lines to read from the beginning of the file."
     )]
     [Alias("n")]
     [int]$Lines = 10
@@ -530,7 +542,8 @@ function Get-FileTail {
       Mandatory = $true,
       Position = 0,
       ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "The path to the file to read."
     )]
     [Alias("f")]
     [string]$Path,
@@ -539,7 +552,8 @@ function Get-FileTail {
       Mandatory = $false,
       Position = 1,
       ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "The number of lines to read from the end of the file."
     )]
     [Alias("n")]
     [int]$Lines = 10,
@@ -548,7 +562,8 @@ function Get-FileTail {
       Mandatory = $false,
       Position = 2,
       ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "Indicates whether to wait for new lines to be added to the file."
     )]
     [Alias("w")]
     [switch]$Wait = $false
@@ -600,7 +615,8 @@ function Get-ShortPath {
       Mandatory = $false,
       Position = 0,
       ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "The path of the file or directory to retrieve the short path for."
     )]
     [string]$Path = (Get-Location)
   )

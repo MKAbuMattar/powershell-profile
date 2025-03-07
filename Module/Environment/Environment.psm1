@@ -135,9 +135,14 @@ function Get-PathEnvironmentVariable {
       Mandatory = $false,
       Position = 0,
       ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "The scope of the PATH environment variable to retrieve."
     )]
-    [ValidateSet('User', 'Machine', 'All')]
+    [ValidateSet(
+      'User',
+      'Machine',
+      'All'
+    )]
     [Alias('s')]
     [string]
     $Scope = 'All'
@@ -249,14 +254,18 @@ function Get-PathEnvironmentVariable {
 #>
 function Add-PathEnvironmentVariable {
   [CmdletBinding()]
-  [Alias("add-path", "set-path")]
+  [Alias(
+    "add-path",
+    "set-path"
+  )]
   [OutputType([void])]
   param (
     [Parameter(
       Mandatory = $true,
       Position = 0,
       ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "The value to set the PATH environment variable to."
     )]
     [Alias('p')]
     [string[]]$Path,
@@ -265,9 +274,14 @@ function Add-PathEnvironmentVariable {
       Mandatory = $false,
       Position = 1,
       ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "The scope of the PATH environment variable to set."
     )]
-    [ValidateSet('Process', 'User', 'Machine')]
+    [ValidateSet(
+      'Process',
+      'User',
+      'Machine'
+    )]
     [Alias('s')]
     [string]$Scope = 'Process',
 
@@ -275,7 +289,8 @@ function Add-PathEnvironmentVariable {
       Mandatory = $false,
       Position = 2,
       ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "Appends the specified value to the PATH environment variable."
     )]
     [Alias('a')]
     [switch]$Append = $true,
@@ -284,7 +299,8 @@ function Add-PathEnvironmentVariable {
       Mandatory = $false,
       Position = 3,
       ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "Prepends the specified value to the PATH environment variable."
     )]
     [Alias('p')]
     [switch]$Prepend,
@@ -293,7 +309,8 @@ function Add-PathEnvironmentVariable {
       Mandatory = $false,
       Position = 4,
       ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "Converts the specified path to its short form before setting it in the PATH environment variable."
     )]
     [Alias('m')]
     [switch]$MakeShort,
@@ -302,7 +319,8 @@ function Add-PathEnvironmentVariable {
       Mandatory = $false,
       Position = 5,
       ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "Suppresses the output of the function."
     )]
     [Alias('q')]
     [switch]$Quiet
@@ -408,7 +426,8 @@ function Remove-PathEnvironmentVariable {
       Mandatory = $true,
       Position = 0,
       ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "The path to remove from the PATH environment variable."
     )]
     [string[]]$Path,
 
@@ -416,7 +435,8 @@ function Remove-PathEnvironmentVariable {
       Mandatory = $false,
       Position = 1,
       ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "The scope of the PATH environment variable to remove the path from."
     )]
     [ValidateSet(
       'Process',
@@ -430,7 +450,8 @@ function Remove-PathEnvironmentVariable {
       Mandatory = $false,
       Position = 2,
       ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "Forces the removal of the specified path from the PATH environment variable."
     )]
     [Alias('f')]
     [switch]$Force
@@ -510,14 +531,18 @@ function Remove-PathEnvironmentVariable {
 #>
 function Set-EnvVar {
   [CmdletBinding()]
-  [Alias("set-env", "export")]
+  [Alias(
+    "set-env",
+    "export"
+  )]
   [OutputType([void])]
   param (
     [Parameter(
       Mandatory = $true,
       Position = 0,
       ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "The name of the environment variable to export."
     )]
     [Alias("n")]
     [string]$Name,
@@ -526,7 +551,8 @@ function Set-EnvVar {
       Mandatory = $true,
       Position = 1,
       ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "The value of the environment variable to export."
     )]
     [Alias("v")]
     [string]$Value
@@ -578,7 +604,8 @@ function Get-EnvVar {
       Mandatory = $true,
       Position = 0,
       ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "The name of the environment variable to retrieve the value for."
     )]
     [Alias("n")]
     [string]$Name

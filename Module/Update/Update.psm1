@@ -33,7 +33,8 @@ function Update-LocalProfileModuleDirectory {
       Mandatory = $false,
       Position = 0,
       ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "Specifies the local path where the Modules directory should be updated."
     )]
     [string]$LocalPath = "$HOME\Documents\PowerShell"
   )
