@@ -3,13 +3,13 @@
   This module provides documentation for the PowerShell Profile Helper module.
 
 .DESCRIPTION
-  The PowerShell Profile Helper module provides a set of utility functions to help manage the PowerShell profile and perform common tasks in the console. The module includes functions for finding files, creating and updating files, extracting files, compressing files, searching for content in files, replacing content in files, moving up directory levels, updating the module directory, updating the profile, updating PowerShell, checking for command existence, reloading the profile, getting system uptime, getting command definitions, setting environment variables, getting environment variables, getting all processes, finding processes by name, finding processes by port, stopping processes by name, stopping processes by port, getting random quotes, getting weather forecasts, starting countdown timers, starting stopwatches, displaying the wall clock, displaying a matrix rain animation, and more.
+  The PowerShell Profile Helper module provides a set of utility functions to help manage the PowerShell profile and perform common tasks in the console. The module includes functions for finding files, creating and updating files, extracting files, compressing files, searching for content in files, replacing content in files, moving up directory levels, updating the module directory, updating the profile, updating PowerShell, checking for command existence, reloading the profile, getting system uptime, getting command definitions, setting environment variables, getting environment variables, getting all processes, finding processes by name, finding processes by port, stopping processes by name, stopping processes by port, getting random quotes, getting weather forecasts, starting countdown timers, starting stopwatches, displaying the wall clock, displaying a matrix rain animation, and more. The `Show-ProfileHelp` function displays detailed help documentation for each section of the module.
 
-.PARAMETER None
-  This module does not accept any parameters.
+.PARAMETER Section
+  Specifies the section of the documentation to display. Valid values are 'All', 'Directory', 'Docs', 'Environment', 'Logging', 'Network', 'Starship', 'Update', and 'Utility'. The default value is 'All'.
 
 .INPUTS
-  This module does not accept any inputs.
+  Section: (Optional) Specifies the section of the documentation to display. Valid values are 'All', 'Directory', 'Docs', 'Environment', 'Logging', 'Network', 'Starship', 'Update', and 'Utility'. The default value is 'All'.
 
 .OUTPUTS
   This module does not return any output.
@@ -19,7 +19,11 @@
 
 .EXAMPLE
   Show-ProfileHelp
-  Displays the help documentation for the PowerShell Profile Helper module.
+  Displays the help documentation for all sections of the PowerShell Profile Helper module.
+
+.EXAMPLE
+  Show-ProfileHelp -Section 'Directory'
+  Displays the help documentation for the Directory section of the PowerShell Profile Helper module.
 
 .LINK
   https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
@@ -29,7 +33,7 @@ function Show-ProfileHelp {
   [Alias("profile-help")]
   [OutputType([void])]
   param (
-    [Parameter(Mandatory = $false, Position = 1, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [Parameter(Mandatory = $false, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
     [ValidateSet('All', 'Directory', 'Docs', 'Environment', 'Logging', 'Network', 'Starship', 'Update', 'Utility')]
     [string]$Section = 'All'
   )

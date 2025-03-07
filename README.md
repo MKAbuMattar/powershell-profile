@@ -2,19 +2,28 @@
 
 Welcome to my PowerShell profile! Here, you'll find a curated collection of functions, aliases, and settings tailored to enhance my PowerShell workflow, making it both more enjoyable and productive.
 
+## Table of Contents
+
+- [Quick Setup (Windows)](#quick-setup-windows)
+- [The Profile Architecture](#the-profile-architecture)
+- [Features](#features)
+- [Modules](#modules)
+  - [Directory Module](#directory-module)
+  - [Docs Module](#docs-module)
+  - [Environment Module](#environment-module)
+  - [Logging Module](#logging-module)
+  - [Network Module](#network-module)
+  - [Starship Module](#starship-module)
+  - [Update Module](#update-module)
+  - [Utility Module](#utility-module)
+- [Contributing](#contributing)
+
 ## Quick Setup (Windows)
 
 Jumpstart your PowerShell experience with just one command:
 
 ```powershell
 irm "https://raw.githubusercontent.com/MKAbuMattar/powershell-profile/main/setup.ps1" | iex
-```
-
-> [!WARNING]
-> If you're using the `develop` branch, you may encounter some issues and not all features may work as expected. It is recommended to use the `main` branch for a stable experience.
-
-```powershell
-irm "https://raw.githubusercontent.com/MKAbuMattar/powershell-profile/refs/heads/develop/setup.ps1" | iex
 ```
 
 ## The Profile Architecture
@@ -120,7 +129,9 @@ This PowerShell profile script includes:
 - **Network Modules**: Imports network modules for network-related functions and aliases.
 - **Utility Modules**: Imports utility modules for additional functions and aliases.
 
-## Directory Module
+## Modules
+
+### Directory Module
 
 The Directory module provides functions to navigate directories and manage files:
 
@@ -155,14 +166,15 @@ The Directory module provides functions to navigate directories and manage files
 - **Invoke-UpFiveDirectoryLevels** (Aliases: `cd.5`, `......`): Moves up five directory levels.
   - Example: `cd.5`
 
-## Docs Module
+### Docs Module
 
 The Docs module provides functions to display help documentation for the PowerShell Profile Helper module:
 
 - **Show-ProfileHelp** (Alias: `profile-help`): Displays the help documentation for the PowerShell Profile Helper module.
   - Example: `Show-ProfileHelp`
+  - Example: `Show-ProfileHelp -Section 'Directory'`
 
-## Environment Module
+### Environment Module
 
 The Environment module provides functions to manage environment variables and test GitHub connectivity:
 
@@ -174,7 +186,7 @@ The Environment module provides functions to manage environment variables and te
 - **AutoUpdatePowerShell**: A global variable to disable/enable the Auto Update feature for PowerShell.
 - **CanConnectToGitHub**: A global variable to test if the machine can connect to GitHub.
 
-## Logging Module
+### Logging Module
 
 The Logging module provides functions to log messages with a timestamp and log level:
 
@@ -182,7 +194,7 @@ The Logging module provides functions to log messages with a timestamp and log l
   - Example: `Write-LogMessage -Message "This is an informational message."`
   - Example: `Write-LogMessage -Message "This is a warning message." -Level "WARNING"`
 
-## Network Module
+### Network Module
 
 The Network module provides functions to manage network settings and perform network-related tasks:
 
@@ -194,14 +206,14 @@ The Network module provides functions to manage network settings and perform net
 - **Clear-FlushDNS** (Alias: `flush-dns`): Clears and flushes the DNS cache.
   - Example: `flush-dns`
 
-## Starship Module
+### Starship Module
 
 The Starship module provides functions to transiently invoke the Starship prompt:
 
 - **Invoke-StarshipTransientFunction** (Alias: `starship-transient`): Invokes the Starship module transiently to load the Starship prompt.
   - Example: `Invoke-StarshipTransientFunction`
 
-## Update Module
+### Update Module
 
 The Update module provides functions to update the local profile module directory, profile, and PowerShell:
 
@@ -212,7 +224,7 @@ The Update module provides functions to update the local profile module director
 - **Update-PowerShell** (Alias: `update-ps1`): Checks for updates to PowerShell and upgrades to the latest version if available.
   - Example: `Update-PowerShell`
 
-## Utility Module
+### Utility Module
 
 The Utility module provides a set of useful functions to enhance your PowerShell experience:
 
@@ -254,4 +266,4 @@ The Utility module provides a set of useful functions to enhance your PowerShell
 
 ## Contributing
 
-Contributions are welcome! If you have suggestions for improvements or new features, please open an issue or submit a pull request on GitHub. Make sure to follow the project's code of conduct and guidelines for contributing.
+Contributions are welcome! If you have suggestions for improvements or new features, please open an issue or submit a pull request on [GitHub](https://github.com/MKAbuMattar/powershell-profile). Make sure to follow the project's code of conduct and guidelines for contributing.
