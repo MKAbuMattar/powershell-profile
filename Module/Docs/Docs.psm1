@@ -33,7 +33,12 @@ function Show-ProfileHelp {
   [Alias("profile-help")]
   [OutputType([void])]
   param (
-    [Parameter(Mandatory = $false, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [Parameter(
+      Mandatory = $false,
+      Position = 0,
+      ValueFromPipeline = $true,
+      ValueFromPipelineByPropertyName = $true
+    )]
     [ValidateSet(
       'All',
       'Directory',
@@ -48,12 +53,13 @@ function Show-ProfileHelp {
     )]
     [string]$Section = 'All'
   )
-
-  $Title = @"
+  Begin {}
+  Process {
+    $Title = @"
 $($PSStyle.Foreground.Cyan)PowerShell Profile Helper$($PSStyle.Reset)
 "@
 
-  $Directory = @"
+    $Directory = @"
 $($PSStyle.Foreground.Yellow)Directory Module$($PSStyle.Reset)
     $($PSStyle.Foreground.Green)Find-Files$($PSStyle.Reset) -Name <Name>
     $($PSStyle.Foreground.Magenta)ff$($PSStyle.Reset) -Name <Name>
@@ -119,14 +125,14 @@ $($PSStyle.Foreground.Yellow)Directory Module$($PSStyle.Reset)
         Moves up five directory levels.
 "@
 
-  $Docs = @"
+    $Docs = @"
 $($PSStyle.Foreground.Yellow)Docs Module$($PSStyle.Reset)
     $($PSStyle.Foreground.Green)Show-ProfileHelp$($PSStyle.Reset)
     $($PSStyle.Foreground.Magenta)profile-help$($PSStyle.Reset)
         Displays the help documentation for the PowerShell Profile Helper module.
 "@
 
-  $Environment = @"
+    $Environment = @"
 $($PSStyle.Foreground.Yellow)Environment Module$($PSStyle.Reset)
     $($PSStyle.Foreground.Green)Set-EnvVar$($PSStyle.Reset) -Name <Name> -Value <Value>
     $($PSStyle.Foreground.Magenta)set-env$($PSStyle.Reset) -Name <Name> -Value <Value>
@@ -147,14 +153,14 @@ $($PSStyle.Foreground.Yellow)Environment Module$($PSStyle.Reset)
         Global variable to test if the machine can connect to GitHub.
 "@
 
-  $Logging = @"
+    $Logging = @"
 $($PSStyle.Foreground.Yellow)Logging Module$($PSStyle.Reset)
     $($PSStyle.Foreground.Green)Write-LogMessage$($PSStyle.Reset) -Message <Message> [-Level <Level>]
     $($PSStyle.Foreground.Magenta)log-message$($PSStyle.Reset) -Message <Message> [-Level <Level>]
         Logs a message with a timestamp and log level. The default log level is "INFO".
 "@
 
-  $Network = @"
+    $Network = @"
 $($PSStyle.Foreground.Yellow)Network Module$($PSStyle.Reset)
     $($PSStyle.Foreground.Green)Get-MyIPAddress$($PSStyle.Reset) [-Local] [-IPv4] [-IPv6] [-ComputerName <ComputerName>]
     $($PSStyle.Foreground.Magenta)my-ip$($PSStyle.Reset) [-Local] [-IPv4] [-IPv6] [-ComputerName <ComputerName>]
@@ -165,9 +171,7 @@ $($PSStyle.Foreground.Yellow)Network Module$($PSStyle.Reset)
         Flushes the DNS cache.
 "@
 
-
-
-  $Process = @"
+    $Process = @"
 $($PSStyle.Foreground.Yellow)Process Module$($PSStyle.Reset)
     $($PSStyle.Foreground.Green)Get-SystemInfo$($PSStyle.Reset)
     $($PSStyle.Foreground.Magenta)sysinfo$($PSStyle.Reset)
@@ -198,14 +202,14 @@ $($PSStyle.Foreground.Yellow)Process Module$($PSStyle.Reset)
         Clears windows cache, temp files, and internet explorer cache.
 "@
 
-  $Starship = @"
+    $Starship = @"
 $($PSStyle.Foreground.Yellow)Starship Module$($PSStyle.Reset)
     $($PSStyle.Foreground.Green)Invoke-StarshipTransientFunction$($PSStyle.Reset)
     $($PSStyle.Foreground.Magenta)starship-transient$($PSStyle.Reset)
         Invokes the Starship module transiently to load the Starship prompt, enhancing the appearance and functionality of the PowerShell prompt.
 "@
 
-  $Update = @"
+    $Update = @"
 $($PSStyle.Foreground.Yellow)Update Module$($PSStyle.Reset)
     $($PSStyle.Foreground.Green)Update-LocalProfileModuleDirectory$($PSStyle.Reset) [-LocalPath <LocalPath>]
     $($PSStyle.Foreground.Magenta)update-local-module$($PSStyle.Reset) [-LocalPath <LocalPath>]
@@ -220,7 +224,7 @@ $($PSStyle.Foreground.Yellow)Update Module$($PSStyle.Reset)
         Checks for updates to PowerShell and upgrades to the latest version if available.
 "@
 
-  $Utility = @"
+    $Utility = @"
 $($PSStyle.Foreground.Yellow)Utility Module$($PSStyle.Reset)
     $($PSStyle.Foreground.Green)Test-CommandExists$($PSStyle.Reset) -Command <Command>
     $($PSStyle.Foreground.Magenta)command-exists$($PSStyle.Reset) -Command <Command>
@@ -263,58 +267,60 @@ $($PSStyle.Foreground.Yellow)Utility Module$($PSStyle.Reset)
         Displays a matrix rain animation in the console.
 "@
 
-  switch ($Section) {
-    'All' {
-      Write-Host $Title
-      Write-Host $Directory
-      Write-Host $Docs
-      Write-Host $Environment
-      Write-Host $Logging
-      Write-Host $Network
-      Write-Host $Process
-      Write-Host $Starship
-      Write-Host $Update
-      Write-Host $Utility
-    }
-    'Directory' {
-      Write-Host $Title
-      Write-Host $Directory
-    }
-    'Docs' {
-      Write-Host $Title
-      Write-Host $Docs
-    }
-    'Environment' {
-      Write-Host $Title
-      Write-Host $Environment
-    }
-    'Logging' {
-      Write-Host $Title
-      Write-Host $Logging
-    }
-    'Network' {
-      Write-Host $Title
-      Write-Host $Network
-    }
-    'Process' {
-      Write-Host $Title
-      Write-Host $Process
-    }
-    'Starship' {
-      Write-Host $Title
-      Write-Host $Starship
-    }
-    'Update' {
-      Write-Host $Title
-      Write-Host $Update
-    }
-    'Utility' {
-      Write-Host $Title
-      Write-Host $Utility
-    }
-    Default {
-      Write-Host $Title
-      Write-Host $Docs
+    switch ($Section) {
+      'All' {
+        Write-Host $Title
+        Write-Host $Directory
+        Write-Host $Docs
+        Write-Host $Environment
+        Write-Host $Logging
+        Write-Host $Network
+        Write-Host $Process
+        Write-Host $Starship
+        Write-Host $Update
+        Write-Host $Utility
+      }
+      'Directory' {
+        Write-Host $Title
+        Write-Host $Directory
+      }
+      'Docs' {
+        Write-Host $Title
+        Write-Host $Docs
+      }
+      'Environment' {
+        Write-Host $Title
+        Write-Host $Environment
+      }
+      'Logging' {
+        Write-Host $Title
+        Write-Host $Logging
+      }
+      'Network' {
+        Write-Host $Title
+        Write-Host $Network
+      }
+      'Process' {
+        Write-Host $Title
+        Write-Host $Process
+      }
+      'Starship' {
+        Write-Host $Title
+        Write-Host $Starship
+      }
+      'Update' {
+        Write-Host $Title
+        Write-Host $Update
+      }
+      'Utility' {
+        Write-Host $Title
+        Write-Host $Utility
+      }
+      Default {
+        Write-Host $Title
+        Write-Host $Docs
+      }
     }
   }
+  End {}
 }

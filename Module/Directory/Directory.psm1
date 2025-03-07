@@ -33,14 +33,23 @@ function Find-Files {
   [Alias("ff")]
   [OutputType([string])]
   param (
-    [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [Parameter(
+      Mandatory = $true,
+      Position = 0,
+      ValueFromPipeline = $true,
+      ValueFromPipelineByPropertyName = $true
+    )]
     [Alias("n")]
     [string]$Name
   )
 
-  Get-ChildItem -Recurse -Filter $Name -ErrorAction SilentlyContinue | ForEach-Object {
-    Write-Output $_.FullName
+  Begin {}
+  Process {
+    Get-ChildItem -Recurse -Filter $Name -ErrorAction SilentlyContinue | ForEach-Object {
+      Write-Output $_.FullName
+    }
   }
+  End {}
 }
 
 <#
@@ -75,17 +84,25 @@ function Set-FreshFile {
   [Alias("touch")]
   [OutputType([void])]
   param (
-    [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [Parameter(
+      Mandatory = $true,
+      Position = 0,
+      ValueFromPipeline = $true,
+      ValueFromPipelineByPropertyName = $true
+    )]
     [Alias("f")]
     [string]$File
   )
-
-  if (Test-Path $File) {
+  Begin {}
+  Process {
+    if (Test-Path $File) {
         (Get-Item $File).LastWriteTime = Get-Date
+    }
+    else {
+      "" | Out-File $File -Encoding ASCII
+    }
   }
-  else {
-    "" | Out-File $File -Encoding ASCII
-  }
+  End {}
 }
 
 <#
@@ -119,19 +136,27 @@ function Expand-File {
   [Alias("unzip")]
   [OutputType([void])]
   param (
-    [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [Parameter(
+      Mandatory = $true,
+      Position = 0,
+      ValueFromPipeline = $true,
+      ValueFromPipelineByPropertyName = $true
+    )]
     [string]$File
   )
-
-  try {
-    Write-LogMessage -Message "Extracting file '$File' to '$PWD'..." -Level "INFO"
-    $FullFilePath = Get-Item -Path $File -ErrorAction Stop | Select-Object -ExpandProperty FullName
-    Expand-Archive -Path $FullFilePath -DestinationPath $PWD -Force -ErrorAction Stop
-    Write-LogMessage -Message "File extraction completed successfully." -Level "INFO"
+  Begin {}
+  Process {
+    try {
+      Write-LogMessage -Message "Extracting file '$File' to '$PWD'..." -Level "INFO"
+      $FullFilePath = Get-Item -Path $File -ErrorAction Stop | Select-Object -ExpandProperty FullName
+      Expand-Archive -Path $FullFilePath -DestinationPath $PWD -Force -ErrorAction Stop
+      Write-LogMessage -Message "File extraction completed successfully." -Level "INFO"
+    }
+    catch {
+      Write-LogMessage -Message "Failed to extract file '$File'." -Level "ERROR"
+    }
   }
-  catch {
-    Write-LogMessage -Message "Failed to extract file '$File'." -Level "ERROR"
-  }
+  End {}
 }
 
 <#
@@ -169,23 +194,36 @@ function Compress-Files {
   [Alias("zip")]
   [OutputType([void])]
   param (
-    [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [Parameter(
+      Mandatory = $true,
+      Position = 0,
+      ValueFromPipeline = $true,
+      ValueFromPipelineByPropertyName = $true
+    )]
     [Alias("f")]
     [string[]]$Files,
 
-    [Parameter(Mandatory = $true, Position = 1, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [Parameter(
+      Mandatory = $true,
+      Position = 1,
+      ValueFromPipeline = $true,
+      ValueFromPipelineByPropertyName = $true
+    )]
     [Alias("a")]
     [string]$Archive
   )
-
-  try {
-    Write-LogMessage -Message "Compressing files '$Files' into '$Archive'..." -Level "INFO"
-    Compress-Archive -Path $Files -DestinationPath $Archive -Force -ErrorAction Stop
-    Write-LogMessage -Message "File compression completed successfully." -Level "INFO"
+  Begin {}
+  Process {
+    try {
+      Write-LogMessage -Message "Compressing files '$Files' into '$Archive'..." -Level "INFO"
+      Compress-Archive -Path $Files -DestinationPath $Archive -Force -ErrorAction Stop
+      Write-LogMessage -Message "File compression completed successfully." -Level "INFO"
+    }
+    catch {
+      Write-LogMessage -Message "Failed to compress files '$Files'." -Level "ERROR"
+    }
   }
-  catch {
-    Write-LogMessage -Message "Failed to compress files '$Files'." -Level "ERROR"
-  }
+  End {}
 }
 
 <#
@@ -223,37 +261,50 @@ function Get-ContentMatching {
   [Alias("grep")]
   [OutputType([string])]
   param (
-    [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [Parameter(
+      Mandatory = $true,
+      Position = 0,
+      ValueFromPipeline = $true,
+      ValueFromPipelineByPropertyName = $true
+    )]
     [Alias("p")]
     [string]$Pattern,
 
-    [Parameter(Mandatory = $false, Position = 1, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [Parameter(
+      Mandatory = $false,
+      Position = 1,
+      ValueFromPipeline = $true,
+      ValueFromPipelineByPropertyName = $true
+    )]
     [Alias("f")]
     [string]$Path = $PWD
   )
+  Begin {}
+  Process {
+    try {
+      if (-not (Test-Path $Path)) {
+        Write-LogMessage -Message "The specified path '$Path' does not exist." -Level "ERROR"
+        return
+      }
 
-  try {
-    if (-not (Test-Path $Path)) {
-      Write-LogMessage -Message "The specified path '$Path' does not exist." -Level "ERROR"
-      return
-    }
-
-    if (Test-Path $Path -PathType Leaf) {
-      Get-Content -Path $Path | Select-String -Pattern $Pattern
-    }
-    elseif (Test-Path $Path -PathType Container) {
-      Get-ChildItem -Path $Path -Recurse -File | ForEach-Object {
-        Get-Content -Path $_.FullName | Select-String -Pattern $Pattern
+      if (Test-Path $Path -PathType Leaf) {
+        Get-Content -Path $Path | Select-String -Pattern $Pattern
+      }
+      elseif (Test-Path $Path -PathType Container) {
+        Get-ChildItem -Path $Path -Recurse -File | ForEach-Object {
+          Get-Content -Path $_.FullName | Select-String -Pattern $Pattern
+        }
+      }
+      else {
+        Write-LogMessage -Message "The specified path '$Path' is neither a file nor a directory." -Level "WARNING"
       }
     }
-    else {
-      Write-LogMessage -Message "The specified path '$Path' is neither a file nor a directory." -Level "WARNING"
+    catch {
+      Write-LogMessage -Message "Failed to access path '$Path'." -Level "ERROR"
+      return
     }
   }
-  catch {
-    Write-LogMessage -Message "Failed to access path '$Path'." -Level "ERROR"
-    return
-  }
+  End {}
 }
 
 <#
@@ -295,26 +346,44 @@ function Set-ContentMatching {
   [Alias("sed")]
   [OutputType([void])]
   param (
-    [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [Parameter(
+      Mandatory = $true,
+      Position = 0,
+      ValueFromPipeline = $true,
+      ValueFromPipelineByPropertyName = $true
+    )]
     [Alias("f")]
     [string]$File,
 
-    [Parameter(Mandatory = $true, Position = 1, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [Parameter(
+      Mandatory = $true,
+      Position = 1,
+      ValueFromPipeline = $true,
+      ValueFromPipelineByPropertyName = $true
+    )]
     [Alias("s")]
     [string]$Find,
 
-    [Parameter(Mandatory = $true, Position = 2, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [Parameter(
+      Mandatory = $true,
+      Position = 2,
+      ValueFromPipeline = $true,
+      ValueFromPipelineByPropertyName = $true
+    )]
     [Alias("r")]
     [string]$Replace
   )
-
-  try {
-    $content = Get-Content $File -ErrorAction Stop
-    $content -replace $Find, $Replace | Set-Content $File -ErrorAction Stop
+  Begin {}
+  Process {
+    try {
+      $content = Get-Content $File -ErrorAction Stop
+      $content -replace $Find, $Replace | Set-Content $File -ErrorAction Stop
+    }
+    catch {
+      Write-LogMessage -Message "An error occurred while performing text replacement." -Level "ERROR"
+    }
   }
-  catch {
-    Write-LogMessage -Message "An error occurred while performing text replacement." -Level "ERROR"
-  }
+  End {}
 }
 
 <#
@@ -380,21 +449,34 @@ function Get-FileHead {
   [Alias("head")]
   [OutputType([string])]
   param (
-    [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [Parameter(
+      Mandatory = $true,
+      Position = 0,
+      ValueFromPipeline = $true,
+      ValueFromPipelineByPropertyName = $true
+    )]
     [Alias("f")]
     [string]$Path,
 
-    [Parameter(Mandatory = $false, Position = 1, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [Parameter(
+      Mandatory = $false,
+      Position = 1,
+      ValueFromPipeline = $true,
+      ValueFromPipelineByPropertyName = $true
+    )]
     [Alias("n")]
     [int]$Lines = 10
   )
-
-  try {
-    Get-Content -Path $Path -TotalCount $Lines -ErrorAction Stop
+  Begin {}
+  Process {
+    try {
+      Get-Content -Path $Path -TotalCount $Lines -ErrorAction Stop
+    }
+    catch {
+      Write-LogMessage -Message "Failed to read the first $Lines lines of file '$Path'." -Level "ERROR"
+    }
   }
-  catch {
-    Write-LogMessage -Message "Failed to read the first $Lines lines of file '$Path'." -Level "ERROR"
-  }
+  End {}
 }
 
 <#
@@ -444,25 +526,43 @@ function Get-FileTail {
   [Alias("tail")]
   [OutputType([string])]
   param (
-    [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [Parameter(
+      Mandatory = $true,
+      Position = 0,
+      ValueFromPipeline = $true,
+      ValueFromPipelineByPropertyName = $true
+    )]
     [Alias("f")]
     [string]$Path,
 
-    [Parameter(Mandatory = $false, Position = 1, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [Parameter(
+      Mandatory = $false,
+      Position = 1,
+      ValueFromPipeline = $true,
+      ValueFromPipelineByPropertyName = $true
+    )]
     [Alias("n")]
     [int]$Lines = 10,
 
-    [Parameter(Mandatory = $false, Position = 2, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [Parameter(
+      Mandatory = $false,
+      Position = 2,
+      ValueFromPipeline = $true,
+      ValueFromPipelineByPropertyName = $true
+    )]
     [Alias("w")]
     [switch]$Wait = $false
   )
-
-  try {
-    Get-Content -Path $Path -Tail $Lines -Wait:$Wait -ErrorAction Stop
+  Begin {}
+  Process {
+    try {
+      Get-Content -Path $Path -Tail $Lines -Wait:$Wait -ErrorAction Stop
+    }
+    catch {
+      Write-LogMessage -Message "Failed to read the last $Lines lines of file '$Path'." -Level "ERROR"
+    }
   }
-  catch {
-    Write-LogMessage -Message "Failed to read the last $Lines lines of file '$Path'." -Level "ERROR"
-  }
+  End {}
 }
 
 <#
@@ -498,8 +598,11 @@ function Invoke-UpOneDirectoryLevel {
   param (
     # This function does not accept any parameters
   )
-
-  Set-Location -Path .. -ErrorAction SilentlyContinue
+  Begin {}
+  Process {
+    Set-Location -Path .. -ErrorAction SilentlyContinue
+  }
+  End {}
 }
 
 <#
@@ -535,8 +638,11 @@ function Invoke-UpTwoDirectoryLevels {
   param (
     # This function does not accept any parameters
   )
-
-  Set-Location -Path ..\.. -ErrorAction SilentlyContinue
+  Begin {}
+  Process {
+    Set-Location -Path ..\.. -ErrorAction SilentlyContinue
+  }
+  End {}
 }
 
 <#
@@ -572,8 +678,11 @@ function Invoke-UpThreeDirectoryLevels {
   param (
     # This function does not accept any parameters
   )
-
-  Set-Location -Path ..\..\.. -ErrorAction SilentlyContinue
+  Begin {}
+  Process {
+    Set-Location -Path ..\..\.. -ErrorAction SilentlyContinue
+  }
+  End {}
 }
 
 <#
@@ -609,8 +718,11 @@ function Invoke-UpFourDirectoryLevels {
   param (
     # This function does not accept any parameters
   )
-
-  Set-Location -Path ..\..\..\.. -ErrorAction SilentlyContinue
+  Begin {}
+  Process {
+    Set-Location -Path ..\..\..\.. -ErrorAction SilentlyContinue
+  }
+  End {}
 }
 
 <#
@@ -646,6 +758,9 @@ function Invoke-UpFiveDirectoryLevels {
   param (
     # This function does not accept any parameters
   )
-
-  Set-Location -Path ..\..\..\..\.. -ErrorAction SilentlyContinue
+  Begin {}
+  Process {
+    Set-Location -Path ..\..\..\..\.. -ErrorAction SilentlyContinue
+  }
+  End {}
 }

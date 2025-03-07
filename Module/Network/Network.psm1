@@ -53,42 +53,65 @@ function Get-MyIPAddress {
   [Alias("my-ip")]
   [OutputType([string])]
   param (
-    [Parameter(Mandatory = $false, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [Parameter(
+      Mandatory = $false,
+      Position = 0,
+      ValueFromPipeline = $true,
+      ValueFromPipelineByPropertyName = $true
+    )]
     [Alias("l")]
     [switch]$Local = $true,
 
-    [Parameter(Mandatory = $false, Position = 1, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [Parameter(
+      Mandatory = $false,
+      Position = 1,
+      ValueFromPipeline = $true,
+      ValueFromPipelineByPropertyName = $true
+    )]
     [Alias("4")]
     [switch]$IPv4 = $false,
 
-    [Parameter(Mandatory = $false, Position = 2, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [Parameter(
+      Mandatory = $false,
+      Position = 2,
+      ValueFromPipeline = $true,
+      ValueFromPipelineByPropertyName = $true
+    )]
     [Alias("6")]
     [switch]$IPv6 = $false,
 
-    [Parameter(Mandatory = $false, Position = 3, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [Parameter(
+      Mandatory = $false,
+      Position = 3,
+      ValueFromPipeline = $true,
+      ValueFromPipelineByPropertyName = $true
+    )]
     [Alias("c")]
     [string]$ComputerName = $env:COMPUTERNAME
   )
+  Begin {}
+  Process {
+    try {
+      if ($Local) {
+        $LocalAddress = [System.Net.Dns]::GetHostAddresses($ComputerName) | Where-Object { $_.AddressFamily -eq 'InterNetwork' } | Select-Object -ExpandProperty IPAddressToString
+        Write-Output "Local: $LocalAddress"
+      }
 
-  try {
-    if ($Local) {
-      $LocalAddress = [System.Net.Dns]::GetHostAddresses($ComputerName) | Where-Object { $_.AddressFamily -eq 'InterNetwork' } | Select-Object -ExpandProperty IPAddressToString
-      Write-Output "Local: $LocalAddress"
+      if ($IPv4) {
+        $IPv4Address = (Invoke-RestMethod -Uri "http://ipv4.icanhazip.com").Trim()
+        Write-Output "IPv4: $IPv4Address"
+      }
+
+      if ($IPv6) {
+        $IPv6Address = (Invoke-RestMethod -Uri "http://ipv6.icanhazip.com").Trim()
+        Write-Output "IPv6: $IPv6Address"
+      }
     }
-
-    if ($IPv4) {
-      $IPv4Address = (Invoke-RestMethod -Uri "http://ipv4.icanhazip.com").Trim()
-      Write-Output "IPv4: $IPv4Address"
-    }
-
-    if ($IPv6) {
-      $IPv6Address = (Invoke-RestMethod -Uri "http://ipv6.icanhazip.com").Trim()
-      Write-Output "IPv6: $IPv6Address"
+    catch {
+      Write-LogMessage -Message "Failed to retrieve IP address: $_" -Level "ERROR"
     }
   }
-  catch {
-    Write-LogMessage -Message "Failed to retrieve IP address: $_" -Level "ERROR"
-  }
+  End {}
 }
 
 <#
@@ -124,12 +147,15 @@ function Clear-FlushDNS {
   param (
     # This function does not accept any parameters
   )
-
-  try {
-    Clear-DnsClientCache
-    Write-LogMessage -Message "DNS cache has been flushed"
+  Begin {}
+  Process {
+    try {
+      Clear-DnsClientCache
+      Write-LogMessage -Message "DNS cache has been flushed"
+    }
+    catch {
+      Write-LogMessage -Message "Failed to flush DNS: $_" -Level "ERROR"
+    }
   }
-  catch {
-    Write-LogMessage -Message "Failed to flush DNS: $_" -Level "ERROR"
-  }
+  End {}
 }

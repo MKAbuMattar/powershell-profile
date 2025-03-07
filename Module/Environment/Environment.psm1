@@ -90,21 +90,34 @@ function Set-EnvVar {
   [Alias("set-env", "export")]
   [OutputType([void])]
   param (
-    [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [Parameter(
+      Mandatory = $true,
+      Position = 0,
+      ValueFromPipeline = $true,
+      ValueFromPipelineByPropertyName = $true
+    )]
     [Alias("n")]
     [string]$Name,
 
-    [Parameter(Mandatory = $true, Position = 1, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [Parameter(
+      Mandatory = $true,
+      Position = 1,
+      ValueFromPipeline = $true,
+      ValueFromPipelineByPropertyName = $true
+    )]
     [Alias("v")]
     [string]$Value
   )
-
-  try {
-    Set-Item -Force -Path "env:$Name" -Value $Value -ErrorAction Stop
+  Begin {}
+  Process {
+    try {
+      Set-Item -Force -Path "env:$Name" -Value $Value -ErrorAction Stop
+    }
+    catch {
+      Write-LogMessage -Message "Failed to export environment variable '$Name'." -Level "ERROR"
+    }
   }
-  catch {
-    Write-LogMessage -Message "Failed to export environment variable '$Name'." -Level "ERROR"
-  }
+  End {}
 }
 
 <#
@@ -138,21 +151,29 @@ function Get-EnvVar {
   [Alias("get-env")]
   [OutputType([string])]
   param (
-    [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [Parameter(
+      Mandatory = $true,
+      Position = 0,
+      ValueFromPipeline = $true,
+      ValueFromPipelineByPropertyName = $true
+    )]
     [Alias("n")]
     [string]$Name
   )
-
-  try {
-    $value = Get-Item -Path "env:$Name" -ErrorAction Stop | Select-Object -ExpandProperty Value
-    if ($value) {
-      Write-Output $value
+  Begin {}
+  Process {
+    try {
+      $value = Get-Item -Path "env:$Name" -ErrorAction Stop | Select-Object -ExpandProperty Value
+      if ($value) {
+        Write-Output $value
+      }
+      else {
+        Write-LogMessage -Message "Environment variable '$Name' not found." -Level "WARNING"
+      }
     }
-    else {
-      Write-LogMessage -Message "Environment variable '$Name' not found." -Level "WARNING"
+    catch {
+      Write-LogMessage -Message "An error occurred while retrieving the value of environment variable '$Name'." -Level "ERROR"
     }
   }
-  catch {
-    Write-LogMessage -Message "An error occurred while retrieving the value of environment variable '$Name'." -Level "ERROR"
-  }
+  End {}
 }
