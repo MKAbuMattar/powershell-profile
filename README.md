@@ -28,6 +28,8 @@ irm "https://raw.githubusercontent.com/MKAbuMattar/powershell-profile/main/setup
 
 ## The Profile Architecture
 
+The PowerShell profile system is designed to enhance the PowerShell experience by providing a set of functions, aliases, and settings that improve productivity and streamline common tasks. The profile is organized into several components, each serving a specific purpose:
+
 ```mermaid
 graph TB
     User((User))
@@ -36,44 +38,51 @@ graph TB
         subgraph "Core Profile Container"
             ProfileScript["Profile Script<br>PowerShell"]
 
-            subgraph "Profile Components"
+            subgraph "Core Components"
                 EnvManager["Environment Manager<br>PowerShell Module"]
                 LogManager["Logging Manager<br>PowerShell Module"]
-                StarshipIntegration["Starship Integration<br>PowerShell Module"]
+                DirManager["Directory Manager<br>PowerShell Module"]
+                NetworkManager["Network Manager<br>PowerShell Module"]
                 UpdateManager["Update Manager<br>PowerShell Module"]
                 UtilityManager["Utility Manager<br>PowerShell Module"]
+                DocsManager["Documentation Manager<br>PowerShell Module"]
+            end
+        end
+
+        subgraph "Shell Enhancement Container"
+            ShellEnhancements["Shell Enhancements<br>PowerShell"]
+
+            subgraph "Shell Components"
+                StarshipPrompt["Starship Prompt<br>Rust"]
+                PSReadLineConfig["PSReadLine Config<br>PowerShell"]
+                TerminalIconsModule["Terminal Icons<br>PowerShell Module"]
+                PoshGitModule["Posh-Git<br>PowerShell Module"]
+                CompletionPredictorModule["Completion Predictor<br>PowerShell Module"]
+                ZoxideNav["Zoxide Navigator<br>Rust"]
             end
         end
 
         subgraph "Configuration Container"
-            ConfigFiles["Configuration Files<br>TOML/JSONC"]
+            ConfigManager["Configuration Manager<br>PowerShell"]
 
             subgraph "Config Components"
                 StarshipConfig["Starship Config<br>TOML"]
                 FastFetchConfig["FastFetch Config<br>JSONC"]
+                ProfileSettings["Profile Settings<br>PowerShell"]
+                EditorConfig["Editor Config<br>JSON"]
             end
         end
 
-        subgraph "External Tools Container"
-            ExternalTools["External Tools<br>Various"]
+        subgraph "System Tools Container"
+            SystemTools["System Tools<br>Various"]
 
             subgraph "Tool Components"
-                Starship["Starship Prompt<br>Rust"]
-                FastFetch["System Info Display<br>C++"]
-                PowerShellCore["PowerShell Core<br>.NET"]
-                WindowsTerminal["Windows Terminal<br>C++"]
-                Zoxide["Directory Navigator<br>Rust"]
-            end
-        end
-
-        subgraph "Module Management Container"
-            ModuleSystem["Module System<br>PowerShell"]
-
-            subgraph "Module Components"
-                TerminalIcons["Terminal Icons<br>PowerShell Module"]
-                PSReadLine["PSReadLine<br>PowerShell Module"]
-                PoshGit["Posh-Git<br>PowerShell Module"]
-                CompletionPredictor["Completion Predictor<br>PowerShell Module"]
+                ProcessManager["Process Manager<br>PowerShell"]
+                NetworkTools["Network Tools<br>PowerShell"]
+                FileSystem["File System Tools<br>PowerShell"]
+                SystemInfo["System Info Display<br>C++"]
+                TimeTools["Time Management Tools<br>PowerShell"]
+                WeatherTool["Weather Tool<br>PowerShell"]
             end
         end
     end
@@ -81,35 +90,45 @@ graph TB
     subgraph "External Services"
         GitHub["GitHub Repository<br>Git"]
         Chocolatey["Package Manager<br>Chocolatey"]
+        WeatherAPI["Weather Service<br>wttr.in"]
+        QuoteAPI["Quote Service<br>quotable.io"]
     end
 
-    User -->|Interacts with| ProfileScript
-    ProfileScript -->|Loads| EnvManager
-    ProfileScript -->|Uses| LogManager
-    ProfileScript -->|Configures| StarshipIntegration
-    ProfileScript -->|Manages| UpdateManager
-    ProfileScript -->|Utilizes| UtilityManager
+    User -->|"Interacts with"| ProfileScript
+    ProfileScript -->|"Loads"| EnvManager
+    ProfileScript -->|"Uses"| LogManager
+    ProfileScript -->|"Manages"| DirManager
+    ProfileScript -->|"Configures"| NetworkManager
+    ProfileScript -->|"Updates via"| UpdateManager
+    ProfileScript -->|"Utilizes"| UtilityManager
+    ProfileScript -->|"Documents via"| DocsManager
 
-    ConfigFiles -->|Configures| StarshipConfig
-    ConfigFiles -->|Configures| FastFetchConfig
+    ShellEnhancements -->|"Customizes"| StarshipPrompt
+    ShellEnhancements -->|"Configures"| PSReadLineConfig
+    ShellEnhancements -->|"Enhances with"| TerminalIconsModule
+    ShellEnhancements -->|"Integrates"| PoshGitModule
+    ShellEnhancements -->|"Assists with"| CompletionPredictorModule
+    ShellEnhancements -->|"Navigates via"| ZoxideNav
 
-    StarshipIntegration -->|Uses| Starship
-    ProfileScript -->|Displays| FastFetch
-    ProfileScript -->|Runs on| PowerShellCore
-    ProfileScript -->|Integrates with| WindowsTerminal
-    ProfileScript -->|Uses| Zoxide
+    ConfigManager -->|"Manages"| StarshipConfig
+    ConfigManager -->|"Manages"| FastFetchConfig
+    ConfigManager -->|"Manages"| ProfileSettings
+    ConfigManager -->|"Manages"| EditorConfig
 
-    ModuleSystem -->|Loads| TerminalIcons
-    ModuleSystem -->|Configures| PSReadLine
-    ModuleSystem -->|Integrates| PoshGit
-    ModuleSystem -->|Uses| CompletionPredictor
+    SystemTools -->|"Manages"| ProcessManager
+    SystemTools -->|"Utilizes"| NetworkTools
+    SystemTools -->|"Handles"| FileSystem
+    SystemTools -->|"Displays"| SystemInfo
+    SystemTools -->|"Manages"| TimeTools
+    SystemTools -->|"Fetches"| WeatherTool
 
-    UpdateManager -->|Checks| GitHub
-    UpdateManager -->|Uses| Chocolatey
-    Chocolatey -->|Installs| ExternalTools
+    UpdateManager -->|"Checks"| GitHub
+    UpdateManager -->|"Uses"| Chocolatey
+    WeatherTool -->|"Queries"| WeatherAPI
+    UtilityManager -->|"Fetches from"| QuoteAPI
 
-    StarshipConfig -->|Customizes| Starship
-    FastFetchConfig -->|Customizes| FastFetch
+    StarshipConfig -->|"Configures"| StarshipPrompt
+    FastFetchConfig -->|"Configures"| SystemInfo
 ```
 
 ## Features
