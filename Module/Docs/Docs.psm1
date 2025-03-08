@@ -245,6 +245,10 @@ $($PSStyle.Foreground.Yellow)Update Module$($PSStyle.Reset)
     $($PSStyle.Foreground.Green)Update-PowerShell$($PSStyle.Reset)
     $($PSStyle.Foreground.Magenta)update-ps1$($PSStyle.Reset)
         Checks for updates to PowerShell and upgrades to the latest version if available.
+
+    $($PSStyle.Foreground.Green)Update-WindowsTerminalConfig$($PSStyle.Reset)
+    $($PSStyle.Foreground.Magenta)update-terminal-config$($PSStyle.Reset)
+        Updates the Windows Terminal configuration file with the latest settings from the GitHub repository.
 "@
 
   $Utility = @"
@@ -288,6 +292,10 @@ $($PSStyle.Foreground.Yellow)Utility Module$($PSStyle.Reset)
     $($PSStyle.Foreground.Green)Get-WallClock$($PSStyle.Reset) [-Title <Title>] [-TimeZone <TimeZone>]
     $($PSStyle.Foreground.Magenta)wallclock$($PSStyle.Reset) [-Title <Title>] [-TimeZone <TimeZone>]
         Displays the current time in a large font using the FIGlet utility.
+
+    $($PSStyle.Foreground.Green)Get-PrayerTimes$($PSStyle.Reset) -City <City> -Country <Country> [-Method <Method>] [-Use24HourFormat]
+    $($PSStyle.Foreground.Magenta)prayer$($PSStyle.Reset) -City <City> -Country <Country> [-Method <Method>] [-Use24HourFormat]
+        Retrieves the prayer times for a specified city and country.
 
     $($PSStyle.Foreground.Green)Start-Matrix$($PSStyle.Reset) [-SleepTime <SleepTime>]
     $($PSStyle.Foreground.Magenta)matrix$($PSStyle.Reset) [-SleepTime <SleepTime>]

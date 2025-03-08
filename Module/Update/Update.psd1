@@ -9,14 +9,16 @@
   FunctionsToExport = @(
     'Update-LocalProfileModuleDirectory',
     'Update-Profile',
-    'Update-PowerShell'
+    'Update-PowerShell',
+    'Update-WindowsTerminalConfig'
   )
   CmdletsToExport   = @()
   VariablesToExport = @()
   AliasesToExport   = @(
     'update-local-module',
     'update-profile',
-    'update-ps1'
+    'update-ps1',
+    'update-terminal-config'
   )
   PrivateData       = @{
     PSData = @{

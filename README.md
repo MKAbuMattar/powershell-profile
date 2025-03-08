@@ -167,6 +167,8 @@ The Update module provides functions to update the local profile module director
   - Example: `Update-Profile`
 - **Update-PowerShell** (Alias: `update-ps1`): Checks for updates to PowerShell and upgrades to the latest version if available.
   - Example: `Update-PowerShell`
+- **Update-WindowsTerminalConfig** (Alias: `update-terminal-config`): Updates the Windows Terminal configuration file with the latest settings.
+  - Example: `Update-WindowsTerminalConfig`
 
 ### Utility Module
 
@@ -193,6 +195,8 @@ The Utility module provides a set of useful functions to enhance your PowerShell
   - Example: `stopwatch -Title "Workout"`
 - **Get-WallClock** (Alias: `clock`): Retrieves the current time in a specified timezone.
   - Example: `wallclock -TimeZone "Asia/Amman"`
+- **Get-PrayerTimes** (Alias: `prayer`): Retrieves the prayer times for a specified location.
+  - Example: `prayer -City "Amman" -Country "Jordan"`
 - **Start-Matrix** (Alias: `matrix`): Displays a matrix rain animation in the console.
   - Example: `matrix`
 
