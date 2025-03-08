@@ -232,3 +232,81 @@ function Update-PowerShell {
     Write-LogMessage -Message "Failed to update PowerShell" -Level "WARNING"
   }
 }
+
+<#
+.SYNOPSIS
+  Update the Windows Terminal configuration by downloading the settings.json file from the GitHub repository.
+
+.DESCRIPTION
+  This function update the Windows Terminal configuration by downloading the settings.json file from the GitHub repository and saving it to the appropriate location. If the destination file already exists, it will be overwritten.
+
+.PARAMETER SourceUrl
+  Specifies the URL of the settings.json file to download. Default is "https://github.com/MKAbuMattar/powershell-profile/raw/main/.config/windows-terminal/settings.json".
+
+.PARAMETER DestinationPath
+  Specifies the destination path where the settings.json file will be saved. Default is "$env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json".
+
+.INPUTS
+  SourceUrl: (Optional) The URL of the settings.json file to download.
+  DestinationPath: (Optional) The destination path where the settings.json file will be saved.
+
+.OUTPUTS
+  The settings.json file is downloaded and saved to the destination path.
+
+.EXAMPLE
+  Update-WindowsTerminalConfig
+  Update the Windows Terminal configuration by downloading the settings.json file from the GitHub repository.
+
+.NOTES
+  This function is used to update the Windows Terminal configuration by downloading the settings.json file from the GitHub repository.
+#>
+function Update-WindowsTerminalConfig {
+  [CmdletBinding()]
+  [Alias("update-terminal-config")]
+  [OutputType([void])]
+  param (
+    [Parameter(
+      Mandatory = $false,
+      Position = 0,
+      ValueFromPipeline = $true,
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "The URL of the settings.json file to download."
+    )]
+    [string]$SourceUrl = "https://github.com/MKAbuMattar/powershell-profile/raw/main/.config/windows-terminal/settings.json",
+
+    [Parameter(
+      Mandatory = $false,
+      Position = 1,
+      ValueFromPipeline = $true,
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "The destination path where the settings.json file will be saved."
+    )]
+    [string]$DestinationPath = "$env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json"
+  )
+
+  try {
+    if (!(Test-Path -Path $DestinationPath -PathType Leaf)) {
+      $destinationDir = Split-Path -Path $DestinationPath -Parent
+      if (!(Test-Path -Path $destinationDir)) {
+        New-Item -Path $destinationDir -ItemType "directory"
+      }
+
+      Invoke-RestMethod $SourceUrl -OutFile $DestinationPath
+      Write-LogMessage -Message "The settings.json @ [$DestinationPath] has been created."
+      Write-LogMessage -Message "If you want to add any persistent components, please do so at [$destinationDir\settings.json] as there is an updater in the installed profile which uses the hash to update the profile and will lead to loss of changes."
+    }
+    else {
+      $tmpDir = "$HOME\.tmp"
+      if (-not (Test-Path -Path $tmpDir)) {
+        New-Item -Path $tmpDir -ItemType Directory -Force
+      }
+      Get-Item -Path $DestinationPath | Move-Item -Destination "$tmpDir\settings.json.old" -Force
+      Invoke-RestMethod $SourceUrl -OutFile $DestinationPath
+      Write-LogMessage -Message "The settings.json @ [$DestinationPath] has been created and old settings.json moved to $tmpDir\settings.json.old."
+      Write-LogMessage -Message "Please back up any persistent components of your old settings.json to [$destinationDir\settings.json] as there is an updater in the installed profile which uses the hash to update the profile and will lead to loss of changes."
+    }
+  }
+  catch {
+    Invoke-ErrorHandling -ErrorMessage "Failed to create or update the settings.json." -ErrorRecord $_
+  }
+}

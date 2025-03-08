@@ -17,6 +17,7 @@
     'Start-Countdown',
     'Start-Stopwatch',
     'Get-WallClock',
+    'Get-PrayerTimes',
     'Start-Matrix'
   )
   CmdletsToExport   = @()
@@ -32,6 +33,7 @@
     'countdown',
     'stopwatch',
     'wallclock',
+    'prayer',
     'matrix'
   )
   PrivateData       = @{
