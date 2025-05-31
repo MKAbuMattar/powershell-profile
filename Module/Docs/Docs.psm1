@@ -45,6 +45,7 @@ function Show-ProfileHelp {
       'Directory',
       'Docs',
       'Environment',
+      'GitUtils',
       'Logging',
       'Network',
       'Process',
@@ -176,6 +177,29 @@ $($PSStyle.Foreground.Yellow)Environment Module$($PSStyle.Reset)
         Global variable to test if the machine can connect to GitHub.
 "@
 
+  $GitUtils = @"
+$($PSStyle.Foreground.Yellow)Git Utils Module$($PSStyle.Reset)
+    $($PSStyle.Foreground.Green)Get-GitBranchStatus$($PSStyle.Reset) [-Path <Path>] [-Recurse]
+    $($PSStyle.Foreground.Magenta)ggbs$($PSStyle.Reset) [-Path <Path>] [-Recurse]
+        Retrieves the status of the current Git branch, including uncommitted changes and branch information.
+
+    $($PSStyle.Foreground.Green)Invoke-GitCleanBranches$($PSStyle.Reset) [-Path <Path>] [-PruneRemote] [-Force]
+    $($PSStyle.Foreground.Magenta)igcb$($PSStyle.Reset) [-Path <Path>] [-PruneRemote] [-Force]
+        Cleans up local Git branches that have been merged into the current branch, optionally pruning remote branches.
+
+    $($PSStyle.Foreground.Green)Start-GitRepoSearch$($PSStyle.Reset) [-Path <Path>] [-Recurse] [-ShowAllBranches] [-ShowAllCommits] [-ShowAllTags]
+    $($PSStyle.Foreground.Magenta)sgrs$($PSStyle.Reset) -Path <Path> [-Recurse] [-ShowAllBranches] [-ShowAllCommits] [-ShowAllTags]
+        Searches for Git repositories in the specified path and displays their branches, commits, and tags.
+
+    $($PSStyle.Foreground.Green)Get-GitRecentContributors$($PSStyle.Reset) [-Path <Path>] [-TopN <TopN>]
+    $($PSStyle.Foreground.Magenta)ggrc$($PSStyle.Reset) [-Path <Path>] [-TopN <TopN>]
+        Retrieves the recent contributors to the current Git repository, sorted by the number of commits.
+
+    $($PSStyle.Foreground.Green)New-GitRelease$($PSStyle.Reset) [-TagName <TagName>] [-Message <Message>] [-Path <Path>] [-Push] [-Force]
+    $($PSStyle.Foreground.Magenta)ngr$($PSStyle.Reset) [-TagName <TagName>] [-Message <Message>] [-Path <Path>] [-Push] [-Force]
+        Creates a new Git release with the specified tag name and message, optionally pushing it to the remote repository.
+"@
+
   $Logging = @"
 $($PSStyle.Foreground.Yellow)Logging Module$($PSStyle.Reset)
     $($PSStyle.Foreground.Green)Write-LogMessage$($PSStyle.Reset) -Message <Message> [-Level <Level>]
@@ -300,6 +324,14 @@ $($PSStyle.Foreground.Yellow)Utility Module$($PSStyle.Reset)
     $($PSStyle.Foreground.Green)Start-Matrix$($PSStyle.Reset) [-SleepTime <SleepTime>]
     $($PSStyle.Foreground.Magenta)matrix$($PSStyle.Reset) [-SleepTime <SleepTime>]
         Displays a matrix rain animation in the console.
+
+    $($PSStyle.Foreground.Green)Get-DiskUsage$($PSStyle.Reset) [-Path <Path>] [-Unit <Unit>]
+    $($PSStyle.Foreground.Magenta)du$($PSStyle.Reset) [-Path <Path>] [-Unit <Unit>]
+        Retrieves the disk usage for a specified path.
+
+    $($PSStyle.Foreground.Green)Format-ConvertSize$($PSStyle.Reset) -Value <Value> [-Units <Units>] [-Scale <Scale>] [-DecimalPlaces <DecimalPlaces>]
+    $($PSStyle.Foreground.Magenta)convert-size$($PSStyle.Reset) -Value <Value> [-Units <Units>] [-Scale <Scale>] [-DecimalPlaces <DecimalPlaces>]
+        Converts a size value to a specified unit and formats it.
 "@
 
   switch ($Section) {
@@ -326,6 +358,10 @@ $($PSStyle.Foreground.Yellow)Utility Module$($PSStyle.Reset)
     'Environment' {
       Write-Host $Title
       Write-Host $Environment
+    }
+    'GitUtils' {
+      Write-Host $Title
+      Write-Host $GitUtils
     }
     'Logging' {
       Write-Host $Title

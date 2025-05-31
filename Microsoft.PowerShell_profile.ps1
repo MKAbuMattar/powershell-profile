@@ -132,6 +132,9 @@ Import-Module $DocsModulePath -Force -ErrorAction SilentlyContinue
 $EnvironmentModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Environment/Environment.psd1'
 Import-Module $EnvironmentModulePath -Force -ErrorAction SilentlyContinue
 
+$GitUtilsModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/GitUtils/GitUtils.psd1'
+Import-Module $GitUtilsModulePath -Force -ErrorAction SilentlyContinue
+
 $LoggingModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Logging/Logging.psd1'
 Import-Module $LoggingModulePath -Force -ErrorAction SilentlyContinue
 

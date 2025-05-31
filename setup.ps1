@@ -249,6 +249,8 @@ function Copy-ModuleDirectory {
       "Docs/Docs.psm1",
       "Environment/Environment.psd1",
       "Environment/Environment.psm1",
+      "GitUtils/GitUtils.psd1",
+      "GitUtils/GitUtils.psm1",
       "Logging/Logging.psd1",
       "Logging/Logging.psm1",
       "Network/Network.psd1",
@@ -906,7 +908,8 @@ $packages = @(
   'fastfetch',
   'powershell-core',
   'starship',
-  'zoxide'
+  'zoxide',
+  'fzf'
 )
 Invoke-Command -ScriptBlock ${function:Invoke-UpdateInstallChocoPackages} -ArgumentList $packages
 
