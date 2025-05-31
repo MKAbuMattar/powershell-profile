@@ -150,6 +150,9 @@ Import-Module $UpdateModulePath -Force -ErrorAction SilentlyContinue
 $UtilityModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Utility/Utility.psd1'
 Import-Module $UtilityModulePath -Force -ErrorAction SilentlyContinue
 
+$GitUtilsModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/GitUtils/GitUtils.psd1'
+Import-Module $GitUtilsModulePath -Force -ErrorAction SilentlyContinue
+
 #---------------------------------------------------------------------------------------------------
 # Invoke Starship Transient Function
 #---------------------------------------------------------------------------------------------------

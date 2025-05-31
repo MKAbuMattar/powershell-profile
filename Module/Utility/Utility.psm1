@@ -1296,3 +1296,32 @@ function Start-Matrix {
     }
   }
 }
+
+<#
+.SYNOPSIS
+  Displays disk usage for specified paths.
+.DESCRIPTION
+  This function calculates and displays the disk usage for one or more paths.
+  It can show sizes in human-readable format and control the depth of subdirectories.
+.PARAMETER Path
+  The path(s) to the directory or file to analyze. Defaults to the current directory.
+.PARAMETER Depth
+  How many levels of subdirectories to display. Default is 0 (only the top level).
+.PARAMETER HumanReadable
+  If $true, displays sizes in a human-readable format (KB, MB, GB).
+.EXAMPLE
+  Get-DiskUsage -Path "C:\Windows" -Depth 1 -HumanReadable
+  Displays disk usage for C:\Windows and its immediate subdirectories in human-readable format.
+.LINK
+  https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
+#>
+function Get-DiskUsage {
+  [CmdletBinding()]
+  [Alias('du')]
+  param (
+    [string[]]$Path = (Get-Location),
+    [int]$Depth = 0,
+    [switch]$HumanReadable
+  )
+  Write-Output "Disk usage for $($Path -join ', ') (Not Implemented Yet)"
+}

@@ -18,7 +18,8 @@
     'Start-Stopwatch',
     'Get-WallClock',
     'Get-PrayerTimes',
-    'Start-Matrix'
+    'Start-Matrix',
+    'Get-DiskUsage'
   )
   CmdletsToExport   = @()
   VariablesToExport = @()
@@ -34,7 +35,8 @@
     'stopwatch',
     'wallclock',
     'prayer',
-    'matrix'
+    'matrix',
+    'du'
   )
   PrivateData       = @{
     PSData = @{
