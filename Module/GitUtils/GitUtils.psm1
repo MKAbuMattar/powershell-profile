@@ -27,7 +27,25 @@ function Get-GitBranchStatus {
   [CmdletBinding()]
   [Alias("ggbs")]
   param (
+    [Parameter(
+      Mandatory = $false,
+      Position = 0,
+      ValueFromPipeline = $true,
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "Path to the Git repository or parent directory containing multiple repositories."
+    )]
+    [Alias('p')]
+    [ValidateNotNullOrEmpty()]
     [string]$Path = (Get-Location),
+
+    [Parameter(
+      Mandatory = $false,
+      Position = 1,
+      ValueFromPipeline = $false,
+      ValueFromPipelineByPropertyName = $false,
+      ValueFromRemainingArguments = $false,
+      HelpMessage = "If specified, searches for Git repositories in subdirectories."
+    )]
     [switch]$Recurse
   )
 
@@ -85,8 +103,38 @@ function Invoke-GitCleanBranches {
   [CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = 'High')]
   [Alias("igcb")]
   param (
+    [Parameter(
+      Mandatory = $false,
+      Position = 0,
+      ValueFromPipeline = $true,
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "Path to the Git repository."
+    )]
+    [Alias('p')]
+    [ValidateNotNullOrEmpty()]
     [string]$Path = (Get-Location),
+
+    [Parameter(
+      Mandatory = $false,
+      Position = 1,
+      ValueFromPipeline = $false,
+      ValueFromPipelineByPropertyName = $false,
+      ValueFromRemainingArguments = $false,
+      HelpMessage = "If specified, also prunes remote-tracking branches that no longer exist on the remote."
+    )]
+    [Alias('prune')]
     [switch]$PruneRemote,
+
+    [Parameter(
+      Mandatory = $false,
+      Position = 2,
+      ValueFromPipeline = $false,
+      ValueFromPipelineByPropertyName = $false,
+      ValueFromRemainingArguments = $false,
+      HelpMessage = "If specified, deletes branches without confirmation (use with caution)."
+    )]
+    [Alias('f')]
+    [ValidateSet('True', 'False')]
     [switch]$Force
   )
 
@@ -173,11 +221,52 @@ function Start-GitRepoSearch {
   [CmdletBinding()]
   [Alias("sgrs")]
   param (
-    [Parameter(Mandatory = $true)]
+    [Parameter(
+      Mandatory = $true,
+      Position = 0,
+      ValueFromPipeline = $true,
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "The search pattern (string or regex)."
+    )]
+    [Alias('q')]
+    [ValidateNotNullOrEmpty()]
     [string]$Query,
+
+    [Parameter(
+      Mandatory = $false,
+      Position = 1,
+      ValueFromPipeline = $false,
+      ValueFromPipelineByPropertyName = $false,
+      ValueFromRemainingArguments = $false,
+      HelpMessage = "The root directory to search for Git repositories, or a specific Git repository path. Defaults to current location."
+    )]
+    [Alias('p')]
+    [ValidateNotNullOrEmpty()]
     [string]$Path = (Get-Location),
+
+    [Parameter(
+      Mandatory = $false,
+      Position = 2,
+      ValueFromPipeline = $false,
+      ValueFromPipelineByPropertyName = $false,
+      ValueFromRemainingArguments = $false,
+      HelpMessage = "Specifies what to search: 'CommitMessage', 'CodeChanges' (diff content), 'TrackedFiles' (current tracked files). Default is 'CommitMessage'."
+    )]
+    [Alias('st')]
+    [ValidateNotNullOrEmpty()]
     [ValidateSet('CommitMessage', 'CodeChanges', 'TrackedFiles')]
     [string]$SearchType = 'CommitMessage',
+
+    [Parameter(
+      Mandatory = $false,
+      Position = 3,
+      ValueFromPipeline = $false,
+      ValueFromPipelineByPropertyName = $false,
+      ValueFromRemainingArguments = $false,
+      HelpMessage = "If specified and Path is a directory, search recursively for Git repositories."
+    )]
+    [Alias('r')]
+    [ValidateNotNullOrEmpty()]
     [switch]$Recurse
   )
 
@@ -245,7 +334,27 @@ function Get-GitRecentContributors {
   [CmdletBinding()]
   [Alias("ggrc")]
   param (
+    [Parameter(
+      Mandatory = $false,
+      Position = 0,
+      ValueFromPipeline = $true,
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "Path to the Git repository."
+    )]
+    [Alias('p')]
+    [ValidateNotNullOrEmpty()]
     [string]$Path = (Get-Location),
+
+    [Parameter(
+      Mandatory = $false,
+      Position = 1,
+      ValueFromPipeline = $false,
+      ValueFromPipelineByPropertyName = $false,
+      ValueFromRemainingArguments = $false,
+      HelpMessage = "Number of top recent contributors to display."
+    )]
+    [Alias('n')]
+    [ValidateRange(1, 100)]
     [int]$TopN = 10
   )
 
@@ -287,10 +396,63 @@ function New-GitRelease {
   [CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = 'Medium')]
   [Alias("ngr")]
   param (
+    [Parameter(
+      Mandatory = $false,
+      Position = 0,
+      ValueFromPipeline = $true,
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "The name for the new tag (e.g., 'v1.2.3'). If not provided, the user will be prompted."
+    )]
+    [Alias('tn')]
+    [ValidateNotNullOrEmpty()]
     [string]$TagName,
+
+    [Parameter(
+      Mandatory = $false,
+      Position = 1,
+      ValueFromPipeline = $false,
+      ValueFromPipelineByPropertyName = $false,
+      ValueFromRemainingArguments = $false,
+      HelpMessage = "The annotation message for the tag. If not provided, the user will be prompted."
+    )]
+    [Alias('m')]
+    [ValidateNotNullOrEmpty()]
     [string]$Message,
+
+    [Parameter(
+      Mandatory = $false,
+      Position = 2,
+      ValueFromPipeline = $false,
+      ValueFromPipelineByPropertyName = $false,
+      ValueFromRemainingArguments = $false,
+      HelpMessage = "Specifies the path to the Git repository. Defaults to the current location."
+    )]
+    [Alias('p')]
+    [ValidateNotNullOrEmpty()]
     [string]$Path = (Get-Location),
+
+    [Parameter(
+      Mandatory = $false,
+      Position = 3,
+      ValueFromPipeline = $false,
+      ValueFromPipelineByPropertyName = $false,
+      ValueFromRemainingArguments = $false,
+      HelpMessage = "If specified, pushes the new tag to the default remote (origin)."
+    )]
+    [Alias('push')]
+    [ValidateNotNullOrEmpty()]
     [switch]$Push,
+
+    [Parameter(
+      Mandatory = $false,
+      Position = 4,
+      ValueFromPipeline = $false,
+      ValueFromPipelineByPropertyName = $false,
+      ValueFromRemainingArguments = $false,
+      HelpMessage = "If specified with -Push, forces the push (e.g., to overwrite an existing remote tag - use with caution)."
+    )]
+    [Alias('f')]
+    [ValidateNotNullOrEmpty()]
     [switch]$Force
   )
 

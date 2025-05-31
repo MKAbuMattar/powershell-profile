@@ -908,7 +908,8 @@ $packages = @(
   'fastfetch',
   'powershell-core',
   'starship',
-  'zoxide'
+  'zoxide',
+  'fzf'
 )
 Invoke-Command -ScriptBlock ${function:Invoke-UpdateInstallChocoPackages} -ArgumentList $packages
 

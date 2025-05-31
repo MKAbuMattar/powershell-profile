@@ -111,6 +111,22 @@ The Environment module provides functions to manage environment variables, test 
 - **AutoUpdatePowerShell**: A global variable to disable/enable the Auto Update feature for PowerShell.
 - **CanConnectToGitHub**: A global variable to test if the machine can connect to GitHub.
 
+### GitUtils Module
+
+The GitUtils module provides functions to manage Git repositories and perform Git-related tasks:
+
+- **Get-GitBranchStatus** (Alias: `ggbs`): Retrieves the status of the current Git branch, including the branch name, commit hash, and whether it is ahead or behind the remote branch.
+  - Example: `ggbs`
+- **Invoke-GitCleanBranches** (Alias: `igcb`): Cleans up local Git branches that have been merged into the current branch.
+  - Example: `igcb`
+- **Start-GitRepoSearch** (Alias: `sgrs`): Starts an interactive search for Git repositories in the current directory using fzf.
+  - Example: `sgrs`
+- **Get-GitRecentContributors** (Alias: `ggrc`): Retrieves a list of recent contributors to the current Git repository.
+  - Example: `ggrc`
+- **New-GitRelease** (Alias: `ngr`): Creates a new Git release with a specified tag and description.
+  - Example: `ngr -Tag "v1.0.0" -Description "Initial release"`
+- **Get-GitRepoInfo** (Alias: `gri`): Retrieves information about the current Git repository, including the remote URL and branch name.
+
 ### Logging Module
 
 The Logging module provides functions to log messages with a timestamp and log level:
@@ -199,6 +215,8 @@ The Utility module provides a set of useful functions to enhance your PowerShell
   - Example: `prayer -City "Amman" -Country "Jordan"`
 - **Start-Matrix** (Alias: `matrix`): Displays a matrix rain animation in the console.
   - Example: `matrix`
+- **Get-DiskUsage** (Alias: `du`): Retrieves disk usage statistics for the current drive.
+  - Example: `du`
 
 ## Contributing
 

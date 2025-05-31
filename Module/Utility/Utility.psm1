@@ -12,8 +12,8 @@
   This function does not accept any input.
 
 .OUTPUTS
-  $true: If the user has administrator privileges.
-  $false: If the user does not have administrator privileges.
+  ${true}: If the user has administrator privileges.
+  ${false}: If the user does not have administrator privileges.
 
 .NOTES
   This function is useful for determining if the current user has administrator privileges.
@@ -51,7 +51,7 @@ function Test-Administrator {
   Command: (Required) The command to check for existence.
 
 .OUTPUTS
-  $exists: True if the command exists, false otherwise.
+  ${exists}: True if the command exists, false otherwise.
 
 .NOTES
   This function is useful for verifying the availability of commands in the current environment.
@@ -1299,29 +1299,431 @@ function Start-Matrix {
 
 <#
 .SYNOPSIS
-  Displays disk usage for specified paths.
+  Formats a numeric value into a human-readable string using scaling units.
+
 .DESCRIPTION
-  This function calculates and displays the disk usage for one or more paths.
-  It can show sizes in human-readable format and control the depth of subdirectories.
-.PARAMETER Path
-  The path(s) to the directory or file to analyze. Defaults to the current directory.
-.PARAMETER Depth
-  How many levels of subdirectories to display. Default is 0 (only the top level).
-.PARAMETER HumanReadable
-  If $true, displays sizes in a human-readable format (KB, MB, GB).
+  This function formats a numeric value into a human-readable format, using a customizable set of units and a scale factor. It is useful for formatting values like file sizes, data rates, durations, etc.
+
+.PARAMETER Value
+  The numeric value to format. This parameter is mandatory.
+
+.PARAMETER Units
+  An array of units to use for formatting. Defaults to bytes-based units: Bytes, KB, MB, GB, TB, PB, EB.
+
+.PARAMETER Scale
+  The factor used to scale the value between units. Defaults to 1024.
+
+.PARAMETER DecimalPlaces
+  The number of decimal places to include in the output. Default is 1.
+
+.INPUTS
+  int/long/double.
+
+.OUTPUTS
+  string: Human-readable formatted value with appropriate unit.
+
 .EXAMPLE
-  Get-DiskUsage -Path "C:\Windows" -Depth 1 -HumanReadable
-  Displays disk usage for C:\Windows and its immediate subdirectories in human-readable format.
+  Format-ConvertSize -Value 1048576
+  Returns: "1.0 MB"
+
+.EXAMPLE
+  Format-ConvertSize -Value 1250000 -Scale 1000 -Units @("bps", "Kbps", "Mbps", "Gbps")
+  Returns: "1.3 Mbps"
+
+.EXAMPLE
+  Format-ConvertSize -Value -1
+  Returns: "N/A"
+
+.LINK
+  https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
+#>
+function Format-ConvertSize {
+  [CmdletBinding()]
+  param (
+    [Parameter(
+      Mandatory = $true,
+      Position = 0,
+      ValueFromPipelineByPropertyName = $true,
+      ValueFromPipeline = $true,
+      HelpMessage = "The numeric value to format."
+    )]
+    [Alias("v")]
+    [ValidateNotNullOrEmpty()]
+    [double]$Value,
+
+    [Parameter(
+      Mandatory = $false,
+      Position = 1,
+      ValueFromPipelineByPropertyName = $true,
+      ValueFromPipeline = $true,
+      HelpMessage = "An array of units to use for formatting."
+    )]
+    [Alias("u")]
+    [ValidateNotNullOrEmpty()]
+    [string[]]$Units = @("Bytes", "KB", "MB", "GB", "TB", "PB", "EB"),
+
+    [Parameter(
+      Mandatory = $false,
+      Position = 2,
+      ValueFromPipelineByPropertyName = $true,
+      ValueFromPipeline = $true,
+      HelpMessage = "The factor used to scale the value between units."
+    )]
+    [Alias("s")]
+    [ValidateRange(1, [double]::MaxValue)]
+    [double]$Scale = 1024,
+
+    [Parameter(
+      Mandatory = $false,
+      Position = 3,
+      ValueFromPipelineByPropertyName = $true,
+      ValueFromPipeline = $true,
+      HelpMessage = "The number of decimal places to include in the output."
+    )]
+    [Alias("d")]
+    [ValidateRange(0, 10)]
+    [int]$DecimalPlaces = 1
+  )
+
+  if ($Value -lt 0) { return "N/A" }
+  if ($Value -eq 0) { return "0 $($Units[0])" }
+
+  $tier = 0
+  [double]$scaledValue = $Value
+
+  while ($scaledValue -ge $Scale -and $tier -lt ($Units.Length - 1)) {
+    $scaledValue /= $Scale
+    $tier++
+  }
+
+  $currentDecimalPlaces = $DecimalPlaces
+  if ($tier -eq 0 -or ($scaledValue - [System.Math]::Truncate($scaledValue)) -eq 0) {
+    $currentDecimalPlaces = 0
+  }
+
+  $formatted = $scaledValue.ToString("F$currentDecimalPlaces")
+  return "$formatted $($Units[$tier])"
+}
+
+
+<#
+.SYNOPSIS
+  Gets the disk usage for specified paths.
+
+.DESCRIPTION
+  This function retrieves the disk usage for specified paths, displaying the size of each item in a human-readable format. It can also sort the results by name or size.
+
+.PARAMETER Path
+  Specifies the paths to get the disk usage for. If not specified, the current directory is used.
+
+.PARAMETER HumanReadable
+  Indicates whether to display the sizes in a human-readable format (e.g., KB, MB, GB). The default value is $true.
+
+.PARAMETER Sort
+  Indicates whether to sort the results. The default value is $false.
+
+.PARAMETER SortBy
+  Specifies the property to sort by. The default value is "Size". Valid values are "Name" and "Size".
+
+.INPUTS
+  Path: (Optional) The paths to get the disk usage for. If not specified, the current directory is used.
+  HumanReadable: (Optional) Indicates whether to display the sizes in a human-readable format. The default value is $true.
+  Sort: (Optional) Indicates whether to sort the results. The default value is $false.
+  SortBy: (Optional) Specifies the property to sort by. The default value is "Size". Valid values are "Name" and "Size".
+
+.OUTPUTS
+  This function returns a formatted output of the disk usage for the specified paths.
+
+.NOTES
+  This function is useful for checking the disk usage of directories and files in a specified path.
+
+.EXAMPLE
+  Get-DiskUsage
+  Gets the disk usage for the current directory and displays the sizes in a human-readable format.
+
+.EXAMPLE
+  Get-DiskUsage -Path "C:\Users\Username\Documents"
+  Gets the disk usage for the specified path and displays the sizes in a human-readable format.
+
+.EXAMPLE
+  Get-DiskUsage -Path "C:\Users\Username\Documents" -HumanReadable:$false
+  Gets the disk usage for the specified path and displays the sizes in bytes.
+
+.EXAMPLE
+  Get-DiskUsage -Path "C:\Users\Username\Documents" -Sort -SortBy "Name"
+  Gets the disk usage for the specified path, sorts the results by name, and displays the sizes in a human-readable format.
+
+.EXAMPLE
+  Get-DiskUsage -Path "C:\Users\Username\Documents" -Sort -SortBy "Size"
+  Gets the disk usage for the specified path, sorts the results by size, and displays the sizes in a human-readable format.
+
 .LINK
   https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
 #>
 function Get-DiskUsage {
   [CmdletBinding()]
   [Alias('du')]
-  param (
-    [string[]]$Path = (Get-Location),
-    [int]$Depth = 0,
-    [switch]$HumanReadable
+  param(
+    [Parameter(
+      Mandatory = $true,
+      Position = 0,
+      ValueFromPipeline = $true,
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "The paths to get the disk usage for. If not specified, the current directory is used."
+    )]
+    [Alias('p')]
+    [ValidateNotNullOrEmpty()]
+    [string[]]$Path = (Get-Location).Path,
+
+    [Parameter(
+      Mandatory = $false,
+      Position = 1,
+      ValueFromPipeline = $true,
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "Indicates whether to display the sizes in a human-readable format (e.g., KB, MB, GB). The default value is true."
+    )]
+    [Alias('hr')]
+    [ValidateNotNullOrEmpty()]
+    [switch]$HumanReadable,
+
+    [Parameter(
+      Mandatory = $false,
+      Position = 2,
+      ValueFromPipeline = $true,
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "Indicates whether to sort the results. The default value is false."
+    )]
+    [Alias('s')]
+    [ValidateNotNullOrEmpty()]
+    [switch]$Sort,
+
+    [Parameter(
+      Mandatory = $false,
+      Position = 3,
+      ValueFromPipeline = $true,
+      ValueFromPipelineByPropertyName = $true,
+      HelpMessage = "Specifies the property to sort by. The default value is 'Size'. Valid values are 'Name' and 'Size'."
+    )]
+    [Alias('sb')]
+    [ValidateNotNullOrEmpty()]
+    [ValidateSet('Name', 'Size')]
+    [string]$SortBy = 'Size'
   )
-  Write-Output "Disk usage for $($Path -join ', ') (Not Implemented Yet)"
+
+  process {
+    if ($PSBoundParameters.ContainsKey('HumanReadable') -eq $false) {
+      $HumanReadable = $true
+    }
+
+    foreach ($p in $Path) {
+      $resolvedPath = Resolve-Path -Path $p -ErrorAction SilentlyContinue
+      if (-not $resolvedPath) {
+        Write-Host "-----------------------------------------------------" -ForegroundColor Cyan
+        Write-Host "Path: $p" -ForegroundColor White
+        Write-Host "-----------------------------------------------------" -ForegroundColor Cyan
+        Write-Host "Error: " -NoNewline -ForegroundColor Yellow
+        Write-Host "Path not found" -ForegroundColor Red
+        Write-Host "-----------------------------------------------------" -ForegroundColor Cyan
+        continue
+      }
+
+      if (-not (Test-Path -Path $resolvedPath -PathType Container)) {
+        $fileItem = Get-Item -Path $resolvedPath -Force -ErrorAction SilentlyContinue
+        if ($fileItem) {
+          $fileSize = $fileItem.Length
+          $hrSizeStr = if ($HumanReadable) {
+            Format-ConvertSize -Value $fileSize -DecimalPlaces 2
+          }
+          else {
+            "N/A"
+          }
+
+          Write-Host "-----------------------------------------------------" -ForegroundColor Cyan
+          Write-Host "File: $($fileItem.FullName)" -ForegroundColor White
+          Write-Host "-----------------------------------------------------" -ForegroundColor Cyan
+
+          Write-Host "Size: " -NoNewline -ForegroundColor Yellow
+
+          $sizeColor = "White"
+          if ($fileSize -gt 1GB) {
+            $sizeColor = "Red"
+          }
+          elseif ($fileSize -gt 100MB) {
+            $sizeColor = "Yellow"
+          }
+          elseif ($fileSize -gt 10MB) {
+            $sizeColor = "Green"
+          }
+
+          Write-Host "$hrSizeStr" -ForegroundColor $sizeColor
+          Write-Host "Type: " -NoNewline -ForegroundColor Yellow
+          Write-Host "File" -ForegroundColor White
+          Write-Host "Last Modified: " -NoNewline -ForegroundColor Yellow
+          Write-Host "$($fileItem.LastWriteTime)" -ForegroundColor White
+          Write-Host "-----------------------------------------------------" -ForegroundColor Cyan
+        }
+        else {
+          Write-Host "-----------------------------------------------------" -ForegroundColor Cyan
+          Write-Host "File: $resolvedPath" -ForegroundColor White
+          Write-Host "-----------------------------------------------------" -ForegroundColor Cyan
+          Write-Host "Error: " -NoNewline -ForegroundColor Yellow
+          Write-Host "Cannot access file (Permission Denied)" -ForegroundColor Red
+          Write-Host "-----------------------------------------------------" -ForegroundColor Cyan
+        }
+        continue
+      }
+
+      Write-Host "-----------------------------------------------------" -ForegroundColor Cyan
+      Write-Host "Disk usage for: $resolvedPath" -ForegroundColor White
+      Write-Host "-----------------------------------------------------" -ForegroundColor Cyan
+
+      $childItems = $null
+      $accessError = $null
+      try {
+        $childItems = Get-ChildItem -Path $resolvedPath -Depth 0 -Force -ErrorAction Stop
+      }
+      catch [System.UnauthorizedAccessException] {
+        $accessError = $_.Exception
+      }
+      catch {
+        $errorMsg = $_.Exception.Message
+        Write-Host "Error: " -NoNewline -ForegroundColor Yellow
+        Write-Host "Error listing contents of $resolvedPath`: $errorMsg" -ForegroundColor Red
+        Write-Host "-----------------------------------------------------" -ForegroundColor Cyan
+        continue
+      }
+
+      if ($accessError) {
+        Write-Host "Error: " -NoNewline -ForegroundColor Yellow
+        Write-Host "Cannot list contents - Permission Denied" -ForegroundColor Red
+        Write-Host "-----------------------------------------------------" -ForegroundColor Cyan
+        continue
+      }
+      if ($null -eq $childItems -and $Error.Count -gt 0 -and $Error[0].Exception -is [System.UnauthorizedAccessException]) {
+        Write-Host "Error: " -NoNewline -ForegroundColor Yellow
+        Write-Host "Cannot list contents - Permission Denied" -ForegroundColor Red
+        Write-Host "-----------------------------------------------------" -ForegroundColor Cyan
+        $Error.Clear()
+        continue
+      }
+      $Error.Clear()
+
+      $itemsData = @()
+      $totalSize = 0
+      $folderCount = 0
+      $fileCount = 0
+
+      foreach ($item in $childItems) {
+        $itemPath = $item.FullName
+        $itemName = $item.Name
+        [long]$itemSize = -1
+        $errorMessage = ""
+        $isFolder = $item.PSIsContainer
+
+        try {
+          if ($isFolder) {
+            $folderCount++
+            $subItems = Get-ChildItem -Path $itemPath -Recurse -Force -ErrorAction SilentlyContinue
+            if ($null -eq $subItems -and $Error.Count -gt 0 -and $Error[0].Exception -is [System.UnauthorizedAccessException] -and $Error[0].TargetObject -eq $itemPath) {
+              throw $Error[0].Exception
+            }
+            $Error.Clear()
+
+            $itemSize = ($subItems | Where-Object { -not $_.PSIsContainer } | Measure-Object -Property Length -Sum -ErrorAction SilentlyContinue).Sum
+            if ($null -eq $itemSize) { $itemSize = 0 }
+          }
+          else {
+            $fileCount++
+            $itemSize = $item.Length
+          }
+
+          if ($itemSize -ge 0) {
+            $totalSize += $itemSize
+          }
+        }
+        catch [System.UnauthorizedAccessException] {
+          $errorMessage = "(Permission Denied)"
+          $itemSize = -1
+        }
+        catch {
+          $errorMessage = "(Error: $($_.Exception.Message.Split([Environment]::NewLine)[0]))"
+          $itemSize = -1
+        }
+        finally {
+          $Error.Clear()
+        }
+
+        $hrSizeStr = if ($HumanReadable -and $itemSize -ge 0) {
+          Format-ConvertSize -Value $itemSize -DecimalPlaces 2
+        }
+        else {
+          "N/A"
+        }
+
+        $itemsData += [PSCustomObject]@{
+          Name         = $itemName
+          Size         = $hrSizeStr
+          RawSize      = $itemSize
+          IsFolder     = $isFolder
+          ErrorMessage = $errorMessage
+        }
+      }
+
+      $totalHumanSize = if ($HumanReadable) {
+        Format-ConvertSize -Value $totalSize -DecimalPlaces 2
+      }
+      else {
+        "N/A"
+      }
+
+      $sortedItems = if ($Sort) {
+        if ($SortBy -eq 'Size') {
+          $itemsData | Sort-Object -Property @{Expression = "IsFolder"; Descending = $true }, @{Expression = { $_.RawSize }; Descending = $true }
+        }
+        else {
+          $itemsData | Sort-Object -Property @{Expression = "IsFolder"; Descending = $true }, @{Expression = "Name"; Descending = $false }
+        }
+      }
+      else {
+        $itemsData
+      }
+
+      Write-Host "Total Size: " -NoNewline -ForegroundColor Yellow
+      Write-Host "$totalHumanSize" -ForegroundColor White
+      Write-Host "Items: " -NoNewline -ForegroundColor Yellow
+      Write-Host "$($sortedItems.Count) ($folderCount directories, $fileCount files)" -ForegroundColor White
+      Write-Host "-----------------------------------------------------" -ForegroundColor Cyan
+
+      Write-Host ("{0,-15} {1,-15} {2,-50}" -f "Size", "Type", "Name") -ForegroundColor Yellow
+      Write-Host "-----------------------------------------------------" -ForegroundColor Cyan
+
+      foreach ($item in $sortedItems) {
+        $itemTypeColor = if ($item.IsFolder) { "Blue" } else { "White" }
+        $itemType = if ($item.IsFolder) { "Directory" } else { "File" }
+
+        $sizeColor = "White"
+        if ($item.RawSize -ne -1) {
+          $sizeValue = $item.RawSize
+          if ($sizeValue -gt 1GB) {
+            $sizeColor = "Red"
+          }
+          elseif ($sizeValue -gt 100MB) {
+            $sizeColor = "Yellow"
+          }
+          elseif ($sizeValue -gt 10MB) {
+            $sizeColor = "Green"
+          }
+        }
+
+        Write-Host ("{0,-15} " -f $item.Size) -NoNewline -ForegroundColor $sizeColor
+        Write-Host ("{0,-15} " -f $itemType) -NoNewline -ForegroundColor $itemTypeColor
+        Write-Host ("{0,-50}" -f $item.Name) -ForegroundColor $itemTypeColor
+
+        if ($item.ErrorMessage) {
+          Write-Host "    $($item.ErrorMessage)" -ForegroundColor Red
+        }
+      }
+      Write-Host "-----------------------------------------------------" -ForegroundColor Cyan
+    }
+  }
 }
