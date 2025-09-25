@@ -1,6 +1,6 @@
 @{
   RootModule        = 'Process.psm1'
-  ModuleVersion     = '4.0.0'
+  ModuleVersion     = '4.1.0'
   GUID              = '17cd86a1-e7e6-4d3c-88cf-5942a4d58f4b'
   Author            = 'Mohammad Abu Mattar'
   Copyright         = '(c) 2024 Mohammad Abu Mattar'

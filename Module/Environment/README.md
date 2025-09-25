@@ -82,5 +82,10 @@ These variables are typically defined in the main profile script and can be used
 
 [Back to Modules](../../README.md#modules)
 
-**Contribution:**
+## **Contribution:**
+
 Contributions to enhance environment management capabilities, such as more sophisticated PATH management or support for different environment variable scopes, are welcome. Please refer to the main [Contributing Guidelines](../../README.md#contributing).
+
+## **License:**
+
+This project is licensed under the MIT License. See the [LICENSE](../../LICENSE) file for details.

@@ -84,5 +84,10 @@ The Utility module is a versatile collection of general-purpose functions design
 
 [Back to Modules](../../README.md#modules)
 
-**Contribution:**
+## **Contribution:**
+
 New utility functions that can benefit a wide range of PowerShell users are always welcome. Please ensure they are well-documented and follow the project's contribution guidelines. See the main [Contributing Guidelines](../../README.md#contributing).
+
+## **License:**
+
+This project is licensed under the MIT License. See the [LICENSE](../../LICENSE) file for details.

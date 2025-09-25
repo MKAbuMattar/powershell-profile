@@ -59,5 +59,10 @@ The Directory module is a collection of PowerShell functions designed to streaml
 
 [Back to Modules](../../README.md#modules)
 
-**Contribution:**
+## **Contribution:**
+
 Suggestions for new file/directory utilities or improvements to existing ones are welcome. Please follow the main [Contributing Guidelines](../../README.md#contributing).
+
+## **License:**
+
+This project is licensed under the MIT License. See the [LICENSE](../../LICENSE) file for details.

@@ -1,30 +1,72 @@
-<#
-.SYNOPSIS
-  Updates the Modules directory in the local profile with the latest version from the GitHub repository.
+#---------------------------------------------------------------------------------------------------
+# MKAbuMattar's PowerShell Profile
+#
+#
+#                             .
+#         ..                .''
+#         .,'..,.         ..,;,'
+#          ,;;;;,,       .,,;;;
+#           ,;;;;;'    .',;;;
+#            ,;;;;,'...,;;;,
+#             ,;;;;;,,;;;;.
+#              ,;;;;;;;;;
+#              .,;;;;;;;
+#              .,;;;;;;;'
+#              .,;;;;;;;,'
+#            .',;;;;;;;;;;,.
+#          ..,;;;;;;;;;;;;;,.
+#         .';;;;;.   ';;;;;;,'
+#        .,;;;;.      ,; .;; .,
+#        ',;;;.        .
+#        .,;;.
+#        ,;
+#        .
+#
+#      "The only way to do great work is to love what you do."
+#                           - Steve Jobs
+#
+#
+# Author: Mohammad Abu Mattar
+#
+# Description:
+#       This Module provides functions to update the PowerShell profile and
+#       its modules from the GitHub repository.
+#
+# Created: 2021-09-01
+# Updated: 2025-09-24
+#
+# GitHub: https://github.com/MKAbuMattar/powershell-profile
+#
+# Version: 4.1.0
+#---------------------------------------------------------------------------------------------------
 
-.DESCRIPTION
-  This function checks for updates to the Modules directory in the local profile from the GitHub repository specified in the script. It compares the hash of the local Modules directory with the hash of the Modules directory on GitHub. If updates are found, it downloads the updated Modules directory and replaces the local Modules directory with the updated one. The function provides feedback on whether the Modules directory has been updated and prompts the user to restart the shell to reflect changes.
-
-.PARAMETER LocalPath
-  Specifies the local path where the Modules directory should be updated. The default value is "$HOME\Documents\PowerShell".
-
-.INPUTS
-  LocalPath: (Required) Specifies the local path where the Modules directory should be updated.
-
-.OUTPUTS
-  This function does not return any output.
-
-.NOTES
-  The local profile update function is disabled by default. To enable it, uncomment the line that invokes the function at the end of the script.
-
-.EXAMPLE
-  Update-LocalProfileModuleDirectory
-  Checks for updates to the Modules directory in the local profile and updates the local Modules directory if changes are detected.
-
-.LINK
-  https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
-#>
 function Update-LocalProfileModuleDirectory {
+  <#
+  .SYNOPSIS
+    Updates the Modules directory in the local profile with the latest version from the GitHub repository.
+
+  .DESCRIPTION
+    This function checks for updates to the Modules directory in the local profile from the GitHub repository specified in the script. It compares the hash of the local Modules directory with the hash of the Modules directory on GitHub. If updates are found, it downloads the updated Modules directory and replaces the local Modules directory with the updated one. The function provides feedback on whether the Modules directory has been updated and prompts the user to restart the shell to reflect changes.
+
+  .PARAMETER LocalPath
+    Specifies the local path where the Modules directory should be updated. The default value is "$HOME\Documents\PowerShell".
+
+  .INPUTS
+    LocalPath: (Required) Specifies the local path where the Modules directory should be updated.
+
+  .OUTPUTS
+    This function does not return any output.
+
+  .NOTES
+    The local profile update function is disabled by default. To enable it, uncomment the line that invokes the function at the end of the script.
+
+  .EXAMPLE
+    Update-LocalProfileModuleDirectory
+    Checks for updates to the Modules directory in the local profile and updates the local Modules directory if changes are detected.
+
+  .LINK
+    https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
+  #>
   [CmdletBinding()]
   [Alias("update-local-module")]
   [OutputType([void])]
@@ -61,8 +103,6 @@ function Update-LocalProfileModuleDirectory {
       "Docs/Docs.psm1",
       "Environment/Environment.psd1",
       "Environment/Environment.psm1",
-      "GitUtils/GitUtils.psd1",
-      "GitUtils/GitUtils.psm1",
       "Logging/Logging.psd1",
       "Logging/Logging.psm1",
       "Network/Network.psd1",
@@ -126,27 +166,27 @@ function Update-LocalProfileModuleDirectory {
   }
 }
 
-<#
-.SYNOPSIS
-  Checks for updates to the PowerShell profile from a specified GitHub repository and updates the local profile if changes are detected.
-
-.DESCRIPTION
-  This function checks for updates to the PowerShell profile from the GitHub repository specified in the script. It compares the hash of the local profile with the hash of the profile on GitHub. If updates are found, it downloads the updated profile and replaces the local profile with the updated one. The function provides feedback on whether the profile has been updated and prompts the user to restart the shell to reflect changes.
-
-.PARAMETER None
-  This function does not accept any parameters.
-
-.OUTPUTS
-  This function does not return any output.
-
-.EXAMPLE
-  Update-Profile
-  Checks for updates to the PowerShell profile and updates the local profile if changes are detected.
-
-.NOTES
-  The profile update function is disabled by default. To enable it, uncomment the line that invokes the function at the end of the script.
-#>
 function Update-Profile {
+  <#
+  .SYNOPSIS
+    Checks for updates to the PowerShell profile from a specified GitHub repository and updates the local profile if changes are detected.
+
+  .DESCRIPTION
+    This function checks for updates to the PowerShell profile from the GitHub repository specified in the script. It compares the hash of the local profile with the hash of the profile on GitHub. If updates are found, it downloads the updated profile and replaces the local profile with the updated one. The function provides feedback on whether the profile has been updated and prompts the user to restart the shell to reflect changes.
+
+  .PARAMETER None
+    This function does not accept any parameters.
+
+  .OUTPUTS
+    This function does not return any output.
+
+  .EXAMPLE
+    Update-Profile
+    Checks for updates to the PowerShell profile and updates the local profile if changes are detected.
+
+  .NOTES
+    The profile update function is disabled by default. To enable it, uncomment the line that invokes the function at the end of the script.
+  #>
   [CmdletBinding()]
   [Alias("update-profile")]
   [OutputType([void])]
@@ -177,27 +217,27 @@ function Update-Profile {
   }
 }
 
-<#
-.SYNOPSIS
-  Checks for updates to PowerShell and upgrades to the latest version if available.
-
-.DESCRIPTION
-  This function checks for updates to PowerShell by querying the GitHub releases. If updates are found, it upgrades PowerShell to the latest version using the Windows Package Manager (winget). It provides information about the update process and whether the system is already up to date.
-
-.PARAMETER None
-  This function does not accept any parameters.
-
-.OUTPUTS
-  This function does not return any output.
-
-.EXAMPLE
-  Update-PowerShell
-  Checks for updates to PowerShell and upgrades to the latest version if available.
-
-.NOTES
-  The PowerShell update function is disabled by default. To enable it, uncomment the line that invokes the function at the end of the script.
-#>
 function Update-PowerShell {
+  <#
+  .SYNOPSIS
+    Checks for updates to PowerShell and upgrades to the latest version if available.
+
+  .DESCRIPTION
+    This function checks for updates to PowerShell by querying the GitHub releases. If updates are found, it upgrades PowerShell to the latest version using the Windows Package Manager (winget). It provides information about the update process and whether the system is already up to date.
+
+  .PARAMETER None
+    This function does not accept any parameters.
+
+  .OUTPUTS
+    This function does not return any output.
+
+  .EXAMPLE
+    Update-PowerShell
+    Checks for updates to PowerShell and upgrades to the latest version if available.
+
+  .NOTES
+    The PowerShell update function is disabled by default. To enable it, uncomment the line that invokes the function at the end of the script.
+  #>
   [CmdletBinding()]
   [Alias("update-ps1")]
   [OutputType([void])]
@@ -235,34 +275,34 @@ function Update-PowerShell {
   }
 }
 
-<#
-.SYNOPSIS
-  Update the Windows Terminal configuration by downloading the settings.json file from the GitHub repository.
-
-.DESCRIPTION
-  This function update the Windows Terminal configuration by downloading the settings.json file from the GitHub repository and saving it to the appropriate location. If the destination file already exists, it will be overwritten.
-
-.PARAMETER SourceUrl
-  Specifies the URL of the settings.json file to download. Default is "https://github.com/MKAbuMattar/powershell-profile/raw/main/.config/windows-terminal/settings.json".
-
-.PARAMETER DestinationPath
-  Specifies the destination path where the settings.json file will be saved. Default is "$env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json".
-
-.INPUTS
-  SourceUrl: (Optional) The URL of the settings.json file to download.
-  DestinationPath: (Optional) The destination path where the settings.json file will be saved.
-
-.OUTPUTS
-  The settings.json file is downloaded and saved to the destination path.
-
-.EXAMPLE
-  Update-WindowsTerminalConfig
-  Update the Windows Terminal configuration by downloading the settings.json file from the GitHub repository.
-
-.NOTES
-  This function is used to update the Windows Terminal configuration by downloading the settings.json file from the GitHub repository.
-#>
 function Update-WindowsTerminalConfig {
+  <#
+  .SYNOPSIS
+    Update the Windows Terminal configuration by downloading the settings.json file from the GitHub repository.
+
+  .DESCRIPTION
+    This function update the Windows Terminal configuration by downloading the settings.json file from the GitHub repository and saving it to the appropriate location. If the destination file already exists, it will be overwritten.
+
+  .PARAMETER SourceUrl
+    Specifies the URL of the settings.json file to download. Default is "https://github.com/MKAbuMattar/powershell-profile/raw/main/.config/windows-terminal/settings.json".
+
+  .PARAMETER DestinationPath
+    Specifies the destination path where the settings.json file will be saved. Default is "$env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json".
+
+  .INPUTS
+    SourceUrl: (Optional) The URL of the settings.json file to download.
+    DestinationPath: (Optional) The destination path where the settings.json file will be saved.
+
+  .OUTPUTS
+    The settings.json file is downloaded and saved to the destination path.
+
+  .EXAMPLE
+    Update-WindowsTerminalConfig
+    Update the Windows Terminal configuration by downloading the settings.json file from the GitHub repository.
+
+  .NOTES
+    This function is used to update the Windows Terminal configuration by downloading the settings.json file from the GitHub repository.
+  #>
   [CmdletBinding()]
   [Alias("update-terminal-config")]
   [OutputType([void])]

@@ -1,6 +1,6 @@
 @{
   RootModule        = 'Utility.psm1'
-  ModuleVersion     = '4.0.0'
+  ModuleVersion     = '4.1.0'
   GUID              = '69fba7f4-822d-4201-bec5-7f7f03edfca3'
   Author            = 'Mohammad Abu Mattar'
   Copyright         = '(c) 2024 Mohammad Abu Mattar'
@@ -15,7 +15,7 @@
     'Get-RandomQuote',
     'Get-WeatherForecast',
     'Start-Countdown',
-    'Start-Stopwatch',
+    'Start-StopWatch',
     'Get-WallClock',
     'Get-PrayerTimes',
     'Start-Matrix',

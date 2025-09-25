@@ -1,6 +1,6 @@
 @{
   RootModule        = 'Logging.psm1'
-  ModuleVersion     = '4.0.0'
+  ModuleVersion     = '4.1.0'
   GUID              = '508e211f-6649-4616-9253-b4a803cdb653'
   Author            = 'Mohammad Abu Mattar'
   CompanyName       = 'Your Company Name'

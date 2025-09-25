@@ -34,39 +34,39 @@
 #       and tools.
 #
 # Created: 2021-09-01
-# Updated: 2025-03-07
+# Updated: 2025-09-24
 #
 # GitHub: https://github.com/MKAbuMattar/powershell-profile
 #
-# Version: 4.0.0
+# Version: 4.1.0
 #---------------------------------------------------------------------------------------------------
 
-<#
-.SYNOPSIS
-  Logs a message with a timestamp and log level.
-
-.DESCRIPTION
-  This function logs a message with a timestamp and log level. The default log level is "INFO".
-
-.PARAMETER Message
-  Specifies the message to log.
-
-.PARAMETER Level
-  Specifies the log level. Default is "INFO".
-
-.OUTPUTS
-  A log message with a timestamp and log level.
-
-.EXAMPLE
-  Write-LogMessage -Message "This is an informational message."
-  Logs an informational message with the default log level "INFO".
-  Write-LogMessage -Message "This is a warning message." -Level "WARNING"
-  Logs a warning message with the log level "WARNING".
-
-.NOTES
-  This function is used to log messages with a timestamp and log level.
-#>
 function Write-LogMessage {
+  <#
+  .SYNOPSIS
+    Logs a message with a timestamp and log level.
+
+  .DESCRIPTION
+    This function logs a message with a timestamp and log level. The default log level is "INFO".
+
+  .PARAMETER Message
+    Specifies the message to log.
+
+  .PARAMETER Level
+    Specifies the log level. Default is "INFO".
+
+  .OUTPUTS
+    A log message with a timestamp and log level.
+
+  .EXAMPLE
+    Write-LogMessage -Message "This is an informational message."
+    Logs an informational message with the default log level "INFO".
+    Write-LogMessage -Message "This is a warning message." -Level "WARNING"
+    Logs a warning message with the log level "WARNING".
+
+  .NOTES
+    This function is used to log messages with a timestamp and log level.
+  #>
   [CmdletBinding()]
   param (
     [Parameter(
@@ -92,30 +92,30 @@ function Write-LogMessage {
   Write-Output "[$timestamp][$Level] $Message"
 }
 
-<#
-.SYNOPSIS
-  Eeror handling function to log the error message and break the script.
-
-.DESCRIPTION
-  This function logs the error message and the exception message and then breaks the script.
-
-.PARAMETER ErrorMessage
-  Specifies the error message to log.
-
-.PARAMETER ErrorRecord
-  Specifies the error record object.
-
-.OUTPUTS
-  A log message with the error message and exception message.
-
-.EXAMPLE
-  Invoke-ErrorHandling -ErrorMessage "An error occurred." -ErrorRecord $Error
-  Logs an error message and the exception message and breaks the script.
-
-.NOTES
-  This function is used to handle errors by logging the error message and exception message.
-#>
 function Invoke-ErrorHandling {
+  <#
+  .SYNOPSIS
+    Eeror handling function to log the error message and break the script.
+
+  .DESCRIPTION
+    This function logs the error message and the exception message and then breaks the script.
+
+  .PARAMETER ErrorMessage
+    Specifies the error message to log.
+
+  .PARAMETER ErrorRecord
+    Specifies the error record object.
+
+  .OUTPUTS
+    A log message with the error message and exception message.
+
+  .EXAMPLE
+    Invoke-ErrorHandling -ErrorMessage "An error occurred." -ErrorRecord $Error
+    Logs an error message and the exception message and breaks the script.
+
+  .NOTES
+    This function is used to handle errors by logging the error message and exception message.
+  #>
   [CmdletBinding()]
   param (
     [Parameter(
@@ -149,27 +149,27 @@ if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdenti
   break
 }
 
-<#
-.SYNOPSIS
-  Checks if the script has an internet connection by attempting to ping a specified host.
-
-.DESCRIPTION
-  This function attempts to ping a specified host (by default, www.google.com) to determine if the script has an internet connection. If the ping is successful, it returns $true; otherwise, it returns $false. If no internet connection is available, it displays a warning message.
-
-.PARAMETER HostName
-  Specifies the host to ping to check for internet connectivity. Default is www.google.com.
-
-.OUTPUTS
-  $true if the internet connection is available; otherwise, $false.
-
-.EXAMPLE
-  Test-InternetConnection
-  Checks for internet connection using the default host (www.google.com).
-
-.NOTES
-  This function is used to check for internet connection before proceeding with the script.
-#>
 function Test-InternetConnection {
+  <#
+  .SYNOPSIS
+    Checks if the script has an internet connection by attempting to ping a specified host.
+
+  .DESCRIPTION
+    This function attempts to ping a specified host (by default, www.google.com) to determine if the script has an internet connection. If the ping is successful, it returns $true; otherwise, it returns $false. If no internet connection is available, it displays a warning message.
+
+  .PARAMETER HostName
+    Specifies the host to ping to check for internet connectivity. Default is www.google.com.
+
+  .OUTPUTS
+    $true if the internet connection is available; otherwise, $false.
+
+  .EXAMPLE
+    Test-InternetConnection
+    Checks for internet connection using the default host (www.google.com).
+
+  .NOTES
+    This function is used to check for internet connection before proceeding with the script.
+  #>
   [CmdletBinding()]
   param(
     [Parameter(
@@ -199,27 +199,27 @@ if (-not (Test-InternetConnection)) {
   break
 }
 
-<#
-.SYNOPSIS
-  Copies the Module directory and its contents from the repository to the specified local path.
-
-.DESCRIPTION
-  This function copies the Module directory and its contents from the GitHub repository to the specified local path. If the file already exists, it will be removed before copying the new file.
-
-.PARAMETER LocalPath
-  Specifies the local path where the Module directory will be copied.
-
-.OUTPUTS
-  The Module directory and its contents are copied to the specified local path.
-
-.EXAMPLE
-  Copy-ModuleDirectory -LocalPath "$HOME\Documents\PowerShell"
-  Copies the Module directory to the specified local path.
-
-.NOTES
-  This function is used to copy the Module directory from the repository to the local path.
-#>
 function Copy-ModuleDirectory {
+  <#
+  .SYNOPSIS
+    Copies the Module directory and its contents from the repository to the specified local path.
+
+  .DESCRIPTION
+    This function copies the Module directory and its contents from the GitHub repository to the specified local path. If the file already exists, it will be removed before copying the new file.
+
+  .PARAMETER LocalPath
+    Specifies the local path where the Module directory will be copied.
+
+  .OUTPUTS
+    The Module directory and its contents are copied to the specified local path.
+
+  .EXAMPLE
+    Copy-ModuleDirectory -LocalPath "$HOME\Documents\PowerShell"
+    Copies the Module directory to the specified local path.
+
+  .NOTES
+    This function is used to copy the Module directory from the repository to the local path.
+  #>
   [CmdletBinding()]
   param (
     [Parameter(
@@ -249,8 +249,6 @@ function Copy-ModuleDirectory {
       "Docs/Docs.psm1",
       "Environment/Environment.psd1",
       "Environment/Environment.psm1",
-      "GitUtils/GitUtils.psd1",
-      "GitUtils/GitUtils.psm1",
       "Logging/Logging.psd1",
       "Logging/Logging.psm1",
       "Network/Network.psd1",
@@ -293,24 +291,24 @@ function Copy-ModuleDirectory {
   }
 }
 
-<#
-.SYNOPSIS
-  Initializes the PowerShell profile by creating or updating the profile script.
-
-.DESCRIPTION
-  This function initializes the PowerShell profile by creating or updating the profile script. The profile script is downloaded from the GitHub repository and saved to the appropriate location based on the PowerShell edition (Core or Desktop). If the profile already exists, it is backed up before being updated.
-
-.OUTPUTS
-  The required modules and tools are installed or updated.
-
-.EXAMPLE
-  Initialize-PowerShellProfile
-  Initializes the PowerShell profile by creating or updating the profile script.
-
-.NOTES
-  This function is used to initialize the PowerShell profile by creating or updating the profile script.
-#>
 function Initialize-PowerShellProfile {
+  <#
+  .SYNOPSIS
+    Initializes the PowerShell profile by creating or updating the profile script.
+
+  .DESCRIPTION
+    This function initializes the PowerShell profile by creating or updating the profile script. The profile script is downloaded from the GitHub repository and saved to the appropriate location based on the PowerShell edition (Core or Desktop). If the profile already exists, it is backed up before being updated.
+
+  .OUTPUTS
+    The required modules and tools are installed or updated.
+
+  .EXAMPLE
+    Initialize-PowerShellProfile
+    Initializes the PowerShell profile by creating or updating the profile script.
+
+  .NOTES
+    This function is used to initialize the PowerShell profile by creating or updating the profile script.
+  #>
   [CmdletBinding()]
   param(
     # This function does not accept any parameters
@@ -349,24 +347,24 @@ function Initialize-PowerShellProfile {
   }
 }
 
-<#
-.SYNOPSIS
-  Initializes the Starship configuration by creating the ~/.config directory and copying the starship.toml file.
-
-.DESCRIPTION
-  This function initializes the Starship configuration by creating the ~/.config directory and copying the starship.toml file from the GitHub repository.
-
-.OUTPUTS
-  The ~/.config directory is created, and the starship.toml file is copied.
-
-.EXAMPLE
-  Initialize-StarshipConfig
-  Initializes the Starship configuration by creating the ~/.config directory and copying the starship.toml file.
-
-.NOTES
-  This function is used to initialize the Starship configuration by creating the ~/.config directory and copying the starship.toml file.
-#>
 function Initialize-StarshipConfig {
+  <#
+  .SYNOPSIS
+    Initializes the Starship configuration by creating the ~/.config directory and copying the starship.toml file.
+
+  .DESCRIPTION
+    This function initializes the Starship configuration by creating the ~/.config directory and copying the starship.toml file from the GitHub repository.
+
+  .OUTPUTS
+    The ~/.config directory is created, and the starship.toml file is copied.
+
+  .EXAMPLE
+    Initialize-StarshipConfig
+    Initializes the Starship configuration by creating the ~/.config directory and copying the starship.toml file.
+
+  .NOTES
+    This function is used to initialize the Starship configuration by creating the ~/.config directory and copying the starship.toml file.
+  #>
   [CmdletBinding()]
   param(
     # This function does not accept any parameters
@@ -401,24 +399,24 @@ function Initialize-StarshipConfig {
   }
 }
 
-<#
-.SYNOPSIS
-  Initializes the FastFetch configuration by creating the ~/.config/fastfetch directory and copying the config.jsonc file.
-
-.DESCRIPTION
-  This function initializes the FastFetch configuration by creating the ~/.config/fastfetch directory and copying the config.jsonc file from the GitHub repository.
-
-.OUTPUTS
-  The ~/.config/fastfetch directory is created, and the config.jsonc file is copied.
-
-.EXAMPLE
-  Initialize-FastFetchConfig
-  Initializes the FastFetch configuration by creating the ~/.config/fastfetch directory and copying the config.jsonc file.
-
-.NOTES
-  This function is used to initialize the FastFetch configuration by creating the ~/.config/fastfetch directory and copying the config.jsonc file.
-#>
 function Initialize-FastFetchConfig {
+  <#
+  .SYNOPSIS
+    Initializes the FastFetch configuration by creating the ~/.config/fastfetch directory and copying the config.jsonc file.
+
+  .DESCRIPTION
+    This function initializes the FastFetch configuration by creating the ~/.config/fastfetch directory and copying the config.jsonc file from the GitHub repository.
+
+  .OUTPUTS
+    The ~/.config/fastfetch directory is created, and the config.jsonc file is copied.
+
+  .EXAMPLE
+    Initialize-FastFetchConfig
+    Initializes the FastFetch configuration by creating the ~/.config/fastfetch directory and copying the config.jsonc file.
+
+  .NOTES
+    This function is used to initialize the FastFetch configuration by creating the ~/.config/fastfetch directory and copying the config.jsonc file.
+  #>
   [CmdletBinding()]
   param(
     # This function does not accept any parameters
@@ -458,24 +456,24 @@ function Initialize-FastFetchConfig {
   }
 }
 
-<#
-.SYNOPSIS
-  Initializes the Figlet configuration by creating the ~/.config/.figlet directory and copying the ANSI_Shadow.flf file.
-
-.DESCRIPTION
-  This function initializes the Figlet configuration by creating the ~/.config/.figlet directory and copying the ANSI_Shadow.flf file from the GitHub repository.
-
-.OUTPUTS
-  The ~/.config/.figlet directory is created, and the ANSI_Shadow.flf file is copied.
-
-.EXAMPLE
-  Initialize-FigletConfig
-  Initializes the Figlet configuration by creating the ~/.config/.figlet directory and copying the ANSI_Shadow.flf file.
-
-.NOTES
-  This function is used to initialize the Figlet configuration by creating the ~/.config/.figlet directory and copying the ANSI_Shadow.flf file.
-#>
 function Initialize-FigletConfig {
+  <#
+  .SYNOPSIS
+    Initializes the Figlet configuration by creating the ~/.config/.figlet directory and copying the ANSI_Shadow.flf file.
+
+  .DESCRIPTION
+    This function initializes the Figlet configuration by creating the ~/.config/.figlet directory and copying the ANSI_Shadow.flf file from the GitHub repository.
+
+  .OUTPUTS
+    The ~/.config/.figlet directory is created, and the ANSI_Shadow.flf file is copied.
+
+  .EXAMPLE
+    Initialize-FigletConfig
+    Initializes the Figlet configuration by creating the ~/.config/.figlet directory and copying the ANSI_Shadow.flf file.
+
+  .NOTES
+    This function is used to initialize the Figlet configuration by creating the ~/.config/.figlet directory and copying the ANSI_Shadow.flf file.
+  #>
   [CmdletBinding()]
   param(
     # This function does not accept any parameters
@@ -515,37 +513,37 @@ function Initialize-FigletConfig {
   }
 }
 
-<#
-.SYNOPSIS
-  Installs the Cascadia Code font if it is not already installed.
-
-.DESCRIPTION
-  This function installs the Cascadia Code font if it is not already installed. The font is downloaded from the GitHub repository and installed in the Windows Fonts directory.
-
-.PARAMETER FontName
-  Specifies the name of the font to install. Default is "CascadiaCode".
-
-.PARAMETER FontDisplayName
-  Specifies the display name of the font. Default is "CaskaydiaCove NF".
-
-.PARAMETER Version
-  Specifies the version of the font to download. Default is "3.2.1".
-
-.OUTPUTS
-  The Cascadia Code font is installed.
-
-.EXAMPLE
-  Install-CascadiaCodeFont
-  Installs the Cascadia Code font with the default parameters.
-
-.EXAMPLE
-  Install-CascadiaCodeFont -FontName "CascadiaCode" -FontDisplayName "CaskaydiaCove NF" -Version "3.2.1"
-  Installs the Cascadia Code font with the specified parameters.
-
-.NOTES
-  This function is used to install the Cascadia Code font if it is not already installed.
-#>
 function Install-CascadiaCodeFont {
+  <#
+  .SYNOPSIS
+    Installs the Cascadia Code font if it is not already installed.
+
+  .DESCRIPTION
+    This function installs the Cascadia Code font if it is not already installed. The font is downloaded from the GitHub repository and installed in the Windows Fonts directory.
+
+  .PARAMETER FontName
+    Specifies the name of the font to install. Default is "CascadiaCode".
+
+  .PARAMETER FontDisplayName
+    Specifies the display name of the font. Default is "CaskaydiaCove NF".
+
+  .PARAMETER Version
+    Specifies the version of the font to download. Default is "3.2.1".
+
+  .OUTPUTS
+    The Cascadia Code font is installed.
+
+  .EXAMPLE
+    Install-CascadiaCodeFont
+    Installs the Cascadia Code font with the default parameters.
+
+  .EXAMPLE
+    Install-CascadiaCodeFont -FontName "CascadiaCode" -FontDisplayName "CaskaydiaCove NF" -Version "3.2.1"
+    Installs the Cascadia Code font with the specified parameters.
+
+  .NOTES
+    This function is used to install the Cascadia Code font if it is not already installed.
+  #>
   [CmdletBinding()]
   param (
     [Parameter(
@@ -611,24 +609,24 @@ function Install-CascadiaCodeFont {
   }
 }
 
-<#
-.SYNOPSIS
-  Installs Chocolatey package manager.
-
-.DESCRIPTION
-  This function installs the Chocolatey package manager by setting the execution policy to Bypass, updating the security protocol, and invoking the Chocolatey installation script.
-
-.OUTPUTS
-  The Chocolatey package manager is installed.
-
-.EXAMPLE
-  Install-Chocolatey
-  Installs the Chocolatey package manager.
-
-.NOTES
-  This function is used to install the Chocolatey package manager.
-#>
 function Install-Chocolatey {
+  <#
+  .SYNOPSIS
+    Installs Chocolatey package manager.
+
+  .DESCRIPTION
+    This function installs the Chocolatey package manager by setting the execution policy to Bypass, updating the security protocol, and invoking the Chocolatey installation script.
+
+  .OUTPUTS
+    The Chocolatey package manager is installed.
+
+  .EXAMPLE
+    Install-Chocolatey
+    Installs the Chocolatey package manager.
+
+  .NOTES
+    This function is used to install the Chocolatey package manager.
+  #>
   [CmdletBinding()]
   param(
     # This function does not accept any parameters
@@ -644,27 +642,27 @@ function Install-Chocolatey {
   }
 }
 
-<#
-.SYNOPSIS
-  Installs or updates the required PowerShell modules.
-
-.DESCRIPTION
-  This function installs or updates the required PowerShell modules based on the provided module list. If the module is not found, it is installed; otherwise, it is updated.
-
-.PARAMETER ModuleList
-  Specifies the list of modules to install or update.
-
-.OUTPUTS
-  The required modules are installed or updated.
-
-.EXAMPLE
-  Invoke-UpdateInstallPSModules -ModuleList @("Module1", "Module2", "Module3")
-  Installs or updates the modules "Module1", "Module2", and "Module3".
-
-.NOTES
-  This function is used to install or update the required PowerShell modules.
-#>
 function Invoke-UpdateInstallPSModules {
+  <#
+  .SYNOPSIS
+    Installs or updates the required PowerShell modules.
+
+  .DESCRIPTION
+    This function installs or updates the required PowerShell modules based on the provided module list. If the module is not found, it is installed; otherwise, it is updated.
+
+  .PARAMETER ModuleList
+    Specifies the list of modules to install or update.
+
+  .OUTPUTS
+    The required modules are installed or updated.
+
+  .EXAMPLE
+    Invoke-UpdateInstallPSModules -ModuleList @("Module1", "Module2", "Module3")
+    Installs or updates the modules "Module1", "Module2", and "Module3".
+
+  .NOTES
+    This function is used to install or update the required PowerShell modules.
+  #>
   [CmdletBinding()]
   param (
     [Parameter(
@@ -704,27 +702,27 @@ function Invoke-UpdateInstallPSModules {
   }
 }
 
-<#
-.SYNOPSIS
-  Installs or updates the required Chocolatey packages.
-
-.DESCRIPTION
-  This function installs or updates the required Chocolatey packages based on the provided package list. If the package is not found, it is installed; otherwise, it is updated if it is outdated.
-
-.PARAMETER PackageList
-  Specifies the list of packages to install or update.
-
-.OUTPUTS
-  The required packages are installed or updated.
-
-.EXAMPLE
-  Invoke-UpdateInstallChocoPackages -PackageList @("Package1", "Package2", "Package3")
-  Installs or updates the packages "Package1", "Package2", and "Package3".
-
-.NOTES
-  This function is used to install or update the required Chocolatey packages.
-#>
 function Invoke-UpdateInstallChocoPackages {
+  <#
+  .SYNOPSIS
+    Installs or updates the required Chocolatey packages.
+
+  .DESCRIPTION
+    This function installs or updates the required Chocolatey packages based on the provided package list. If the package is not found, it is installed; otherwise, it is updated if it is outdated.
+
+  .PARAMETER PackageList
+    Specifies the list of packages to install or update.
+
+  .OUTPUTS
+    The required packages are installed or updated.
+
+  .EXAMPLE
+    Invoke-UpdateInstallChocoPackages -PackageList @("Package1", "Package2", "Package3")
+    Installs or updates the packages "Package1", "Package2", and "Package3".
+
+  .NOTES
+    This function is used to install or update the required Chocolatey packages.
+  #>
   [CmdletBinding()]
   param (
     [Parameter(
@@ -764,34 +762,34 @@ function Invoke-UpdateInstallChocoPackages {
   }
 }
 
-<#
-.SYNOPSIS
-  Initializes the Windows Terminal configuration by downloading the settings.json file from the GitHub repository.
-
-.DESCRIPTION
-  This function initializes the Windows Terminal configuration by downloading the settings.json file from the GitHub repository and saving it to the appropriate location. If the destination file already exists, it will be overwritten.
-
-.PARAMETER SourceUrl
-  Specifies the URL of the settings.json file to download. Default is "https://github.com/MKAbuMattar/powershell-profile/raw/main/.config/windows-terminal/settings.json".
-
-.PARAMETER DestinationPath
-  Specifies the destination path where the settings.json file will be saved. Default is "$env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json".
-
-.INPUTS
-  SourceUrl: (Optional) The URL of the settings.json file to download.
-  DestinationPath: (Optional) The destination path where the settings.json file will be saved.
-
-.OUTPUTS
-  The settings.json file is downloaded and saved to the destination path.
-
-.EXAMPLE
-  Initialize-WindowsTerminalConfig
-  Initializes the Windows Terminal configuration by downloading the settings.json file from the GitHub repository.
-
-.NOTES
-  This function is used to initialize the Windows Terminal configuration by downloading the settings.json file from the GitHub repository.
-#>
 function Initialize-WindowsTerminalConfig {
+  <#
+  .SYNOPSIS
+    Initializes the Windows Terminal configuration by downloading the settings.json file from the GitHub repository.
+
+  .DESCRIPTION
+    This function initializes the Windows Terminal configuration by downloading the settings.json file from the GitHub repository and saving it to the appropriate location. If the destination file already exists, it will be overwritten.
+
+  .PARAMETER SourceUrl
+    Specifies the URL of the settings.json file to download. Default is "https://github.com/MKAbuMattar/powershell-profile/raw/main/.config/windows-terminal/settings.json".
+
+  .PARAMETER DestinationPath
+    Specifies the destination path where the settings.json file will be saved. Default is "$env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json".
+
+  .INPUTS
+    SourceUrl: (Optional) The URL of the settings.json file to download.
+    DestinationPath: (Optional) The destination path where the settings.json file will be saved.
+
+  .OUTPUTS
+    The settings.json file is downloaded and saved to the destination path.
+
+  .EXAMPLE
+    Initialize-WindowsTerminalConfig
+    Initializes the Windows Terminal configuration by downloading the settings.json file from the GitHub repository.
+
+  .NOTES
+    This function is used to initialize the Windows Terminal configuration by downloading the settings.json file from the GitHub repository.
+  #>
   [CmdletBinding()]
   param (
     [Parameter(
