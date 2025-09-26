@@ -28,5 +28,10 @@ The Logging module provides a simple yet effective function for recording log me
 
 [Back to Modules](../../README.md#modules)
 
-**Contribution:**
+## **Contribution:**
+
 Enhancements to the logging capabilities, such as adding more log output options (e.g., Event Log), log rotation, or structured logging, are welcome. Please see the main [Contributing Guidelines](../../README.md#contributing).
+
+## **License:**
+
+This project is licensed under the MIT License. See the [LICENSE](../../LICENSE) file for details.

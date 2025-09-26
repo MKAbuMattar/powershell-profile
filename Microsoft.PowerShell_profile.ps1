@@ -34,11 +34,11 @@
 #       experience and productivity.
 #
 # Created: 2021-09-01
-# Updated: 2025-03-07
+# Updated: 2025-09-24
 #
 # GitHub: https://github.com/MKAbuMattar/powershell-profile
 #
-# Version: 4.0.0
+# Version: 4.1.0
 #---------------------------------------------------------------------------------------------------
 
 #---------------------------------------------------------------------------------------------------
@@ -124,34 +124,86 @@ Set-PSReadLineKeyHandler -Chord '"', "'" `
 # Import the custom modules
 #---------------------------------------------------------------------------------------------------
 $DirectoryModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Directory/Directory.psd1'
-Import-Module $DirectoryModulePath -Force -ErrorAction SilentlyContinue
+if (Test-Path $DirectoryModulePath) {
+  Import-Module $DirectoryModulePath -Force -ErrorAction SilentlyContinue
+}
+else {
+  Write-Warning "Directory module not found at: $DirectoryModulePath"
+}
+
 
 $DocsModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Docs/Docs.psd1'
-Import-Module $DocsModulePath -Force -ErrorAction SilentlyContinue
+if (Test-Path $DocsModulePath) {
+  Import-Module $DocsModulePath -Force -ErrorAction SilentlyContinue
+}
+else {
+  Write-Warning "Docs module not found at: $DocsModulePath"
+}
 
 $EnvironmentModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Environment/Environment.psd1'
-Import-Module $EnvironmentModulePath -Force -ErrorAction SilentlyContinue
+if (Test-Path $EnvironmentModulePath) {
+  Import-Module $EnvironmentModulePath -Force -ErrorAction SilentlyContinue
+}
+else {
+  Write-Warning "Environment module not found at: $EnvironmentModulePath"
+}
 
-$GitUtilsModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/GitUtils/GitUtils.psd1'
-Import-Module $GitUtilsModulePath -Force -ErrorAction SilentlyContinue
+$PluginGitModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Plugins/Git/Git.psd1'
+if (Test-Path $PluginGitModulePath) {
+  Import-Module $PluginGitModulePath -Force -ErrorAction SilentlyContinue
+}
+else {
+  Write-Warning "Plugin-Git module not found at: $PluginGitModulePath"
+}
 
 $LoggingModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Logging/Logging.psd1'
+if (Test-Path $LoggingModulePath) {
+  Import-Module $LoggingModulePath -Force -ErrorAction SilentlyContinue
+}
+else {
+  Write-Warning "Logging module not found at: $LoggingModulePath"
+}
 Import-Module $LoggingModulePath -Force -ErrorAction SilentlyContinue
 
 $NetworkModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Network/Network.psd1'
-Import-Module $NetworkModulePath -Force -ErrorAction SilentlyContinue
+if (Test-Path $NetworkModulePath) {
+  Import-Module $NetworkModulePath -Force -ErrorAction SilentlyContinue
+}
+else {
+  Write-Warning "Network module not found at: $NetworkModulePath"
+}
 
 $ProcessModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Process/Process.psd1'
-Import-Module $ProcessModulePath -Force -ErrorAction SilentlyContinue
+if (Test-Path $ProcessModulePath) {
+  Import-Module $ProcessModulePath -Force -ErrorAction SilentlyContinue
+}
+else {
+  Write-Warning "Process module not found at: $ProcessModulePath"
+}
 
 $StarshipModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Starship/Starship.psd1'
-Import-Module $StarshipModulePath -Force -ErrorAction SilentlyContinue
+if (Test-Path $StarshipModulePath) {
+  Import-Module $StarshipModulePath -Force -ErrorAction SilentlyContinue
+}
+else {
+  Write-Warning "Starship module not found at: $StarshipModulePath"
+}
 
 $UpdateModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Update/Update.psd1'
-Import-Module $UpdateModulePath -Force -ErrorAction SilentlyContinue
+if (Test-Path $UpdateModulePath) {
+  Import-Module $UpdateModulePath -Force -ErrorAction SilentlyContinue
+}
+else {
+  Write-Warning "Update module not found at: $UpdateModulePath"
+}
 
 $UtilityModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Utility/Utility.psd1'
-Import-Module $UtilityModulePath -Force -ErrorAction SilentlyContinue
+if (Test-Path $UtilityModulePath) {
+  Import-Module $UtilityModulePath -Force -ErrorAction SilentlyContinue
+}
+else {
+  Write-Warning "Utility module not found at: $UtilityModulePath"
+}
 
 #---------------------------------------------------------------------------------------------------
 # Invoke Starship Transient Function

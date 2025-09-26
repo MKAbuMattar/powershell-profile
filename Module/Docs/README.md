@@ -19,11 +19,15 @@ The Docs module is dedicated to providing easy access to help and documentation 
   - _Usage Examples:_
     - `Show-ProfileHelp` (Displays general help or a list of documented modules/functions)
     - `Show-ProfileHelp -Section 'Directory'` (Displays help specifically for the Directory module)
-    - `profile-help GitUtils` (Alias usage to show help for the GitUtils module)
     - `profile-help Find-Files` (Displays help for the `Find-Files` function if available)
   - _Details:_ This function is the main entry point for accessing help. It is designed to parse Markdown files located within each module's directory (typically `README.md`) to display relevant help content. It can be extended to support other documentation sources in the future.
 
 [Back to Modules](../../README.md#modules)
 
-**Contribution:**
+## **Contribution:**
+
 Suggestions for improving the documentation structure, the `Show-ProfileHelp` function (e.g., adding search capabilities, more output formats), or the content of the documentation itself are welcome. Please follow the main [Contributing Guidelines](../../README.md#contributing).
+
+## **License:**
+
+This project is licensed under the MIT License. See the [LICENSE](../../LICENSE) file for details.

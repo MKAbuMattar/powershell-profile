@@ -1,6 +1,6 @@
 @{
   RootModule        = 'Docs.psm1'
-  ModuleVersion     = '4.0.0'
+  ModuleVersion     = '4.1.0'
   GUID              = '8a971646-bb14-46e6-be7a-8a632a7e1e43'
   Author            = 'Mohammad Abu Mattar'
   Copyright         = '(c) 2024 Mohammad Abu Mattar'

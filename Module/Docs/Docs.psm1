@@ -1,34 +1,83 @@
-<#
-.SYNOPSIS
-  This module provides documentation for the PowerShell Profile Helper module.
+#---------------------------------------------------------------------------------------------------
+# MKAbuMattar's PowerShell Profile
+#
+#
+#                             .
+#         ..                .''
+#         .,'..,.         ..,;,'
+#          ,;;;;,,       .,,;;;
+#           ,;;;;;'    .',;;;
+#            ,;;;;,'...,;;;,
+#             ,;;;;;,,;;;;.
+#              ,;;;;;;;;;
+#              .,;;;;;;;
+#              .,;;;;;;;'
+#              .,;;;;;;;,'
+#            .',;;;;;;;;;;,.
+#          ..,;;;;;;;;;;;;;,.
+#         .';;;;;.   ';;;;;;,'
+#        .,;;;;.      ,; .;; .,
+#        ',;;;.        .
+#        .,;;.
+#        ,;
+#        .
+#
+#      "The only way to do great work is to love what you do."
+#                           - Steve Jobs
+#
+#
+# Author: Mohammad Abu Mattar
+#
+# Description:
+#       This Module provides documentation for the PowerShell Profile Helper module.
+#
+# Created: 2021-09-01
+# Updated: 2025-09-24
+#
+# GitHub: https://github.com/MKAbuMattar/powershell-profile
+#
+# Version: 4.1.0
+#---------------------------------------------------------------------------------------------------
 
-.DESCRIPTION
-  The PowerShell Profile Helper module provides a set of utility functions to help manage the PowerShell profile and perform common tasks in the console. The module includes functions for finding files, creating and updating files, extracting files, compressing files, searching for content in files, replacing content in files, moving up directory levels, updating the module directory, updating the profile, updating PowerShell, checking for command existence, reloading the profile, getting system uptime, getting command definitions, setting environment variables, getting environment variables, getting all processes, finding processes by name, finding processes by port, stopping processes by name, stopping processes by port, getting random quotes, getting weather forecasts, starting countdown timers, starting stopwatches, displaying the wall clock, displaying a matrix rain animation, and more. The `Show-ProfileHelp` function displays detailed help documentation for each section of the module.
-
-.PARAMETER Section
-  Specifies the section of the documentation to display. Valid values are 'All', 'Directory', 'Docs', 'Environment', 'Logging', 'Network', 'Starship', 'Update', and 'Utility'. The default value is 'All'.
-
-.INPUTS
-  Section: (Optional) Specifies the section of the documentation to display. Valid values are 'All', 'Directory', 'Docs', 'Environment', 'Logging', 'Network', 'Starship', 'Update', and 'Utility'. The default value is 'All'.
-
-.OUTPUTS
-  This module does not return any output.
-
-.NOTES
-  This module is intended to provide documentation for the PowerShell Profile Helper module.
-
-.EXAMPLE
-  Show-ProfileHelp
-  Displays the help documentation for all sections of the PowerShell Profile Helper module.
-
-.EXAMPLE
-  Show-ProfileHelp -Section 'Directory'
-  Displays the help documentation for the Directory section of the PowerShell Profile Helper module.
-
-.LINK
-  https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
-#>
 function Show-ProfileHelp {
+  <#
+  .SYNOPSIS
+    This module provides documentation for the PowerShell Profile Helper module.
+
+  .DESCRIPTION
+    The PowerShell Profile Helper module provides a set of utility functions to help manage the PowerShell profile and perform common tasks in the console. The module includes functions for finding files, creating and updating files, extracting files, compressing files, searching for content in files, replacing content in files, moving up directory levels, updating the module directory, updating the profile, updating PowerShell, checking for command existence, reloading the profile, getting system uptime, getting command definitions, setting environment variables, getting environment variables, getting all processes, finding processes by name, finding processes by port, stopping processes by name, stopping processes by port, getting random quotes, getting weather forecasts, starting countdown timers, starting stopwatches, displaying the wall clock, displaying a matrix rain animation, and more. The `Show-ProfileHelp` function displays detailed help documentation for each section of the module.
+
+  .PARAMETER Section
+    Specifies the section of the documentation to display. Valid values are 'All', 'Directory', 'Docs', 'Environment', 'Git', 'Logging', 'Network', 'Plugins', 'Process', 'Starship', 'Update', and 'Utility'. The default value is 'All'.
+
+  .INPUTS
+    Section: (Optional) Specifies the section of the documentation to display. Valid values are 'All', 'Directory', 'Docs', 'Environment', 'Git', 'Logging', 'Network', 'Plugins', 'Process', 'Starship', 'Update', and 'Utility'. The default value is 'All'.
+
+  .OUTPUTS
+    This module does not return any output.
+
+  .NOTES
+    This module is intended to provide documentation for the PowerShell Profile Helper module.
+
+  .EXAMPLE
+    Show-ProfileHelp
+    Displays the help documentation for all sections of the PowerShell Profile Helper module.
+
+  .EXAMPLE
+    Show-ProfileHelp -Section 'Directory'
+    Displays the help documentation for the Directory section of the PowerShell Profile Helper module.
+
+  .EXAMPLE
+    Show-ProfileHelp -Section 'Git'
+    Displays the help documentation for the Git plugin with all available Git aliases and commands.
+
+  .EXAMPLE
+    Show-ProfileHelp -Section 'Plugins'
+    Displays an overview of all available plugins.
+
+  .LINK
+    https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
+  #>
   [CmdletBinding()]
   [Alias("profile-help")]
   [OutputType([void])]
@@ -45,9 +94,10 @@ function Show-ProfileHelp {
       'Directory',
       'Docs',
       'Environment',
-      'GitUtils',
+      'Git',
       'Logging',
       'Network',
+      'Plugins',
       'Process',
       'Starship',
       'Update',
@@ -177,29 +227,6 @@ $($PSStyle.Foreground.Yellow)Environment Module$($PSStyle.Reset)
         Global variable to test if the machine can connect to GitHub.
 "@
 
-  $GitUtils = @"
-$($PSStyle.Foreground.Yellow)Git Utils Module$($PSStyle.Reset)
-    $($PSStyle.Foreground.Green)Get-GitBranchStatus$($PSStyle.Reset) [-Path <Path>] [-Recurse]
-    $($PSStyle.Foreground.Magenta)ggbs$($PSStyle.Reset) [-Path <Path>] [-Recurse]
-        Retrieves the status of the current Git branch, including uncommitted changes and branch information.
-
-    $($PSStyle.Foreground.Green)Invoke-GitCleanBranches$($PSStyle.Reset) [-Path <Path>] [-PruneRemote] [-Force]
-    $($PSStyle.Foreground.Magenta)igcb$($PSStyle.Reset) [-Path <Path>] [-PruneRemote] [-Force]
-        Cleans up local Git branches that have been merged into the current branch, optionally pruning remote branches.
-
-    $($PSStyle.Foreground.Green)Start-GitRepoSearch$($PSStyle.Reset) [-Path <Path>] [-Recurse] [-ShowAllBranches] [-ShowAllCommits] [-ShowAllTags]
-    $($PSStyle.Foreground.Magenta)sgrs$($PSStyle.Reset) -Path <Path> [-Recurse] [-ShowAllBranches] [-ShowAllCommits] [-ShowAllTags]
-        Searches for Git repositories in the specified path and displays their branches, commits, and tags.
-
-    $($PSStyle.Foreground.Green)Get-GitRecentContributors$($PSStyle.Reset) [-Path <Path>] [-TopN <TopN>]
-    $($PSStyle.Foreground.Magenta)ggrc$($PSStyle.Reset) [-Path <Path>] [-TopN <TopN>]
-        Retrieves the recent contributors to the current Git repository, sorted by the number of commits.
-
-    $($PSStyle.Foreground.Green)New-GitRelease$($PSStyle.Reset) [-TagName <TagName>] [-Message <Message>] [-Path <Path>] [-Push] [-Force]
-    $($PSStyle.Foreground.Magenta)ngr$($PSStyle.Reset) [-TagName <TagName>] [-Message <Message>] [-Path <Path>] [-Push] [-Force]
-        Creates a new Git release with the specified tag name and message, optionally pushing it to the remote repository.
-"@
-
   $Logging = @"
 $($PSStyle.Foreground.Yellow)Logging Module$($PSStyle.Reset)
     $($PSStyle.Foreground.Green)Write-LogMessage$($PSStyle.Reset) -Message <Message> [-Level <Level>]
@@ -247,6 +274,122 @@ $($PSStyle.Foreground.Yellow)Process Module$($PSStyle.Reset)
     $($PSStyle.Foreground.Green)Invoke-ClearCache$($PSStyle.Reset) [-Type <Type>]
     $($PSStyle.Foreground.Magenta)clear-cache$($PSStyle.Reset) [-Type <Type>]
         Clears windows cache, temp files, and internet explorer cache.
+"@
+
+  $Plugins = @"
+$($PSStyle.Foreground.Yellow)Plugins Module$($PSStyle.Reset)
+    This module contains various plugins that extend PowerShell functionality.
+    Each plugin provides specialized commands and aliases for specific tools or workflows.
+
+    Available Plugins:
+        $($PSStyle.Foreground.Cyan)Git Plugin$($PSStyle.Reset) - Comprehensive Git aliases and shortcuts (160+ commands)
+
+    Use 'Show-ProfileHelp -Section Git' to view specific plugin documentation.
+"@
+
+  $PluginsGit = @"
+$($PSStyle.Foreground.Yellow)Plugins Module - Git Plugin$($PSStyle.Reset)
+    $($PSStyle.Foreground.Cyan)Comprehensive Git aliases and shortcuts$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Basic Operations:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)g$($PSStyle.Reset) <args>           - Direct git command wrapper
+        $($PSStyle.Foreground.Magenta)grt$($PSStyle.Reset)                - Navigate to git repository root
+        $($PSStyle.Foreground.Magenta)gst$($PSStyle.Reset)                - Git status
+        $($PSStyle.Foreground.Magenta)gss$($PSStyle.Reset)                - Git status short
+        $($PSStyle.Foreground.Magenta)gsb$($PSStyle.Reset)                - Git status short with branch info
+
+    $($PSStyle.Foreground.Green)Add Operations:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)ga$($PSStyle.Reset) <files>         - Git add files
+        $($PSStyle.Foreground.Magenta)gaa$($PSStyle.Reset)                - Git add all
+        $($PSStyle.Foreground.Magenta)gapa$($PSStyle.Reset)               - Git add patch (interactive)
+        $($PSStyle.Foreground.Magenta)gau$($PSStyle.Reset)                - Git add update (modified files only)
+        $($PSStyle.Foreground.Magenta)gav$($PSStyle.Reset)                - Git add verbose
+
+    $($PSStyle.Foreground.Green)Branch Operations:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)gb$($PSStyle.Reset)                 - Git branch
+        $($PSStyle.Foreground.Magenta)gba$($PSStyle.Reset)                - Git branch all
+        $($PSStyle.Foreground.Magenta)gbd$($PSStyle.Reset) <branch>       - Git branch delete
+        $($PSStyle.Foreground.Magenta)gbD$($PSStyle.Reset) <branch>       - Git branch force delete
+        $($PSStyle.Foreground.Magenta)gbm$($PSStyle.Reset) <name>         - Git branch move/rename
+
+    $($PSStyle.Foreground.Green)Checkout/Switch Operations:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)gco$($PSStyle.Reset) <branch>       - Git checkout
+        $($PSStyle.Foreground.Magenta)gcb$($PSStyle.Reset) <branch>       - Git checkout new branch
+        $($PSStyle.Foreground.Magenta)gcm$($PSStyle.Reset)                - Git checkout main/master
+        $($PSStyle.Foreground.Magenta)gcd$($PSStyle.Reset)                - Git checkout develop
+        $($PSStyle.Foreground.Magenta)gsw$($PSStyle.Reset) <branch>       - Git switch
+        $($PSStyle.Foreground.Magenta)gswc$($PSStyle.Reset) <branch>      - Git switch create
+
+    $($PSStyle.Foreground.Green)Commit Operations:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)gcmsg$($PSStyle.Reset) <msg>        - Git commit with message
+        $($PSStyle.Foreground.Magenta)gcam$($PSStyle.Reset) <msg>         - Git commit all with message
+        $($PSStyle.Foreground.Magenta)gca$($PSStyle.Reset)                - Git commit all verbose
+        $($PSStyle.Foreground.Magenta)gcv$($PSStyle.Reset)                - Git commit verbose
+
+    $($PSStyle.Foreground.Green)Diff Operations:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)gd$($PSStyle.Reset)                 - Git diff
+        $($PSStyle.Foreground.Magenta)gdca$($PSStyle.Reset)               - Git diff cached
+        $($PSStyle.Foreground.Magenta)gds$($PSStyle.Reset)                - Git diff staged
+        $($PSStyle.Foreground.Magenta)gdw$($PSStyle.Reset)                - Git diff word-diff
+
+    $($PSStyle.Foreground.Green)Log Operations:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)glog$($PSStyle.Reset)               - Git log oneline graph
+        $($PSStyle.Foreground.Magenta)gloga$($PSStyle.Reset)              - Git log oneline graph all
+        $($PSStyle.Foreground.Magenta)glol$($PSStyle.Reset)               - Git log oneline with dates
+        $($PSStyle.Foreground.Magenta)glg$($PSStyle.Reset)                - Git log with stats
+
+    $($PSStyle.Foreground.Green)Pull/Push Operations:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)gl$($PSStyle.Reset)                 - Git pull
+        $($PSStyle.Foreground.Magenta)gpr$($PSStyle.Reset)                - Git pull rebase
+        $($PSStyle.Foreground.Magenta)gp$($PSStyle.Reset)                 - Git push
+        $($PSStyle.Foreground.Magenta)gpf$($PSStyle.Reset)                - Git push force-with-lease
+        $($PSStyle.Foreground.Magenta)gpsup$($PSStyle.Reset)              - Git push set upstream
+        $($PSStyle.Foreground.Magenta)ggpull$($PSStyle.Reset)             - Git pull current branch
+        $($PSStyle.Foreground.Magenta)ggpush$($PSStyle.Reset)             - Git push current branch
+
+    $($PSStyle.Foreground.Green)Rebase Operations:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)grb$($PSStyle.Reset) <branch>       - Git rebase
+        $($PSStyle.Foreground.Magenta)grbi$($PSStyle.Reset) <commits>     - Git rebase interactive
+        $($PSStyle.Foreground.Magenta)grba$($PSStyle.Reset)               - Git rebase abort
+        $($PSStyle.Foreground.Magenta)grbc$($PSStyle.Reset)               - Git rebase continue
+        $($PSStyle.Foreground.Magenta)grbm$($PSStyle.Reset)               - Git rebase main
+
+    $($PSStyle.Foreground.Green)Stash Operations:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)gsta$($PSStyle.Reset) <msg>         - Git stash push
+        $($PSStyle.Foreground.Magenta)gstl$($PSStyle.Reset)               - Git stash list
+        $($PSStyle.Foreground.Magenta)gstp$($PSStyle.Reset)               - Git stash pop
+        $($PSStyle.Foreground.Magenta)gstaa$($PSStyle.Reset)              - Git stash apply
+        $($PSStyle.Foreground.Magenta)gstd$($PSStyle.Reset)               - Git stash drop
+
+    $($PSStyle.Foreground.Green)Reset/Restore Operations:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)grh$($PSStyle.Reset) <commit>       - Git reset
+        $($PSStyle.Foreground.Magenta)grhh$($PSStyle.Reset) <commit>      - Git reset hard
+        $($PSStyle.Foreground.Magenta)grhs$($PSStyle.Reset) <commit>      - Git reset soft
+        $($PSStyle.Foreground.Magenta)grs$($PSStyle.Reset) <files>        - Git restore
+        $($PSStyle.Foreground.Magenta)grst$($PSStyle.Reset) <files>       - Git restore staged
+
+    $($PSStyle.Foreground.Green)Remote Operations:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)gr$($PSStyle.Reset)                 - Git remote
+        $($PSStyle.Foreground.Magenta)grv$($PSStyle.Reset)                - Git remote verbose
+        $($PSStyle.Foreground.Magenta)gra$($PSStyle.Reset) <name> <url>   - Git remote add
+        $($PSStyle.Foreground.Magenta)gf$($PSStyle.Reset)                 - Git fetch
+        $($PSStyle.Foreground.Magenta)gfa$($PSStyle.Reset)                - Git fetch all
+
+    $($PSStyle.Foreground.Green)Workflow Helpers:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)gwip$($PSStyle.Reset)               - Git work in progress (quick save)
+        $($PSStyle.Foreground.Magenta)gunwip$($PSStyle.Reset)             - Git undo work in progress
+        $($PSStyle.Foreground.Magenta)gcl$($PSStyle.Reset) <url>          - Git clone with submodules
+        $($PSStyle.Foreground.Magenta)gccd$($PSStyle.Reset) <url>         - Git clone and cd into directory
+
+    $($PSStyle.Foreground.Green)Advanced Operations:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)gcp$($PSStyle.Reset) <commit>       - Git cherry-pick
+        $($PSStyle.Foreground.Magenta)gm$($PSStyle.Reset) <branch>        - Git merge
+        $($PSStyle.Foreground.Magenta)grev$($PSStyle.Reset) <commit>      - Git revert
+        $($PSStyle.Foreground.Magenta)gtv$($PSStyle.Reset)                - Git tag list sorted
+        $($PSStyle.Foreground.Magenta)gwt$($PSStyle.Reset)                - Git worktree
+
+    Note: All Git functions include automatic repository validation.
+    Over 160+ Git aliases available - see full documentation for complete list.
 "@
 
   $Starship = @"
@@ -342,6 +485,7 @@ $($PSStyle.Foreground.Yellow)Utility Module$($PSStyle.Reset)
       Write-Host $Environment
       Write-Host $Logging
       Write-Host $Network
+      Write-Host $Plugins
       Write-Host $Process
       Write-Host $Starship
       Write-Host $Update
@@ -359,9 +503,9 @@ $($PSStyle.Foreground.Yellow)Utility Module$($PSStyle.Reset)
       Write-Host $Title
       Write-Host $Environment
     }
-    'GitUtils' {
+    'Git' {
       Write-Host $Title
-      Write-Host $GitUtils
+      Write-Host $PluginsGit
     }
     'Logging' {
       Write-Host $Title
@@ -370,6 +514,10 @@ $($PSStyle.Foreground.Yellow)Utility Module$($PSStyle.Reset)
     'Network' {
       Write-Host $Title
       Write-Host $Network
+    }
+    'Plugins' {
+      Write-Host $Title
+      Write-Host $Plugins
     }
     'Process' {
       Write-Host $Title

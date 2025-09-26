@@ -1,30 +1,71 @@
-<#
-.SYNOPSIS
-  Retrieves the system information.
+#---------------------------------------------------------------------------------------------------
+# MKAbuMattar's PowerShell Profile
+#
+#
+#                             .
+#         ..                .''
+#         .,'..,.         ..,;,'
+#          ,;;;;,,       .,,;;;
+#           ,;;;;;'    .',;;;
+#            ,;;;;,'...,;;;,
+#             ,;;;;;,,;;;;.
+#              ,;;;;;;;;;
+#              .,;;;;;;;
+#              .,;;;;;;;'
+#              .,;;;;;;;,'
+#            .',;;;;;;;;;;,.
+#          ..,;;;;;;;;;;;;;,.
+#         .';;;;;.   ';;;;;;,'
+#        .,;;;;.      ,; .;; .,
+#        ',;;;.        .
+#        .,;;.
+#        ,;
+#        .
+#
+#      "The only way to do great work is to love what you do."
+#                           - Steve Jobs
+#
+#
+# Author: Mohammad Abu Mattar
+#
+# Description:
+#       This Module provides process management functions for PowerShell scripts and modules.
+#
+# Created: 2021-09-01
+# Updated: 2025-09-24
+#
+# GitHub: https://github.com/MKAbuMattar/powershell-profile
+#
+# Version: 4.1.0
+#---------------------------------------------------------------------------------------------------
 
-.DESCRIPTION
-  This function retrieves information about the system, including the operating system, architecture, and processor details.
-
-.PARAMETER None
-  This function does not accept any parameters.
-
-.INPUTS
-  This function does not accept any input.
-
-.OUTPUTS
-  The system information.
-
-.NOTES
-  This function is useful for quickly retrieving information about the system.
-
-.EXAMPLE
-  Get-SystemInfo
-  Retrieves information about the system.
-
-.LINK
-  https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
-#>
 function Get-SystemInfo {
+  <#
+  .SYNOPSIS
+    Retrieves the system information.
+
+  .DESCRIPTION
+    This function retrieves information about the system, including the operating system, architecture, and processor details.
+
+  .PARAMETER None
+    This function does not accept any parameters.
+
+  .INPUTS
+    This function does not accept any input.
+
+  .OUTPUTS
+    The system information.
+
+  .NOTES
+    This function is useful for quickly retrieving information about the system.
+
+  .EXAMPLE
+    Get-SystemInfo
+    Retrieves information about the system.
+
+  .LINK
+    https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
+  #>
   [CmdletBinding()]
   [Alias("sysinfo")]
   [OutputType([PSCustomObject])]
@@ -51,33 +92,33 @@ function Get-SystemInfo {
   }
 }
 
-<#
-.SYNOPSIS
-  Retrieves a list of all running processes.
-
-.DESCRIPTION
-  This function retrieves information about all running processes on the system. It provides details such as the process name, ID, CPU usage, and memory usage.
-
-.PARAMETER Name
-  Specifies the name of a specific process to retrieve information for. If not provided, information for all processes is retrieved.
-
-.INPUTS
-  Name: (Optional) The name of a specific process to retrieve information for.
-
-.OUTPUTS
-  The process information for all running processes.
-
-.NOTES
-  This function is useful for retrieving information about running processes on the system.
-
-.EXAMPLE
-  Get-AllProcesses
-  Retrieves information about all running processes.
-
-.LINK
-  https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
-#>
 function Get-AllProcesses {
+  <#
+  .SYNOPSIS
+    Retrieves a list of all running processes.
+
+  .DESCRIPTION
+    This function retrieves information about all running processes on the system. It provides details such as the process name, ID, CPU usage, and memory usage.
+
+  .PARAMETER Name
+    Specifies the name of a specific process to retrieve information for. If not provided, information for all processes is retrieved.
+
+  .INPUTS
+    Name: (Optional) The name of a specific process to retrieve information for.
+
+  .OUTPUTS
+    The process information for all running processes.
+
+  .NOTES
+    This function is useful for retrieving information about running processes on the system.
+
+  .EXAMPLE
+    Get-AllProcesses
+    Retrieves information about all running processes.
+
+  .LINK
+    https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
+  #>
   [CmdletBinding()]
   [Alias("pall")]
   [OutputType([System.Diagnostics.Process[]])]
@@ -105,33 +146,33 @@ function Get-AllProcesses {
   }
 }
 
-<#
-.SYNOPSIS
-  Finds a process by name.
-
-.DESCRIPTION
-  This function searches for a process by its name. It retrieves information about the specified process, if found.
-
-.PARAMETER Name
-  Specifies the name of the process to find.
-
-.INPUTS
-  Name: (Required) The name of the process to find.
-
-.OUTPUTS
-  The process information if found.
-
-.NOTES
-  This function is useful for quickly finding information about a process by its name.
-
-.EXAMPLE
-  Get-ProcessByName "process"
-  Retrieves information about the process named "process".
-
-.LINK
-  https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
-#>
 function Get-ProcessByName {
+  <#
+  .SYNOPSIS
+    Finds a process by name.
+
+  .DESCRIPTION
+    This function searches for a process by its name. It retrieves information about the specified process, if found.
+
+  .PARAMETER Name
+    Specifies the name of the process to find.
+
+  .INPUTS
+    Name: (Required) The name of the process to find.
+
+  .OUTPUTS
+    The process information if found.
+
+  .NOTES
+    This function is useful for quickly finding information about a process by its name.
+
+  .EXAMPLE
+    Get-ProcessByName "process"
+    Retrieves information about the process named "process".
+
+  .LINK
+    https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
+  #>
   [CmdletBinding()]
   [Alias("pgrep")]
   [OutputType([System.Diagnostics.Process[]])]
@@ -155,33 +196,33 @@ function Get-ProcessByName {
   }
 }
 
-<#
-.SYNOPSIS
-  Finds a process by port.
-
-.DESCRIPTION
-  This function searches for a process using a specific port. It retrieves information about the process using the specified port, if found.
-
-.PARAMETER Port
-  Specifies the port number to search for.
-
-.INPUTS
-  Port: (Required) The port number to search for.
-
-.OUTPUTS
-  The process information if found.
-
-.NOTES
-  This function is useful for quickly finding information about a process using a specific port.
-
-.EXAMPLE
-  Get-ProcessByPort 80
-  Retrieves information about the process using port 80.
-
-.LINK
-  https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
-#>
 function Get-ProcessByPort {
+  <#
+  .SYNOPSIS
+    Finds a process by port.
+
+  .DESCRIPTION
+    This function searches for a process using a specific port. It retrieves information about the process using the specified port, if found.
+
+  .PARAMETER Port
+    Specifies the port number to search for.
+
+  .INPUTS
+    Port: (Required) The port number to search for.
+
+  .OUTPUTS
+    The process information if found.
+
+  .NOTES
+    This function is useful for quickly finding information about a process using a specific port.
+
+  .EXAMPLE
+    Get-ProcessByPort 80
+    Retrieves information about the process using port 80.
+
+  .LINK
+    https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
+  #>
   [CmdletBinding()]
   [Alias("portgrep")]
   [OutputType([System.Diagnostics.Process[]])]
@@ -205,33 +246,33 @@ function Get-ProcessByPort {
   }
 }
 
-<#
-.SYNOPSIS
-  Terminates a process by name.
-
-.DESCRIPTION
-  This function terminates a process by its name. It is useful for stopping processes that may be unresponsive or causing issues.
-
-.PARAMETER Name
-  Specifies the name of the process to terminate.
-
-.INPUTS
-  Name: (Required) The name of the process to terminate.
-
-.OUTPUTS
-  This function does not return any output.
-
-.NOTES
-  This function is useful for quickly terminating a process by its name.
-
-.EXAMPLE
-  Stop-ProcessByName "process"
-  Terminates the process named "process".
-
-.LINK
-  https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
-#>
 function Stop-ProcessByName {
+  <#
+  .SYNOPSIS
+    Terminates a process by name.
+
+  .DESCRIPTION
+    This function terminates a process by its name. It is useful for stopping processes that may be unresponsive or causing issues.
+
+  .PARAMETER Name
+    Specifies the name of the process to terminate.
+
+  .INPUTS
+    Name: (Required) The name of the process to terminate.
+
+  .OUTPUTS
+    This function does not return any output.
+
+  .NOTES
+    This function is useful for quickly terminating a process by its name.
+
+  .EXAMPLE
+    Stop-ProcessByName "process"
+    Terminates the process named "process".
+
+  .LINK
+    https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
+  #>
   [CmdletBinding()]
   [Alias("pkill")]
   [OutputType([void])]
@@ -256,33 +297,33 @@ function Stop-ProcessByName {
   }
 }
 
-<#
-.SYNOPSIS
-  Terminates a process by port.
-
-.DESCRIPTION
-  This function terminates a process using a specific port. It is useful for stopping processes that may be unresponsive or causing issues.
-
-.PARAMETER Port
-  Specifies the port number of the process to terminate.
-
-.INPUTS
-  Port: (Required) The port number of the process to terminate.
-
-.OUTPUTS
-  This function does not return any output.
-
-.NOTES
-  This function is useful for quickly terminating a process using a specific port.
-
-.EXAMPLE
-  Stop-ProcessByPort 80
-  Terminates the process using port 80.
-
-.LINK
-  https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
-#>
 function Stop-ProcessByPort {
+  <#
+  .SYNOPSIS
+    Terminates a process by port.
+
+  .DESCRIPTION
+    This function terminates a process using a specific port. It is useful for stopping processes that may be unresponsive or causing issues.
+
+  .PARAMETER Port
+    Specifies the port number of the process to terminate.
+
+  .INPUTS
+    Port: (Required) The port number of the process to terminate.
+
+  .OUTPUTS
+    This function does not return any output.
+
+  .NOTES
+    This function is useful for quickly terminating a process using a specific port.
+
+  .EXAMPLE
+    Stop-ProcessByPort 80
+    Terminates the process using port 80.
+
+  .LINK
+    https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
+  #>
   [CmdletBinding()]
   [Alias("portkill")]
   [OutputType([void])]
@@ -307,49 +348,49 @@ function Stop-ProcessByPort {
   }
 }
 
-<#
-.SYNOPSIS
-  Clears windows cache, temp files, and internet explorer cache.
-
-.DESCRIPTION
-  This function clears the Windows cache, temporary files, and Internet Explorer cache. It is useful for freeing up disk space and improving system performance.
-
-.PARAMETER Type
-  Specifies the type of cache to clear. The available options are "All", "Prefetch", "WindowsTemp", "UserTemp", and "IECache". The default value is "All".
-
-.INPUTS
-  Type: (Optional) The type of cache to clear. The default value is "All".
-
-.OUTPUTS
-  This function does not return any output.
-
-.NOTES
-  This function is useful for clearing various caches on the system to free up disk space and improve performance.
-
-.EXAMPLE
-  Clear-Cache
-  Clears all caches (Windows Prefetch, Windows Temp, User Temp, and Internet Explorer Cache).
-
-.EXAMPLE
-  Clear-Cache -Type "Prefetch"
-  Clears the Windows Prefetch cache.
-
-.EXAMPLE
-  Clear-Cache -Type "WindowsTemp"
-  Clears the Windows Temp cache.
-
-.EXAMPLE
-  Clear-Cache -Type "UserTemp"
-  Clears the User Temp cache.
-
-.EXAMPLE
-  Clear-Cache -Type "IECache"
-  Clears the Internet Explorer Cache.
-
-.LINK
-  https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
-#>
 function Invoke-ClearCache {
+  <#
+  .SYNOPSIS
+    Clears windows cache, temp files, and internet explorer cache.
+
+  .DESCRIPTION
+    This function clears the Windows cache, temporary files, and Internet Explorer cache. It is useful for freeing up disk space and improving system performance.
+
+  .PARAMETER Type
+    Specifies the type of cache to clear. The available options are "All", "Prefetch", "WindowsTemp", "UserTemp", and "IECache". The default value is "All".
+
+  .INPUTS
+    Type: (Optional) The type of cache to clear. The default value is "All".
+
+  .OUTPUTS
+    This function does not return any output.
+
+  .NOTES
+    This function is useful for clearing various caches on the system to free up disk space and improve performance.
+
+  .EXAMPLE
+    Clear-Cache
+    Clears all caches (Windows Prefetch, Windows Temp, User Temp, and Internet Explorer Cache).
+
+  .EXAMPLE
+    Clear-Cache -Type "Prefetch"
+    Clears the Windows Prefetch cache.
+
+  .EXAMPLE
+    Clear-Cache -Type "WindowsTemp"
+    Clears the Windows Temp cache.
+
+  .EXAMPLE
+    Clear-Cache -Type "UserTemp"
+    Clears the User Temp cache.
+
+  .EXAMPLE
+    Clear-Cache -Type "IECache"
+    Clears the Internet Explorer Cache.
+
+  .LINK
+    https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
+  #>
   [CmdletBinding()]
   [Alias("clear-cache")]
   [OutputType([void])]

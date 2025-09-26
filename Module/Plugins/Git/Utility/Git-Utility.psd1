@@ -1,27 +1,20 @@
 @{
-  RootModule        = 'Starship.psm1'
+  RootModule        = 'Git-Utility.psm1'
   ModuleVersion     = '4.1.0'
-  GUID              = '1e2ead21-fa02-4d39-9c29-4c2d1b7d22d0'
+  GUID              = 'a2a7d067-ddb2-4a53-a14c-717dbcc43153'
   Author            = 'Mohammad Abu Mattar'
   Copyright         = '(c) 2024 Mohammad Abu Mattar'
-  Description       = 'This module transiently invokes the Starship prompt to enhance the appearance and functionality of the PowerShell prompt.'
+  Description       = 'Git Utility Functions - Git branch management and utility operations'
   PowerShellVersion = '5.0'
   FunctionsToExport = @(
-    'Invoke-StarshipTransientFunction'
+    'Rename-GitBranch'
   )
   CmdletsToExport   = @()
   VariablesToExport = @()
-  AliasesToExport   = @(
-    'starship-transient'
-  )
+  AliasesToExport   = @()
   PrivateData       = @{
     PSData = @{
-      Tags       = @(
-        'Starship',
-        'Prompt',
-        'Appearance',
-        'Functionality'
-      )
+      Tags       = @('Git', 'Utility', 'Branch', 'Management')
       LicenseUri = 'https://raw.githubusercontent.com/MKAbuMattar/powershell-profile/main/LICENSE'
       ProjectUri = 'https://github.com/MKAbuMattar/powershell-profile'
     }

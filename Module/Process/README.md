@@ -57,5 +57,10 @@ The Process module is designed to provide robust tools for managing and inspecti
 
 [Back to Modules](../../README.md#modules)
 
-**Contribution:**
+## **Contribution:**
+
 Ideas for new process management utilities or enhancements to existing cache clearing capabilities are welcome. Please follow the main [Contributing Guidelines](../../README.md#contributing).
+
+## **License:**
+
+This project is licensed under the MIT License. See the [LICENSE](../../LICENSE) file for details.

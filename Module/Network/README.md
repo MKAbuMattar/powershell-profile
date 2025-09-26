@@ -36,5 +36,10 @@ The Network module provides essential functions for network-related tasks direct
 
 [Back to Modules](../../README.md#modules)
 
-**Contribution:**
+## **Contribution:**
+
 Contributions such as adding more network diagnostic tools (e.g., ping wrappers, port scanners, traceroute functions) or improving existing functions are welcome. Please adhere to the main [Contributing Guidelines](../../README.md#contributing).
+
+## **License:**
+
+This project is licensed under the MIT License. See the [LICENSE](../../LICENSE) file for details.

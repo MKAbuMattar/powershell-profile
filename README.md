@@ -43,9 +43,9 @@ Below is a list of the available modules. Click on a module name to view its det
 - [Directory Module](./Module/Directory/README.md)
 - [Docs Module](./Module/Docs/README.md)
 - [Environment Module](./Module/Environment/README.md)
-- [GitUtils Module](./Module/GitUtils/README.md)
 - [Logging Module](./Module/Logging/README.md)
 - [Network Module](./Module/Network/README.md)
+- [Plugins Module](./Module/Plugins/README.md)
 - [Process Module](./Module/Process/README.md)
 - [Starship Module](./Module/Starship/README.md)
 - [Update Module](./Module/Update/README.md)
@@ -54,3 +54,7 @@ Below is a list of the available modules. Click on a module name to view its det
 ## Contributing
 
 Contributions are welcome! Please consider creating a [CONTRIBUTING](.github/CONTRIBUTING.md) file with guidelines for how others can contribute to this project.
+
+## **License:**
+
+This project is licensed under the MIT License. See the [LICENSE](./LICENSE) file for details.

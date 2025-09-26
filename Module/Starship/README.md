@@ -35,5 +35,10 @@ Starship itself is configured via a `starship.toml` file, usually located in `~/
 
 [Back to Modules](../../README.md#modules)
 
-**Contribution:**
+## **Contribution:**
+
 Contributions could include adding functions to help manage Starship installation, configuration, or providing different ways to integrate Starship (e.g., toggling it as the default prompt). Please refer to the main [Contributing Guidelines](../../README.md#contributing).
+
+## **License:**
+
+This project is licensed under the MIT License. See the [LICENSE](../../LICENSE) file for details.

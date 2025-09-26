@@ -46,5 +46,10 @@ The Update module provides a set of functions dedicated to keeping the PowerShel
 
 [Back to Modules](../../README.md#modules)
 
-**Contribution:**
+## **Contribution:**
+
 Improvements to the update mechanisms, such as adding support for different update sources, more robust error handling, or interactive update prompts, are welcome. Please consult the main [Contributing Guidelines](../../README.md#contributing).
+
+## **License:**
+
+This project is licensed under the MIT License. See the [LICENSE](../../LICENSE) file for details.

@@ -1,3 +1,44 @@
+#---------------------------------------------------------------------------------------------------
+# MKAbuMattar's PowerShell Profile
+#
+#
+#                             .
+#         ..                .''
+#         .,'..,.         ..,;,'
+#          ,;;;;,,       .,,;;;
+#           ,;;;;;'    .',;;;
+#            ,;;;;,'...,;;;,
+#             ,;;;;;,,;;;;.
+#              ,;;;;;;;;;
+#              .,;;;;;;;
+#              .,;;;;;;;'
+#              .,;;;;;;;,'
+#            .',;;;;;;;;;;,.
+#          ..,;;;;;;;;;;;;;,.
+#         .';;;;;.   ';;;;;;,'
+#        .,;;;;.      ,; .;; .,
+#        ',;;;.        .
+#        .,;;.
+#        ,;
+#        .
+#
+#      "The only way to do great work is to love what you do."
+#                           - Steve Jobs
+#
+#
+# Author: Mohammad Abu Mattar
+#
+# Description:
+#       This Module contains functions to manage environment variables and the PATH variable.
+#
+# Created: 2021-09-01
+# Updated: 2025-09-24
+#
+# GitHub: https://github.com/MKAbuMattar/powershell-profile
+#
+# Version: 4.1.0
+#---------------------------------------------------------------------------------------------------
+
 <#
 .SYNOPSIS
   Set environment variables for the PowerShell profile Auto Update.
@@ -55,30 +96,30 @@ INPUTS
 #>
 $global:CanConnectToGitHub = Test-Connection github.com -Count 1 -Quiet -TimeoutSeconds 1
 
-<#
-.SYNOPSIS
-  Reloads the PATH environment variable.
-
-.DESCRIPTION
-  This function reloads the PATH environment variable by setting it to the current value of the PATH environment variable.
-
-.INPUTS
-  None.
-
-.OUTPUTS
-  This function does not return any output.
-
-.NOTES
-  This function is useful for reloading the PATH environment variable within a PowerShell session.
-
-.EXAMPLE
-  Invoke-ReloadPathEnvironmentVariable
-  Reloads the PATH environment variable.
-
-.LINK
-  https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
-#>
 function Invoke-ReloadPathEnvironmentVariable {
+  <#
+  .SYNOPSIS
+    Reloads the PATH environment variable.
+
+  .DESCRIPTION
+    This function reloads the PATH environment variable by setting it to the current value of the PATH environment variable.
+
+  .INPUTS
+    None.
+
+  .OUTPUTS
+    This function does not return any output.
+
+  .NOTES
+    This function is useful for reloading the PATH environment variable within a PowerShell session.
+
+  .EXAMPLE
+    Invoke-ReloadPathEnvironmentVariable
+    Reloads the PATH environment variable.
+
+  .LINK
+    https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
+  #>
   [CmdletBinding()]
   [Alias("reload-env-path", "reload-path")]
   [OutputType([void])]
@@ -89,41 +130,41 @@ function Invoke-ReloadPathEnvironmentVariable {
   $env:Path = (Get-PathEnvironmentVariable | Select-Object -ExpandProperty Path) -join ';'
 }
 
-<#
-.SYNOPSIS
-  Retrieves the PATH environment variable.
-
-.DESCRIPTION
-  This function retrieves the PATH environment variable and returns the value of the PATH environment variable.
-
-.PARAMETER Scope
-  Specifies the scope of the PATH environment variable to retrieve. The default value is "All".
-
-.INPUTS
-  Scope: (Optional) Specifies the scope of the PATH environment variable to retrieve.
-
-.OUTPUTS
-  The value of the PATH environment variable.
-
-.NOTES
-  This function is useful for retrieving the value of the PATH environment variable within a PowerShell session.
-
-.EXAMPLE
-  Get-PathEnvironmentVariable
-  Retrieves the value of the PATH environment variable.
-
-.EXAMPLE
-  Get-PathEnvironmentVariable -Scope "User"
-  Retrieves the value of the PATH environment variable for the current user.
-
-.EXAMPLE
-  Get-PathEnvironmentVariable -Scope "Machine"
-  Retrieves the value of the PATH environment variable for the machine.
-
-.LINK
-  https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
-#>
 function Get-PathEnvironmentVariable {
+  <#
+  .SYNOPSIS
+    Retrieves the PATH environment variable.
+
+  .DESCRIPTION
+    This function retrieves the PATH environment variable and returns the value of the PATH environment variable.
+
+  .PARAMETER Scope
+    Specifies the scope of the PATH environment variable to retrieve. The default value is "All".
+
+  .INPUTS
+    Scope: (Optional) Specifies the scope of the PATH environment variable to retrieve.
+
+  .OUTPUTS
+    The value of the PATH environment variable.
+
+  .NOTES
+    This function is useful for retrieving the value of the PATH environment variable within a PowerShell session.
+
+  .EXAMPLE
+    Get-PathEnvironmentVariable
+    Retrieves the value of the PATH environment variable.
+
+  .EXAMPLE
+    Get-PathEnvironmentVariable -Scope "User"
+    Retrieves the value of the PATH environment variable for the current user.
+
+  .EXAMPLE
+    Get-PathEnvironmentVariable -Scope "Machine"
+    Retrieves the value of the PATH environment variable for the machine.
+
+  .LINK
+    https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
+  #>
   [CmdletBinding()]
   [Alias("get-env-path", "get-path")]
   [OutputType([string])]
@@ -176,77 +217,77 @@ function Get-PathEnvironmentVariable {
   }
 }
 
-<#
-.SYNOPSIS
-  Sets the PATH environment variable.
-
-.DESCRIPTION
-  This function sets the PATH environment variable with the specified value.
-
-.PARAMETER Path
-  Specifies the value to set the PATH environment variable to.
-
-.PARAMETER Scope
-  Specifies the scope of the PATH environment variable to set. The default value is "Process".
-
-.PARAMETER Append
-  Appends the specified value to the PATH environment variable.
-
-.PARAMETER Prepend
-  Prepends the specified value to the PATH environment variable.
-
-.PARAMETER MakeShort
-  Converts the specified path to its short form before setting it in the PATH environment variable.
-
-.PARAMETER Quiet
-  Suppresses the output of the function.
-
-.INPUTS
-  Path: (Required) The value to set the PATH environment variable to.
-  Scope: (Optional) The scope of the PATH environment variable to set.
-  Append: (Optional) Appends the specified value to the PATH environment variable.
-  Prepend: (Optional) Prepends the specified value to the PATH environment variable.
-  MakeShort: (Optional) Converts the specified path to its short form before setting it in the PATH environment variable.
-  Quiet: (Optional) Suppresses the output of the function.
-
-.OUTPUTS
-  This function does not return any output.
-
-.NOTES
-  This function is useful for setting the PATH environment variable within a PowerShell session.
-
-.EXAMPLE
-  Set-PathEnvironmentVariable "C:\Program Files\Example"
-  Sets the PATH environment variable to "C:\Program Files\Example".
-
-.EXAMPLE
-  Set-PathEnvironmentVariable "C:\Program Files\Example" -Scope "User"
-  Sets the PATH environment variable for the current user to "C:\Program Files\Example".
-
-.EXAMPLE
-  Set-PathEnvironmentVariable "C:\Program Files\Example" -Scope "Machine"
-  Sets the PATH environment variable for the machine to "C:\Program Files\Example".
-
-.EXAMPLE
-  Set-PathEnvironmentVariable "C:\Program Files\Example" -Append
-  Appends "C:\Program Files\Example" to the PATH environment variable.
-
-.EXAMPLE
-  Set-PathEnvironmentVariable "C:\Program Files\Example" -Prepend
-  Prepends "C:\Program Files\Example" to the PATH environment variable.
-
-.EXAMPLE
-  Set-PathEnvironmentVariable "C:\Program Files\Example" -MakeShort
-  Converts "C:\Program Files\Example" to its short form before setting it in the PATH environment variable.
-
-.EXAMPLE
-  Set-PathEnvironmentVariable "C:\Program Files\Example" -Quiet
-  Sets the PATH environment variable to "C:\Program Files\Example" without displaying any output.
-
-.LINK
-  https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
-#>
 function Add-PathEnvironmentVariable {
+  <#
+  .SYNOPSIS
+    Sets the PATH environment variable.
+
+  .DESCRIPTION
+    This function sets the PATH environment variable with the specified value.
+
+  .PARAMETER Path
+    Specifies the value to set the PATH environment variable to.
+
+  .PARAMETER Scope
+    Specifies the scope of the PATH environment variable to set. The default value is "Process".
+
+  .PARAMETER Append
+    Appends the specified value to the PATH environment variable.
+
+  .PARAMETER Prepend
+    Prepends the specified value to the PATH environment variable.
+
+  .PARAMETER MakeShort
+    Converts the specified path to its short form before setting it in the PATH environment variable.
+
+  .PARAMETER Quiet
+    Suppresses the output of the function.
+
+  .INPUTS
+    Path: (Required) The value to set the PATH environment variable to.
+    Scope: (Optional) The scope of the PATH environment variable to set.
+    Append: (Optional) Appends the specified value to the PATH environment variable.
+    Prepend: (Optional) Prepends the specified value to the PATH environment variable.
+    MakeShort: (Optional) Converts the specified path to its short form before setting it in the PATH environment variable.
+    Quiet: (Optional) Suppresses the output of the function.
+
+  .OUTPUTS
+    This function does not return any output.
+
+  .NOTES
+    This function is useful for setting the PATH environment variable within a PowerShell session.
+
+  .EXAMPLE
+    Set-PathEnvironmentVariable "C:\Program Files\Example"
+    Sets the PATH environment variable to "C:\Program Files\Example".
+
+  .EXAMPLE
+    Set-PathEnvironmentVariable "C:\Program Files\Example" -Scope "User"
+    Sets the PATH environment variable for the current user to "C:\Program Files\Example".
+
+  .EXAMPLE
+    Set-PathEnvironmentVariable "C:\Program Files\Example" -Scope "Machine"
+    Sets the PATH environment variable for the machine to "C:\Program Files\Example".
+
+  .EXAMPLE
+    Set-PathEnvironmentVariable "C:\Program Files\Example" -Append
+    Appends "C:\Program Files\Example" to the PATH environment variable.
+
+  .EXAMPLE
+    Set-PathEnvironmentVariable "C:\Program Files\Example" -Prepend
+    Prepends "C:\Program Files\Example" to the PATH environment variable.
+
+  .EXAMPLE
+    Set-PathEnvironmentVariable "C:\Program Files\Example" -MakeShort
+    Converts "C:\Program Files\Example" to its short form before setting it in the PATH environment variable.
+
+  .EXAMPLE
+    Set-PathEnvironmentVariable "C:\Program Files\Example" -Quiet
+    Sets the PATH environment variable to "C:\Program Files\Example" without displaying any output.
+
+  .LINK
+    https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
+  #>
   [CmdletBinding()]
   [Alias(
     "add-path",
@@ -365,53 +406,53 @@ function Add-PathEnvironmentVariable {
   }
 }
 
-<#
-.SYNOPSIS
-  Removes a path from the PATH environment variable.
-
-.DESCRIPTION
-  This function removes the specified path from the PATH environment variable.
-
-.PARAMETER Path
-  Specifies the path to remove from the PATH environment variable.
-
-.PARAMETER Scope
-  Specifies the scope of the PATH environment variable to remove the path from. The default value is "Process".
-
-.PARAMETER Force
-  Forces the removal of the specified path from the PATH environment variable.
-
-.INPUTS
-  Path: (Required) The path to remove from the PATH environment variable.
-  Scope: (Optional) The scope of the PATH environment variable to remove the path from.
-  Force: (Optional) Forces the removal of the specified path from the PATH environment variable.
-
-.OUTPUTS
-  This function does not return any output.
-
-.NOTES
-  This function is useful for removing a path from the PATH environment variable within a PowerShell session.
-
-.EXAMPLE
-  Remove-PathEnvironmentVariable "C:\Program Files\Example"
-  Removes "C:\Program Files\Example" from the PATH environment variable.
-
-.EXAMPLE
-  Remove-PathEnvironmentVariable "C:\Program Files\Example" -Scope "User"
-  Removes "C:\Program Files\Example" from the PATH environment variable for the current user.
-
-.EXAMPLE
-  Remove-PathEnvironmentVariable "C:\Program Files\Example" -Scope "Machine"
-  Removes "C:\Program Files\Example" from the PATH environment variable for the machine.
-
-.EXAMPLE
-  Remove-PathEnvironmentVariable "C:\Program Files\Example" -Force
-  Forces the removal of "C:\Program Files\Example" from the PATH environment variable.
-
-.LINK
-  https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
-#>
 function Remove-PathEnvironmentVariable {
+  <#
+  .SYNOPSIS
+    Removes a path from the PATH environment variable.
+
+  .DESCRIPTION
+    This function removes the specified path from the PATH environment variable.
+
+  .PARAMETER Path
+    Specifies the path to remove from the PATH environment variable.
+
+  .PARAMETER Scope
+    Specifies the scope of the PATH environment variable to remove the path from. The default value is "Process".
+
+  .PARAMETER Force
+    Forces the removal of the specified path from the PATH environment variable.
+
+  .INPUTS
+    Path: (Required) The path to remove from the PATH environment variable.
+    Scope: (Optional) The scope of the PATH environment variable to remove the path from.
+    Force: (Optional) Forces the removal of the specified path from the PATH environment variable.
+
+  .OUTPUTS
+    This function does not return any output.
+
+  .NOTES
+    This function is useful for removing a path from the PATH environment variable within a PowerShell session.
+
+  .EXAMPLE
+    Remove-PathEnvironmentVariable "C:\Program Files\Example"
+    Removes "C:\Program Files\Example" from the PATH environment variable.
+
+  .EXAMPLE
+    Remove-PathEnvironmentVariable "C:\Program Files\Example" -Scope "User"
+    Removes "C:\Program Files\Example" from the PATH environment variable for the current user.
+
+  .EXAMPLE
+    Remove-PathEnvironmentVariable "C:\Program Files\Example" -Scope "Machine"
+    Removes "C:\Program Files\Example" from the PATH environment variable for the machine.
+
+  .EXAMPLE
+    Remove-PathEnvironmentVariable "C:\Program Files\Example" -Force
+    Forces the removal of "C:\Program Files\Example" from the PATH environment variable.
+
+  .LINK
+    https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
+  #>
   param(
     [Parameter(
       Mandatory = $true,
@@ -487,37 +528,37 @@ function Remove-PathEnvironmentVariable {
   }
 }
 
-<#
-.SYNOPSIS
-  Exports an environment variable.
-
-.DESCRIPTION
-  This function exports an environment variable with the specified name and value. It sets the specified environment variable with the provided value.
-
-.PARAMETER Name
-  Specifies the name of the environment variable.
-
-.PARAMETER Value
-  Specifies the value of the environment variable.
-
-.INPUTS
-  Name: (Required) The name of the environment variable to export.
-  Value: (Required) The value of the environment variable to export.
-
-.OUTPUTS
-  This function does not return any output.
-
-.NOTES
-  This function is useful for exporting environment variables within a PowerShell session.
-
-.EXAMPLE
-  Set-EnvVar "name" "value"
-  Exports an environment variable named "name" with the value "value".
-
-.LINK
-  https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
-#>
 function Set-EnvVar {
+  <#
+  .SYNOPSIS
+    Exports an environment variable.
+
+  .DESCRIPTION
+    This function exports an environment variable with the specified name and value. It sets the specified environment variable with the provided value.
+
+  .PARAMETER Name
+    Specifies the name of the environment variable.
+
+  .PARAMETER Value
+    Specifies the value of the environment variable.
+
+  .INPUTS
+    Name: (Required) The name of the environment variable to export.
+    Value: (Required) The value of the environment variable to export.
+
+  .OUTPUTS
+    This function does not return any output.
+
+  .NOTES
+    This function is useful for exporting environment variables within a PowerShell session.
+
+  .EXAMPLE
+    Set-EnvVar "name" "value"
+    Exports an environment variable named "name" with the value "value".
+
+  .LINK
+    https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
+  #>
   [CmdletBinding()]
   [Alias(
     "set-env",
@@ -554,33 +595,33 @@ function Set-EnvVar {
   }
 }
 
-<#
-.SYNOPSIS
-  Retrieves the value of an environment variable.
-
-.DESCRIPTION
-  This function retrieves the value of the specified environment variable. It returns the value of the environment variable if it exists.
-
-.PARAMETER Name
-  Specifies the name of the environment variable to retrieve the value for.
-
-.INPUTS
-  Name: (Required) The name of the environment variable to retrieve the value for.
-
-.OUTPUTS
-  The value of the specified environment variable.
-
-.NOTES
-  This function is useful for retrieving the value of environment variables within a PowerShell session.
-
-.EXAMPLE
-  Get-EnvVar "name"
-  Retrieves the value of the environment variable named "name".
-
-.LINK
-  https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
-#>
 function Get-EnvVar {
+  <#
+  .SYNOPSIS
+    Retrieves the value of an environment variable.
+
+  .DESCRIPTION
+    This function retrieves the value of the specified environment variable. It returns the value of the environment variable if it exists.
+
+  .PARAMETER Name
+    Specifies the name of the environment variable to retrieve the value for.
+
+  .INPUTS
+    Name: (Required) The name of the environment variable to retrieve the value for.
+
+  .OUTPUTS
+    The value of the specified environment variable.
+
+  .NOTES
+    This function is useful for retrieving the value of environment variables within a PowerShell session.
+
+  .EXAMPLE
+    Get-EnvVar "name"
+    Retrieves the value of the environment variable named "name".
+
+  .LINK
+    https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
+  #>
   [CmdletBinding()]
   [Alias("get-env")]
   [OutputType([string])]

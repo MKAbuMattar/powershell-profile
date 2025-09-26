@@ -1,27 +1,22 @@
 @{
-  RootModule        = 'Starship.psm1'
+  RootModule        = 'WeatherForecast.psm1'
   ModuleVersion     = '4.1.0'
-  GUID              = '1e2ead21-fa02-4d39-9c29-4c2d1b7d22d0'
+  GUID              = 'af0e8545-14df-4432-9658-b33fa8e6d6fa'
   Author            = 'Mohammad Abu Mattar'
   Copyright         = '(c) 2024 Mohammad Abu Mattar'
-  Description       = 'This module transiently invokes the Starship prompt to enhance the appearance and functionality of the PowerShell prompt.'
+  Description       = ''
   PowerShellVersion = '5.0'
   FunctionsToExport = @(
-    'Invoke-StarshipTransientFunction'
+    'Get-WeatherForecast'
   )
   CmdletsToExport   = @()
   VariablesToExport = @()
   AliasesToExport   = @(
-    'starship-transient'
+    'weather'
   )
   PrivateData       = @{
     PSData = @{
-      Tags       = @(
-        'Starship',
-        'Prompt',
-        'Appearance',
-        'Functionality'
-      )
+      Tags       = @()
       LicenseUri = 'https://raw.githubusercontent.com/MKAbuMattar/powershell-profile/main/LICENSE'
       ProjectUri = 'https://github.com/MKAbuMattar/powershell-profile'
     }
