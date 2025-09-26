@@ -63,14 +63,28 @@ function Start-Matrix {
     }
 
     $line = $colsMap[$randomCol]
+
+    if ($line -ge $lines) {
+      for ($clearLine = 0; $clearLine -lt $lines; $clearLine++) {
+        Write-Host "`e[$clearLine;${randomCol}H " -NoNewline
+      }
+      $colsMap[$randomCol] = 0
+      $line = 0
+    }
+
     $colsMap[$randomCol]++
 
-    Write-Host "`e[$line;${randomCol}H`e[2;32m$randomChar" -NoNewline
-    Write-Host "`e[$($colsMap[$randomCol]);${randomCol}H`e[1;37m$randomChar`e[0;0H" -NoNewline
+    Write-Host "`e[$line;${randomCol}H`e[1;32m$randomChar" -NoNewline
 
-    if ($colsMap[$randomCol] -ge $lines) {
-      $colsMap[$randomCol] = 0
+    if ($line -gt 0) {
+      Write-Host "`e[$($line-1);${randomCol}H`e[0;32m$randomChar" -NoNewline
     }
+
+    if ($line -gt 1) {
+      Write-Host "`e[$($line-2);${randomCol}H`e[2;32m$randomChar" -NoNewline
+    }
+
+    Write-Host "`e[0;0H" -NoNewline
 
     Start-Sleep -Milliseconds $SleepTime
 
