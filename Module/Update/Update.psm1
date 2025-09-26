@@ -86,7 +86,7 @@ function Update-LocalProfileModuleDirectory {
       [string]$Owner,
       [string]$Repo,
       [string]$Path,
-      [string]$Branch = "develop"
+      [string]$Branch = "main"
     )
 
     $apiUrl = "https://api.github.com/repos/$Owner/$Repo/contents/$Path" + "?ref=$Branch"
