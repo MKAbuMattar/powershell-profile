@@ -232,56 +232,64 @@ function Copy-ModuleDirectory {
     [string]$LocalPath = "$HOME\Documents\PowerShell"
   )
 
-  try {
-    $baseRepoUrl = "https://github.com/MKAbuMattar/powershell-profile"
-    $moduleDirUrl = "$baseRepoUrl/raw/main/Module"
+  function Get-GitHubDirectoryFiles {
+    param(
+      [string]$Owner,
+      [string]$Repo,
+      [string]$Path,
+      [string]$Branch = "main"
+    )
 
+    $apiUrl = "https://api.github.com/repos/$Owner/$Repo/contents/$Path" + "?ref=$Branch"
+
+    try {
+      Write-LogMessage -Message "Exploring directory: $Path"
+      $response = Invoke-RestMethod -Uri $apiUrl -Headers @{"Accept" = "application/vnd.github.v3+json" }
+      $files = @()
+
+      foreach ($item in $response) {
+        if ($item.type -eq "file" -and ($item.name -match "\.(psd1|psm1)$")) {
+          Write-LogMessage -Message "Found PowerShell module file: $($item.path)"
+          $files += @{
+            Path        = $item.path
+            DownloadUrl = $item.download_url
+          }
+        }
+        elseif ($item.type -eq "dir") {
+          Write-LogMessage -Message "Found subdirectory: $($item.path), recursing..."
+          $subFiles = Get-GitHubDirectoryFiles -Owner $Owner -Repo $Repo -Path $item.path -Branch $Branch
+          $files += $subFiles
+        }
+      }
+
+      return $files
+    }
+    catch {
+      Write-LogMessage -Message "Failed to get directory contents for $Path`: $($_.Exception.Message)" -Level "ERROR"
+      return @()
+    }
+  }
+
+  try {
     $localModuleDir = Join-Path -Path $LocalPath -ChildPath "Module"
     if (-not (Test-Path -Path $localModuleDir)) {
       New-Item -Path $localModuleDir -ItemType Directory -Force
       Write-LogMessage -Message "Created directory: $localModuleDir"
     }
 
-    $files = @(
-      "Directory/Directory.psd1",
-      "Directory/Directory.psm1",
-      "Docs/Docs.psd1",
-      "Docs/Docs.psm1",
-      "Environment/Environment.psd1",
-      "Environment/Environment.psm1",
-      "Logging/Logging.psd1",
-      "Logging/Logging.psm1",
-      "Network/Network.psd1",
-      "Network/Network.psm1",
-      "Process/Process.psd1",
-      "Process/Process.psm1",
-      "Process/Plugins/Git/Core/Git-Core.psd1",
-      "Process/Plugins/Git/Core/Git-Core.psm1",
-      "Process/Plugins/Git/Utility/Git-Utility.psd1",
-      "Process/Plugins/Git/Utility/Git-Utility.psm1",
-      "Process/Plugins/Git/Git.psd1",
-      "Process/Plugins/Git/Git.psm1",
-      "Starship/Starship.psd1",
-      "Starship/Starship.psm1",
-      "Update/Update.psd1",
-      "Update/Update.psm1",
-      "Utility/Matrix/Matrix.psd1",
-      "Utility/Matrix/Matrix.psm1",
-      "Utility/PrayerTimes/PrayerTimes.psd1",
-      "Utility/PrayerTimes/PrayerTimes.psm1",
-      "Utility/RandomQuote/RandomQuote.psd1",
-      "Utility/RandomQuote/RandomQuote.psm1",
-      "Utility/Utility/Utility.psd1",
-      "Utility/Utility/Utility.psm1",
-      "Utility/WeatherForecast/WeatherForecast.psd1",
-      "Utility/WeatherForecast/WeatherForecast.psm1",
-      "Utility/Utility.psd1",
-      "Utility/Utility.psm1"
-    )
+    Write-LogMessage -Message "Discovering PowerShell module files from repository (develop branch)..."
+    $moduleFiles = Get-GitHubDirectoryFiles -Owner "MKAbuMattar" -Repo "powershell-profile" -Path "Module" -Branch "develop"
 
-    foreach ($file in $files) {
-      $fileUrl = "$moduleDirUrl/$file"
-      $localFilePath = Join-Path -Path $localModuleDir -ChildPath $file
+    if ($moduleFiles.Count -eq 0) {
+      Write-LogMessage -Message "No PowerShell module files found in the repository." -Level "WARNING"
+      return
+    }
+
+    Write-LogMessage -Message "Found $($moduleFiles.Count) PowerShell module files to copy."
+
+    foreach ($fileInfo in $moduleFiles) {
+      $relativePath = $fileInfo.Path -replace "^Module/", ""
+      $localFilePath = Join-Path -Path $localModuleDir -ChildPath $relativePath
 
       $localFileDir = Split-Path -Path $localFilePath -Parent
       if (-not (Test-Path -Path $localFileDir)) {
@@ -294,12 +302,18 @@ function Copy-ModuleDirectory {
         if (-not (Test-Path -Path $tmpDir)) {
           New-Item -Path $tmpDir -ItemType Directory -Force
         }
-        Get-Item -Path $localFilePath | Move-Item -Destination "$tmpDir\$($file -replace '/', '_').old" -Force
-        Write-LogMessage -Message "Backed up existing file: $localFilePath to $tmpDir\$($file -replace '/', '_').old"
+        $backupName = "$($relativePath -replace '[\\/]', '_').old"
+        Get-Item -Path $localFilePath | Move-Item -Destination "$tmpDir\$backupName" -Force
+        Write-LogMessage -Message "Backed up existing file: $localFilePath to $tmpDir\$backupName"
       }
 
-      Invoke-WebRequest -Uri $fileUrl -OutFile $localFilePath
-      Write-LogMessage -Message "Copied $file to: $localFilePath"
+      try {
+        Invoke-WebRequest -Uri $fileInfo.DownloadUrl -OutFile $localFilePath
+        Write-LogMessage -Message "Copied $relativePath to: $localFilePath"
+      }
+      catch {
+        Write-LogMessage -Message "Failed to download $($fileInfo.Path)`: $($_.Exception.Message)" -Level "ERROR"
+      }
     }
   }
   catch {
