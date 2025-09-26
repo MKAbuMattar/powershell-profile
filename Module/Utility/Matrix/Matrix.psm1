@@ -1,34 +1,34 @@
 function Start-Matrix {
     <#
-  .SYNOPSIS
-    Displays a matrix rain animation in the console.
+    .SYNOPSIS
+        Displays a matrix rain animation in the console.
 
-  .DESCRIPTION
-    This function displays a matrix rain animation in the console. It simulates the falling green characters from the movie "The Matrix". The animation can be stopped by pressing the "Q" key.
+    .DESCRIPTION
+        This function displays a matrix rain animation in the console. It simulates the falling green characters from the movie "The Matrix". The animation can be stopped by pressing the "Q" key.
 
-  .PARAMETER SleepTime
-    Specifies the time in milliseconds to wait between updating the animation. The default value is 1 millisecond.
+    .PARAMETER SleepTime
+        Specifies the time in milliseconds to wait between updating the animation. The default value is 1 millisecond.
 
-  .INPUTS
-    SleepTime: (Optional) The time in milliseconds to wait between updating the animation. The default value is 1 millisecond.
+    .INPUTS
+        SleepTime: (Optional) The time in milliseconds to wait between updating the animation. The default value is 1 millisecond.
 
-  .OUTPUTS
-    This function does not return any output.
+    .OUTPUTS
+        This function does not return any output.
 
-  .NOTES
-    This function is useful for displaying a matrix rain animation in the console.
+    .NOTES
+        This function is useful for displaying a matrix rain animation in the console.
 
-  .EXAMPLE
-    Start-Matrix
-    Displays the matrix rain animation in the console.
+    .EXAMPLE
+        Start-Matrix
+        Displays the matrix rain animation in the console.
 
-  .EXAMPLE
-    Start-Matrix -SleepTime 10
-    Displays the matrix rain animation with a slower update speed.
+    .EXAMPLE
+        Start-Matrix -SleepTime 10
+        Displays the matrix rain animation with a slower update speed.
 
-  .LINK
-    https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
-  #>
+    .LINK
+        https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
+    #>
     [CmdletBinding()]
     [Alias("matrix")]
     [OutputType([void])]
@@ -98,4 +98,3 @@ function Start-Matrix {
         }
     }
 }
-

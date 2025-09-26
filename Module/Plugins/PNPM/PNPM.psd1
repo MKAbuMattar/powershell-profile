@@ -141,7 +141,6 @@
         'README.md'
     )
     PrivateData            = @{
-
         PSData = @{
             Tags                       = @(
                 'PNPM',
@@ -161,9 +160,7 @@
             IconUri                    = ''
             RequireLicenseAcceptance   = $false
             ExternalModuleDependencies = @()
-
         } 
-
     } 
     HelpInfoURI            = 'https://github.com/MKAbuMattar/powershell-profile/blob/main/Module/Plugins/PNPM/README.md'
     DefaultCommandPrefix   = ''

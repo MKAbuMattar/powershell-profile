@@ -84,32 +84,32 @@ else {
 
 function Test-Administrator {
     <#
-  .SYNOPSIS
-    Test if the current user has administrator privileges.
+    .SYNOPSIS
+        Test if the current user has administrator privileges.
 
-  .DESCRIPTION
-    This function checks if the current user has administrator privileges. It returns a boolean value indicating whether the user is an administrator.
+    .DESCRIPTION
+        This function checks if the current user has administrator privileges. It returns a boolean value indicating whether the user is an administrator.
 
-  .PARAMETER None
-    This function does not accept any parameters.
+    .PARAMETER None
+        This function does not accept any parameters.
 
-  .INPUTS
-    This function does not accept any input.
+    .INPUTS
+        This function does not accept any input.
 
-  .OUTPUTS
-    ${true}: If the user has administrator privileges.
-    ${false}: If the user does not have administrator privileges.
+    .OUTPUTS
+        ${true}: If the user has administrator privileges.
+        ${false}: If the user does not have administrator privileges.
 
-  .NOTES
-    This function is useful for determining if the current user has administrator privileges.
+    .NOTES
+        This function is useful for determining if the current user has administrator privileges.
 
-  .EXAMPLE
-    Test-Administrator
-    Checks if the current user has administrator privileges.
+    .EXAMPLE
+        Test-Administrator
+        Checks if the current user has administrator privileges.
 
-  .LINK
-    https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
-  #>
+    .LINK
+        https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
+    #>
     [CmdletBinding()]
     [Alias("is-admin")]
     [OutputType([bool])]
@@ -123,31 +123,31 @@ function Test-Administrator {
 
 function Test-CommandExists {
     <#
-  .SYNOPSIS
-    Checks if a command exists in the current environment.
+    .SYNOPSIS
+        Checks if a command exists in the current environment.
 
-  .DESCRIPTION
-    This function checks whether a specified command exists in the current PowerShell environment. It returns a boolean value indicating whether the command is available.
+    .DESCRIPTION
+        This function checks whether a specified command exists in the current PowerShell environment. It returns a boolean value indicating whether the command is available.
 
-  .PARAMETER Command
-    Specifies the command to check for existence.
+    .PARAMETER Command
+        Specifies the command to check for existence.
 
-  .INPUTS
-    Command: (Required) The command to check for existence.
+    .INPUTS
+        Command: (Required) The command to check for existence.
 
-  .OUTPUTS
-    ${exists}: True if the command exists, false otherwise.
+    .OUTPUTS
+        ${exists}: True if the command exists, false otherwise.
 
-  .NOTES
-    This function is useful for verifying the availability of commands in the current environment.
+    .NOTES
+        This function is useful for verifying the availability of commands in the current environment.
 
-  .EXAMPLE
-    Test-CommandExists "ls"
-    Checks if the "ls" command exists in the current environment.
+    .EXAMPLE
+        Test-CommandExists "ls"
+        Checks if the "ls" command exists in the current environment.
 
-  .LINK
-    https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
-  #>
+    .LINK
+        https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
+    #>
     [CmdletBinding()]
     [Alias("command-exists")]
     [OutputType([bool])]
@@ -169,31 +169,31 @@ function Test-CommandExists {
 
 function Invoke-ReloadProfile {
     <#
-  .SYNOPSIS
-    Reloads the PowerShell profile to apply changes.
+    .SYNOPSIS
+        Reloads the PowerShell profile to apply changes.
 
-  .DESCRIPTION
-    This function reloads the current PowerShell profile to apply any changes made to it. It is useful for immediately applying modifications to the profile without restarting the shell.
+    .DESCRIPTION
+        This function reloads the current PowerShell profile to apply any changes made to it. It is useful for immediately applying modifications to the profile without restarting the shell.
 
-  .PARAMETER None
-    This function does not accept any parameters.
+    .PARAMETER None
+        This function does not accept any parameters.
 
-  .INPUTS
-    This function does not accept any input.
+    .INPUTS
+        This function does not accept any input.
 
-  .OUTPUTS
-    This function does not return any output.
+    .OUTPUTS
+        This function does not return any output.
 
-  .NOTES
-    This function is useful for quickly reloading the PowerShell profile to apply changes without restarting the shell.
+    .NOTES
+        This function is useful for quickly reloading the PowerShell profile to apply changes without restarting the shell.
 
-  .EXAMPLE
-    Invoke-ProfileReload
-    Reloads the PowerShell profile.
+    .EXAMPLE
+        Invoke-ProfileReload
+        Reloads the PowerShell profile.
 
-  .LINK
-    https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
-  #>
+    .LINK
+        https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
+    #>
     [CmdletBinding()]
     [Alias("reload-profile")]
     [OutputType([void])]
@@ -212,31 +212,31 @@ function Invoke-ReloadProfile {
 
 function Get-Uptime {
     <#
-  .SYNOPSIS
-    Retrieves the system uptime in a human-readable format.
+    .SYNOPSIS
+        Retrieves the system uptime in a human-readable format.
 
-  .DESCRIPTION
-    This function retrieves the system uptime in a human-readable format. It provides information about how long the system has been running since the last boot.
+    .DESCRIPTION
+        This function retrieves the system uptime in a human-readable format. It provides information about how long the system has been running since the last boot.
 
-  .PARAMETER None
-    This function does not accept any parameters.
+    .PARAMETER None
+        This function does not accept any parameters.
 
-  .INPUTS
-    This function does not accept any input.
+    .INPUTS
+        This function does not accept any input.
 
-  .OUTPUTS
-    The system uptime in a human-readable format.
+    .OUTPUTS
+        The system uptime in a human-readable format.
 
-  .NOTES
-    This function is useful for checking how long the system has been running since the last boot.
+    .NOTES
+        This function is useful for checking how long the system has been running since the last boot.
 
-  .EXAMPLE
-    Get-Uptime
-    Retrieves the system uptime.
+    .EXAMPLE
+        Get-Uptime
+        Retrieves the system uptime.
 
-  .LINK
-    https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
-  #>
+    .LINK
+        https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
+    #>
     [CmdletBinding()]
     [Alias("uptime")]
     [OutputType([void])]
@@ -297,31 +297,31 @@ function Get-Uptime {
 
 function Get-CommandDefinition {
     <#
-  .SYNOPSIS
-    Gets the definition of a command.
+    .SYNOPSIS
+        Gets the definition of a command.
 
-  .DESCRIPTION
-    This function retrieves the definition of a specified command. It is useful for understanding the functionality and usage of PowerShell cmdlets and functions.
+    .DESCRIPTION
+        This function retrieves the definition of a specified command. It is useful for understanding the functionality and usage of PowerShell cmdlets and functions.
 
-  .PARAMETER Name
-    Specifies the name of the command to retrieve the definition for.
+    .PARAMETER Name
+        Specifies the name of the command to retrieve the definition for.
 
-  .INPUTS
-    Name: (Required) The name of the command to retrieve the definition for.
+    .INPUTS
+        Name: (Required) The name of the command to retrieve the definition for.
 
-  .OUTPUTS
-    The definition of the specified command.
+    .OUTPUTS
+        The definition of the specified command.
 
-  .NOTES
-    This function is useful for quickly retrieving the definition of a command.
+    .NOTES
+        This function is useful for quickly retrieving the definition of a command.
 
-  .EXAMPLE
-    Get-CommandDefinition "ls"
-    Retrieves the definition of the "ls" command.
+    .EXAMPLE
+        Get-CommandDefinition "ls"
+        Retrieves the definition of the "ls" command.
 
-  .LINK
-    https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
-  #>
+    .LINK
+        https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
+    #>
     [CmdletBinding()]
     [Alias("def")]
     [OutputType([string])]
@@ -353,55 +353,55 @@ function Get-CommandDefinition {
 
 function Start-Countdown {
     <#
-  .SYNOPSIS
-    Starts a countdown timer.
+    .SYNOPSIS
+        Starts a countdown timer.
 
-  .DESCRIPTION
-    This function starts a countdown timer with the specified duration. It displays the remaining time in a large font using the FIGlet utility. The countdown can be paused and resumed by pressing the "P" key. The countdown can be stopped by pressing the "Q" key.
+    .DESCRIPTION
+        This function starts a countdown timer with the specified duration. It displays the remaining time in a large font using the FIGlet utility. The countdown can be paused and resumed by pressing the "P" key. The countdown can be stopped by pressing the "Q" key.
 
-  .PARAMETER Duration
-    Specifies the duration of the countdown in seconds or in the format "HH:mm" or "HH:mmAM/PM".
+    .PARAMETER Duration
+        Specifies the duration of the countdown in seconds or in the format "HH:mm" or "HH:mmAM/PM".
 
-  .PARAMETER CountUp
-    Indicates whether the countdown should count up instead of down.
+    .PARAMETER CountUp
+        Indicates whether the countdown should count up instead of down.
 
-  .PARAMETER Title
-    Specifies the title to display above the countdown timer.
+    .PARAMETER Title
+        Specifies the title to display above the countdown timer.
 
-  .INPUTS
-    Duration: (Required) The duration of the countdown in seconds or in the format "HH:mm" or "HH:mmAM/PM".
-    CountUp: (Optional) Indicates whether the countdown should count up instead of down. The default value is $false.
-    Title: (Optional) The title to display above the countdown timer. The default value is an empty string.
+    .INPUTS
+        Duration: (Required) The duration of the countdown in seconds or in the format "HH:mm" or "HH:mmAM/PM".
+        CountUp: (Optional) Indicates whether the countdown should count up instead of down. The default value is $false.
+        Title: (Optional) The title to display above the countdown timer. The default value is an empty string.
 
-  .OUTPUTS
-    This function does not return any output.
+    .OUTPUTS
+        This function does not return any output.
 
-  .NOTES
-    This function is useful for starting countdown timers with a visual display.
+    .NOTES
+        This function is useful for starting countdown timers with a visual display.
 
-  .EXAMPLE
-    Start-Countdown -Duration "25s" -Title "Break Time"
-    Starts a 25-second countdown with the title "Break Time".
+    .EXAMPLE
+        Start-Countdown -Duration "25s" -Title "Break Time"
+        Starts a 25-second countdown with the title "Break Time".
 
-  .EXAMPLE
-    Start-Countdown -Duration "5m" -Title "Meeting"
-    Starts a 5-minute countdown with the title "Meeting".
+    .EXAMPLE
+        Start-Countdown -Duration "5m" -Title "Meeting"
+        Starts a 5-minute countdown with the title "Meeting".
 
-  .EXAMPLE
-    Start-Countdown -Duration "1h" -Title "Workout"
-    Starts a 1-hour countdown with the title "Workout".
+    .EXAMPLE
+        Start-Countdown -Duration "1h" -Title "Workout"
+        Starts a 1-hour countdown with the title "Workout".
 
-  .EXAMPLE
-    Start-Countdown -Duration "02:15PM" -Title "Lunch Time"
-    Starts a countdown until 2:15 PM with the title "Lunch Time".
+    .EXAMPLE
+        Start-Countdown -Duration "02:15PM" -Title "Lunch Time"
+        Starts a countdown until 2:15 PM with the title "Lunch Time".
 
-  .EXAMPLE
-    Start-Countdown -Duration "02:15PM" -Title "Lunch Time" -CountUp
-    Starts a count-up timer from 00:00:00 until 2:15 PM with the title "Lunch Time".
+    .EXAMPLE
+        Start-Countdown -Duration "02:15PM" -Title "Lunch Time" -CountUp
+        Starts a count-up timer from 00:00:00 until 2:15 PM with the title "Lunch Time".
 
-  .LINK
-    https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
-  #>
+    .LINK
+        https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
+    #>
     [CmdletBinding()]
     [Alias("countdown")]
     [OutputType([void])]
@@ -509,35 +509,35 @@ function Start-Countdown {
 
 function Start-StopWatch {
     <#
-  .SYNOPSIS
-    Starts a stopwatch.
+    .SYNOPSIS
+        Starts a stopwatch.
 
-  .DESCRIPTION
-    This function starts a stopwatch that displays the elapsed time in a large font using the FIGlet utility. The stopwatch can be paused and resumed by pressing the "P" key. The stopwatch can be stopped by pressing the "Q" key.
+    .DESCRIPTION
+        This function starts a stopwatch that displays the elapsed time in a large font using the FIGlet utility. The stopwatch can be paused and resumed by pressing the "P" key. The stopwatch can be stopped by pressing the "Q" key.
 
-  .PARAMETER Title
-    Specifies the title to display above the stopwatch.
+    .PARAMETER Title
+        Specifies the title to display above the stopwatch.
 
-  .INPUTS
-    Title: (Optional) The title to display above the stopwatch. The default value is an empty string.
+    .INPUTS
+        Title: (Optional) The title to display above the stopwatch. The default value is an empty string.
 
-  .OUTPUTS
-    This function does not return any output.
+    .OUTPUTS
+        This function does not return any output.
 
-  .NOTES
-    This function is useful for starting a stopwatch with a visual display.
+    .NOTES
+        This function is useful for starting a stopwatch with a visual display.
 
-  .EXAMPLE
-    Start-Stopwatch
-    Starts a stopwatch with no title.
+    .EXAMPLE
+        Start-Stopwatch
+        Starts a stopwatch with no title.
 
-  .EXAMPLE
-    Start-Stopwatch -Title "Workout"
-    Starts a stopwatch with the title "Workout".
+    .EXAMPLE
+        Start-Stopwatch -Title "Workout"
+        Starts a stopwatch with the title "Workout".
 
-  .LINK
-    https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
-  #>
+    .LINK
+        https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
+    #>
     [CmdletBinding()]
     [Alias("stopwatch")]
     [OutputType([void])]
@@ -607,46 +607,46 @@ function Start-StopWatch {
 
 function Get-WallClock {
     <#
-  .SYNOPSIS
-    Displays the current time in a large font using the FIGlet utility.
+    .SYNOPSIS
+        Displays the current time in a large font using the FIGlet utility.
 
-  .DESCRIPTION
-    This function displays the current time in a large font using the FIGlet utility. The time is updated every second.
+    .DESCRIPTION
+        This function displays the current time in a large font using the FIGlet utility. The time is updated every second.
 
-  .PARAMETER Title
-    Specifies the title to display above the clock.
+    .PARAMETER Title
+        Specifies the title to display above the clock.
 
-  .PARAMETER Use24HourFormat
-    Indicates whether to display the time in 24-hour format. If not specified, the time is displayed in 12-hour format.
+    .PARAMETER Use24HourFormat
+        Indicates whether to display the time in 24-hour format. If not specified, the time is displayed in 12-hour format.
 
-  .PARAMETER TimeZone
-    Specifies the time zone to display the time in. If not specified, the local time zone is used.
+    .PARAMETER TimeZone
+        Specifies the time zone to display the time in. If not specified, the local time zone is used.
 
-  .INPUTS
-    Title: (Optional) The title to display above the clock. The default value is an empty string.
-    TimeZone: (Optional) The time zone to display the time in. The default value is "Local".
+    .INPUTS
+        Title: (Optional) The title to display above the clock. The default value is an empty string.
+        TimeZone: (Optional) The time zone to display the time in. The default value is "Local".
 
-  .OUTPUTS
-    This function does not return any output.
+    .OUTPUTS
+        This function does not return any output.
 
-  .NOTES
-    This function is useful for displaying the current time in a visual format.
+    .NOTES
+        This function is useful for displaying the current time in a visual format.
 
-  .EXAMPLE
-    Get-WallClock -Title "Current Time"
-    Displays the current time with the title "Current Time".
+    .EXAMPLE
+        Get-WallClock -Title "Current Time"
+        Displays the current time with the title "Current Time".
 
-  .EXAMPLE
-    Get-WallClock -Title "Current Time" -Use24HourFormat
-    Displays the current time in 24-hour format with the title "Current Time".
+    .EXAMPLE
+        Get-WallClock -Title "Current Time" -Use24HourFormat
+        Displays the current time in 24-hour format with the title "Current Time".
 
-  .EXAMPLE
-    Get-WallClock -Title "Current Time" -TimeZone "UTC"
-    Displays the current time in UTC with the title "Current Time".
+    .EXAMPLE
+        Get-WallClock -Title "Current Time" -TimeZone "UTC"
+        Displays the current time in UTC with the title "Current Time".
 
-  .LINK
-    https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
-  #>
+    .LINK
+        https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
+    #>
     [CmdletBinding()]
     [Alias("wallclock")]
     [OutputType([void])]
@@ -721,64 +721,64 @@ function Get-WallClock {
 
 function Get-DiskUsage {
     <#
-  .SYNOPSIS
-    Gets the disk usage for specified paths.
+    .SYNOPSIS
+        Gets the disk usage for specified paths.
 
-  .DESCRIPTION
-    This function retrieves the disk usage for specified paths, displaying the size of each item in a human-readable format. It can also sort the results by name or size.
+    .DESCRIPTION
+        This function retrieves the disk usage for specified paths, displaying the size of each item in a human-readable format. It can also sort the results by name or size.
 
-  .PARAMETER Path
-    Specifies the paths to get the disk usage for. If not specified, the current directory is used.
+    .PARAMETER Path
+        Specifies the paths to get the disk usage for. If not specified, the current directory is used.
 
-  .PARAMETER HumanReadable
-    Indicates whether to display the sizes in a human-readable format (e.g., KB, MB, GB). The default value is $true.
+    .PARAMETER HumanReadable
+        Indicates whether to display the sizes in a human-readable format (e.g., KB, MB, GB). The default value is $true.
 
-  .PARAMETER Sort
-    Indicates whether to sort the results. The default value is $false.
+    .PARAMETER Sort
+        Indicates whether to sort the results. The default value is $false.
 
-  .PARAMETER SortBy
-    Specifies the property to sort by. The default value is "Size". Valid values are "Name" and "Size".
+    .PARAMETER SortBy
+        Specifies the property to sort by. The default value is "Size". Valid values are "Name" and "Size".
 
-  .INPUTS
-    Path: (Optional) The paths to get the disk usage for. If not specified, the current directory is used.
-    HumanReadable: (Optional) Indicates whether to display the sizes in a human-readable format. The default value is $true.
-    Sort: (Optional) Indicates whether to sort the results. The default value is $false.
-    SortBy: (Optional) Specifies the property to sort by. The default value is "Size". Valid values are "Name" and "Size".
+    .INPUTS
+        Path: (Optional) The paths to get the disk usage for. If not specified, the current directory is used.
+        HumanReadable: (Optional) Indicates whether to display the sizes in a human-readable format. The default value is $true.
+        Sort: (Optional) Indicates whether to sort the results. The default value is $false.
+        SortBy: (Optional) Specifies the property to sort by. The default value is "Size". Valid values are "Name" and "Size".
 
-  .OUTPUTS
-    This function returns a formatted output of the disk usage for the specified paths.
+    .OUTPUTS
+        This function returns a formatted output of the disk usage for the specified paths.
 
-  .NOTES
-    This function is useful for checking the disk usage of directories and files in a specified path.
+    .NOTES
+        This function is useful for checking the disk usage of directories and files in a specified path.
 
-  .EXAMPLE
-    Get-DiskUsage
-    Gets the disk usage for the current directory and displays the sizes in a human-readable format.
+    .EXAMPLE
+        Get-DiskUsage
+        Gets the disk usage for the current directory and displays the sizes in a human-readable format.
 
-  .EXAMPLE
-    Get-DiskUsage -Path "C:\Users\Username\Documents"
-    Gets the disk usage for the specified path and displays the sizes in a human-readable format.
+    .EXAMPLE
+        Get-DiskUsage -Path "C:\Users\Username\Documents"
+        Gets the disk usage for the specified path and displays the sizes in a human-readable format.
 
-  .EXAMPLE
-    Get-DiskUsage -Path "C:\Users\Username\Documents" -HumanReadable:$false
-    Gets the disk usage for the specified path and displays the sizes in bytes.
+    .EXAMPLE
+        Get-DiskUsage -Path "C:\Users\Username\Documents" -HumanReadable:$false
+        Gets the disk usage for the specified path and displays the sizes in bytes.
 
-  .EXAMPLE
-    Get-DiskUsage -Path "C:\Users\Username\Documents" -Sort -SortBy "Name"
-    Gets the disk usage for the specified path, sorts the results by name, and displays the sizes in a human-readable format.
+    .EXAMPLE
+        Get-DiskUsage -Path "C:\Users\Username\Documents" -Sort -SortBy "Name"
+        Gets the disk usage for the specified path, sorts the results by name, and displays the sizes in a human-readable format.
 
-  .EXAMPLE
-    Get-DiskUsage -Path "C:\Users\Username\Documents" -Sort -SortBy "Size"
-    Gets the disk usage for the specified path, sorts the results by size, and displays the sizes in a human-readable format.
+    .EXAMPLE
+        Get-DiskUsage -Path "C:\Users\Username\Documents" -Sort -SortBy "Size"
+        Gets the disk usage for the specified path, sorts the results by size, and displays the sizes in a human-readable format.
 
-  .LINK
-    https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
-  #>
+    .LINK
+        https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
+    #>
     [CmdletBinding()]
     [Alias('du')]
     param(
         [Parameter(
-            Mandatory = $true,
+            Mandatory = $false,
             Position = 0,
             ValueFromPipeline = $true,
             ValueFromPipelineByPropertyName = $true,

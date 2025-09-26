@@ -34,4 +34,3 @@
     HelpInfoURI          = 'https://github.com/MKAbuMattar/powershell-profile/blob/main/Module/Utility/PrayerTimes/README.md'
     DefaultCommandPrefix = ''
 }
-

@@ -1,30 +1,30 @@
 function Read-FigletFont {
     <#
-  .SYNOPSIS
-    Read the contents of a FIGlet font file.
+    .SYNOPSIS
+        Read the contents of a FIGlet font file.
 
-  .DESCRIPTION
-    This function reads the contents of a FIGlet font file and extracts the font data. It returns the font data as a hashtable, which can be used to convert text to ASCII art using the specified font.
+    .DESCRIPTION
+        This function reads the contents of a FIGlet font file and extracts the font data. It returns the font data as a hashtable, which can be used to convert text to ASCII art using the specified font.
 
-  .PARAMETER FontPath
-    Specifies the path to the FIGlet font file to read.
+    .PARAMETER FontPath
+        Specifies the path to the FIGlet font file to read.
 
-  .INPUTS
-    FontPath: (Required) The path to the FIGlet font file to read.
+    .INPUTS
+        FontPath: (Required) The path to the FIGlet font file to read.
 
-  .OUTPUTS
-    The font data extracted from the FIGlet font file.
+    .OUTPUTS
+        The font data extracted from the FIGlet font file.
 
-  .NOTES
-    This function is useful for reading FIGlet font files to extract font data for ASCII art conversion.
+    .NOTES
+        This function is useful for reading FIGlet font files to extract font data for ASCII art conversion.
 
-  .EXAMPLE
-    Read-FigletFont -FontPath "font.flf"
-    Reads the contents of the FIGlet font file "font.flf" and extracts the font data.
+    .EXAMPLE
+        Read-FigletFont -FontPath "font.flf"
+        Reads the contents of the FIGlet font file "font.flf" and extracts the font data.
 
-  .LINK
-    https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
-  #>
+    .LINK
+        https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
+    #>
     [CmdletBinding()]
     [OutputType([hashtable])]
     param (
@@ -75,35 +75,35 @@ function Read-FigletFont {
 
 function Convert-TextToAscii {
     <#
-  .SYNOPSIS
-    Converts text to ASCII art using a specified FIGlet font.
+    .SYNOPSIS
+        Converts text to ASCII art using a specified FIGlet font.
 
-  .DESCRIPTION
-    This function converts the specified text to ASCII art using the provided FIGlet font data. It returns the ASCII art representation of the text.
+    .DESCRIPTION
+        This function converts the specified text to ASCII art using the provided FIGlet font data. It returns the ASCII art representation of the text.
 
-  .PARAMETER Text
-    Specifies the text to convert to ASCII art.
+    .PARAMETER Text
+        Specifies the text to convert to ASCII art.
 
-  .PARAMETER Font
-    Specifies the FIGlet font data extracted from a font file.
+    .PARAMETER Font
+        Specifies the FIGlet font data extracted from a font file.
 
-  .INPUTS
-    Text: (Required) The text to convert to ASCII art.
-    Font: (Required) The FIGlet font data extracted from a font file.
+    .INPUTS
+        Text: (Required) The text to convert to ASCII art.
+        Font: (Required) The FIGlet font data extracted from a font file.
 
-  .OUTPUTS
-    The ASCII art representation of the text using the specified font.
+    .OUTPUTS
+        The ASCII art representation of the text using the specified font.
 
-  .NOTES
-    This function is useful for converting text to ASCII art using FIGlet fonts.
+    .NOTES
+        This function is useful for converting text to ASCII art using FIGlet fonts.
 
-  .EXAMPLE
-    Convert-TextToAscii -Text "Hello" -Font $fontData
-    Converts the text "Hello" to ASCII art using the specified font data.
+    .EXAMPLE
+        Convert-TextToAscii -Text "Hello" -Font $fontData
+        Converts the text "Hello" to ASCII art using the specified font data.
 
-  .LINK
-    https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
-  #>
+    .LINK
+        https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
+    #>
     [CmdletBinding()]
     [OutputType([string])]
     param (
@@ -152,31 +152,31 @@ function Convert-TextToAscii {
 
 function Get-ParseTime {
     <#
-  .SYNOPSIS
-    Parses a time string into a DateTime object.
+    .SYNOPSIS
+        Parses a time string into a DateTime object.
 
-  .DESCRIPTION
-    This function parses a time string into a DateTime object. It supports parsing time strings in the format "HH:mm" or "HH:mmAM/PM".
+    .DESCRIPTION
+        This function parses a time string into a DateTime object. It supports parsing time strings in the format "HH:mm" or "HH:mmAM/PM".
 
-  .PARAMETER TimeString
-    Specifies the time string to parse.
+    .PARAMETER TimeString
+        Specifies the time string to parse.
 
-  .INPUTS
-    TimeString: (Required) The time string to parse. The time string should be in the format "HH:mm" or "HH:mmAM/PM".
+    .INPUTS
+        TimeString: (Required) The time string to parse. The time string should be in the format "HH:mm" or "HH:mmAM/PM".
 
-  .OUTPUTS
-    The DateTime object representing the parsed time.
+    .OUTPUTS
+        The DateTime object representing the parsed time.
 
-  .NOTES
-    This function is useful for parsing time strings into DateTime objects.
+    .NOTES
+        This function is useful for parsing time strings into DateTime objects.
 
-  .EXAMPLE
-    Get-ParseTime -TimeString "12:30PM"
-    Parses the time string "12:30PM" into a DateTime object.
+    .EXAMPLE
+        Get-ParseTime -TimeString "12:30PM"
+        Parses the time string "12:30PM" into a DateTime object.
 
-  .LINK
-    https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
-  #>
+    .LINK
+        https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
+    #>
     [CmdletBinding()]
     [OutputType([datetime])]
     param (
@@ -208,45 +208,45 @@ function Get-ParseTime {
 
 function Format-ConvertSize {
     <#
-  .SYNOPSIS
-    Formats a numeric value into a human-readable string using scaling units.
+    .SYNOPSIS
+        Formats a numeric value into a human-readable string using scaling units.
 
-  .DESCRIPTION
-    This function formats a numeric value into a human-readable format, using a customizable set of units and a scale factor. It is useful for formatting values like file sizes, data rates, durations, etc.
+    .DESCRIPTION
+        This function formats a numeric value into a human-readable format, using a customizable set of units and a scale factor. It is useful for formatting values like file sizes, data rates, durations, etc.
 
-  .PARAMETER Value
-    The numeric value to format. This parameter is mandatory.
+    .PARAMETER Value
+        The numeric value to format. This parameter is mandatory.
 
-  .PARAMETER Units
-    An array of units to use for formatting. Defaults to bytes-based units: Bytes, KB, MB, GB, TB, PB, EB.
+    .PARAMETER Units
+        An array of units to use for formatting. Defaults to bytes-based units: Bytes, KB, MB, GB, TB, PB, EB.
 
-  .PARAMETER Scale
-    The factor used to scale the value between units. Defaults to 1024.
+    .PARAMETER Scale
+        The factor used to scale the value between units. Defaults to 1024.
 
-  .PARAMETER DecimalPlaces
-    The number of decimal places to include in the output. Default is 1.
+    .PARAMETER DecimalPlaces
+        The number of decimal places to include in the output. Default is 1.
 
-  .INPUTS
-    int/long/double.
+    .INPUTS
+        int/long/double.
 
-  .OUTPUTS
-    string: Human-readable formatted value with appropriate unit.
+    .OUTPUTS
+        string: Human-readable formatted value with appropriate unit.
 
-  .EXAMPLE
-    Format-ConvertSize -Value 1048576
-    Returns: "1.0 MB"
+    .EXAMPLE
+        Format-ConvertSize -Value 1048576
+        Returns: "1.0 MB"
 
-  .EXAMPLE
-    Format-ConvertSize -Value 1250000 -Scale 1000 -Units @("bps", "Kbps", "Mbps", "Gbps")
-    Returns: "1.3 Mbps"
+    .EXAMPLE
+        Format-ConvertSize -Value 1250000 -Scale 1000 -Units @("bps", "Kbps", "Mbps", "Gbps")
+        Returns: "1.3 Mbps"
 
-  .EXAMPLE
-    Format-ConvertSize -Value -1
-    Returns: "N/A"
+    .EXAMPLE
+        Format-ConvertSize -Value -1
+        Returns: "N/A"
 
-  .LINK
-    https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
-  #>
+    .LINK
+        https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
+    #>
     [CmdletBinding()]
     param (
         [Parameter(
@@ -313,4 +313,3 @@ function Format-ConvertSize {
     $formatted = $scaledValue.ToString("F$currentDecimalPlaces")
     return "$formatted $($Units[$tier])"
 }
-

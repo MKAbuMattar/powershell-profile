@@ -1,46 +1,46 @@
 function Get-PrayerTimes {
     <#
-  .SYNOPSIS
-    Gets the current prayer times for a specified city and country.
+    .SYNOPSIS
+        Gets the current prayer times for a specified city and country.
 
-  .DESCRIPTION
-    This function retrieves the current prayer times for a specified city and country using the AlAdhan API. It displays the prayer times in 12-hour or 24-hour format, along with the current prayer and the time remaining until the next prayer.
+    .DESCRIPTION
+        This function retrieves the current prayer times for a specified city and country using the AlAdhan API. It displays the prayer times in 12-hour or 24-hour format, along with the current prayer and the time remaining until the next prayer.
 
-  .PARAMETER City
-    Specifies the city to get the prayer times for.
+    .PARAMETER City
+        Specifies the city to get the prayer times for.
 
-  .PARAMETER Country
-    Specifies the country to get the prayer times for.
+    .PARAMETER Country
+        Specifies the country to get the prayer times for.
 
-  .PARAMETER Method
-    Specifies the calculation method to use for the prayer times. The default value is 1.
+    .PARAMETER Method
+        Specifies the calculation method to use for the prayer times. The default value is 1.
 
-  .PARAMETER Use24HourFormat
-    Indicates whether to display the prayer times in 24-hour format. The default value is $false.
+    .PARAMETER Use24HourFormat
+        Indicates whether to display the prayer times in 24-hour format. The default value is $false.
 
-  .INPUTS
-    City: (Required) The city to get the prayer times for.
-    Country: (Required) The country to get the prayer times for.
-    Method: (Optional) The calculation method to use for the prayer times. The default value is 1.
-    Use24HourFormat: (Optional) Indicates whether to display the prayer times in 24-hour format. The default value is $false.
+    .INPUTS
+        City: (Required) The city to get the prayer times for.
+        Country: (Required) The country to get the prayer times for.
+        Method: (Optional) The calculation method to use for the prayer times. The default value is 1.
+        Use24HourFormat: (Optional) Indicates whether to display the prayer times in 24-hour format. The default value is $false.
 
-  .OUTPUTS
-    This function does not return any output.
+    .OUTPUTS
+        This function does not return any output.
 
-  .NOTES
-    This function is useful for retrieving and displaying the current prayer times in the PowerShell console.
+    .NOTES
+        This function is useful for retrieving and displaying the current prayer times in the PowerShell console.
 
-  .EXAMPLE
-    Get-PrayerTimes -City "Amman" -Country "Jordan"
-    Retrieves the current prayer times for Amman, Jordan.
+    .EXAMPLE
+        Get-PrayerTimes -City "Amman" -Country "Jordan"
+        Retrieves the current prayer times for Amman, Jordan.
 
-  .EXAMPLE
-    Get-PrayerTimes -City "New York" -Country "USA" -Method 2 -Use24HourFormat
-    Retrieves the current prayer times for New York, USA using calculation method 2 and displays the times in 24-hour format.
+    .EXAMPLE
+        Get-PrayerTimes -City "New York" -Country "USA" -Method 2 -Use24HourFormat
+        Retrieves the current prayer times for New York, USA using calculation method 2 and displays the times in 24-hour format.
 
-  .LINK
-    https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
-  #>
+    .LINK
+        https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
+    #>
     [CmdletBinding()]
     [Alias("prayer")]
     [OutputType([void])]
@@ -162,4 +162,3 @@ function Get-PrayerTimes {
         Write-Host "Error fetching prayer times. Please check your city and country name." -ForegroundColor Red
     }
 }
-
