@@ -1,5 +1,5 @@
 @{
-    RootModule           = 'Git-Utility.psm1'
+    RootModule           = 'Utility.psm1'
     ModuleVersion        = '4.1.0'
     CompatiblePSEditions = @(
         'Desktop',
