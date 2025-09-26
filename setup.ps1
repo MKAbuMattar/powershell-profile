@@ -250,9 +250,14 @@ function Copy-ModuleDirectory {
       foreach ($item in $response) {
         if ($item.type -eq "file" -and ($item.name -match "\.(psd1|psm1)$")) {
           Write-LogMessage -Message "Found PowerShell module file: $($item.path)"
-          $files += @{
-            Path        = $item.path
-            DownloadUrl = $item.download_url
+          if ($item.download_url) {
+            $files += @{
+              Path        = $item.path
+              DownloadUrl = $item.download_url
+            }
+          }
+          else {
+            Write-LogMessage -Message "Warning: No download URL for file $($item.path)" -Level "WARNING"
           }
         }
         elseif ($item.type -eq "dir") {
@@ -277,8 +282,8 @@ function Copy-ModuleDirectory {
       Write-LogMessage -Message "Created directory: $localModuleDir"
     }
 
-    Write-LogMessage -Message "Discovering PowerShell module files from repository (develop branch)..."
-    $moduleFiles = Get-GitHubDirectoryFiles -Owner "MKAbuMattar" -Repo "powershell-profile" -Path "Module" -Branch "develop"
+    Write-LogMessage -Message "Discovering PowerShell module files from repository (main branch)..."
+    $moduleFiles = Get-GitHubDirectoryFiles -Owner "MKAbuMattar" -Repo "powershell-profile" -Path "Module" -Branch "main"
 
     if ($moduleFiles.Count -eq 0) {
       Write-LogMessage -Message "No PowerShell module files found in the repository." -Level "WARNING"
