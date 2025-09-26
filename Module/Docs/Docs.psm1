@@ -48,10 +48,10 @@ function Show-ProfileHelp {
     The PowerShell Profile Helper module provides a set of utility functions to help manage the PowerShell profile and perform common tasks in the console. The module includes functions for finding files, creating and updating files, extracting files, compressing files, searching for content in files, replacing content in files, moving up directory levels, updating the module directory, updating the profile, updating PowerShell, checking for command existence, reloading the profile, getting system uptime, getting command definitions, setting environment variables, getting environment variables, getting all processes, finding processes by name, finding processes by port, stopping processes by name, stopping processes by port, getting random quotes, getting weather forecasts, starting countdown timers, starting stopwatches, displaying the wall clock, displaying a matrix rain animation, and more. The `Show-ProfileHelp` function displays detailed help documentation for each section of the module.
 
   .PARAMETER Section
-    Specifies the section of the documentation to display. Valid values are 'All', 'Directory', 'Docs', 'Environment', 'Git', 'Logging', 'Network', 'Plugins', 'Process', 'Starship', 'Update', and 'Utility'. The default value is 'All'.
+    Specifies the section of the documentation to display. Valid values are 'All', 'AWS', 'Directory', 'Docker', 'Docs', 'Environment', 'Git', 'Logging', 'Network', 'Plugins', 'Process', 'Starship', 'Update', and 'Utility'. The default value is 'All'.
 
   .INPUTS
-    Section: (Optional) Specifies the section of the documentation to display. Valid values are 'All', 'Directory', 'Docs', 'Environment', 'Git', 'Logging', 'Network', 'Plugins', 'Process', 'Starship', 'Update', and 'Utility'. The default value is 'All'.
+    Section: (Optional) Specifies the section of the documentation to display. Valid values are 'All', 'AWS', 'Directory', 'Docker', 'Docs', 'Environment', 'Git', 'Logging', 'Network', 'Plugins', 'Process', 'Starship', 'Update', and 'Utility'. The default value is 'All'.
 
   .OUTPUTS
     This module does not return any output.
@@ -66,6 +66,14 @@ function Show-ProfileHelp {
   .EXAMPLE
     Show-ProfileHelp -Section 'Directory'
     Displays the help documentation for the Directory section of the PowerShell Profile Helper module.
+
+  .EXAMPLE
+    Show-ProfileHelp -Section 'AWS'
+    Displays the help documentation for the AWS plugin with all available AWS aliases and commands.
+
+  .EXAMPLE
+    Show-ProfileHelp -Section 'Docker'
+    Displays the help documentation for the Docker plugin with all available Docker aliases and commands.
 
   .EXAMPLE
     Show-ProfileHelp -Section 'Git'
@@ -91,7 +99,9 @@ function Show-ProfileHelp {
     )]
     [ValidateSet(
       'All',
+      'AWS',
       'Directory',
+      'Docker',
       'Docs',
       'Environment',
       'Git',
@@ -282,9 +292,11 @@ $($PSStyle.Foreground.Yellow)Plugins Module$($PSStyle.Reset)
     Each plugin provides specialized commands and aliases for specific tools or workflows.
 
     Available Plugins:
+        $($PSStyle.Foreground.Cyan)AWS Plugin$($PSStyle.Reset) - Comprehensive AWS CLI integration with profile management and MFA support (12 commands)
+        $($PSStyle.Foreground.Cyan)Docker Plugin$($PSStyle.Reset) - Complete Docker CLI integration with PowerShell aliases (37 commands)
         $($PSStyle.Foreground.Cyan)Git Plugin$($PSStyle.Reset) - Comprehensive Git aliases and shortcuts (160+ commands)
 
-    Use 'Show-ProfileHelp -Section Git' to view specific plugin documentation.
+    Use 'Show-ProfileHelp -Section AWS', 'Show-ProfileHelp -Section Docker', or 'Show-ProfileHelp -Section Git' to view specific plugin documentation.
 "@
 
   $PluginsGit = @"
@@ -392,6 +404,114 @@ $($PSStyle.Foreground.Yellow)Plugins Module - Git Plugin$($PSStyle.Reset)
     Over 160+ Git aliases available - see full documentation for complete list.
 "@
 
+  $PluginsAWS = @"
+$($PSStyle.Foreground.Yellow)Plugins Module - AWS Plugin$($PSStyle.Reset)
+    $($PSStyle.Foreground.Cyan)Comprehensive AWS CLI integration with advanced features$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Basic Information:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)agp$($PSStyle.Reset)                 - Show current AWS profile
+        $($PSStyle.Foreground.Magenta)agr$($PSStyle.Reset)                 - Show current AWS region
+        $($PSStyle.Foreground.Magenta)aws-profiles$($PSStyle.Reset)        - List all configured profiles
+        $($PSStyle.Foreground.Magenta)aws-regions$($PSStyle.Reset)         - List all available regions
+
+    $($PSStyle.Foreground.Green)Profile & Region Management:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)asp$($PSStyle.Reset) <profile>       - Set AWS profile with optional SSO
+        $($PSStyle.Foreground.Magenta)asp$($PSStyle.Reset) <profile> login - Set profile and perform SSO login
+        $($PSStyle.Foreground.Magenta)asp$($PSStyle.Reset) <profile> logout- Set profile and perform SSO logout
+        $($PSStyle.Foreground.Magenta)asr$($PSStyle.Reset) <region>        - Set AWS region with validation
+        $($PSStyle.Foreground.Magenta)asp$($PSStyle.Reset)                 - Clear current profile
+        $($PSStyle.Foreground.Magenta)asr$($PSStyle.Reset)                 - Clear current region
+
+    $($PSStyle.Foreground.Green)Advanced Operations:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)acp$($PSStyle.Reset) <profile>       - Advanced profile switching with MFA/role assumption
+        $($PSStyle.Foreground.Magenta)acp$($PSStyle.Reset) <profile> <mfa> - Switch profile with MFA token
+        $($PSStyle.Foreground.Magenta)aws-change-key$($PSStyle.Reset) <prof>- Rotate access keys securely
+
+    $($PSStyle.Foreground.Green)Key Features:$($PSStyle.Reset)
+        • Multi-Factor Authentication (MFA) support with configurable session duration
+        • Cross-account role assumption with external ID support
+        • AWS SSO integration for seamless login/logout operations
+        • State persistence across PowerShell sessions (when enabled)
+        • Secure access key rotation with guided workflow
+        • Profile and region validation against AWS configuration
+        • PowerShell prompt integration for AWS context display
+
+    $($PSStyle.Foreground.Green)Configuration Examples:$($PSStyle.Reset)
+        # Enable state persistence
+        $($PSStyle.Foreground.Cyan)\$env:AWS_PROFILE_STATE_ENABLED = 'true'$($PSStyle.Reset)
+
+        # Configure MFA in AWS profile
+        $($PSStyle.Foreground.Cyan)[profile my-profile]
+        mfa_serial = arn:aws:iam::123456789012:mfa/username
+        duration_seconds = 3600$($PSStyle.Reset)
+
+        # Configure cross-account role
+        $($PSStyle.Foreground.Cyan)[profile cross-account]
+        role_arn = arn:aws:iam::987654321098:role/CrossAccountRole
+        source_profile = my-profile
+        external_id = unique-external-id$($PSStyle.Reset)
+
+    Note: Requires AWS CLI installation and proper credential configuration.
+    12 AWS functions available for complete credential and profile management.
+"@
+
+  $PluginsDocker = @"
+$($PSStyle.Foreground.Yellow)Plugins Module - Docker Plugin$($PSStyle.Reset)
+    $($PSStyle.Foreground.Cyan)Complete Docker CLI integration with PowerShell aliases$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Container Operations:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)dcls$($PSStyle.Reset)               - List running containers
+        $($PSStyle.Foreground.Magenta)dclsa$($PSStyle.Reset)              - List all containers
+        $($PSStyle.Foreground.Magenta)dps$($PSStyle.Reset)                - Show running containers
+        $($PSStyle.Foreground.Magenta)dpsa$($PSStyle.Reset)               - Show all containers
+        $($PSStyle.Foreground.Magenta)dr$($PSStyle.Reset) <image>         - Run a new container
+        $($PSStyle.Foreground.Magenta)drit$($PSStyle.Reset) <image>       - Run interactive container
+        $($PSStyle.Foreground.Magenta)dst$($PSStyle.Reset) <container>    - Start a container
+        $($PSStyle.Foreground.Magenta)dstp$($PSStyle.Reset) <container>   - Stop a container
+        $($PSStyle.Foreground.Magenta)drs$($PSStyle.Reset) <container>    - Restart a container
+        $($PSStyle.Foreground.Magenta)drm$($PSStyle.Reset) <container>    - Remove a container
+        $($PSStyle.Foreground.Magenta)drm!$($PSStyle.Reset) <container>   - Force remove container
+        $($PSStyle.Foreground.Magenta)dsta$($PSStyle.Reset)               - Stop all running containers
+
+    $($PSStyle.Foreground.Green)Image Operations:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)dbl$($PSStyle.Reset) <args>         - Build an image
+        $($PSStyle.Foreground.Magenta)dib$($PSStyle.Reset) <args>         - Build an image
+        $($PSStyle.Foreground.Magenta)dils$($PSStyle.Reset)               - List images
+        $($PSStyle.Foreground.Magenta)dirm$($PSStyle.Reset) <image>       - Remove an image
+        $($PSStyle.Foreground.Magenta)dit$($PSStyle.Reset) <image> <tag>  - Tag an image
+        $($PSStyle.Foreground.Magenta)dipu$($PSStyle.Reset) <image>       - Push an image
+        $($PSStyle.Foreground.Magenta)dipru$($PSStyle.Reset)              - Remove unused images
+        $($PSStyle.Foreground.Magenta)dpu$($PSStyle.Reset) <image>        - Pull an image
+
+    $($PSStyle.Foreground.Green)Network Operations:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)dnc$($PSStyle.Reset) <network>      - Create a network
+        $($PSStyle.Foreground.Magenta)dnls$($PSStyle.Reset)               - List networks
+        $($PSStyle.Foreground.Magenta)dnrm$($PSStyle.Reset) <network>     - Remove a network
+        $($PSStyle.Foreground.Magenta)dncn$($PSStyle.Reset) <net> <cont>  - Connect to network
+        $($PSStyle.Foreground.Magenta)dndcn$($PSStyle.Reset) <net> <cont> - Disconnect from network
+
+    $($PSStyle.Foreground.Green)Volume Operations:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)dvls$($PSStyle.Reset)               - List volumes
+        $($PSStyle.Foreground.Magenta)dvprune$($PSStyle.Reset)            - Remove unused volumes
+
+    $($PSStyle.Foreground.Green)Monitoring & Inspection:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)dcin$($PSStyle.Reset) <container>   - Inspect a container
+        $($PSStyle.Foreground.Magenta)dii$($PSStyle.Reset) <image>        - Inspect an image
+        $($PSStyle.Foreground.Magenta)dni$($PSStyle.Reset) <network>      - Inspect a network
+        $($PSStyle.Foreground.Magenta)dvi$($PSStyle.Reset) <volume>       - Inspect a volume
+        $($PSStyle.Foreground.Magenta)dlo$($PSStyle.Reset) <container>    - View container logs
+        $($PSStyle.Foreground.Magenta)dpo$($PSStyle.Reset) <container>    - Show container ports
+        $($PSStyle.Foreground.Magenta)dsts$($PSStyle.Reset)               - Show container stats
+        $($PSStyle.Foreground.Magenta)dtop$($PSStyle.Reset) <container>   - Show container processes
+
+    $($PSStyle.Foreground.Green)Execution:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)dxc$($PSStyle.Reset) <cont> <cmd>   - Execute command in container
+        $($PSStyle.Foreground.Magenta)dxcit$($PSStyle.Reset) <cont> <cmd> - Execute interactive command
+
+    Note: All Docker functions pass arguments directly to Docker CLI.
+    37 Docker aliases available for complete container lifecycle management.
+"@
+
   $Starship = @"
 $($PSStyle.Foreground.Yellow)Starship Module$($PSStyle.Reset)
     $($PSStyle.Foreground.Green)Invoke-StarshipTransientFunction$($PSStyle.Reset)
@@ -491,9 +611,17 @@ $($PSStyle.Foreground.Yellow)Utility Module$($PSStyle.Reset)
       Write-Host $Update
       Write-Host $Utility
     }
+    'AWS' {
+      Write-Host $Title
+      Write-Host $PluginsAWS
+    }
     'Directory' {
       Write-Host $Title
       Write-Host $Directory
+    }
+    'Docker' {
+      Write-Host $Title
+      Write-Host $PluginsDocker
     }
     'Docs' {
       Write-Host $Title

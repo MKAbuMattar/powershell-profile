@@ -148,6 +148,14 @@ else {
   Write-Warning "Environment module not found at: $EnvironmentModulePath"
 }
 
+$PluginDockerModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Plugins/Docker/Docker.psd1'
+if (Test-Path $PluginDockerModulePath) {
+  Import-Module $PluginDockerModulePath -Force -ErrorAction SilentlyContinue
+}
+else {
+  Write-Warning "Plugin-Docker module not found at: $PluginDockerModulePath"
+}
+
 $PluginGitModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Plugins/Git/Git.psd1'
 if (Test-Path $PluginGitModulePath) {
   Import-Module $PluginGitModulePath -Force -ErrorAction SilentlyContinue

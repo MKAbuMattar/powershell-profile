@@ -10,6 +10,22 @@ Each plugin is designed to enhance productivity by providing intuitive shortcuts
 
 ## **Available Plugins:**
 
+### **[AWS Plugin](AWS/README.md)**
+
+Comprehensive AWS CLI integration with advanced profile management, MFA support, and cross-account role assumption. Provides secure credential management, session persistence, and seamless PowerShell integration for AWS workflows.
+
+**Key Features:** Profile & region management, MFA authentication, role assumption, access key rotation, state persistence  
+**Location:** `Module/Plugins/AWS/`  
+**Documentation:** [AWS Plugin README](AWS/README.md)
+
+### **[Docker Plugin](Docker/README.md)**
+
+Complete Docker command integration with 37 PowerShell functions and convenient aliases for all Docker operations. Streamlines container management, image handling, network operations, and monitoring workflows.
+
+**Key Features:** Docker CLI shortcuts, container lifecycle management, image operations, network & volume management  
+**Location:** `Module/Plugins/Docker/`  
+**Documentation:** [Docker Plugin README](Docker/README.md)
+
 ### **[Git Plugin](Git/README.md)**
 
 Comprehensive Git integration with 160+ aliases and shortcuts for all Git operations. Includes automatic repository validation, smart branch management, and enhanced workflow commands.
@@ -29,8 +45,8 @@ Comprehensive Git integration with 160+ aliases and shortcuts for all Git operat
 
 ### **Commands Not Working:**
 
-1. Verify you're in the appropriate context (e.g., Git repository for Git commands)
-2. Check if required external tools are installed and in PATH
+1. Verify you're in the appropriate context (e.g., Git repository for Git commands, AWS profile configured for AWS commands)
+2. Check if required external tools are installed and in PATH (Git, Docker, AWS CLI)
 3. Review error messages for specific guidance
 4. Try reloading the plugin module
 
@@ -45,13 +61,17 @@ Get-Command -Module PluginName
 
 # Check plugin module information
 Get-Module PluginName | Format-List
+
+# Examples for specific plugins:
+Get-Help Set-AWSProfile -Full      # AWS plugin help
+Get-Help Invoke-DockerBuild -Full  # Docker plugin help
+Get-Command -Module AWS             # All AWS functions
 ```
 
 ## **Future Plugin Ideas:**
 
 The plugin system is designed to be extensible. Future plugins could include:
 
-- **Docker Plugin**: Docker container management and shortcuts
 - **Kubernetes Plugin**: Kubernetes cluster management commands
 - **Azure Plugin**: Azure CLI shortcuts and resource management
 - **NPM Plugin**: Node.js and NPM workflow enhancements

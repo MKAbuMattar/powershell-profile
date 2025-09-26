@@ -18,6 +18,38 @@ else {
 }
 
 function g {
+  <#
+  .SYNOPSIS
+    A PowerShell function that wraps the `git` command.
+
+  .DESCRIPTION
+    This function is a shortcut for running the `git` command with any provided arguments.
+    It allows you to execute Git commands directly from PowerShell by passing the desired
+    arguments to this function.
+
+  .PARAMETER Arguments
+    Additional arguments to pass to the `git` command.
+
+  .INPUTS
+    [string[]] Arguments — arguments are passed directly to `git`.
+
+  .OUTPUTS
+    None. This function writes Git output to the console but does not return objects.
+
+  .EXAMPLE
+    g status
+    Displays the status of the current Git repository.
+
+    g commit -m "Your commit message"
+    Commits changes in the current Git repository with the specified commit message.
+
+    g push origin main
+    Pushes the local "main" branch to the "origin" remote repository.
+
+  .NOTES
+    - Requires Git to be installed and available in the system's PATH.
+    - Must be run inside a Git repository for most commands to work.
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -29,6 +61,32 @@ function g {
 }
 
 function  grt {
+  <#
+  .SYNOPSIS
+    A PowerShell function that wraps `git rev-parse --show-toplevel`.
+
+  .DESCRIPTION
+    This function is a shortcut for running the `git rev-parse --show-toplevel` command.
+    It outputs the absolute path of the top-level directory of the current Git repository.
+    This is useful for determining the root directory of your repository from any subdirectory.
+
+  .INPUTS
+    None. This function does not accept any input.
+
+  .OUTPUTS
+    None. This function writes the top-level directory path to the console but does not return objects.
+
+  .EXAMPLE
+    grt
+    Outputs the absolute path of the top-level directory of the current Git repository.
+
+    grt | Set-Location
+    Changes the current directory to the top-level directory of the current Git repository.
+
+  .NOTES
+    - Requires Git to be installed and available in the system's PATH.
+    - Must be run inside a Git repository.
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param()
@@ -42,6 +100,38 @@ function  grt {
 }
 
 function ga {
+  <#
+  .SYNOPSIS
+    A PowerShell function that wraps `git add`.
+
+  .DESCRIPTION
+    This function is a shortcut for running the `git add` command.
+    It allows you to stage changes in your Git repository by passing the desired
+    arguments to this function.
+
+  .PARAMETER Arguments
+    Additional arguments to pass to the `git add` command.
+
+  .INPUTS
+    [string[]] Arguments — arguments are passed directly to `git add`.
+
+  .OUTPUTS
+    None. This function writes Git output to the console but does not return objects.
+
+  .EXAMPLE
+    ga .
+    Stages all changes in the current directory.
+
+    ga file.txt
+    Stages the specified file.
+
+    ga -u
+    Stages all modified and deleted files, but not new untracked files.
+
+  .NOTES
+    - Requires Git to be installed and available in the system's PATH.
+    - Must be run inside a Git repository.
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -58,6 +148,37 @@ function ga {
 }
 
 function gaa {
+  <#
+  .SYNOPSIS
+    A PowerShell function that wraps `git add --all`.
+
+  .DESCRIPTION
+    This function is a shortcut for running the `git add --all` command.
+    It stages all changes in your Git repository, including new, modified, and deleted files.
+
+  .PARAMETER Arguments
+    Additional arguments to pass to the `git add --all` command.
+
+  .INPUTS
+    [string[]] Arguments — arguments are passed directly to `git add --all`.
+
+  .OUTPUTS
+    None. This function writes Git output to the console but does not return objects.
+
+  .EXAMPLE
+    gaa
+    Stages all changes in the current Git repository.
+
+    gaa .
+    Stages all changes in the current directory.
+
+    gaa file.txt
+    Stages the specified file.
+
+  .NOTES
+    - Requires Git to be installed and available in the system's PATH.
+    - Must be run inside a Git repository.
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -74,6 +195,35 @@ function gaa {
 }
 
 function gapa {
+  <#
+  .SYNOPSIS
+    A PowerShell function that wraps `git add --patch`.
+
+  .DESCRIPTION
+    This function is a shortcut for running the `git add --patch` command.
+    It allows you to interactively stage changes in your Git repository by selecting
+    specific hunks of changes to add.
+
+  .PARAMETER Arguments
+    Additional arguments to pass to the `git add --patch` command.
+
+  .INPUTS
+    [string[]] Arguments — arguments are passed directly to `git add --patch`.
+
+  .OUTPUTS
+    None. This function writes Git output to the console but does not return objects.
+
+  .EXAMPLE
+    gapa
+    Starts an interactive session to stage changes in the current Git repository.
+
+    gapa file.txt
+    Starts an interactive session to stage changes in the specified file.
+
+  .NOTES
+    - Requires Git to be installed and available in the system's PATH.
+    - Must be run inside a Git repository.
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -90,6 +240,38 @@ function gapa {
 }
 
 function gau {
+  <#
+  .SYNOPSIS
+    A PowerShell function that wraps `git add --update`.
+
+  .DESCRIPTION
+    This function is a shortcut for running the `git add --update` command.
+    It stages changes to tracked files in your Git repository, including modifications
+    and deletions, but does not stage new untracked files.
+
+  .PARAMETER Arguments
+    Additional arguments to pass to the `git add --update` command.
+
+  .INPUTS
+    [string[]] Arguments — arguments are passed directly to `git add --update`.
+
+  .OUTPUTS
+    None. This function writes Git output to the console but does not return objects.
+
+  .EXAMPLE
+    gau
+    Stages all modifications and deletions of tracked files in the current Git repository.
+
+    gau .
+    Stages all modifications and deletions of tracked files in the current directory.
+
+    gau file.txt
+    Stages modifications and deletions of the specified tracked file.
+
+  .NOTES
+    - Requires Git to be installed and available in the system's PATH.
+    - Must be run inside a Git repository.
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -106,6 +288,38 @@ function gau {
 }
 
 function gav {
+  <#
+  .SYNOPSIS
+    A PowerShell function that wraps `git add --verbose`.
+
+  .DESCRIPTION
+    This function is a shortcut for running the `git add --verbose` command.
+    It stages changes in your Git repository and provides detailed output about
+    the files being added.
+
+  .PARAMETER Arguments
+    Additional arguments to pass to the `git add --verbose` command.
+
+  .INPUTS
+    [string[]] Arguments — arguments are passed directly to `git add --verbose`.
+
+  .OUTPUTS
+    None. This function writes Git output to the console but does not return objects.
+
+  .EXAMPLE
+    gav
+    Stages all changes in the current Git repository with verbose output.
+
+    gav .
+    Stages all changes in the current directory with verbose output.
+
+    gav file.txt
+    Stages the specified file with verbose output.
+
+  .NOTES
+    - Requires Git to be installed and available in the system's PATH.
+    - Must be run inside a Git repository.
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -122,6 +336,37 @@ function gav {
 }
 
 function gam {
+  <#
+  .SYNOPSIS
+    A PowerShell function that wraps `git am`.
+
+  .DESCRIPTION
+    This function is a shortcut for running the `git am` command.
+    It applies a series of patches from a mailbox file to the current branch in your Git repository.
+
+  .PARAMETER Arguments
+    Additional arguments to pass to the `git am` command.
+
+  .INPUTS
+    [string[]] Arguments — arguments are passed directly to `git am`.
+
+  .OUTPUTS
+    None. This function writes Git output to the console but does not return objects.
+
+  .EXAMPLE
+    gam patch.mbox
+    Applies the patches from the specified mailbox file to the current branch.
+
+    gam --signoff patch.mbox
+    Applies the patches with a sign-off message.
+
+    gam --3way patch.mbox
+    Applies the patches using a three-way merge if necessary.
+
+  .NOTES
+    - Requires Git to be installed and available in the system's PATH.
+    - Must be run inside a Git repository.
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -138,6 +383,35 @@ function gam {
 }
 
 function gama {
+  <#
+  .SYNOPSIS
+    A PowerShell function that wraps `git am --abort`.
+
+  .DESCRIPTION
+    This function is a shortcut for running the `git am --abort` command.
+    It aborts the current `git am` operation and resets the repository to the state
+    before the operation began.
+
+  .PARAMETER Arguments
+    Additional arguments to pass to the `git am --abort` command.
+
+  .INPUTS
+    [string[]] Arguments — arguments are passed directly to `git am --abort`.
+
+  .OUTPUTS
+    None. This function writes Git output to the console but does not return objects.
+
+  .EXAMPLE
+    gama
+    Aborts the current `git am` operation.
+
+    gama --quiet
+    Aborts the current `git am` operation with minimal output.
+
+  .NOTES
+    - Requires Git to be installed and available in the system's PATH.
+    - Must be run inside a Git repository.
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -154,6 +428,34 @@ function gama {
 }
 
 function gamc {
+  <#
+  .SYNOPSIS
+    A PowerShell function that wraps `git am --continue`.
+
+  .DESCRIPTION
+    This function is a shortcut for running the `git am --continue` command.
+    It continues the current `git am` operation after resolving any conflicts.
+
+  .PARAMETER Arguments
+    Additional arguments to pass to the `git am --continue` command.
+
+  .INPUTS
+    [string[]] Arguments — arguments are passed directly to `git am --continue`.
+
+  .OUTPUTS
+    None. This function writes Git output to the console but does not return objects.
+
+  .EXAMPLE
+    gamc
+    Continues the current `git am` operation.
+
+    gamc --quiet
+    Continues the current `git am` operation with minimal output.
+
+  .NOTES
+    - Requires Git to be installed and available in the system's PATH.
+    - Must be run inside a Git repository.
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -170,6 +472,34 @@ function gamc {
 }
 
 function gamscp {
+  <#
+  .SYNOPSIS
+    A PowerShell function that wraps `git am --show-current-patch`.
+
+  .DESCRIPTION
+    This function is a shortcut for running the `git am --show-current-patch` command.
+    It displays the current patch being applied during a `git am` operation.
+
+  .PARAMETER Arguments
+    Additional arguments to pass to the `git am --show-current-patch` command.
+
+  .INPUTS
+    [string[]] Arguments — arguments are passed directly to `git am --show-current-patch`.
+
+  .OUTPUTS
+    None. This function writes Git output to the console but does not return objects.
+
+  .EXAMPLE
+    gamscp
+    Displays the current patch being applied during a `git am` operation.
+
+    gamscp --stat
+    Displays the current patch with statistics.
+
+  .NOTES
+    - Requires Git to be installed and available in the system's PATH.
+    - Must be run inside a Git repository.
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -186,6 +516,35 @@ function gamscp {
 }
 
 function gams {
+  <#
+  .SYNOPSIS
+    A PowerShell function that wraps `git am --skip`.
+
+  .DESCRIPTION
+    This function is a shortcut for running the `git am --skip` command.
+    It skips the current patch being applied during a `git am` operation and
+    continues with the next patch.
+
+  .PARAMETER Arguments
+    Additional arguments to pass to the `git am --skip` command.
+
+  .INPUTS
+    [string[]] Arguments — arguments are passed directly to `git am --skip`.
+
+  .OUTPUTS
+    None. This function writes Git output to the console but does not return objects.
+
+  .EXAMPLE
+    gams
+    Skips the current patch being applied during a `git am` operation.
+
+    gams --quiet
+    Skips the current patch with minimal output.
+
+  .NOTES
+    - Requires Git to be installed and available in the system's PATH.
+    - Must be run inside a Git repository.
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -202,6 +561,37 @@ function gams {
 }
 
 function gap {
+  <#
+  .SYNOPSIS
+    A PowerShell function that wraps `git apply`.
+
+  .DESCRIPTION
+    This function is a shortcut for running the `git apply` command.
+    It applies a patch to files in your Git repository.
+
+  .PARAMETER Arguments
+    Additional arguments to pass to the `git apply` command.
+
+  .INPUTS
+    [string[]] Arguments — arguments are passed directly to `git apply`.
+
+  .OUTPUTS
+    None. This function writes Git output to the console but does not return objects.
+
+  .EXAMPLE
+    gap patch.diff
+    Applies the specified patch file to the current Git repository.
+
+    gap --stat patch.diff
+    Displays statistics about the changes that would be made by applying the patch.
+
+    gap --check patch.diff
+    Checks if the patch can be applied cleanly without actually applying it.
+
+  .NOTES
+    - Requires Git to be installed and available in the system's PATH.
+    - Must be run inside a Git repository.
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -218,6 +608,38 @@ function gap {
 }
 
 function gapt {
+  <#
+  .SYNOPSIS
+    A PowerShell function that wraps `git apply --3way`.
+
+  .DESCRIPTION
+    This function is a shortcut for running the `git apply --3way` command.
+    It applies a patch to files in your Git repository using a three-way merge
+    if there are conflicts.
+
+  .PARAMETER Arguments
+    Additional arguments to pass to the `git apply --3way` command.
+
+  .INPUTS
+    [string[]] Arguments — arguments are passed directly to `git apply --3way`.
+
+  .OUTPUTS
+    None. This function writes Git output to the console but does not return objects.
+
+  .EXAMPLE
+    gapt patch.diff
+    Applies the specified patch file to the current Git repository using a three-way merge if necessary.
+
+    gapt --stat patch.diff
+    Displays statistics about the changes that would be made by applying the patch.
+
+    gapt --check patch.diff
+    Checks if the patch can be applied cleanly without actually applying it.
+
+  .NOTES
+    - Requires Git to be installed and available in the system's PATH.
+    - Must be run inside a Git repository.
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -234,6 +656,41 @@ function gapt {
 }
 
 function gbs {
+  <#
+  .SYNOPSIS
+    A PowerShell function that wraps `git bisect`.
+
+  .DESCRIPTION
+    This function is a shortcut for running the `git bisect` command.
+    It helps you find the commit that introduced a bug by performing a binary search
+    through the commit history.
+
+  .PARAMETER Arguments
+    Additional arguments to pass to the `git bisect` command.
+
+  .INPUTS
+    [string[]] Arguments — arguments are passed directly to `git bisect`.
+
+  .OUTPUTS
+    None. This function writes Git output to the console but does not return objects.
+
+  .EXAMPLE
+    gbs start
+    Starts a bisect session.
+
+    gbs good <commit>
+    Marks the specified commit as good.
+
+    gbs bad <commit>
+    Marks the specified commit as bad.
+
+    gbs reset
+    Ends the bisect session and resets to the original HEAD.
+
+  .NOTES
+    - Requires Git to be installed and available in the system's PATH.
+    - Must be run inside a Git repository.
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -250,6 +707,34 @@ function gbs {
 }
 
 function gbsb {
+  <#
+  .SYNOPSIS
+    A PowerShell function that wraps `git bisect bad`.
+
+  .DESCRIPTION
+    This function is a shortcut for running the `git bisect bad` command.
+    It marks the current commit as bad during a bisect session.
+
+  .PARAMETER Arguments
+    Additional arguments to pass to the `git bisect bad` command.
+
+  .INPUTS
+    [string[]] Arguments — arguments are passed directly to `git bisect bad`.
+
+  .OUTPUTS
+    None. This function writes Git output to the console but does not return objects.
+
+  .EXAMPLE
+    gbsb
+    Marks the current commit as bad.
+
+    gbsb <commit>
+    Marks the specified commit as bad.
+
+  .NOTES
+    - Requires Git to be installed and available in the system's PATH.
+    - Must be run inside a Git repository.
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -266,6 +751,34 @@ function gbsb {
 }
 
 function gbsg {
+  <#
+  .SYNOPSIS
+    A PowerShell function that wraps `git bisect good`.
+
+  .DESCRIPTION
+    This function is a shortcut for running the `git bisect good` command.
+    It marks the current commit as good during a bisect session.
+
+  .PARAMETER Arguments
+    Additional arguments to pass to the `git bisect good` command.
+
+  .INPUTS
+    [string[]] Arguments — arguments are passed directly to `git bisect good`.
+
+  .OUTPUTS
+    None. This function writes Git output to the console but does not return objects.
+
+  .EXAMPLE
+    gbsg
+    Marks the current commit as good.
+
+    gbsg <commit>
+    Marks the specified commit as good.
+
+  .NOTES
+    - Requires Git to be installed and available in the system's PATH.
+    - Must be run inside a Git repository.
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -282,6 +795,34 @@ function gbsg {
 }
 
 function gbsn {
+  <#
+  .SYNOPSIS
+    A PowerShell function that wraps `git bisect new`.
+
+  .DESCRIPTION
+    This function is a shortcut for running the `git bisect new` command.
+    It starts a new bisect session by specifying the known good and bad commits.
+
+  .PARAMETER Arguments
+    Additional arguments to pass to the `git bisect new` command.
+
+  .INPUTS
+    [string[]] Arguments — arguments are passed directly to `git bisect new`.
+
+  .OUTPUTS
+    None. This function writes Git output to the console but does not return objects.
+
+  .EXAMPLE
+    gbsn <bad-commit> <good-commit>
+    Starts a new bisect session with the specified bad and good commits.
+
+    gbsn --term-old <bad-commit> --term-new <good-commit>
+    Starts a new bisect session with custom terms for bad and good commits.
+
+  .NOTES
+    - Requires Git to be installed and available in the system's PATH.
+    - Must be run inside a Git repository.
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -298,6 +839,34 @@ function gbsn {
 }
 
 function gbso {
+  <#
+  .SYNOPSIS
+    A PowerShell function that wraps `git bisect old`.
+
+  .DESCRIPTION
+    This function is a shortcut for running the `git bisect old` command.
+    It marks the current commit as old (bad) during a bisect session.
+
+  .PARAMETER Arguments
+    Additional arguments to pass to the `git bisect old` command.
+
+  .INPUTS
+    [string[]] Arguments — arguments are passed directly to `git bisect old`.
+
+  .OUTPUTS
+    None. This function writes Git output to the console but does not return objects.
+
+  .EXAMPLE
+    gbso
+    Marks the current commit as old (bad).
+
+    gbso <commit>
+    Marks the specified commit as old (bad).
+
+  .NOTES
+    - Requires Git to be installed and available in the system's PATH.
+    - Must be run inside a Git repository.
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -314,6 +883,34 @@ function gbso {
 }
 
 function gbsr {
+  <#
+  .SYNOPSIS
+    A PowerShell function that wraps `git bisect reset`.
+
+  .DESCRIPTION
+    This function is a shortcut for running the `git bisect reset` command.
+    It ends the current bisect session and resets the repository to the original HEAD.
+
+  .PARAMETER Arguments
+    Additional arguments to pass to the `git bisect reset` command.
+
+  .INPUTS
+    [string[]] Arguments — arguments are passed directly to `git bisect reset`.
+
+  .OUTPUTS
+    None. This function writes Git output to the console but does not return objects.
+
+  .EXAMPLE
+    gbsr
+    Ends the current bisect session and resets to the original HEAD.
+
+    gbsr <commit>
+    Ends the current bisect session and resets to the specified commit.
+
+  .NOTES
+    - Requires Git to be installed and available in the system's PATH.
+    - Must be run inside a Git repository.
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -330,6 +927,34 @@ function gbsr {
 }
 
 function gbss {
+  <#
+  .SYNOPSIS
+    A PowerShell function that wraps `git bisect start`.
+
+  .DESCRIPTION
+    This function is a shortcut for running the `git bisect start` command.
+    It initiates a bisect session to help find the commit that introduced a bug.
+
+  .PARAMETER Arguments
+    Additional arguments to pass to the `git bisect start` command.
+
+  .INPUTS
+    [string[]] Arguments — arguments are passed directly to `git bisect start`.
+
+  .OUTPUTS
+    None. This function writes Git output to the console but does not return objects.
+
+  .EXAMPLE
+    gbss
+    Starts a bisect session.
+
+    gbss <bad-commit> <good-commit>
+    Starts a bisect session with the specified bad and good commits.
+
+  .NOTES
+    - Requires Git to be installed and available in the system's PATH.
+    - Must be run inside a Git repository.
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -346,6 +971,38 @@ function gbss {
 }
 
 function gbl {
+  <#
+  .SYNOPSIS
+    A PowerShell function that wraps `git blame -w`.
+
+  .DESCRIPTION
+    This function is a shortcut for running the `git blame -w` command.
+    It shows what revision and author last modified each line of a file,
+    ignoring whitespace changes.
+
+  .PARAMETER Arguments
+    Additional arguments to pass to the `git blame -w` command.
+
+  .INPUTS
+    [string[]] Arguments — arguments are passed directly to `git blame -w`.
+
+  .OUTPUTS
+    None. This function writes Git output to the console but does not return objects.
+
+  .EXAMPLE
+    gbl file.txt
+    Shows the blame information for the specified file, ignoring whitespace changes.
+
+    gbl -L 10,20 file.txt
+    Shows the blame information for lines 10 to 20 of the specified file, ignoring whitespace changes.
+
+    gbl -C -C file.txt
+    Shows the blame information for the specified file, including copies and ignoring whitespace changes.
+
+  .NOTES
+    - Requires Git to be installed and available in the system's PATH.
+    - Must be run inside a Git repository.
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -362,6 +1019,41 @@ function gbl {
 }
 
 function gb {
+  <#
+  .SYNOPSIS
+    A PowerShell function that wraps `git branch`.
+
+  .DESCRIPTION
+    This function is a shortcut for running the `git branch` command.
+    It allows you to manage branches in your Git repository by passing the desired
+    arguments to this function.
+
+  .PARAMETER Arguments
+    Additional arguments to pass to the `git branch` command.
+
+  .INPUTS
+    [string[]] Arguments — arguments are passed directly to `git branch`.
+
+  .OUTPUTS
+    None. This function writes Git output to the console but does not return objects.
+
+  .EXAMPLE
+    gb
+    Lists all local branches in the current Git repository.
+
+    gb new-branch
+    Creates a new branch named "new-branch".
+
+    gb -d old-branch
+    Deletes the branch named "old-branch".
+
+    gb -m old-name new-name
+    Renames the branch from "old-name" to "new-name".
+
+  .NOTES
+    - Requires Git to be installed and available in the system's PATH.
+    - Must be run inside a Git repository.
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -378,6 +1070,37 @@ function gb {
 }
 
 function gba {
+  <#
+  .SYNOPSIS
+    A PowerShell function that wraps `git branch --all`.
+
+  .DESCRIPTION
+    This function is a shortcut for running the `git branch --all` command.
+    It lists all branches in your Git repository, including both local and remote branches.
+
+  .PARAMETER Arguments
+    Additional arguments to pass to the `git branch --all` command.
+
+  .INPUTS
+    [string[]] Arguments — arguments are passed directly to `git branch --all`.
+
+  .OUTPUTS
+    None. This function writes Git output to the console but does not return objects.
+
+  .EXAMPLE
+    gba
+    Lists all local and remote branches in the current Git repository.
+
+    gba -r
+    Lists only remote branches.
+
+    gba -v
+    Lists all branches with the latest commit on each branch.
+
+  .NOTES
+    - Requires Git to be installed and available in the system's PATH.
+    - Must be run inside a Git repository.
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -394,6 +1117,34 @@ function gba {
 }
 
 function gbd {
+  <#
+  .SYNOPSIS
+    A PowerShell function that wraps `git branch --delete`.
+
+  .DESCRIPTION
+    This function is a shortcut for running the `git branch --delete` command.
+    It deletes one or more branches in your Git repository.
+
+  .PARAMETER Arguments
+    Additional arguments to pass to the `git branch --delete` command.
+
+  .INPUTS
+    [string[]] Arguments — arguments are passed directly to `git branch --delete`.
+
+  .OUTPUTS
+    None. This function writes Git output to the console but does not return objects.
+
+  .EXAMPLE
+    gbd branch-name
+    Deletes the specified branch.
+
+    gbd -r origin/branch-name
+    Deletes the specified remote-tracking branch.
+
+  .NOTES
+    - Requires Git to be installed and available in the system's PATH.
+    - Must be run inside a Git repository.
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -410,6 +1161,35 @@ function gbd {
 }
 
 function gbD {
+  <#
+  .SYNOPSIS
+    A PowerShell function that wraps `git branch --delete --force`.
+
+  .DESCRIPTION
+    This function is a shortcut for running the `git branch --delete --force` command.
+    It forcefully deletes one or more branches in your Git repository, even if they
+    have unmerged changes.
+
+  .PARAMETER Arguments
+    Additional arguments to pass to the `git branch --delete --force` command.
+
+  .INPUTS
+    [string[]] Arguments — arguments are passed directly to `git branch --delete --force`.
+
+  .OUTPUTS
+    None. This function writes Git output to the console but does not return objects.
+
+  .EXAMPLE
+    gbD branch-name
+    Forcefully deletes the specified branch, even if it has unmerged changes.
+
+    gbD -r origin/branch-name
+    Forcefully deletes the specified remote-tracking branch, even if it has unmerged changes.
+
+  .NOTES
+    - Requires Git to be installed and available in the system's PATH.
+    - Must be run inside a Git repository.
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -426,6 +1206,34 @@ function gbD {
 }
 
 function gbm {
+  <#
+  .SYNOPSIS
+    A PowerShell function that wraps `git branch --move`.
+
+  .DESCRIPTION
+    This function is a shortcut for running the `git branch --move` command.
+    It renames a branch in your Git repository.
+
+  .PARAMETER Arguments
+    Additional arguments to pass to the `git branch --move` command.
+
+  .INPUTS
+    [string[]] Arguments — arguments are passed directly to `git branch --move`.
+
+  .OUTPUTS
+    None. This function writes Git output to the console but does not return objects.
+
+  .EXAMPLE
+    gbm old-branch new-branch
+    Renames the branch from "old-branch" to "new-branch".
+
+    gbm -f old-branch new-branch
+    Forcefully renames the branch, even if "new-branch" already exists.
+
+  .NOTES
+    - Requires Git to be installed and available in the system's PATH.
+    - Must be run inside a Git repository.
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -442,6 +1250,34 @@ function gbm {
 }
 
 function gbnm {
+  <#
+  .SYNOPSIS
+    A PowerShell function that wraps `git branch --move --no-ff`.
+
+  .DESCRIPTION
+    This function is a shortcut for running the `git branch --move --no-ff` command.
+    It renames a branch in your Git repository without fast-forwarding.
+
+  .PARAMETER Arguments
+    Additional arguments to pass to the `git branch --move --no-ff` command.
+
+  .INPUTS
+    [string[]] Arguments — arguments are passed directly to `git branch --move --no-ff`.
+
+  .OUTPUTS
+    None. This function writes Git output to the console but does not return objects.
+
+  .EXAMPLE
+    gbnm old-branch new-branch
+    Renames the branch from "old-branch" to "new-branch" without fast-forwarding.
+
+    gbnm -f old-branch new-branch
+    Forcefully renames the branch, even if "new-branch" already exists, without fast-forwarding.
+
+  .NOTES
+    - Requires Git to be installed and available in the system's PATH.
+    - Must be run inside a Git repository.
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -458,6 +1294,37 @@ function gbnm {
 }
 
 function gbr {
+  <#
+  .SYNOPSIS
+    A PowerShell function that wraps `git branch --remote`.
+
+  .DESCRIPTION
+    This function is a shortcut for running the `git branch --remote` command.
+    It lists all remote branches in your Git repository.
+
+  .PARAMETER Arguments
+    Additional arguments to pass to the `git branch --remote` command.
+
+  .INPUTS
+    [string[]] Arguments — arguments are passed directly to `git branch --remote`.
+
+  .OUTPUTS
+    None. This function writes Git output to the console but does not return objects.
+
+  .EXAMPLE
+    gbr
+    Lists all remote branches in the current Git repository.
+
+    gbr -v
+    Lists all remote branches with the latest commit on each branch.
+
+    gbr origin
+    Lists all remote branches for the specified remote (e.g., "origin").
+
+  .NOTES
+    - Requires Git to be installed and available in the system's PATH.
+    - Must be run inside a Git repository.
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -474,6 +1341,38 @@ function gbr {
 }
 
 function gco {
+  <#
+  .SYNOPSIS
+    A PowerShell function that wraps `git checkout`.
+
+  .DESCRIPTION
+    This function is a shortcut for running the `git checkout` command.
+    It allows you to switch branches or restore working tree files in your Git repository.
+    Any arguments you would normally pass to `git checkout` can be provided to this function.
+
+  .PARAMETER Arguments
+    Additional arguments to pass to the `git checkout` command.
+
+  .INPUTS
+    [string[]] Arguments — arguments are passed directly to `git checkout`.
+
+  .OUTPUTS
+    None. This function writes Git output to the console but does not return objects.
+
+  .EXAMPLE
+    gco branch-name
+    Switches to the specified branch.
+
+    gco -b new-branch
+    Creates and switches to a new branch named "new-branch".
+
+    gco file.txt
+    Restores the specified file to its state in the index or the specified commit.
+
+  .NOTES
+    - Requires Git to be installed and available in the system's PATH.
+    - Must be run inside a Git repository.
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -490,6 +1389,40 @@ function gco {
 }
 
 function gcor {
+  <#
+  .SYNOPSIS
+    A PowerShell function that wraps `git checkout --recurse-submodules`.
+
+  .DESCRIPTION
+    This function is a shortcut for running the `git checkout --recurse-submodules` command.
+    It allows you to switch branches or restore working tree files in your Git repository,
+    while also updating submodules recursively. Any arguments you would normally pass to
+    `git checkout --recurse-submodules` can be provided to this function.
+
+  .PARAMETER Arguments
+    Additional arguments to pass to the `git checkout --recurse-submodules` command.
+
+  .INPUTS
+    [string[]] Arguments — arguments are passed directly to `git checkout --recurse-submodules`.
+
+  .OUTPUTS
+    None. This function writes Git output to the console but does not return objects.
+
+  .EXAMPLE
+    gcor branch-name
+    Switches to the specified branch and updates submodules recursively.
+
+    gcor -b new-branch
+    Creates and switches to a new branch named "new-branch", updating submodules recursively.
+
+    gcor file.txt
+    Restores the specified file to its state in the index or the specified commit,
+    updating submodules recursively.
+
+  .NOTES
+    - Requires Git to be installed and available in the system's PATH.
+    - Must be run inside a Git repository.
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -506,6 +1439,35 @@ function gcor {
 }
 
 function gcb {
+  <#
+  .SYNOPSIS
+    A PowerShell function that wraps `git checkout -b`.
+
+  .DESCRIPTION
+    This function is a shortcut for running the `git checkout -b` command.
+    It creates and switches to a new branch in your Git repository.
+    Any arguments you would normally pass to `git checkout -b` can be provided to this function.
+
+  .PARAMETER Arguments
+    Additional arguments to pass to the `git checkout -b` command.
+
+  .INPUTS
+    [string[]] Arguments — arguments are passed directly to `git checkout -b`.
+
+  .OUTPUTS
+    None. This function writes Git output to the console but does not return objects.
+
+  .EXAMPLE
+    gcb new-branch
+    Creates and switches to a new branch named "new-branch".
+
+    gcb new-branch start-point
+    Creates and switches to a new branch named "new-branch" starting from "start-point".
+
+  .NOTES
+    - Requires Git to be installed and available in the system's PATH.
+    - Must be run inside a Git repository.
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -522,6 +1484,21 @@ function gcb {
 }
 
 function gcB {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -538,6 +1515,21 @@ function gcB {
 }
 
 function gcp {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -554,6 +1546,21 @@ function gcp {
 }
 
 function gcpa {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -570,6 +1577,21 @@ function gcpa {
 }
 
 function gcpc {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -586,6 +1608,21 @@ function gcpc {
 }
 
 function gclean {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -597,6 +1634,21 @@ function gclean {
 }
 
 function gcl {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -608,6 +1660,21 @@ function gcl {
 }
 
 function gclf {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -619,6 +1686,21 @@ function gclf {
 }
 
 function gcam {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -635,6 +1717,21 @@ function gcam {
 }
 
 function gcas {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -651,6 +1748,21 @@ function gcas {
 }
 
 function gcasm {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -667,6 +1779,21 @@ function gcasm {
 }
 
 function gcs {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -683,6 +1810,21 @@ function gcs {
 }
 
 function gcss {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -699,6 +1841,21 @@ function gcss {
 }
 
 function gcssm {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -715,6 +1872,21 @@ function gcssm {
 }
 
 function gcmsg {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -731,6 +1903,21 @@ function gcmsg {
 }
 
 function gcsm {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -747,6 +1934,21 @@ function gcsm {
 }
 
 function gcv {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -763,6 +1965,21 @@ function gcv {
 }
 
 function gca {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -779,6 +1996,21 @@ function gca {
 }
 
 function gcf {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -795,6 +2027,21 @@ function gcf {
 }
 
 function gcfu {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -811,6 +2058,21 @@ function gcfu {
 }
 
 function gd {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -827,6 +2089,21 @@ function gd {
 }
 
 function gdca {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -843,6 +2120,21 @@ function gdca {
 }
 
 function gdcw {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -859,6 +2151,21 @@ function gdcw {
 }
 
 function gds {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -875,6 +2182,21 @@ function gds {
 }
 
 function gdw {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -891,6 +2213,21 @@ function gdw {
 }
 
 function gdup {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -907,6 +2244,21 @@ function gdup {
 }
 
 function gdt {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -923,6 +2275,21 @@ function gdt {
 }
 
 function  gf {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -939,6 +2306,21 @@ function  gf {
 }
 
 function gfa {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -955,6 +2337,21 @@ function gfa {
 }
 
 function gfo {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -971,6 +2368,21 @@ function gfo {
 }
 
 function gg {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -987,6 +2399,21 @@ function gg {
 }
 
 function gga {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -1003,6 +2430,21 @@ function gga {
 }
 
 function ghh {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -1014,6 +2456,21 @@ function ghh {
 }
 
 function glgg {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -1030,6 +2487,21 @@ function glgg {
 }
 
 function glgga {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -1046,6 +2518,21 @@ function glgga {
 }
 
 function glgm {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -1062,6 +2549,21 @@ function glgm {
 }
 
 function glo {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -1078,6 +2580,21 @@ function glo {
 }
 
 function glog {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -1094,6 +2611,21 @@ function glog {
 }
 
 function gloga {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -1110,6 +2642,21 @@ function gloga {
 }
 
 function glg {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -1126,6 +2673,21 @@ function glg {
 }
 
 function glgp {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -1142,6 +2704,21 @@ function glgp {
 }
 
 function gfg {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -1158,6 +2735,21 @@ function gfg {
 }
 
 function gm {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -1174,6 +2766,21 @@ function gm {
 }
 
 function gma {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -1190,6 +2797,21 @@ function gma {
 }
 
 function gmc {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -1206,6 +2828,21 @@ function gmc {
 }
 
 function gms {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -1222,6 +2859,21 @@ function gms {
 }
 
 function gmff {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -1238,6 +2890,21 @@ function gmff {
 }
 
 function gmtl {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -1254,6 +2921,21 @@ function gmtl {
 }
 
 function gmtlvim {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -1270,6 +2952,21 @@ function gmtlvim {
 }
 
 function gl {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -1286,6 +2983,21 @@ function gl {
 }
 
 function gpr {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -1302,6 +3014,21 @@ function gpr {
 }
 
 function gprv {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -1318,6 +3045,21 @@ function gprv {
 }
 
 function gpra {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -1334,6 +3076,21 @@ function gpra {
 }
 
 function gprav {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -1350,6 +3107,21 @@ function gprav {
 }
 
 function gp {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -1366,6 +3138,21 @@ function gp {
 }
 
 function gpd {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -1383,6 +3170,21 @@ function gpd {
 
 
 function gpf {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -1404,6 +3206,21 @@ function gpf {
 }
 
 function gpv {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -1420,6 +3237,21 @@ function gpv {
 }
 
 function gpoat {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -1436,6 +3268,21 @@ function gpoat {
 }
 
 function gpod {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -1452,6 +3299,21 @@ function gpod {
 }
 
 function gpu {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -1468,6 +3330,21 @@ function gpu {
 }
 
 function grb {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -1484,6 +3361,21 @@ function grb {
 }
 
 function grba {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -1500,6 +3392,21 @@ function grba {
 }
 
 function grbc {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -1516,6 +3423,21 @@ function grbc {
 }
 
 function grbi {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -1532,6 +3454,21 @@ function grbi {
 }
 
 function grbo {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -1548,6 +3485,21 @@ function grbo {
 }
 
 function grbs {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -1564,6 +3516,21 @@ function grbs {
 }
 
 function grf {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -1580,6 +3547,21 @@ function grf {
 }
 
 function gr {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -1596,6 +3578,21 @@ function gr {
 }
 
 function grv {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -1612,6 +3609,21 @@ function grv {
 }
 
 function gra {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -1628,6 +3640,21 @@ function gra {
 }
 
 function grrm {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -1644,6 +3671,21 @@ function grrm {
 }
 
 function grmv {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -1660,6 +3702,21 @@ function grmv {
 }
 
 function grset {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -1676,6 +3733,21 @@ function grset {
 }
 
 function grup {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -1692,6 +3764,21 @@ function grup {
 }
 
 function grh {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -1708,6 +3795,21 @@ function grh {
 }
 
 function gru {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -1724,6 +3826,21 @@ function gru {
 }
 
 function grhh {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -1740,6 +3857,21 @@ function grhh {
 }
 
 function grhk {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -1756,6 +3888,21 @@ function grhk {
 }
 
 function grhs {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -1772,6 +3919,21 @@ function grhs {
 }
 
 function grs {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -1788,6 +3950,21 @@ function grs {
 }
 
 function grss {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -1804,6 +3981,21 @@ function grss {
 }
 
 function grst {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -1820,6 +4012,21 @@ function grst {
 }
 
 function grev {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -1836,6 +4043,21 @@ function grev {
 }
 
 function greva {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -1852,6 +4074,21 @@ function greva {
 }
 
 function grevc {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -1868,6 +4105,21 @@ function grevc {
 }
 
 function grm {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -1884,6 +4136,21 @@ function grm {
 }
 
 function grmc {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -1900,6 +4167,21 @@ function grmc {
 }
 
 function gcount {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -1916,6 +4198,21 @@ function gcount {
 }
 
 function gsh {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -1932,6 +4229,21 @@ function gsh {
 }
 
 function gsps {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -1948,6 +4260,21 @@ function gsps {
 }
 
 function gstall {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -1964,6 +4291,21 @@ function gstall {
 }
 
 function gstaa {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -1980,6 +4322,21 @@ function gstaa {
 }
 
 function gstc {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -1996,6 +4353,21 @@ function gstc {
 }
 
 function gstd {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -2012,6 +4384,21 @@ function gstd {
 }
 
 function gstl {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -2028,6 +4415,21 @@ function gstl {
 }
 
 function gstp {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -2044,6 +4446,21 @@ function gstp {
 }
 
 function gsta {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -2065,6 +4482,21 @@ function gsta {
 }
 
 function gsts {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -2081,6 +4513,21 @@ function gsts {
 }
 
 function gstu {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -2097,6 +4544,21 @@ function gstu {
 }
 
 function gst {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -2113,6 +4575,21 @@ function gst {
 }
 
 function gss {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -2129,6 +4606,21 @@ function gss {
 }
 
 function gsb {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -2145,6 +4637,21 @@ function gsb {
 }
 
 function gsi {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -2161,6 +4668,21 @@ function gsi {
 }
 
 function gsu {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -2177,6 +4699,21 @@ function gsu {
 }
 
 function gsd {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -2193,6 +4730,21 @@ function gsd {
 }
 
 function gsr {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -2209,6 +4761,21 @@ function gsr {
 }
 
 function gsw {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -2225,6 +4792,21 @@ function gsw {
 }
 
 function gswc {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -2241,6 +4823,21 @@ function gswc {
 }
 
 function gta {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -2257,6 +4854,21 @@ function gta {
 }
 
 function gts {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -2273,6 +4885,21 @@ function gts {
 }
 
 function gtv {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -2289,6 +4916,21 @@ function gtv {
 }
 
 function gignore {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -2305,6 +4947,21 @@ function gignore {
 }
 
 function gunignore {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -2321,6 +4978,21 @@ function gunignore {
 }
 
 function gwch {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -2337,6 +5009,21 @@ function gwch {
 }
 
 function gwt {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -2353,6 +5040,21 @@ function gwt {
 }
 
 function gwta {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -2369,6 +5071,21 @@ function gwta {
 }
 
 function gwtls {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -2385,6 +5102,21 @@ function gwtls {
 }
 
 function gwtmv {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -2401,6 +5133,21 @@ function gwtmv {
 }
 
 function gwtrm {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -2417,6 +5164,21 @@ function gwtrm {
 }
 
 function gwip {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -2435,6 +5197,21 @@ function gwip {
 }
 
 function gunwip {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -2454,6 +5231,21 @@ function gunwip {
 }
 
 function gcd {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -2470,6 +5262,21 @@ function gcd {
 }
 
 function gcm {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -2486,6 +5293,21 @@ function gcm {
 }
 
 function gswd {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -2502,6 +5324,21 @@ function gswd {
 }
 
 function gswm {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -2518,6 +5355,21 @@ function gswm {
 }
 
 function grbd {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -2534,6 +5386,21 @@ function grbd {
 }
 
 function grbm {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -2550,6 +5417,21 @@ function grbm {
 }
 
 function grbom {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -2566,6 +5448,21 @@ function grbom {
 }
 
 function grbum {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -2582,6 +5479,21 @@ function grbum {
 }
 
 function ggsup {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -2598,6 +5510,21 @@ function ggsup {
 }
 
 function gmom {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -2614,6 +5541,21 @@ function gmom {
 }
 
 function gmum {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -2630,6 +5572,21 @@ function gmum {
 }
 
 function gprom {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -2646,6 +5603,21 @@ function gprom {
 }
 
 function gpromi {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -2662,6 +5634,21 @@ function gpromi {
 }
 
 function gprum {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -2678,6 +5665,21 @@ function gprum {
 }
 
 function gprumi {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -2694,6 +5696,21 @@ function gprumi {
 }
 
 function ggpull {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -2710,6 +5727,21 @@ function ggpull {
 }
 
 function ggpush {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -2726,6 +5758,21 @@ function ggpush {
 }
 
 function gpsup {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -2742,6 +5789,21 @@ function gpsup {
 }
 
 function gpsupf {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -2763,6 +5825,21 @@ function gpsupf {
 }
 
 function groh {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -2779,6 +5856,21 @@ function groh {
 }
 
 function gluc {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -2795,6 +5887,21 @@ function gluc {
 }
 
 function  glum {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -2811,6 +5918,21 @@ function  glum {
 }
 
 function gdct {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -2827,6 +5949,21 @@ function gdct {
 }
 
 function gdnolock {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -2842,6 +5979,21 @@ function gdnolock {
   git diff @Arguments ":(exclude)package-lock.json" ":(exclude)*.lock"
 }
 function gdv {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -2858,6 +6010,21 @@ function gdv {
 }
 
 function gpristine {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -2874,6 +6041,21 @@ function gpristine {
 }
 
 function gwipe {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -2890,6 +6072,21 @@ function gwipe {
 }
 
 function gignored {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -2906,6 +6103,21 @@ function gignored {
 }
 
 function gbda {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -2929,6 +6141,21 @@ function gbda {
 }
 
 function gbds {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -2955,6 +6182,21 @@ function gbds {
 }
 
 function gbgd {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -2974,6 +6216,21 @@ function gbgd {
 }
 
 function gbgD {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -2993,6 +6250,21 @@ function gbgD {
 }
 
 function gbg {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -3009,6 +6281,21 @@ function gbg {
 }
 
 function gccd {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -3032,6 +6319,21 @@ function gccd {
 }
 
 function ggpnp {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -3054,6 +6356,21 @@ function ggpnp {
 }
 
 function ggu {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -3076,6 +6393,21 @@ function ggu {
 }
 
 function ggl {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -3098,6 +6430,21 @@ function ggl {
 }
 
 function ggp {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -3120,6 +6467,21 @@ function ggp {
 }
 
 function ggf {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -3142,6 +6504,21 @@ function ggf {
 }
 
 function ggfl {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -3164,6 +6541,21 @@ function ggfl {
 }
 
 function glods {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -3180,6 +6572,21 @@ function glods {
 }
 
 function glod {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -3196,6 +6603,21 @@ function glod {
 }
 
 function glola {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -3212,6 +6634,21 @@ function glola {
 }
 
 function glols {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -3228,6 +6665,21 @@ function glols {
 }
 
 function glol {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -3245,6 +6697,21 @@ function glol {
 
 
 function glp {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -3266,6 +6733,21 @@ function glp {
 }
 
 function gtl {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Arguments
+
+  .INPUTS
+
+  .OUTPUTS
+
+  .EXAMPLE
+
+  .NOTES
+  #>
   [CmdletBinding()]
   [OutputType([void])]
   param(
@@ -3281,3 +6763,10 @@ function gtl {
   $pattern = if ($Arguments.Count -gt 0) { "$($Arguments[0])*" } else { "*" }
   git tag --sort=-v:refname -n --list $pattern
 }
+
+#---------------------------------------------------------------------------------------------------
+# Export Module Members
+#---------------------------------------------------------------------------------------------------
+
+# Export all functions
+Export-ModuleMember -Function * -Alias *
