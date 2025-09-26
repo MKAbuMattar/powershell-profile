@@ -1349,7 +1349,3 @@ function Invoke-TerragruntVersion {
     $allArgs = @('--version') + $Arguments
     & terragrunt @allArgs
 }
-
-if (Test-TerragruntInstalled) {
-    Initialize-TerragruntCompletion
-}

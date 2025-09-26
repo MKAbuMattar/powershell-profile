@@ -72,7 +72,6 @@ function Test-DenoInstalled {
         return $true
     }
     catch {
-        Write-Warning "Deno is not installed or not accessible. Please install Deno to use Deno functions."
         return $false
     }
 }
@@ -1130,8 +1129,4 @@ function Invoke-DenoPublish {
 
     $allArgs = @('publish') + $Arguments
     & deno @allArgs
-}
-
-if (Test-DenoInstalled) {
-    Initialize-DenoCompletion
 }

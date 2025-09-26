@@ -71,7 +71,6 @@ function Test-NpmInstalled {
         return $true
     }
     catch {
-        Write-Warning "npm is not installed or not accessible. Please install Node.js and npm to use npm functions."
         return $false
     }
 }
@@ -1650,8 +1649,4 @@ function Invoke-NpmUnlink {
     }
 
     & npm @allArgs
-}
-
-if (Test-NpmInstalled) {
-    Initialize-NpmCompletion
 }

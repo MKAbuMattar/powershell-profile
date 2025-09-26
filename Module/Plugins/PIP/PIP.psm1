@@ -79,12 +79,10 @@ function Test-PipInstalled {
             return $true
         }
         else {
-            Write-Warning "pip is not installed or not accessible. Please install Python with pip to use pip functions."
             return $false
         }
     }
     catch {
-        Write-Warning "pip is not installed or not accessible. Please install Python with pip to use pip functions."
         return $false
     }
 }
@@ -1493,8 +1491,4 @@ function Invoke-PipCache {
     $pipCmd = Get-PipCommand
     $allArgs = @('cache') + $Arguments
     & $pipCmd @allArgs
-}
-
-if (Test-PipInstalled) {
-    Initialize-PipCompletion
 }

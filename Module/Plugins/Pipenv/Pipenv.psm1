@@ -1069,32 +1069,3 @@ function Invoke-PipenvScript {
     $allArgs = @('run', $ScriptName) + $Arguments
     & pipenv @allArgs
 }
-
-if (Test-PipenvInstalled) {
-    Initialize-PipenvCompletion
-    
-    if (Test-PipenvAutoShell) {
-        $originalSetLocation = Get-Command Set-Location -CommandType Cmdlet
-        function global:Set-Location {
-            param(
-                [Parameter(Position = 0)]
-                [string]$Path = $HOME,
-                
-                [Parameter(ValueFromRemainingArguments = $true)]
-                $RemainingArgs
-            )
-            
-            & $originalSetLocation @PSBoundParameters
-            if (Test-PipenvAutoShell) {
-                Invoke-PipenvShellToggle
-            }
-        }
-        
-        if (Get-Alias cd -ErrorAction SilentlyContinue) {
-            Remove-Alias cd -Force
-        }
-        New-Alias -Name cd -Value Set-Location -Option AllScope -Force
-        
-        Invoke-PipenvShellToggle
-    }
-}

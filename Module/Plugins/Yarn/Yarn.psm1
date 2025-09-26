@@ -1858,8 +1858,3 @@ function Invoke-YarnGlobalUpgradeAndClean {
         Invoke-YarnCacheClean
     }
 }
-
-if (Test-YarnInstalled) {
-    Initialize-YarnCompletion
-    Initialize-YarnPath
-}

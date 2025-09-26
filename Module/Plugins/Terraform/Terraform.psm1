@@ -1003,7 +1003,3 @@ function Invoke-TerraformConsole {
     $allArgs = @('console') + $Arguments
     & terraform @allArgs
 }
-
-if (Test-TerraformInstalled) {
-    Initialize-TerraformCompletion
-}

@@ -1302,7 +1302,3 @@ function Invoke-UVVersion {
     $allArgs = @('--version') + $Arguments
     & uv @allArgs
 }
-
-if (Test-UVInstalled) {
-    Initialize-UVCompletion
-}

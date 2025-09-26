@@ -1338,7 +1338,3 @@ function Invoke-PoetrySelfShowPlugins {
     $allArgs = @('self', 'show', 'plugins') + $Arguments
     & poetry @allArgs
 }
-
-if (Test-PoetryInstalled) {
-    Initialize-PoetryCompletion
-}
