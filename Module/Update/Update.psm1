@@ -99,20 +99,26 @@ function Update-LocalProfileModuleDirectory {
       foreach ($item in $response) {
         if ($item.type -eq "file" -and ($item.name -match "\.(psd1|psm1)$")) {
           Write-LogMessage -Message "Found PowerShell module file: $($item.path)"
-          if ($item.download_url) {
+          if ($item.download_url -and $item.download_url.Trim() -ne "" -and $item.path -and $item.path.Trim() -ne "") {
             $files += @{
               Path        = $item.path
               DownloadUrl = $item.download_url
             }
           }
           else {
-            Write-LogMessage -Message "Warning: No download URL for file $($item.path)" -Level "WARNING"
+            Write-LogMessage -Message "Warning: Invalid download URL or path for file $($item.path)" -Level "WARNING"
           }
         }
         elseif ($item.type -eq "dir") {
           Write-LogMessage -Message "Found subdirectory: $($item.path), recursing..."
           $subFiles = Get-GitHubDirectoryFiles -Owner $Owner -Repo $Repo -Path $item.path -Branch $Branch
-          $files += $subFiles
+          if ($subFiles -and $subFiles.Count -gt 0) {
+            foreach ($subFile in $subFiles) {
+              if ($subFile.Path -and $subFile.DownloadUrl) {
+                $files += $subFile
+              }
+            }
+          }
         }
       }
 
