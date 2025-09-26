@@ -1,13 +1,17 @@
 @{
-    RootModule        = 'Git.psm1'
-    ModuleVersion     = '4.1.0'
-    GUID              = '6dbbc3bc-d044-4202-af9d-c124e5af130c'
-    Author            = 'Mohammad Abu Mattar'
-    CompanyName       = 'MKAbuMattar'
-    Copyright         = '(c) 2025 Mohammad Abu Mattar. All rights reserved.'
-    Description       = ''
-    PowerShellVersion = '5.0'
-    FunctionsToExport = @(
+    RootModule           = 'Git.psm1'
+    ModuleVersion        = '4.1.0'
+    CompatiblePSEditions = @(
+        'Desktop',
+        'Core'
+    )
+    GUID                 = '6dbbc3bc-d044-4202-af9d-c124e5af130c'
+    Author               = 'Mohammad Abu Mattar'
+    CompanyName          = 'MKAbuMattar'
+    Copyright            = '(c) 2025 Mohammad Abu Mattar. All rights reserved.'
+    Description          = ''
+    PowerShellVersion    = '5.0'
+    FunctionsToExport    = @(
         'g',
         'grt',
         'ga',
@@ -209,15 +213,21 @@
         'glp',
         'gtl'
     )
-    CmdletsToExport   = @()
-    VariablesToExport = @()
-    AliasesToExport   = @(  )
-    PrivateData       = @{
+    CmdletsToExport      = @()
+    VariablesToExport    = @()
+    AliasesToExport      = @(  )
+    PrivateData          = @{
         PSData = @{
-            Tags       = @()
-            LicenseUri = 'https://raw.githubusercontent.com/MKAbuMattar/powershell-profile/main/LICENSE'
-            ProjectUri = 'https://github.com/MKAbuMattar/powershell-profile'
+            Tags                       = @()
+            LicenseUri                 = 'https://raw.githubusercontent.com/MKAbuMattar/powershell-profile/main/LICENSE'
+            ProjectUri                 = 'https://github.com/MKAbuMattar/powershell-profile'
+            IconUri                    = ''
+            ReleaseNotes               = ''
+            Prerelease                 = ''
+            RequireLicenseAcceptance   = $false
+            ExternalModuleDependencies = @()
         }
     }
-    HelpInfoURI       = 'https://github.com/MKAbuMattar/powershell-profile/blob/main/Module/Plugins/Git/README.md'
+    HelpInfoURI          = 'https://github.com/MKAbuMattar/powershell-profile/blob/main/Module/Plugins/Git/README.md'
+    DefaultCommandPrefix = ''
 }

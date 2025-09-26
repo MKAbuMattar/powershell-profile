@@ -50,6 +50,14 @@ Complete Helm integration with PowerShell functions and convenient aliases for K
 **Location:** `Module/Plugins/Helm/`  
 **Documentation:** [Helm Plugin README](Helm/README.md)
 
+### **[Kubectl Plugin](Kubectl/README.md)**
+
+Comprehensive kubectl CLI integration with 100+ PowerShell functions and convenient aliases for Kubernetes cluster management. Provides complete workflow automation with automatic PowerShell completion, resource management, namespace handling, and extensive troubleshooting utilities.
+
+**Key Features:** kubectl CLI shortcuts, PowerShell completion, pod/service/deployment management, logging utilities, configuration management  
+**Location:** `Module/Plugins/Kubectl/`  
+**Documentation:** [Kubectl Plugin README](Kubectl/README.md)
+
 **Key Features:** Git aliases, repository safety, branch management, version compatibility  
 **Location:** `Module/Plugins/Git/`  
 **Documentation:** [Git Plugin README](Git/README.md)
@@ -92,23 +100,23 @@ Get-Command -Module AWS             # All AWS functions
 
 The plugin system is designed to be extensible. Future plugins could include:
 
-- **Kubernetes Plugin**: Kubernetes cluster management commands
-- **Azure Plugin**: Azure CLI shortcuts and resource management
-- **NPM Plugin**: Node.js and NPM workflow enhancements
-- **Python Plugin**: Python development and virtual environment management
-- **Database Plugin**: Database connection and query shortcuts
-- **CI/CD Plugin**: Continuous integration and deployment helpers
+-   **Kubernetes Plugin**: Kubernetes cluster management commands
+-   **Azure Plugin**: Azure CLI shortcuts and resource management
+-   **NPM Plugin**: Node.js and NPM workflow enhancements
+-   **Python Plugin**: Python development and virtual environment management
+-   **Database Plugin**: Database connection and query shortcuts
+-   **CI/CD Plugin**: Continuous integration and deployment helpers
 
 [Back to Modules](../../README.md#modules)
 
 **Contribution:**
 Contributions are highly encouraged! Whether you want to:
 
-- Add new plugins for popular development tools
-- Enhance existing plugins with new functionality
-- Improve documentation and examples
-- Fix bugs or optimize performance
-- Suggest new plugin ideas
+-   Add new plugins for popular development tools
+-   Enhance existing plugins with new functionality
+-   Improve documentation and examples
+-   Fix bugs or optimize performance
+-   Suggest new plugin ideas
 
 Please follow the plugin development guidelines and adhere to the main [Contributing Guidelines](../../README.md#contributing).
 

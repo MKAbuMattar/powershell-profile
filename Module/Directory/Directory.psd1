@@ -1,13 +1,17 @@
 @{
-    RootModule        = 'Directory.psm1'
-    ModuleVersion     = '4.1.0'
-    GUID              = '23724530-b558-4a50-bc83-98525b46d859'
-    Author            = 'Mohammad Abu Mattar'
-    CompanyName       = 'MKAbuMattar'
-    Copyright         = '(c) 2025 Mohammad Abu Mattar. All rights reserved.'
-    Description       = 'A PowerShell utility module for file and directory management, including file search, creation, compression, extraction, and content manipulation.'
-    PowerShellVersion = '5.0'
-    FunctionsToExport = @(
+    RootModule           = 'Directory.psm1'
+    ModuleVersion        = '4.1.0'
+    CompatiblePSEditions = @(
+        'Desktop',
+        'Core'
+    )
+    GUID                 = '23724530-b558-4a50-bc83-98525b46d859'
+    Author               = 'Mohammad Abu Mattar'
+    CompanyName          = 'MKAbuMattar'
+    Copyright            = '(c) 2025 Mohammad Abu Mattar. All rights reserved.'
+    Description          = 'A PowerShell utility module for file and directory management, including file search, creation, compression, extraction, and content manipulation.'
+    PowerShellVersion    = '5.0'
+    FunctionsToExport    = @(
         'Find-Files',
         'Set-FreshFile',
         'Expand-File',
@@ -23,9 +27,9 @@
         'Invoke-UpFourDirectoryLevels',
         'Invoke-UpFiveDirectoryLevels'
     )
-    CmdletsToExport   = @()
-    VariablesToExport = @()
-    AliasesToExport   = @(
+    CmdletsToExport      = @()
+    VariablesToExport    = @()
+    AliasesToExport      = @(
         'ff',
         'touch',
         'unzip',
@@ -48,18 +52,24 @@
         'cd.5',
         '......'
     )
-    PrivateData       = @{
+    PrivateData          = @{
         PSData = @{
-            Tags       = @(
+            Tags                       = @(
                 'Files Management',
                 'Directory Navigation',
                 'Compression',
                 'Extraction',
                 'Content Manipulation'
             )
-            LicenseUri = 'https://raw.githubusercontent.com/MKAbuMattar/powershell-profile/main/LICENSE'
-            ProjectUri = 'https://github.com/MKAbuMattar/powershell-profile'
+            LicenseUri                 = 'https://raw.githubusercontent.com/MKAbuMattar/powershell-profile/main/LICENSE'
+            ProjectUri                 = 'https://github.com/MKAbuMattar/powershell-profile'
+            IconUri                    = ''
+            ReleaseNotes               = ''
+            Prerelease                 = ''
+            RequireLicenseAcceptance   = $false
+            ExternalModuleDependencies = @()
         }
     }
-    HelpInfoURI       = 'https://github.com/MKAbuMattar/powershell-profile/blob/main/Module/Directory/README.md'
+    HelpInfoURI          = 'https://github.com/MKAbuMattar/powershell-profile/blob/main/Module/Directory/README.md'
+    DefaultCommandPrefix = ''
 }

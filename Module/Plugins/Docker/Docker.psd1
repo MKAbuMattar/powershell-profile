@@ -1,13 +1,17 @@
 @{
-    RootModule        = 'Docker.psm1'
-    ModuleVersion     = '4.1.0'
-    GUID              = 'c616992d-3bc1-4c78-a210-5e4d139a9a6f'
-    Author            = 'Mohammad Abu Mattar'
-    CompanyName       = 'MKAbuMattar'
-    Copyright         = '(c) 2025 Mohammad Abu Mattar. All rights reserved.'
-    Description       = 'Docker command aliases and utility functions for improved Docker workflow in PowerShell'
-    PowerShellVersion = '5.0'
-    FunctionsToExport = @(
+    RootModule           = 'Docker.psm1'
+    ModuleVersion        = '4.1.0'
+    CompatiblePSEditions = @(
+        'Desktop',
+        'Core'
+    )
+    GUID                 = 'c616992d-3bc1-4c78-a210-5e4d139a9a6f'
+    Author               = 'Mohammad Abu Mattar'
+    CompanyName          = 'MKAbuMattar'
+    Copyright            = '(c) 2025 Mohammad Abu Mattar. All rights reserved.'
+    Description          = 'Docker command aliases and utility functions for improved Docker workflow in PowerShell'
+    PowerShellVersion    = '5.0'
+    FunctionsToExport    = @(
         'Invoke-DockerBuild',
         'Invoke-DockerContainerInspect',
         'Invoke-DockerContainerList',
@@ -46,9 +50,9 @@
         'Invoke-DockerContainerExec',
         'Invoke-DockerContainerExecInteractive'
     )
-    CmdletsToExport   = @()
-    VariablesToExport = @()
-    AliasesToExport   = @(
+    CmdletsToExport      = @()
+    VariablesToExport    = @()
+    AliasesToExport      = @(
         'dbl',
         'dcin',
         'dcls',
@@ -87,18 +91,24 @@
         'dxc',
         'dxcit'
     )
-    PrivateData       = @{
+    PrivateData          = @{
         PSData = @{
-            Tags       = @(
+            Tags                       = @(
                 'Docker',
                 'Container',
                 'DevOps',
                 'CLI',
                 'Shortcuts'
             )
-            LicenseUri = 'https://raw.githubusercontent.com/MKAbuMattar/powershell-profile/main/LICENSE'
-            ProjectUri = 'https://github.com/MKAbuMattar/powershell-profile'
+            LicenseUri                 = 'https://raw.githubusercontent.com/MKAbuMattar/powershell-profile/main/LICENSE'
+            ProjectUri                 = 'https://github.com/MKAbuMattar/powershell-profile'
+            IconUri                    = ''
+            ReleaseNotes               = ''
+            Prerelease                 = ''
+            RequireLicenseAcceptance   = $false
+            ExternalModuleDependencies = @()
         }
     }
-    HelpInfoURI       = 'https://github.com/MKAbuMattar/powershell-profile/blob/main/Module/Plugins/Docker/README.md'
+    HelpInfoURI          = 'https://github.com/MKAbuMattar/powershell-profile/blob/main/Module/Plugins/Docker/README.md'
+    DefaultCommandPrefix = ''
 }

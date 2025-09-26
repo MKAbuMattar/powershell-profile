@@ -179,6 +179,22 @@ else {
     Write-Warning "Plugin-Git module not found at: $PluginGitModulePath"
 }
 
+$PluginHelmModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Plugins/Helm/Helm.psd1'
+if (Test-Path $PluginHelmModulePath) {
+    Import-Module $PluginHelmModulePath -Force -ErrorAction SilentlyContinue
+}
+else {
+    Write-Warning "Plugin-Helm module not found at: $PluginHelmModulePath"
+}
+
+$PluginKubectlModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Plugins/Kubectl/Kubectl.psd1'
+if (Test-Path $PluginKubectlModulePath) {
+    Import-Module $PluginKubectlModulePath -Force -ErrorAction SilentlyContinue
+}
+else {
+    Write-Warning "Plugin-Kubectl module not found at: $PluginKubectlModulePath"
+}
+
 $LoggingModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Logging/Logging.psd1'
 if (Test-Path $LoggingModulePath) {
     Import-Module $LoggingModulePath -Force -ErrorAction SilentlyContinue
@@ -291,7 +307,7 @@ Set-Alias -Name vim -Value $EDITOR
 #------------------------------------------------------
 # Run FastFetch
 #------------------------------------------------------
-if (Test-CommandExists FastFetch) {
-    Invoke-Expression -Command "Clear-Host"
-    Invoke-Expression -Command "FastFetch"
-}
+# if (Test-CommandExists FastFetch) {
+#     Invoke-Expression -Command "Clear-Host"
+#     Invoke-Expression -Command "FastFetch"
+# }

@@ -1,13 +1,17 @@
 @{
-    RootModule        = 'DockerCompose.psm1'
-    ModuleVersion     = '4.1.0'
-    GUID              = 'd8a1e2b3-4c5f-6789-abc0-def123456789'
-    Author            = 'Mohammad Abu Mattar'
-    CompanyName       = 'MKAbuMattar'
-    Copyright         = '(c) 2025 Mohammad Abu Mattar. All rights reserved.'
-    Description       = 'Docker Compose command aliases and utility functions for improved Docker Compose workflow in PowerShell environments'
-    PowerShellVersion = '5.0'
-    FunctionsToExport = @(
+    RootModule           = 'DockerCompose.psm1'
+    ModuleVersion        = '4.1.0'
+    CompatiblePSEditions = @(
+        'Desktop',
+        'Core'
+    )
+    GUID                 = 'd8a1e2b3-4c5f-6789-abc0-def123456789'
+    Author               = 'Mohammad Abu Mattar'
+    CompanyName          = 'MKAbuMattar'
+    Copyright            = '(c) 2025 Mohammad Abu Mattar. All rights reserved.'
+    Description          = 'Docker Compose command aliases and utility functions for improved Docker Compose workflow in PowerShell environments'
+    PowerShellVersion    = '5.0'
+    FunctionsToExport    = @(
         'Invoke-DockerCompose',
         'Invoke-DockerComposeBuild',
         'Invoke-DockerComposeExec',
@@ -28,9 +32,9 @@
         'Invoke-DockerComposeStart',
         'Invoke-DockerComposeKill'
     )
-    CmdletsToExport   = @()
-    VariablesToExport = @()
-    AliasesToExport   = @(
+    CmdletsToExport      = @()
+    VariablesToExport    = @()
+    AliasesToExport      = @(
         'dco',
         'dcb',
         'dce',
@@ -51,12 +55,25 @@
         'dcstart',
         'dck'
     )
-    PrivateData       = @{
+    PrivateData          = @{
         PSData = @{
-            Tags       = @('Docker', 'Docker-Compose', 'Container', 'DevOps', 'CLI', 'Shortcuts')
-            LicenseUri = 'https://raw.githubusercontent.com/MKAbuMattar/powershell-profile/main/LICENSE'
-            ProjectUri = 'https://github.com/MKAbuMattar/powershell-profile'
+            Tags                       = @(
+                'Docker',
+                'DockerCompose',
+                'Container',
+                'DevOps',
+                'CLI',
+                'Shortcuts'
+            )
+            LicenseUri                 = 'https://raw.githubusercontent.com/MKAbuMattar/powershell-profile/main/LICENSE'
+            ProjectUri                 = 'https://github.com/MKAbuMattar/powershell-profile'
+            IconUri                    = ''
+            ReleaseNotes               = ''
+            Prerelease                 = ''
+            RequireLicenseAcceptance   = $false
+            ExternalModuleDependencies = @()
         }
     }
-    HelpInfoURI       = 'https://github.com/MKAbuMattar/powershell-profile/blob/main/Module/Plugins/DockerCompose/README.md'
+    HelpInfoURI          = 'https://github.com/MKAbuMattar/powershell-profile/blob/main/Module/Plugins/DockerCompose/README.md'
+    DefaultCommandPrefix = ''
 }

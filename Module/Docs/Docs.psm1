@@ -88,6 +88,10 @@ function Show-ProfileHelp {
         Displays the help documentation for the Helm plugin with all available Helm aliases and commands.
 
     .EXAMPLE
+        Show-ProfileHelp -Section 'Kubectl'
+        Displays the help documentation for the Kubectl plugin with all available kubectl aliases and commands.
+
+    .EXAMPLE
         Show-ProfileHelp -Section 'Plugins'
         Displays an overview of all available plugins.
 
@@ -115,6 +119,7 @@ function Show-ProfileHelp {
             'Environment',
             'Git',
             'Helm',
+            'Kubectl',
             'Logging',
             'Network',
             'Plugins',
@@ -633,6 +638,78 @@ $($PSStyle.Foreground.Yellow)Plugins Module - Helm Plugin$($PSStyle.Reset)
     5 Helm functions available for complete Kubernetes package management.
 "@
 
+    $PluginsKubectl = @"
+$($PSStyle.Foreground.Yellow)Plugins Module - Kubectl Plugin$($PSStyle.Reset)
+    $($PSStyle.Foreground.Cyan)Comprehensive kubectl CLI integration with 100+ PowerShell functions and aliases$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Core Commands:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)k$($PSStyle.Reset) <args>            - Base kubectl command wrapper
+        $($PSStyle.Foreground.Magenta)kca$($PSStyle.Reset) <args>          - Commands against all namespaces
+        $($PSStyle.Foreground.Magenta)kaf$($PSStyle.Reset) <file>          - Apply YAML files
+        $($PSStyle.Foreground.Magenta)keti$($PSStyle.Reset) <pod>          - Interactive container exec
+
+    $($PSStyle.Foreground.Green)Pod Management:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# List and manage pods
+        kgp                    # Get pods
+        kgpa                   # Get all pods in all namespaces
+        kgpw                   # Watch pods
+        kgpwide                # Get pods with wide output
+        kdp my-pod             # Describe pod
+        kdelp my-pod           # Delete pod
+        keti my-pod            # Interactive exec into pod$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Service & Networking:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Service operations
+        kgs                    # Get services
+        kgsa                   # Get services in all namespaces
+        kds my-service         # Describe service
+        kpf svc/my-svc 8080:80 # Port forward to service$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Deployment Management:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Deployment operations
+        kgd                    # Get deployments
+        kgda                   # Get deployments in all namespaces
+        ksd my-app --replicas=5 # Scale deployment
+        krsd my-app            # Rollout status
+        kres deployment my-app  # Restart deployment$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Configuration & Context:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Context management
+        kcgc                   # List contexts
+        kcuc dev-cluster       # Switch context
+        kccc                   # Current context
+        kcn my-namespace       # Set namespace$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Logging & Monitoring:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# View logs
+        kl my-pod              # Get logs
+        klf my-pod             # Follow logs
+        kl1h my-pod            # Last hour logs
+        klf1m my-pod           # Follow logs last minute
+        kge                    # Get events
+        kgew                   # Watch events$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Resource Management:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Various resources
+        kgcm                   # Get configmaps
+        kgsec                  # Get secrets
+        kgns                   # Get namespaces
+        kga                    # Get all resources
+        kgaa                   # Get all in all namespaces$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Examples:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Complete workflow
+        kcgc                               # List contexts
+        kcuc production                    # Switch to production
+        kgp                               # List pods
+        klf my-app-pod                    # Follow logs
+        ksd my-app --replicas=3           # Scale application
+        kaf deployment.yaml               # Apply configuration$($PSStyle.Reset)
+
+    Note: Includes automatic PowerShell completion and 100+ kubectl commands with aliases.
+    Complete kubectl integration for Kubernetes cluster management.
+"@
+
     $Starship = @"
 $($PSStyle.Foreground.Yellow)Starship Module$($PSStyle.Reset)
     $($PSStyle.Foreground.Green)Invoke-StarshipTransientFunction$($PSStyle.Reset)
@@ -763,6 +840,10 @@ $($PSStyle.Foreground.Yellow)Utility Module$($PSStyle.Reset)
         'Helm' {
             Write-Host $Title
             Write-Host $PluginsHelm
+        }
+        'Kubectl' {
+            Write-Host $Title
+            Write-Host $PluginsKubectl
         }
         'Logging' {
             Write-Host $Title

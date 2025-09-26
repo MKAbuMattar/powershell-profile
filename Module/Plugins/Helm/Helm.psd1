@@ -31,21 +31,27 @@
     )
     DscResourcesToExport = @()
     ModuleList           = @()
-    FileList             = @('Helm.psm1', 'Helm.psd1', 'README.md')
+    FileList             = @(
+        'Helm.psm1',
+        'Helm.psd1',
+        'README.md'
+    )
     PrivateData          = @{
         PSData = @{
-            Tags                       = @('Helm', 'Kubernetes', 'K8s', 'DevOps', 'CLI', 'PowerShell', 'Profile', 'Aliases')
+            Tags                       = @(
+                'Helm',
+                'Kubernetes',
+                'K8s',
+                'DevOps',
+                'CLI',
+                'PowerShell', 
+                'Profile',
+                'Aliases'
+            )
             LicenseUri                 = 'https://github.com/MKAbuMattar/powershell-profile/blob/main/LICENSE'
             ProjectUri                 = 'https://github.com/MKAbuMattar/powershell-profile'
             IconUri                    = ''
-            ReleaseNotes               = @"
-v4.1.0 - Initial Helm plugin release
-- Complete Helm CLI integration with PowerShell aliases
-- 5 PowerShell functions with convenient aliases
-- Comprehensive help documentation for all functions
-- Full parameter support for all Helm commands and options
-- PowerShell completion support for enhanced productivity
-"@
+            ReleaseNotes               = ''
             Prerelease                 = ''
             RequireLicenseAcceptance   = $false
             ExternalModuleDependencies = @()

@@ -1,13 +1,17 @@
 @{
-    RootModule        = 'AWS.psm1'
-    ModuleVersion     = '4.1.0'
-    GUID              = 'd018c9e3-a978-4656-8557-495e86b160f1'
-    Author            = 'Mohammad Abu Mattar'
-    CompanyName       = 'MKAbuMattar'
-    Copyright         = '(c) 2025 Mohammad Abu Mattar. All rights reserved.'
-    Description       = 'AWS CLI shortcuts and utility functions with profile management, MFA support, and role assumption for PowerShell environments'
-    PowerShellVersion = '5.0'
-    FunctionsToExport = @(
+    RootModule           = 'AWS.psm1'
+    ModuleVersion        = '4.1.0'
+    CompatiblePSEditions = @(
+        'Desktop',
+        'Core'
+    )
+    GUID                 = 'd018c9e3-a978-4656-8557-495e86b160f1'
+    Author               = 'Mohammad Abu Mattar'
+    CompanyName          = 'MKAbuMattar'
+    Copyright            = '(c) 2025 Mohammad Abu Mattar. All rights reserved.'
+    Description          = 'AWS CLI shortcuts and utility functions with profile management, MFA support, and role assumption for PowerShell environments'
+    PowerShellVersion    = '5.0'
+    FunctionsToExport    = @(
         'Get-AWSCurrentProfile',
         'Get-AWSCurrentRegion',
         'Update-AWSState',
@@ -21,9 +25,9 @@
         'Get-AWSPromptInfo',
         'Initialize-AWSState'
     )
-    CmdletsToExport   = @()
-    VariablesToExport = @()
-    AliasesToExport   = @(
+    CmdletsToExport      = @()
+    VariablesToExport    = @()
+    AliasesToExport      = @(
         'agp',
         'agr',
         'asp',
@@ -33,9 +37,9 @@
         'aws-regions',
         'aws-profiles'
     )
-    PrivateData       = @{
+    PrivateData          = @{
         PSData = @{
-            Tags       = @(
+            Tags                       = @(
                 'AWS',
                 'Cloud',
                 'CLI',
@@ -45,9 +49,15 @@
                 'SSO',
                 'DevOps'
             )
-            LicenseUri = 'https://raw.githubusercontent.com/MKAbuMattar/powershell-profile/main/LICENSE'
-            ProjectUri = 'https://github.com/MKAbuMattar/powershell-profile'
+            LicenseUri                 = 'https://raw.githubusercontent.com/MKAbuMattar/powershell-profile/main/LICENSE'
+            ProjectUri                 = 'https://github.com/MKAbuMattar/powershell-profile'
+            IconUri                    = ''
+            ReleaseNotes               = ''
+            Prerelease                 = ''
+            RequireLicenseAcceptance   = $false
+            ExternalModuleDependencies = @()
         }
     }
-    HelpInfoURI       = 'https://github.com/MKAbuMattar/powershell-profile/blob/main/Module/Plugins/AWS/README.md'
+    HelpInfoURI          = 'https://github.com/MKAbuMattar/powershell-profile/blob/main/Module/Plugins/AWS/README.md'
+    DefaultCommandPrefix = ''
 }
