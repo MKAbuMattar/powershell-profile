@@ -1,5 +1,5 @@
 function Get-WeatherForecast {
-  <#
+    <#
   .SYNOPSIS
     Gets the weather forecast for a specified location.
 
@@ -53,97 +53,98 @@ function Get-WeatherForecast {
   .LINK
     https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
   #>
-  [CmdletBinding()]
-  [Alias("weather")]
-  [OutputType([string])]
-  param (
-    [Parameter(
-      Mandatory = $false,
-      Position = 0,
-      ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true,
-      HelpMessage = "The location to retrieve the weather forecast for."
-    )]
-    [Alias("l")]
-    [string]$Location = $null,
+    [CmdletBinding()]
+    [Alias("weather")]
+    [OutputType([string])]
+    param (
+        [Parameter(
+            Mandatory = $false,
+            Position = 0,
+            ValueFromPipeline = $true,
+            ValueFromPipelineByPropertyName = $true,
+            HelpMessage = "The location to retrieve the weather forecast for."
+        )]
+        [Alias("l")]
+        [string]$Location = $null,
 
-    [Parameter(
-      Mandatory = $false,
-      Position = 1,
-      ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true,
-      HelpMessage = "Indicates whether to display weather glyphs in the forecast."
-    )]
-    [Alias("g")]
-    [switch]$Glyphs = $true,
+        [Parameter(
+            Mandatory = $false,
+            Position = 1,
+            ValueFromPipeline = $true,
+            ValueFromPipelineByPropertyName = $true,
+            HelpMessage = "Indicates whether to display weather glyphs in the forecast."
+        )]
+        [Alias("g")]
+        [switch]$Glyphs = $true,
 
-    [Parameter(
-      Mandatory = $false,
-      Position = 2,
-      ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true,
-      HelpMessage = "Indicates whether to display moon phases in the forecast."
-    )]
-    [Alias("m")]
-    [switch]$Moon = $false,
+        [Parameter(
+            Mandatory = $false,
+            Position = 2,
+            ValueFromPipeline = $true,
+            ValueFromPipelineByPropertyName = $true,
+            HelpMessage = "Indicates whether to display moon phases in the forecast."
+        )]
+        [Alias("m")]
+        [switch]$Moon = $false,
 
-    [Parameter(
-      Mandatory = $false,
-      Position = 3,
-      ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true,
-      HelpMessage = "A custom format for the weather forecast."
-    )]
-    [Alias("f")]
-    [string]$Format = $null,
+        [Parameter(
+            Mandatory = $false,
+            Position = 3,
+            ValueFromPipeline = $true,
+            ValueFromPipelineByPropertyName = $true,
+            HelpMessage = "A custom format for the weather forecast."
+        )]
+        [Alias("f")]
+        [string]$Format = $null,
 
-    [Parameter(
-      Mandatory = $false,
-      Position = 4,
-      ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true,
-      HelpMessage = "The language for the weather forecast."
-    )]
-    [ValidateSet(
-      "en",
-      "ar",
-      "de",
-      "es",
-      "fr",
-      "it",
-      "nl",
-      "pl",
-      "pt",
-      "ro",
-      "ru",
-      "tr"
-    )]
-    [string]$Lang = "en"
-  )
+        [Parameter(
+            Mandatory = $false,
+            Position = 4,
+            ValueFromPipeline = $true,
+            ValueFromPipelineByPropertyName = $true,
+            HelpMessage = "The language for the weather forecast."
+        )]
+        [ValidateSet(
+            "en",
+            "ar",
+            "de",
+            "es",
+            "fr",
+            "it",
+            "nl",
+            "pl",
+            "pt",
+            "ro",
+            "ru",
+            "tr"
+        )]
+        [string]$Lang = "en"
+    )
 
-  $url = "https://wttr.in/"
+    $url = "https://wttr.in/"
 
-  try {
-    switch ($true) {
-      { $Moon -eq $false && $Location } { $url += $Location }
-      { $Moon -eq $true } { $url += "Moon" }
-      { $Glyphs -eq $true } { $url += "?d" }
-      { $Glyphs -eq $false } { $url += "?T" }
-      { $Format } { $url += "&&format=$Format" }
-      { $Lang } { $url += "&&lang=$Lang" }
-      default { $url += "" }
+    try {
+        switch ($true) {
+            { $Moon -eq $false && $Location } { $url += $Location }
+            { $Moon -eq $true } { $url += "Moon" }
+            { $Glyphs -eq $true } { $url += "?d" }
+            { $Glyphs -eq $false } { $url += "?T" }
+            { $Format } { $url += "&&format=$Format" }
+            { $Lang } { $url += "&&lang=$Lang" }
+            default { $url += "" }
+        }
+
+        $response = Invoke-RestMethod -Uri $url -Method Get -SkipCertificateCheck
+
+        if ($response) {
+            Write-Output $response
+        }
+        else {
+            Write-LogMessage -Message "Failed to retrieve the weather forecast." -Level "ERROR"
+        }
     }
-
-    $response = Invoke-RestMethod -Uri $url -Method Get -SkipCertificateCheck
-
-    if ($response) {
-      Write-Output $response
+    catch {
+        Write-LogMessage -Message "Failed to retrieve the weather forecast." -Level "ERROR"
     }
-    else {
-      Write-LogMessage -Message "Failed to retrieve the weather forecast." -Level "ERROR"
-    }
-  }
-  catch {
-    Write-LogMessage -Message "Failed to retrieve the weather forecast." -Level "ERROR"
-  }
 }
+

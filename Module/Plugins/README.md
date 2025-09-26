@@ -26,9 +26,29 @@ Complete Docker command integration with 37 PowerShell functions and convenient 
 **Location:** `Module/Plugins/Docker/`  
 **Documentation:** [Docker Plugin README](Docker/README.md)
 
+### **[Docker-Compose Plugin](DockerCompose/README.md)**
+
+Comprehensive Docker Compose integration with 20 PowerShell functions and convenient aliases for multi-container application management. Provides intelligent command detection between Docker Compose v1 and v2, service lifecycle management, and complete workflow automation.
+
+**Key Features:** Docker Compose CLI shortcuts, automatic command detection, service management, log monitoring, build automation  
+**Location:** `Module/Plugins/DockerCompose/`  
+**Documentation:** [Docker-Compose Plugin README](DockerCompose/README.md)
+
 ### **[Git Plugin](Git/README.md)**
 
 Comprehensive Git integration with 160+ aliases and shortcuts for all Git operations. Includes automatic repository validation, smart branch management, and enhanced workflow commands.
+
+**Key Features:** Git aliases, repository safety, branch management, version compatibility  
+**Location:** `Module/Plugins/Git/`  
+**Documentation:** [Git Plugin README](Git/README.md)
+
+### **[Helm Plugin](Helm/README.md)**
+
+Complete Helm integration with PowerShell functions and convenient aliases for Kubernetes package management. Provides automatic PowerShell completion, chart management, release lifecycle operations, and comprehensive workflow automation.
+
+**Key Features:** Helm CLI shortcuts, PowerShell completion, chart operations, release management, repository handling  
+**Location:** `Module/Plugins/Helm/`  
+**Documentation:** [Helm Plugin README](Helm/README.md)
 
 **Key Features:** Git aliases, repository safety, branch management, version compatibility  
 **Location:** `Module/Plugins/Git/`  

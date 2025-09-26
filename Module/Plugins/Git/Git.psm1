@@ -1,6767 +1,6781 @@
 ﻿#---------------------------------------------------------------------------------------------------
 # Import the custom Git modules
 #---------------------------------------------------------------------------------------------------
-$GitCoreModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Core/Git-Core.psd1'
+$GitCoreModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Core/Core.psd1'
 if (Test-Path $GitCoreModulePath) {
-  Import-Module $GitCoreModulePath -Force -Global
+    Import-Module $GitCoreModulePath -Force -Global
 }
 else {
-  Write-Warning "Git-Core module not found at: $GitCoreModulePath"
+    Write-Warning "Git-Core module not found at: $GitCoreModulePath"
 }
 
-$GitUtilityModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Utility/Git-Utility.psd1'
+$GitUtilityModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Utility/Utility.psd1'
 if (Test-Path $GitUtilityModulePath) {
-  Import-Module $GitUtilityModulePath -Force -Global
+    Import-Module $GitUtilityModulePath -Force -Global
 }
 else {
-  Write-Warning "Git-Utility module not found at: $GitUtilityModulePath"
+    Write-Warning "Git-Utility module not found at: $GitUtilityModulePath"
 }
 
 function g {
-  <#
-  .SYNOPSIS
-    A PowerShell function that wraps the `git` command.
+    <#
+    .SYNOPSIS
+        A PowerShell function that wraps the `git` command.
 
-  .DESCRIPTION
-    This function is a shortcut for running the `git` command with any provided arguments.
-    It allows you to execute Git commands directly from PowerShell by passing the desired
-    arguments to this function.
+    .DESCRIPTION
+        This function is a shortcut for running the `git` command with any provided arguments.
+        It allows you to execute Git commands directly from PowerShell by passing the desired
+        arguments to this function.
 
-  .PARAMETER Arguments
-    Additional arguments to pass to the `git` command.
+    .PARAMETER Arguments
+        Additional arguments to pass to the `git` command.
 
-  .INPUTS
-    [string[]] Arguments — arguments are passed directly to `git`.
+    .INPUTS
+        [string[]] Arguments — arguments are passed directly to `git`.
 
-  .OUTPUTS
-    None. This function writes Git output to the console but does not return objects.
+    .OUTPUTS
+        None. This function writes Git output to the console but does not return objects.
 
-  .EXAMPLE
-    g status
-    Displays the status of the current Git repository.
+    .EXAMPLE
+        g status
+        Displays the status of the current Git repository.
 
-    g commit -m "Your commit message"
-    Commits changes in the current Git repository with the specified commit message.
+        g commit -m "Your commit message"
+        Commits changes in the current Git repository with the specified commit message.
 
-    g push origin main
-    Pushes the local "main" branch to the "origin" remote repository.
+        g push origin main
+        Pushes the local "main" branch to the "origin" remote repository.
 
-  .NOTES
-    - Requires Git to be installed and available in the system's PATH.
-    - Must be run inside a Git repository for most commands to work.
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+        - Requires Git to be installed and available in the system's PATH.
+        - Must be run inside a Git repository for most commands to work.
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  git @Arguments
+    git @Arguments
 }
 
 function  grt {
-  <#
-  .SYNOPSIS
-    A PowerShell function that wraps `git rev-parse --show-toplevel`.
+    <#
+    .SYNOPSIS
+        A PowerShell function that wraps `git rev-parse --show-toplevel`.
 
-  .DESCRIPTION
-    This function is a shortcut for running the `git rev-parse --show-toplevel` command.
-    It outputs the absolute path of the top-level directory of the current Git repository.
-    This is useful for determining the root directory of your repository from any subdirectory.
+    .DESCRIPTION
+        This function is a shortcut for running the `git rev-parse --show-toplevel` command.
+        It outputs the absolute path of the top-level directory of the current Git repository.
+        This is useful for determining the root directory of your repository from any subdirectory.
 
-  .INPUTS
-    None. This function does not accept any input.
+    .INPUTS
+        None. This function does not accept any input.
 
-  .OUTPUTS
-    None. This function writes the top-level directory path to the console but does not return objects.
+    .OUTPUTS
+        None. This function writes the top-level directory path to the console but does not return objects.
 
-  .EXAMPLE
-    grt
-    Outputs the absolute path of the top-level directory of the current Git repository.
+    .EXAMPLE
+        grt
+        Outputs the absolute path of the top-level directory of the current Git repository.
 
-    grt | Set-Location
-    Changes the current directory to the top-level directory of the current Git repository.
+        grt | Set-Location
+        Changes the current directory to the top-level directory of the current Git repository.
 
-  .NOTES
-    - Requires Git to be installed and available in the system's PATH.
-    - Must be run inside a Git repository.
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param()
+    .NOTES
+        - Requires Git to be installed and available in the system's PATH.
+        - Must be run inside a Git repository.
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param()
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  Set-Location (git rev-parse --show-toplevel)
+    Set-Location (git rev-parse --show-toplevel)
 }
 
 function ga {
-  <#
-  .SYNOPSIS
-    A PowerShell function that wraps `git add`.
+    <#
+    .SYNOPSIS
+        A PowerShell function that wraps `git add`.
 
-  .DESCRIPTION
-    This function is a shortcut for running the `git add` command.
-    It allows you to stage changes in your Git repository by passing the desired
-    arguments to this function.
+    .DESCRIPTION
+        This function is a shortcut for running the `git add` command.
+        It allows you to stage changes in your Git repository by passing the desired
+        arguments to this function.
 
-  .PARAMETER Arguments
-    Additional arguments to pass to the `git add` command.
+    .PARAMETER Arguments
+        Additional arguments to pass to the `git add` command.
 
-  .INPUTS
-    [string[]] Arguments — arguments are passed directly to `git add`.
+    .INPUTS
+        [string[]] Arguments — arguments are passed directly to `git add`.
 
-  .OUTPUTS
-    None. This function writes Git output to the console but does not return objects.
+    .OUTPUTS
+        None. This function writes Git output to the console but does not return objects.
 
-  .EXAMPLE
-    ga .
-    Stages all changes in the current directory.
+    .EXAMPLE
+        ga .
+        Stages all changes in the current directory.
 
-    ga file.txt
-    Stages the specified file.
+        ga file.txt
+        Stages the specified file.
 
-    ga -u
-    Stages all modified and deleted files, but not new untracked files.
+        ga -u
+        Stages all modified and deleted files, but not new untracked files.
 
-  .NOTES
-    - Requires Git to be installed and available in the system's PATH.
-    - Must be run inside a Git repository.
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+        - Requires Git to be installed and available in the system's PATH.
+        - Must be run inside a Git repository.
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git add @Arguments
+    git add @Arguments
 }
 
 function gaa {
-  <#
-  .SYNOPSIS
-    A PowerShell function that wraps `git add --all`.
+    <#
+    .SYNOPSIS
+        A PowerShell function that wraps `git add --all`.
 
-  .DESCRIPTION
-    This function is a shortcut for running the `git add --all` command.
-    It stages all changes in your Git repository, including new, modified, and deleted files.
+    .DESCRIPTION
+        This function is a shortcut for running the `git add --all` command.
+        It stages all changes in your Git repository, including new, modified, and deleted files.
 
-  .PARAMETER Arguments
-    Additional arguments to pass to the `git add --all` command.
+    .PARAMETER Arguments
+        Additional arguments to pass to the `git add --all` command.
 
-  .INPUTS
-    [string[]] Arguments — arguments are passed directly to `git add --all`.
+    .INPUTS
+        [string[]] Arguments — arguments are passed directly to `git add --all`.
 
-  .OUTPUTS
-    None. This function writes Git output to the console but does not return objects.
+    .OUTPUTS
+        None. This function writes Git output to the console but does not return objects.
 
-  .EXAMPLE
-    gaa
-    Stages all changes in the current Git repository.
+    .EXAMPLE
+        gaa
+        Stages all changes in the current Git repository.
 
-    gaa .
-    Stages all changes in the current directory.
+        gaa .
+        Stages all changes in the current directory.
 
-    gaa file.txt
-    Stages the specified file.
+        gaa file.txt
+        Stages the specified file.
 
-  .NOTES
-    - Requires Git to be installed and available in the system's PATH.
-    - Must be run inside a Git repository.
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+        - Requires Git to be installed and available in the system's PATH.
+        - Must be run inside a Git repository.
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git add --all @Arguments
+    git add --all @Arguments
 }
 
 function gapa {
-  <#
-  .SYNOPSIS
-    A PowerShell function that wraps `git add --patch`.
+    <#
+    .SYNOPSIS
+        A PowerShell function that wraps `git add --patch`.
 
-  .DESCRIPTION
-    This function is a shortcut for running the `git add --patch` command.
-    It allows you to interactively stage changes in your Git repository by selecting
-    specific hunks of changes to add.
+    .DESCRIPTION
+        This function is a shortcut for running the `git add --patch` command.
+        It allows you to interactively stage changes in your Git repository by selecting
+        specific hunks of changes to add.
 
-  .PARAMETER Arguments
-    Additional arguments to pass to the `git add --patch` command.
+    .PARAMETER Arguments
+        Additional arguments to pass to the `git add --patch` command.
 
-  .INPUTS
-    [string[]] Arguments — arguments are passed directly to `git add --patch`.
+    .INPUTS
+        [string[]] Arguments — arguments are passed directly to `git add --patch`.
 
-  .OUTPUTS
-    None. This function writes Git output to the console but does not return objects.
+    .OUTPUTS
+        None. This function writes Git output to the console but does not return objects.
 
-  .EXAMPLE
-    gapa
-    Starts an interactive session to stage changes in the current Git repository.
+    .EXAMPLE
+        gapa
+        Starts an interactive session to stage changes in the current Git repository.
 
-    gapa file.txt
-    Starts an interactive session to stage changes in the specified file.
+        gapa file.txt
+        Starts an interactive session to stage changes in the specified file.
 
-  .NOTES
-    - Requires Git to be installed and available in the system's PATH.
-    - Must be run inside a Git repository.
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+        - Requires Git to be installed and available in the system's PATH.
+        - Must be run inside a Git repository.
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git add --patch @Arguments
+    git add --patch @Arguments
 }
 
 function gau {
-  <#
-  .SYNOPSIS
-    A PowerShell function that wraps `git add --update`.
+    <#
+    .SYNOPSIS
+        A PowerShell function that wraps `git add --update`.
 
-  .DESCRIPTION
-    This function is a shortcut for running the `git add --update` command.
-    It stages changes to tracked files in your Git repository, including modifications
-    and deletions, but does not stage new untracked files.
+    .DESCRIPTION
+        This function is a shortcut for running the `git add --update` command.
+        It stages changes to tracked files in your Git repository, including modifications
+        and deletions, but does not stage new untracked files.
 
-  .PARAMETER Arguments
-    Additional arguments to pass to the `git add --update` command.
+    .PARAMETER Arguments
+        Additional arguments to pass to the `git add --update` command.
 
-  .INPUTS
-    [string[]] Arguments — arguments are passed directly to `git add --update`.
+    .INPUTS
+        [string[]] Arguments — arguments are passed directly to `git add --update`.
 
-  .OUTPUTS
-    None. This function writes Git output to the console but does not return objects.
+    .OUTPUTS
+        None. This function writes Git output to the console but does not return objects.
 
-  .EXAMPLE
-    gau
-    Stages all modifications and deletions of tracked files in the current Git repository.
+    .EXAMPLE
+        gau
+        Stages all modifications and deletions of tracked files in the current Git repository.
 
-    gau .
-    Stages all modifications and deletions of tracked files in the current directory.
+        gau .
+        Stages all modifications and deletions of tracked files in the current directory.
 
-    gau file.txt
-    Stages modifications and deletions of the specified tracked file.
+        gau file.txt
+        Stages modifications and deletions of the specified tracked file.
 
-  .NOTES
-    - Requires Git to be installed and available in the system's PATH.
-    - Must be run inside a Git repository.
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+        - Requires Git to be installed and available in the system's PATH.
+        - Must be run inside a Git repository.
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git add --update @Arguments
+    git add --update @Arguments
 }
 
 function gav {
-  <#
-  .SYNOPSIS
-    A PowerShell function that wraps `git add --verbose`.
+    <#
+    .SYNOPSIS
+        A PowerShell function that wraps `git add --verbose`.
 
-  .DESCRIPTION
-    This function is a shortcut for running the `git add --verbose` command.
-    It stages changes in your Git repository and provides detailed output about
-    the files being added.
+    .DESCRIPTION
+        This function is a shortcut for running the `git add --verbose` command.
+        It stages changes in your Git repository and provides detailed output about
+        the files being added.
 
-  .PARAMETER Arguments
-    Additional arguments to pass to the `git add --verbose` command.
+    .PARAMETER Arguments
+        Additional arguments to pass to the `git add --verbose` command.
 
-  .INPUTS
-    [string[]] Arguments — arguments are passed directly to `git add --verbose`.
+    .INPUTS
+        [string[]] Arguments — arguments are passed directly to `git add --verbose`.
 
-  .OUTPUTS
-    None. This function writes Git output to the console but does not return objects.
+    .OUTPUTS
+        None. This function writes Git output to the console but does not return objects.
 
-  .EXAMPLE
-    gav
-    Stages all changes in the current Git repository with verbose output.
+    .EXAMPLE
+        gav
+        Stages all changes in the current Git repository with verbose output.
 
-    gav .
-    Stages all changes in the current directory with verbose output.
+        gav .
+        Stages all changes in the current directory with verbose output.
 
-    gav file.txt
-    Stages the specified file with verbose output.
+        gav file.txt
+        Stages the specified file with verbose output.
 
-  .NOTES
-    - Requires Git to be installed and available in the system's PATH.
-    - Must be run inside a Git repository.
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+        - Requires Git to be installed and available in the system's PATH.
+        - Must be run inside a Git repository.
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git add --verbose @Arguments
+    git add --verbose @Arguments
 }
 
 function gam {
-  <#
-  .SYNOPSIS
-    A PowerShell function that wraps `git am`.
+    <#
+    .SYNOPSIS
+        A PowerShell function that wraps `git am`.
 
-  .DESCRIPTION
-    This function is a shortcut for running the `git am` command.
-    It applies a series of patches from a mailbox file to the current branch in your Git repository.
+    .DESCRIPTION
+        This function is a shortcut for running the `git am` command.
+        It applies a series of patches from a mailbox file to the current branch in your Git repository.
 
-  .PARAMETER Arguments
-    Additional arguments to pass to the `git am` command.
+    .PARAMETER Arguments
+        Additional arguments to pass to the `git am` command.
 
-  .INPUTS
-    [string[]] Arguments — arguments are passed directly to `git am`.
+    .INPUTS
+        [string[]] Arguments — arguments are passed directly to `git am`.
 
-  .OUTPUTS
-    None. This function writes Git output to the console but does not return objects.
+    .OUTPUTS
+        None. This function writes Git output to the console but does not return objects.
 
-  .EXAMPLE
-    gam patch.mbox
-    Applies the patches from the specified mailbox file to the current branch.
+    .EXAMPLE
+        gam patch.mbox
+        Applies the patches from the specified mailbox file to the current branch.
 
-    gam --signoff patch.mbox
-    Applies the patches with a sign-off message.
+        gam --signoff patch.mbox
+        Applies the patches with a sign-off message.
 
-    gam --3way patch.mbox
-    Applies the patches using a three-way merge if necessary.
+        gam --3way patch.mbox
+        Applies the patches using a three-way merge if necessary.
 
-  .NOTES
-    - Requires Git to be installed and available in the system's PATH.
-    - Must be run inside a Git repository.
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+        - Requires Git to be installed and available in the system's PATH.
+        - Must be run inside a Git repository.
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git am @Arguments
+    git am @Arguments
 }
 
 function gama {
-  <#
-  .SYNOPSIS
-    A PowerShell function that wraps `git am --abort`.
+    <#
+    .SYNOPSIS
+        A PowerShell function that wraps `git am --abort`.
 
-  .DESCRIPTION
-    This function is a shortcut for running the `git am --abort` command.
-    It aborts the current `git am` operation and resets the repository to the state
-    before the operation began.
+    .DESCRIPTION
+        This function is a shortcut for running the `git am --abort` command.
+        It aborts the current `git am` operation and resets the repository to the state
+        before the operation began.
 
-  .PARAMETER Arguments
-    Additional arguments to pass to the `git am --abort` command.
+    .PARAMETER Arguments
+        Additional arguments to pass to the `git am --abort` command.
 
-  .INPUTS
-    [string[]] Arguments — arguments are passed directly to `git am --abort`.
+    .INPUTS
+        [string[]] Arguments — arguments are passed directly to `git am --abort`.
 
-  .OUTPUTS
-    None. This function writes Git output to the console but does not return objects.
+    .OUTPUTS
+        None. This function writes Git output to the console but does not return objects.
 
-  .EXAMPLE
-    gama
-    Aborts the current `git am` operation.
+    .EXAMPLE
+        gama
+        Aborts the current `git am` operation.
 
-    gama --quiet
-    Aborts the current `git am` operation with minimal output.
+        gama --quiet
+        Aborts the current `git am` operation with minimal output.
 
-  .NOTES
-    - Requires Git to be installed and available in the system's PATH.
-    - Must be run inside a Git repository.
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+        - Requires Git to be installed and available in the system's PATH.
+        - Must be run inside a Git repository.
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git am --abort @Arguments
+    git am --abort @Arguments
 }
 
 function gamc {
-  <#
-  .SYNOPSIS
-    A PowerShell function that wraps `git am --continue`.
+    <#
+    .SYNOPSIS
+        A PowerShell function that wraps `git am --continue`.
 
-  .DESCRIPTION
-    This function is a shortcut for running the `git am --continue` command.
-    It continues the current `git am` operation after resolving any conflicts.
+    .DESCRIPTION
+        This function is a shortcut for running the `git am --continue` command.
+        It continues the current `git am` operation after resolving any conflicts.
 
-  .PARAMETER Arguments
-    Additional arguments to pass to the `git am --continue` command.
+    .PARAMETER Arguments
+        Additional arguments to pass to the `git am --continue` command.
 
-  .INPUTS
-    [string[]] Arguments — arguments are passed directly to `git am --continue`.
+    .INPUTS
+        [string[]] Arguments — arguments are passed directly to `git am --continue`.
 
-  .OUTPUTS
-    None. This function writes Git output to the console but does not return objects.
+    .OUTPUTS
+        None. This function writes Git output to the console but does not return objects.
 
-  .EXAMPLE
-    gamc
-    Continues the current `git am` operation.
+    .EXAMPLE
+        gamc
+        Continues the current `git am` operation.
 
-    gamc --quiet
-    Continues the current `git am` operation with minimal output.
+        gamc --quiet
+        Continues the current `git am` operation with minimal output.
 
-  .NOTES
-    - Requires Git to be installed and available in the system's PATH.
-    - Must be run inside a Git repository.
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+        - Requires Git to be installed and available in the system's PATH.
+        - Must be run inside a Git repository.
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git am --continue @Arguments
+    git am --continue @Arguments
 }
 
 function gamscp {
-  <#
-  .SYNOPSIS
-    A PowerShell function that wraps `git am --show-current-patch`.
+    <#
+    .SYNOPSIS
+        A PowerShell function that wraps `git am --show-current-patch`.
 
-  .DESCRIPTION
-    This function is a shortcut for running the `git am --show-current-patch` command.
-    It displays the current patch being applied during a `git am` operation.
+    .DESCRIPTION
+        This function is a shortcut for running the `git am --show-current-patch` command.
+        It displays the current patch being applied during a `git am` operation.
 
-  .PARAMETER Arguments
-    Additional arguments to pass to the `git am --show-current-patch` command.
+    .PARAMETER Arguments
+        Additional arguments to pass to the `git am --show-current-patch` command.
 
-  .INPUTS
-    [string[]] Arguments — arguments are passed directly to `git am --show-current-patch`.
+    .INPUTS
+        [string[]] Arguments — arguments are passed directly to `git am --show-current-patch`.
 
-  .OUTPUTS
-    None. This function writes Git output to the console but does not return objects.
+    .OUTPUTS
+        None. This function writes Git output to the console but does not return objects.
 
-  .EXAMPLE
-    gamscp
-    Displays the current patch being applied during a `git am` operation.
+    .EXAMPLE
+        gamscp
+        Displays the current patch being applied during a `git am` operation.
 
-    gamscp --stat
-    Displays the current patch with statistics.
+        gamscp --stat
+        Displays the current patch with statistics.
 
-  .NOTES
-    - Requires Git to be installed and available in the system's PATH.
-    - Must be run inside a Git repository.
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+        - Requires Git to be installed and available in the system's PATH.
+        - Must be run inside a Git repository.
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git am --show-current-patch @Arguments
+    git am --show-current-patch @Arguments
 }
 
 function gams {
-  <#
-  .SYNOPSIS
-    A PowerShell function that wraps `git am --skip`.
+    <#
+    .SYNOPSIS
+        A PowerShell function that wraps `git am --skip`.
 
-  .DESCRIPTION
-    This function is a shortcut for running the `git am --skip` command.
-    It skips the current patch being applied during a `git am` operation and
-    continues with the next patch.
+    .DESCRIPTION
+        This function is a shortcut for running the `git am --skip` command.
+        It skips the current patch being applied during a `git am` operation and
+        continues with the next patch.
 
-  .PARAMETER Arguments
-    Additional arguments to pass to the `git am --skip` command.
+    .PARAMETER Arguments
+        Additional arguments to pass to the `git am --skip` command.
 
-  .INPUTS
-    [string[]] Arguments — arguments are passed directly to `git am --skip`.
+    .INPUTS
+        [string[]] Arguments — arguments are passed directly to `git am --skip`.
 
-  .OUTPUTS
-    None. This function writes Git output to the console but does not return objects.
+    .OUTPUTS
+        None. This function writes Git output to the console but does not return objects.
 
-  .EXAMPLE
-    gams
-    Skips the current patch being applied during a `git am` operation.
+    .EXAMPLE
+        gams
+        Skips the current patch being applied during a `git am` operation.
 
-    gams --quiet
-    Skips the current patch with minimal output.
+        gams --quiet
+        Skips the current patch with minimal output.
 
-  .NOTES
-    - Requires Git to be installed and available in the system's PATH.
-    - Must be run inside a Git repository.
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+        - Requires Git to be installed and available in the system's PATH.
+        - Must be run inside a Git repository.
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git am --skip @Arguments
+    git am --skip @Arguments
 }
 
 function gap {
-  <#
-  .SYNOPSIS
-    A PowerShell function that wraps `git apply`.
+    <#
+    .SYNOPSIS
+        A PowerShell function that wraps `git apply`.
 
-  .DESCRIPTION
-    This function is a shortcut for running the `git apply` command.
-    It applies a patch to files in your Git repository.
+    .DESCRIPTION
+        This function is a shortcut for running the `git apply` command.
+        It applies a patch to files in your Git repository.
 
-  .PARAMETER Arguments
-    Additional arguments to pass to the `git apply` command.
+    .PARAMETER Arguments
+        Additional arguments to pass to the `git apply` command.
 
-  .INPUTS
-    [string[]] Arguments — arguments are passed directly to `git apply`.
+    .INPUTS
+        [string[]] Arguments — arguments are passed directly to `git apply`.
 
-  .OUTPUTS
-    None. This function writes Git output to the console but does not return objects.
+    .OUTPUTS
+        None. This function writes Git output to the console but does not return objects.
 
-  .EXAMPLE
-    gap patch.diff
-    Applies the specified patch file to the current Git repository.
+    .EXAMPLE
+        gap patch.diff
+        Applies the specified patch file to the current Git repository.
 
-    gap --stat patch.diff
-    Displays statistics about the changes that would be made by applying the patch.
+        gap --stat patch.diff
+        Displays statistics about the changes that would be made by applying the patch.
 
-    gap --check patch.diff
-    Checks if the patch can be applied cleanly without actually applying it.
+        gap --check patch.diff
+        Checks if the patch can be applied cleanly without actually applying it.
 
-  .NOTES
-    - Requires Git to be installed and available in the system's PATH.
-    - Must be run inside a Git repository.
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+        - Requires Git to be installed and available in the system's PATH.
+        - Must be run inside a Git repository.
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git apply @Arguments
+    git apply @Arguments
 }
 
 function gapt {
-  <#
-  .SYNOPSIS
-    A PowerShell function that wraps `git apply --3way`.
+    <#
+    .SYNOPSIS
+        A PowerShell function that wraps `git apply --3way`.
 
-  .DESCRIPTION
-    This function is a shortcut for running the `git apply --3way` command.
-    It applies a patch to files in your Git repository using a three-way merge
-    if there are conflicts.
+    .DESCRIPTION
+        This function is a shortcut for running the `git apply --3way` command.
+        It applies a patch to files in your Git repository using a three-way merge
+        if there are conflicts.
 
-  .PARAMETER Arguments
-    Additional arguments to pass to the `git apply --3way` command.
+    .PARAMETER Arguments
+        Additional arguments to pass to the `git apply --3way` command.
 
-  .INPUTS
-    [string[]] Arguments — arguments are passed directly to `git apply --3way`.
+    .INPUTS
+        [string[]] Arguments — arguments are passed directly to `git apply --3way`.
 
-  .OUTPUTS
-    None. This function writes Git output to the console but does not return objects.
+    .OUTPUTS
+        None. This function writes Git output to the console but does not return objects.
 
-  .EXAMPLE
-    gapt patch.diff
-    Applies the specified patch file to the current Git repository using a three-way merge if necessary.
+    .EXAMPLE
+        gapt patch.diff
+        Applies the specified patch file to the current Git repository using a three-way merge if necessary.
 
-    gapt --stat patch.diff
-    Displays statistics about the changes that would be made by applying the patch.
+        gapt --stat patch.diff
+        Displays statistics about the changes that would be made by applying the patch.
 
-    gapt --check patch.diff
-    Checks if the patch can be applied cleanly without actually applying it.
+        gapt --check patch.diff
+        Checks if the patch can be applied cleanly without actually applying it.
 
-  .NOTES
-    - Requires Git to be installed and available in the system's PATH.
-    - Must be run inside a Git repository.
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+        - Requires Git to be installed and available in the system's PATH.
+        - Must be run inside a Git repository.
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git apply --3way @Arguments
+    git apply --3way @Arguments
 }
 
 function gbs {
-  <#
-  .SYNOPSIS
-    A PowerShell function that wraps `git bisect`.
+    <#
+    .SYNOPSIS
+        A PowerShell function that wraps `git bisect`.
 
-  .DESCRIPTION
-    This function is a shortcut for running the `git bisect` command.
-    It helps you find the commit that introduced a bug by performing a binary search
-    through the commit history.
+    .DESCRIPTION
+        This function is a shortcut for running the `git bisect` command.
+        It helps you find the commit that introduced a bug by performing a binary search
+        through the commit history.
 
-  .PARAMETER Arguments
-    Additional arguments to pass to the `git bisect` command.
+    .PARAMETER Arguments
+        Additional arguments to pass to the `git bisect` command.
 
-  .INPUTS
-    [string[]] Arguments — arguments are passed directly to `git bisect`.
+    .INPUTS
+        [string[]] Arguments — arguments are passed directly to `git bisect`.
 
-  .OUTPUTS
-    None. This function writes Git output to the console but does not return objects.
+    .OUTPUTS
+        None. This function writes Git output to the console but does not return objects.
 
-  .EXAMPLE
-    gbs start
-    Starts a bisect session.
+    .EXAMPLE
+        gbs start
+        Starts a bisect session.
 
-    gbs good <commit>
-    Marks the specified commit as good.
+        gbs good <commit>
+        Marks the specified commit as good.
 
-    gbs bad <commit>
-    Marks the specified commit as bad.
+        gbs bad <commit>
+        Marks the specified commit as bad.
 
-    gbs reset
-    Ends the bisect session and resets to the original HEAD.
+        gbs reset
+        Ends the bisect session and resets to the original HEAD.
 
-  .NOTES
-    - Requires Git to be installed and available in the system's PATH.
-    - Must be run inside a Git repository.
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+        - Requires Git to be installed and available in the system's PATH.
+        - Must be run inside a Git repository.
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git bisect @Arguments
+    git bisect @Arguments
 }
 
 function gbsb {
-  <#
-  .SYNOPSIS
-    A PowerShell function that wraps `git bisect bad`.
+    <#
+    .SYNOPSIS
+        A PowerShell function that wraps `git bisect bad`.
 
-  .DESCRIPTION
-    This function is a shortcut for running the `git bisect bad` command.
-    It marks the current commit as bad during a bisect session.
+    .DESCRIPTION
+        This function is a shortcut for running the `git bisect bad` command.
+        It marks the current commit as bad during a bisect session.
 
-  .PARAMETER Arguments
-    Additional arguments to pass to the `git bisect bad` command.
+    .PARAMETER Arguments
+        Additional arguments to pass to the `git bisect bad` command.
 
-  .INPUTS
-    [string[]] Arguments — arguments are passed directly to `git bisect bad`.
+    .INPUTS
+        [string[]] Arguments — arguments are passed directly to `git bisect bad`.
 
-  .OUTPUTS
-    None. This function writes Git output to the console but does not return objects.
+    .OUTPUTS
+        None. This function writes Git output to the console but does not return objects.
 
-  .EXAMPLE
-    gbsb
-    Marks the current commit as bad.
+    .EXAMPLE
+        gbsb
+        Marks the current commit as bad.
 
-    gbsb <commit>
-    Marks the specified commit as bad.
+        gbsb <commit>
+        Marks the specified commit as bad.
 
-  .NOTES
-    - Requires Git to be installed and available in the system's PATH.
-    - Must be run inside a Git repository.
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+        - Requires Git to be installed and available in the system's PATH.
+        - Must be run inside a Git repository.
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git bisect bad @Arguments
+    git bisect bad @Arguments
 }
 
 function gbsg {
-  <#
-  .SYNOPSIS
-    A PowerShell function that wraps `git bisect good`.
+    <#
+    .SYNOPSIS
+        A PowerShell function that wraps `git bisect good`.
 
-  .DESCRIPTION
-    This function is a shortcut for running the `git bisect good` command.
-    It marks the current commit as good during a bisect session.
+    .DESCRIPTION
+        This function is a shortcut for running the `git bisect good` command.
+        It marks the current commit as good during a bisect session.
 
-  .PARAMETER Arguments
-    Additional arguments to pass to the `git bisect good` command.
+    .PARAMETER Arguments
+        Additional arguments to pass to the `git bisect good` command.
 
-  .INPUTS
-    [string[]] Arguments — arguments are passed directly to `git bisect good`.
+    .INPUTS
+        [string[]] Arguments — arguments are passed directly to `git bisect good`.
 
-  .OUTPUTS
-    None. This function writes Git output to the console but does not return objects.
+    .OUTPUTS
+        None. This function writes Git output to the console but does not return objects.
 
-  .EXAMPLE
-    gbsg
-    Marks the current commit as good.
+    .EXAMPLE
+        gbsg
+        Marks the current commit as good.
 
-    gbsg <commit>
-    Marks the specified commit as good.
+        gbsg <commit>
+        Marks the specified commit as good.
 
-  .NOTES
-    - Requires Git to be installed and available in the system's PATH.
-    - Must be run inside a Git repository.
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+        - Requires Git to be installed and available in the system's PATH.
+        - Must be run inside a Git repository.
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git bisect good @Arguments
+    git bisect good @Arguments
 }
 
 function gbsn {
-  <#
-  .SYNOPSIS
-    A PowerShell function that wraps `git bisect new`.
+    <#
+    .SYNOPSIS
+        A PowerShell function that wraps `git bisect new`.
 
-  .DESCRIPTION
-    This function is a shortcut for running the `git bisect new` command.
-    It starts a new bisect session by specifying the known good and bad commits.
+    .DESCRIPTION
+        This function is a shortcut for running the `git bisect new` command.
+        It starts a new bisect session by specifying the known good and bad commits.
 
-  .PARAMETER Arguments
-    Additional arguments to pass to the `git bisect new` command.
+    .PARAMETER Arguments
+        Additional arguments to pass to the `git bisect new` command.
 
-  .INPUTS
-    [string[]] Arguments — arguments are passed directly to `git bisect new`.
+    .INPUTS
+        [string[]] Arguments — arguments are passed directly to `git bisect new`.
 
-  .OUTPUTS
-    None. This function writes Git output to the console but does not return objects.
+    .OUTPUTS
+        None. This function writes Git output to the console but does not return objects.
 
-  .EXAMPLE
-    gbsn <bad-commit> <good-commit>
-    Starts a new bisect session with the specified bad and good commits.
+    .EXAMPLE
+        gbsn <bad-commit> <good-commit>
+        Starts a new bisect session with the specified bad and good commits.
 
-    gbsn --term-old <bad-commit> --term-new <good-commit>
-    Starts a new bisect session with custom terms for bad and good commits.
+        gbsn --term-old <bad-commit> --term-new <good-commit>
+        Starts a new bisect session with custom terms for bad and good commits.
 
-  .NOTES
-    - Requires Git to be installed and available in the system's PATH.
-    - Must be run inside a Git repository.
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+        - Requires Git to be installed and available in the system's PATH.
+        - Must be run inside a Git repository.
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git bisect new @Arguments
+    git bisect new @Arguments
 }
 
 function gbso {
-  <#
-  .SYNOPSIS
-    A PowerShell function that wraps `git bisect old`.
+    <#
+    .SYNOPSIS
+        A PowerShell function that wraps `git bisect old`.
 
-  .DESCRIPTION
-    This function is a shortcut for running the `git bisect old` command.
-    It marks the current commit as old (bad) during a bisect session.
+    .DESCRIPTION
+        This function is a shortcut for running the `git bisect old` command.
+        It marks the current commit as old (bad) during a bisect session.
 
-  .PARAMETER Arguments
-    Additional arguments to pass to the `git bisect old` command.
+    .PARAMETER Arguments
+        Additional arguments to pass to the `git bisect old` command.
 
-  .INPUTS
-    [string[]] Arguments — arguments are passed directly to `git bisect old`.
+    .INPUTS
+        [string[]] Arguments — arguments are passed directly to `git bisect old`.
 
-  .OUTPUTS
-    None. This function writes Git output to the console but does not return objects.
+    .OUTPUTS
+        None. This function writes Git output to the console but does not return objects.
 
-  .EXAMPLE
-    gbso
-    Marks the current commit as old (bad).
+    .EXAMPLE
+        gbso
+        Marks the current commit as old (bad).
 
-    gbso <commit>
-    Marks the specified commit as old (bad).
+        gbso <commit>
+        Marks the specified commit as old (bad).
 
-  .NOTES
-    - Requires Git to be installed and available in the system's PATH.
-    - Must be run inside a Git repository.
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+        - Requires Git to be installed and available in the system's PATH.
+        - Must be run inside a Git repository.
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git bisect old @Arguments
+    git bisect old @Arguments
 }
 
 function gbsr {
-  <#
-  .SYNOPSIS
-    A PowerShell function that wraps `git bisect reset`.
+    <#
+    .SYNOPSIS
+        A PowerShell function that wraps `git bisect reset`.
 
-  .DESCRIPTION
-    This function is a shortcut for running the `git bisect reset` command.
-    It ends the current bisect session and resets the repository to the original HEAD.
+    .DESCRIPTION
+        This function is a shortcut for running the `git bisect reset` command.
+        It ends the current bisect session and resets the repository to the original HEAD.
 
-  .PARAMETER Arguments
-    Additional arguments to pass to the `git bisect reset` command.
+    .PARAMETER Arguments
+        Additional arguments to pass to the `git bisect reset` command.
 
-  .INPUTS
-    [string[]] Arguments — arguments are passed directly to `git bisect reset`.
+    .INPUTS
+        [string[]] Arguments — arguments are passed directly to `git bisect reset`.
 
-  .OUTPUTS
-    None. This function writes Git output to the console but does not return objects.
+    .OUTPUTS
+        None. This function writes Git output to the console but does not return objects.
 
-  .EXAMPLE
-    gbsr
-    Ends the current bisect session and resets to the original HEAD.
+    .EXAMPLE
+        gbsr
+        Ends the current bisect session and resets to the original HEAD.
 
-    gbsr <commit>
-    Ends the current bisect session and resets to the specified commit.
+        gbsr <commit>
+        Ends the current bisect session and resets to the specified commit.
 
-  .NOTES
-    - Requires Git to be installed and available in the system's PATH.
-    - Must be run inside a Git repository.
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+        - Requires Git to be installed and available in the system's PATH.
+        - Must be run inside a Git repository.
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git bisect reset @Arguments
+    git bisect reset @Arguments
 }
 
 function gbss {
-  <#
-  .SYNOPSIS
-    A PowerShell function that wraps `git bisect start`.
+    <#
+    .SYNOPSIS
+        A PowerShell function that wraps `git bisect start`.
 
-  .DESCRIPTION
-    This function is a shortcut for running the `git bisect start` command.
-    It initiates a bisect session to help find the commit that introduced a bug.
+    .DESCRIPTION
+        This function is a shortcut for running the `git bisect start` command.
+        It initiates a bisect session to help find the commit that introduced a bug.
 
-  .PARAMETER Arguments
-    Additional arguments to pass to the `git bisect start` command.
+    .PARAMETER Arguments
+        Additional arguments to pass to the `git bisect start` command.
 
-  .INPUTS
-    [string[]] Arguments — arguments are passed directly to `git bisect start`.
+    .INPUTS
+        [string[]] Arguments — arguments are passed directly to `git bisect start`.
 
-  .OUTPUTS
-    None. This function writes Git output to the console but does not return objects.
+    .OUTPUTS
+        None. This function writes Git output to the console but does not return objects.
 
-  .EXAMPLE
-    gbss
-    Starts a bisect session.
+    .EXAMPLE
+        gbss
+        Starts a bisect session.
 
-    gbss <bad-commit> <good-commit>
-    Starts a bisect session with the specified bad and good commits.
+        gbss <bad-commit> <good-commit>
+        Starts a bisect session with the specified bad and good commits.
 
-  .NOTES
-    - Requires Git to be installed and available in the system's PATH.
-    - Must be run inside a Git repository.
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+        - Requires Git to be installed and available in the system's PATH.
+        - Must be run inside a Git repository.
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git bisect start @Arguments
+    git bisect start @Arguments
 }
 
 function gbl {
-  <#
-  .SYNOPSIS
-    A PowerShell function that wraps `git blame -w`.
+    <#
+    .SYNOPSIS
+        A PowerShell function that wraps `git blame -w`.
 
-  .DESCRIPTION
-    This function is a shortcut for running the `git blame -w` command.
-    It shows what revision and author last modified each line of a file,
-    ignoring whitespace changes.
+    .DESCRIPTION
+        This function is a shortcut for running the `git blame -w` command.
+        It shows what revision and author last modified each line of a file,
+        ignoring whitespace changes.
 
-  .PARAMETER Arguments
-    Additional arguments to pass to the `git blame -w` command.
+    .PARAMETER Arguments
+        Additional arguments to pass to the `git blame -w` command.
 
-  .INPUTS
-    [string[]] Arguments — arguments are passed directly to `git blame -w`.
+    .INPUTS
+        [string[]] Arguments — arguments are passed directly to `git blame -w`.
 
-  .OUTPUTS
-    None. This function writes Git output to the console but does not return objects.
+    .OUTPUTS
+        None. This function writes Git output to the console but does not return objects.
 
-  .EXAMPLE
-    gbl file.txt
-    Shows the blame information for the specified file, ignoring whitespace changes.
+    .EXAMPLE
+        gbl file.txt
+        Shows the blame information for the specified file, ignoring whitespace changes.
 
-    gbl -L 10,20 file.txt
-    Shows the blame information for lines 10 to 20 of the specified file, ignoring whitespace changes.
+        gbl -L 10,20 file.txt
+        Shows the blame information for lines 10 to 20 of the specified file, ignoring whitespace changes.
 
-    gbl -C -C file.txt
-    Shows the blame information for the specified file, including copies and ignoring whitespace changes.
+        gbl -C -C file.txt
+        Shows the blame information for the specified file, including copies and ignoring whitespace changes.
 
-  .NOTES
-    - Requires Git to be installed and available in the system's PATH.
-    - Must be run inside a Git repository.
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+        - Requires Git to be installed and available in the system's PATH.
+        - Must be run inside a Git repository.
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git blame -w @Arguments
+    git blame -w @Arguments
 }
 
 function gb {
-  <#
-  .SYNOPSIS
-    A PowerShell function that wraps `git branch`.
+    <#
+    .SYNOPSIS
+        A PowerShell function that wraps `git branch`.
 
-  .DESCRIPTION
-    This function is a shortcut for running the `git branch` command.
-    It allows you to manage branches in your Git repository by passing the desired
-    arguments to this function.
+    .DESCRIPTION
+        This function is a shortcut for running the `git branch` command.
+        It allows you to manage branches in your Git repository by passing the desired
+        arguments to this function.
 
-  .PARAMETER Arguments
-    Additional arguments to pass to the `git branch` command.
+    .PARAMETER Arguments
+        Additional arguments to pass to the `git branch` command.
 
-  .INPUTS
-    [string[]] Arguments — arguments are passed directly to `git branch`.
+    .INPUTS
+        [string[]] Arguments — arguments are passed directly to `git branch`.
 
-  .OUTPUTS
-    None. This function writes Git output to the console but does not return objects.
+    .OUTPUTS
+        None. This function writes Git output to the console but does not return objects.
 
-  .EXAMPLE
-    gb
-    Lists all local branches in the current Git repository.
+    .EXAMPLE
+        gb
+        Lists all local branches in the current Git repository.
 
-    gb new-branch
-    Creates a new branch named "new-branch".
+        gb new-branch
+        Creates a new branch named "new-branch".
 
-    gb -d old-branch
-    Deletes the branch named "old-branch".
+        gb -d old-branch
+        Deletes the branch named "old-branch".
 
-    gb -m old-name new-name
-    Renames the branch from "old-name" to "new-name".
+        gb -m old-name new-name
+        Renames the branch from "old-name" to "new-name".
 
-  .NOTES
-    - Requires Git to be installed and available in the system's PATH.
-    - Must be run inside a Git repository.
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+        - Requires Git to be installed and available in the system's PATH.
+        - Must be run inside a Git repository.
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git branch @Arguments
+    git branch @Arguments
 }
 
 function gba {
-  <#
-  .SYNOPSIS
-    A PowerShell function that wraps `git branch --all`.
+    <#
+    .SYNOPSIS
+        A PowerShell function that wraps `git branch --all`.
 
-  .DESCRIPTION
-    This function is a shortcut for running the `git branch --all` command.
-    It lists all branches in your Git repository, including both local and remote branches.
+    .DESCRIPTION
+        This function is a shortcut for running the `git branch --all` command.
+        It lists all branches in your Git repository, including both local and remote branches.
 
-  .PARAMETER Arguments
-    Additional arguments to pass to the `git branch --all` command.
+    .PARAMETER Arguments
+        Additional arguments to pass to the `git branch --all` command.
 
-  .INPUTS
-    [string[]] Arguments — arguments are passed directly to `git branch --all`.
+    .INPUTS
+        [string[]] Arguments — arguments are passed directly to `git branch --all`.
 
-  .OUTPUTS
-    None. This function writes Git output to the console but does not return objects.
+    .OUTPUTS
+        None. This function writes Git output to the console but does not return objects.
 
-  .EXAMPLE
-    gba
-    Lists all local and remote branches in the current Git repository.
+    .EXAMPLE
+        gba
+        Lists all local and remote branches in the current Git repository.
 
-    gba -r
-    Lists only remote branches.
+        gba -r
+        Lists only remote branches.
 
-    gba -v
-    Lists all branches with the latest commit on each branch.
+        gba -v
+        Lists all branches with the latest commit on each branch.
 
-  .NOTES
-    - Requires Git to be installed and available in the system's PATH.
-    - Must be run inside a Git repository.
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+        - Requires Git to be installed and available in the system's PATH.
+        - Must be run inside a Git repository.
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git branch --all @Arguments
+    git branch --all @Arguments
 }
 
 function gbd {
-  <#
-  .SYNOPSIS
-    A PowerShell function that wraps `git branch --delete`.
+    <#
+    .SYNOPSIS
+        A PowerShell function that wraps `git branch --delete`.
 
-  .DESCRIPTION
-    This function is a shortcut for running the `git branch --delete` command.
-    It deletes one or more branches in your Git repository.
+    .DESCRIPTION
+        This function is a shortcut for running the `git branch --delete` command.
+        It deletes one or more branches in your Git repository.
 
-  .PARAMETER Arguments
-    Additional arguments to pass to the `git branch --delete` command.
+    .PARAMETER Arguments
+        Additional arguments to pass to the `git branch --delete` command.
 
-  .INPUTS
-    [string[]] Arguments — arguments are passed directly to `git branch --delete`.
+    .INPUTS
+        [string[]] Arguments — arguments are passed directly to `git branch --delete`.
 
-  .OUTPUTS
-    None. This function writes Git output to the console but does not return objects.
+    .OUTPUTS
+        None. This function writes Git output to the console but does not return objects.
 
-  .EXAMPLE
-    gbd branch-name
-    Deletes the specified branch.
+    .EXAMPLE
+        gbd branch-name
+        Deletes the specified branch.
 
-    gbd -r origin/branch-name
-    Deletes the specified remote-tracking branch.
+        gbd -r origin/branch-name
+        Deletes the specified remote-tracking branch.
 
-  .NOTES
-    - Requires Git to be installed and available in the system's PATH.
-    - Must be run inside a Git repository.
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+        - Requires Git to be installed and available in the system's PATH.
+        - Must be run inside a Git repository.
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git branch --delete @Arguments
+    git branch --delete @Arguments
 }
 
 function gbD {
-  <#
-  .SYNOPSIS
-    A PowerShell function that wraps `git branch --delete --force`.
+    <#
+    .SYNOPSIS
+        A PowerShell function that wraps `git branch --delete --force`.
 
-  .DESCRIPTION
-    This function is a shortcut for running the `git branch --delete --force` command.
-    It forcefully deletes one or more branches in your Git repository, even if they
-    have unmerged changes.
+    .DESCRIPTION
+        This function is a shortcut for running the `git branch --delete --force` command.
+        It forcefully deletes one or more branches in your Git repository, even if they
+        have unmerged changes.
 
-  .PARAMETER Arguments
-    Additional arguments to pass to the `git branch --delete --force` command.
+    .PARAMETER Arguments
+        Additional arguments to pass to the `git branch --delete --force` command.
 
-  .INPUTS
-    [string[]] Arguments — arguments are passed directly to `git branch --delete --force`.
+    .INPUTS
+        [string[]] Arguments — arguments are passed directly to `git branch --delete --force`.
 
-  .OUTPUTS
-    None. This function writes Git output to the console but does not return objects.
+    .OUTPUTS
+        None. This function writes Git output to the console but does not return objects.
 
-  .EXAMPLE
-    gbD branch-name
-    Forcefully deletes the specified branch, even if it has unmerged changes.
+    .EXAMPLE
+        gbD branch-name
+        Forcefully deletes the specified branch, even if it has unmerged changes.
 
-    gbD -r origin/branch-name
-    Forcefully deletes the specified remote-tracking branch, even if it has unmerged changes.
+        gbD -r origin/branch-name
+        Forcefully deletes the specified remote-tracking branch, even if it has unmerged changes.
 
-  .NOTES
-    - Requires Git to be installed and available in the system's PATH.
-    - Must be run inside a Git repository.
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+        - Requires Git to be installed and available in the system's PATH.
+        - Must be run inside a Git repository.
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git branch --delete --force @Arguments
+    git branch --delete --force @Arguments
 }
 
 function gbm {
-  <#
-  .SYNOPSIS
-    A PowerShell function that wraps `git branch --move`.
+    <#
+    .SYNOPSIS
+        A PowerShell function that wraps `git branch --move`.
 
-  .DESCRIPTION
-    This function is a shortcut for running the `git branch --move` command.
-    It renames a branch in your Git repository.
+    .DESCRIPTION
+        This function is a shortcut for running the `git branch --move` command.
+        It renames a branch in your Git repository.
 
-  .PARAMETER Arguments
-    Additional arguments to pass to the `git branch --move` command.
+    .PARAMETER Arguments
+        Additional arguments to pass to the `git branch --move` command.
 
-  .INPUTS
-    [string[]] Arguments — arguments are passed directly to `git branch --move`.
+    .INPUTS
+        [string[]] Arguments — arguments are passed directly to `git branch --move`.
 
-  .OUTPUTS
-    None. This function writes Git output to the console but does not return objects.
+    .OUTPUTS
+        None. This function writes Git output to the console but does not return objects.
 
-  .EXAMPLE
-    gbm old-branch new-branch
-    Renames the branch from "old-branch" to "new-branch".
+    .EXAMPLE
+        gbm old-branch new-branch
+        Renames the branch from "old-branch" to "new-branch".
 
-    gbm -f old-branch new-branch
-    Forcefully renames the branch, even if "new-branch" already exists.
+        gbm -f old-branch new-branch
+        Forcefully renames the branch, even if "new-branch" already exists.
 
-  .NOTES
-    - Requires Git to be installed and available in the system's PATH.
-    - Must be run inside a Git repository.
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+        - Requires Git to be installed and available in the system's PATH.
+        - Must be run inside a Git repository.
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git branch --move @Arguments
+    git branch --move @Arguments
 }
 
 function gbnm {
-  <#
-  .SYNOPSIS
-    A PowerShell function that wraps `git branch --move --no-ff`.
+    <#
+    .SYNOPSIS
+        A PowerShell function that wraps `git branch --move --no-ff`.
 
-  .DESCRIPTION
-    This function is a shortcut for running the `git branch --move --no-ff` command.
-    It renames a branch in your Git repository without fast-forwarding.
+    .DESCRIPTION
+        This function is a shortcut for running the `git branch --move --no-ff` command.
+        It renames a branch in your Git repository without fast-forwarding.
 
-  .PARAMETER Arguments
-    Additional arguments to pass to the `git branch --move --no-ff` command.
+    .PARAMETER Arguments
+        Additional arguments to pass to the `git branch --move --no-ff` command.
 
-  .INPUTS
-    [string[]] Arguments — arguments are passed directly to `git branch --move --no-ff`.
+    .INPUTS
+        [string[]] Arguments — arguments are passed directly to `git branch --move --no-ff`.
 
-  .OUTPUTS
-    None. This function writes Git output to the console but does not return objects.
+    .OUTPUTS
+        None. This function writes Git output to the console but does not return objects.
 
-  .EXAMPLE
-    gbnm old-branch new-branch
-    Renames the branch from "old-branch" to "new-branch" without fast-forwarding.
+    .EXAMPLE
+        gbnm old-branch new-branch
+        Renames the branch from "old-branch" to "new-branch" without fast-forwarding.
 
-    gbnm -f old-branch new-branch
-    Forcefully renames the branch, even if "new-branch" already exists, without fast-forwarding.
+        gbnm -f old-branch new-branch
+        Forcefully renames the branch, even if "new-branch" already exists, without fast-forwarding.
 
-  .NOTES
-    - Requires Git to be installed and available in the system's PATH.
-    - Must be run inside a Git repository.
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+        - Requires Git to be installed and available in the system's PATH.
+        - Must be run inside a Git repository.
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git branch --no-merged @Arguments
+    git branch --no-merged @Arguments
 }
 
 function gbr {
-  <#
-  .SYNOPSIS
-    A PowerShell function that wraps `git branch --remote`.
+    <#
+    .SYNOPSIS
+        A PowerShell function that wraps `git branch --remote`.
 
-  .DESCRIPTION
-    This function is a shortcut for running the `git branch --remote` command.
-    It lists all remote branches in your Git repository.
+    .DESCRIPTION
+        This function is a shortcut for running the `git branch --remote` command.
+        It lists all remote branches in your Git repository.
 
-  .PARAMETER Arguments
-    Additional arguments to pass to the `git branch --remote` command.
+    .PARAMETER Arguments
+        Additional arguments to pass to the `git branch --remote` command.
 
-  .INPUTS
-    [string[]] Arguments — arguments are passed directly to `git branch --remote`.
+    .INPUTS
+        [string[]] Arguments — arguments are passed directly to `git branch --remote`.
 
-  .OUTPUTS
-    None. This function writes Git output to the console but does not return objects.
+    .OUTPUTS
+        None. This function writes Git output to the console but does not return objects.
 
-  .EXAMPLE
-    gbr
-    Lists all remote branches in the current Git repository.
+    .EXAMPLE
+        gbr
+        Lists all remote branches in the current Git repository.
 
-    gbr -v
-    Lists all remote branches with the latest commit on each branch.
+        gbr -v
+        Lists all remote branches with the latest commit on each branch.
 
-    gbr origin
-    Lists all remote branches for the specified remote (e.g., "origin").
+        gbr origin
+        Lists all remote branches for the specified remote (e.g., "origin").
 
-  .NOTES
-    - Requires Git to be installed and available in the system's PATH.
-    - Must be run inside a Git repository.
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+        - Requires Git to be installed and available in the system's PATH.
+        - Must be run inside a Git repository.
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git branch --remote @Arguments
+    git branch --remote @Arguments
 }
 
 function gco {
-  <#
-  .SYNOPSIS
-    A PowerShell function that wraps `git checkout`.
+    <#
+    .SYNOPSIS
+        A PowerShell function that wraps `git checkout`.
 
-  .DESCRIPTION
-    This function is a shortcut for running the `git checkout` command.
-    It allows you to switch branches or restore working tree files in your Git repository.
-    Any arguments you would normally pass to `git checkout` can be provided to this function.
+    .DESCRIPTION
+        This function is a shortcut for running the `git checkout` command.
+        It allows you to switch branches or restore working tree files in your Git repository.
+        Any arguments you would normally pass to `git checkout` can be provided to this function.
 
-  .PARAMETER Arguments
-    Additional arguments to pass to the `git checkout` command.
+    .PARAMETER Arguments
+        Additional arguments to pass to the `git checkout` command.
 
-  .INPUTS
-    [string[]] Arguments — arguments are passed directly to `git checkout`.
+    .INPUTS
+        [string[]] Arguments — arguments are passed directly to `git checkout`.
 
-  .OUTPUTS
-    None. This function writes Git output to the console but does not return objects.
+    .OUTPUTS
+        None. This function writes Git output to the console but does not return objects.
 
-  .EXAMPLE
-    gco branch-name
-    Switches to the specified branch.
+    .EXAMPLE
+        gco branch-name
+        Switches to the specified branch.
 
-    gco -b new-branch
-    Creates and switches to a new branch named "new-branch".
+        gco -b new-branch
+        Creates and switches to a new branch named "new-branch".
 
-    gco file.txt
-    Restores the specified file to its state in the index or the specified commit.
+        gco file.txt
+        Restores the specified file to its state in the index or the specified commit.
 
-  .NOTES
-    - Requires Git to be installed and available in the system's PATH.
-    - Must be run inside a Git repository.
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+        - Requires Git to be installed and available in the system's PATH.
+        - Must be run inside a Git repository.
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git checkout @Arguments
+    git checkout @Arguments
 }
 
 function gcor {
-  <#
-  .SYNOPSIS
-    A PowerShell function that wraps `git checkout --recurse-submodules`.
+    <#
+    .SYNOPSIS
+        A PowerShell function that wraps `git checkout --recurse-submodules`.
 
-  .DESCRIPTION
-    This function is a shortcut for running the `git checkout --recurse-submodules` command.
-    It allows you to switch branches or restore working tree files in your Git repository,
-    while also updating submodules recursively. Any arguments you would normally pass to
-    `git checkout --recurse-submodules` can be provided to this function.
+    .DESCRIPTION
+        This function is a shortcut for running the `git checkout --recurse-submodules` command.
+        It allows you to switch branches or restore working tree files in your Git repository,
+        while also updating submodules recursively. Any arguments you would normally pass to
+        `git checkout --recurse-submodules` can be provided to this function.
 
-  .PARAMETER Arguments
-    Additional arguments to pass to the `git checkout --recurse-submodules` command.
+    .PARAMETER Arguments
+        Additional arguments to pass to the `git checkout --recurse-submodules` command.
 
-  .INPUTS
-    [string[]] Arguments — arguments are passed directly to `git checkout --recurse-submodules`.
+    .INPUTS
+        [string[]] Arguments — arguments are passed directly to `git checkout --recurse-submodules`.
 
-  .OUTPUTS
-    None. This function writes Git output to the console but does not return objects.
+    .OUTPUTS
+        None. This function writes Git output to the console but does not return objects.
 
-  .EXAMPLE
-    gcor branch-name
-    Switches to the specified branch and updates submodules recursively.
+    .EXAMPLE
+        gcor branch-name
+        Switches to the specified branch and updates submodules recursively.
 
-    gcor -b new-branch
-    Creates and switches to a new branch named "new-branch", updating submodules recursively.
+        gcor -b new-branch
+        Creates and switches to a new branch named "new-branch", updating submodules recursively.
 
-    gcor file.txt
-    Restores the specified file to its state in the index or the specified commit,
-    updating submodules recursively.
+        gcor file.txt
+        Restores the specified file to its state in the index or the specified commit,
+        updating submodules recursively.
 
-  .NOTES
-    - Requires Git to be installed and available in the system's PATH.
-    - Must be run inside a Git repository.
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+        - Requires Git to be installed and available in the system's PATH.
+        - Must be run inside a Git repository.
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git checkout --recurse-submodules @Arguments
+    git checkout --recurse-submodules @Arguments
 }
 
 function gcb {
-  <#
-  .SYNOPSIS
-    A PowerShell function that wraps `git checkout -b`.
+    <#
+    .SYNOPSIS
+        A PowerShell function that wraps `git checkout -b`.
 
-  .DESCRIPTION
-    This function is a shortcut for running the `git checkout -b` command.
-    It creates and switches to a new branch in your Git repository.
-    Any arguments you would normally pass to `git checkout -b` can be provided to this function.
+    .DESCRIPTION
+        This function is a shortcut for running the `git checkout -b` command.
+        It creates and switches to a new branch in your Git repository.
+        Any arguments you would normally pass to `git checkout -b` can be provided to this function.
 
-  .PARAMETER Arguments
-    Additional arguments to pass to the `git checkout -b` command.
+    .PARAMETER Arguments
+        Additional arguments to pass to the `git checkout -b` command.
 
-  .INPUTS
-    [string[]] Arguments — arguments are passed directly to `git checkout -b`.
+    .INPUTS
+        [string[]] Arguments — arguments are passed directly to `git checkout -b`.
 
-  .OUTPUTS
-    None. This function writes Git output to the console but does not return objects.
+    .OUTPUTS
+        None. This function writes Git output to the console but does not return objects.
 
-  .EXAMPLE
-    gcb new-branch
-    Creates and switches to a new branch named "new-branch".
+    .EXAMPLE
+        gcb new-branch
+        Creates and switches to a new branch named "new-branch".
 
-    gcb new-branch start-point
-    Creates and switches to a new branch named "new-branch" starting from "start-point".
+        gcb new-branch start-point
+        Creates and switches to a new branch named "new-branch" starting from "start-point".
 
-  .NOTES
-    - Requires Git to be installed and available in the system's PATH.
-    - Must be run inside a Git repository.
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+        - Requires Git to be installed and available in the system's PATH.
+        - Must be run inside a Git repository.
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git checkout -b @Arguments
+    git checkout -b @Arguments
 }
 
 function gcB {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
+        A PowerShell function that wraps `git checkout -B`.
 
-  .DESCRIPTION
+    .DESCRIPTION
+        This function is a shortcut for running the `git checkout -B` command.
+        It creates or resets a branch to a specified state and switches to it in your Git repository.
+        Any arguments you would normally pass to `git checkout -B` can be provided to this function.
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
+        Additional arguments to pass to the `git checkout -B` command.
 
-  .INPUTS
+    .INPUTS
+        [string[]] Arguments — arguments are passed directly to `git checkout -B`.
 
-  .OUTPUTS
+    .OUTPUTS
+        None. This function writes Git output to the console but does not return objects.
 
-  .EXAMPLE
+    .EXAMPLE
+        gcB branch-name
+        Creates or resets the branch named "branch-name" to the current HEAD and switches to it.
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+        gcB branch-name start-point
+        Creates or resets the branch named "branch-name" to "start-point" and switches to it.
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    .NOTES
+        - Requires Git to be installed and available in the system's PATH.
+        - Must be run inside a Git repository.
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  git checkout -B @Arguments
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
+
+    git checkout -B @Arguments
 }
 
 function gcp {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git cherry-pick @Arguments
+    git cherry-pick @Arguments
 }
 
 function gcpa {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git cherry-pick --abort @Arguments
+    git cherry-pick --abort @Arguments
 }
 
 function gcpc {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git cherry-pick --continue @Arguments
+    git cherry-pick --continue @Arguments
 }
 
 function gclean {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  git clean --interactive -d @Arguments
+    git clean --interactive -d @Arguments
 }
 
 function gcl {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  git clone --recurse-submodules @Arguments
+    git clone --recurse-submodules @Arguments
 }
 
 function gclf {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  git clone --recursive --shallow-submodules --filter=blob:none --also-filter-submodules @Arguments
+    git clone --recursive --shallow-submodules --filter=blob:none --also-filter-submodules @Arguments
 }
 
 function gcam {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git commit --all --message @Arguments
+    git commit --all --message @Arguments
 }
 
 function gcas {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git commit --all --signoff @Arguments
+    git commit --all --signoff @Arguments
 }
 
 function gcasm {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git commit --all --signoff --message @Arguments
+    git commit --all --signoff --message @Arguments
 }
 
 function gcs {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git commit --gpg-sign @Arguments
+    git commit --gpg-sign @Arguments
 }
 
 function gcss {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git commit --gpg-sign --signoff @Arguments
+    git commit --gpg-sign --signoff @Arguments
 }
 
 function gcssm {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git commit --gpg-sign --signoff --message @Arguments
+    git commit --gpg-sign --signoff --message @Arguments
 }
 
 function gcmsg {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git commit --message @Arguments
+    git commit --message @Arguments
 }
 
 function gcsm {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git commit --signoff --message @Arguments
+    git commit --signoff --message @Arguments
 }
 
 function gcv {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git commit --verbose @Arguments
+    git commit --verbose @Arguments
 }
 
 function gca {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git commit --verbose --all @Arguments
+    git commit --verbose --all @Arguments
 }
 
 function gcf {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git config --list @Arguments
+    git config --list @Arguments
 }
 
 function gcfu {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git commit --fixup @Arguments
+    git commit --fixup @Arguments
 }
 
 function gd {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git diff @Arguments
+    git diff @Arguments
 }
 
 function gdca {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git diff --cached @Arguments
+    git diff --cached @Arguments
 }
 
 function gdcw {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git diff --cached --word-diff @Arguments
+    git diff --cached --word-diff @Arguments
 }
 
 function gds {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git diff --staged @Arguments
+    git diff --staged @Arguments
 }
 
 function gdw {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git diff --word-diff @Arguments
+    git diff --word-diff @Arguments
 }
 
 function gdup {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git diff '@{upstream}' @Arguments
+    git diff '@{upstream}' @Arguments
 }
 
 function gdt {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git diff-tree --no-commit-id --name-only -r @Arguments
+    git diff-tree --no-commit-id --name-only -r @Arguments
 }
 
 function  gf {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git fetch @Arguments
+    git fetch @Arguments
 }
 
 function gfa {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git fetch --all --tags --prune @Arguments
+    git fetch --all --tags --prune @Arguments
 }
 
 function gfo {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git fetch origin @Arguments
+    git fetch origin @Arguments
 }
 
 function gg {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git gui citool @Arguments
+    git gui citool @Arguments
 }
 
 function gga {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git gui citool --amend @Arguments
+    git gui citool --amend @Arguments
 }
 
 function ghh {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  git help @Arguments
+    git help @Arguments
 }
 
 function glgg {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git log --graph @Arguments
+    git log --graph @Arguments
 }
 
 function glgga {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git log --graph --decorate --all @Arguments
+    git log --graph --decorate --all @Arguments
 }
 
 function glgm {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git log --graph --max-count=10 @Arguments
+    git log --graph --max-count=10 @Arguments
 }
 
 function glo {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git log --oneline --decorate @Arguments
+    git log --oneline --decorate @Arguments
 }
 
 function glog {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git log --oneline --decorate --graph @Arguments
+    git log --oneline --decorate --graph @Arguments
 }
 
 function gloga {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git log --oneline --decorate --graph --all @Arguments
+    git log --oneline --decorate --graph --all @Arguments
 }
 
 function glg {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git log --stat @Arguments
+    git log --stat @Arguments
 }
 
 function glgp {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git log --stat --patch @Arguments
+    git log --stat --patch @Arguments
 }
 
 function gfg {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git ls-files | grep @Arguments
+    git ls-files | grep @Arguments
 }
 
 function gm {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git merge @Arguments
+    git merge @Arguments
 }
 
 function gma {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git merge --abort @Arguments
+    git merge --abort @Arguments
 }
 
 function gmc {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git merge --continue @Arguments
+    git merge --continue @Arguments
 }
 
 function gms {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git merge --squash @Arguments
+    git merge --squash @Arguments
 }
 
 function gmff {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git merge --ff-only @Arguments
+    git merge --ff-only @Arguments
 }
 
 function gmtl {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git mergetool --no-prompt @Arguments
+    git mergetool --no-prompt @Arguments
 }
 
 function gmtlvim {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git mergetool --no-prompt --tool=vimdiff @Arguments
+    git mergetool --no-prompt --tool=vimdiff @Arguments
 }
 
 function gl {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git pull @Arguments
+    git pull @Arguments
 }
 
 function gpr {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git pull --rebase @Arguments
+    git pull --rebase @Arguments
 }
 
 function gprv {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git pull --rebase -v @Arguments
+    git pull --rebase -v @Arguments
 }
 
 function gpra {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git pull --rebase --autostash @Arguments
+    git pull --rebase --autostash @Arguments
 }
 
 function gprav {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git pull --rebase --autostash -v @Arguments
+    git pull --rebase --autostash -v @Arguments
 }
 
 function gp {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git push @Arguments
+    git push @Arguments
 }
 
 function gpd {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git push --dry-run @Arguments
+    git push --dry-run @Arguments
 }
 
 
 function gpf {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  if (Test-GitVersionAtLeast -RequiredVersion "2.30") {
-    git push --force-with-lease --force-if-includes @Arguments
-  }
-  else {
-    git push --force-with-lease @Arguments
-  }
+    if (Test-GitVersionAtLeast -RequiredVersion "2.30") {
+        git push --force-with-lease --force-if-includes @Arguments
+    }
+    else {
+        git push --force-with-lease @Arguments
+    }
 }
 
 function gpv {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git push --verbose @Arguments
+    git push --verbose @Arguments
 }
 
 function gpoat {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git push origin --all; git push origin --tags
+    git push origin --all; git push origin --tags
 }
 
 function gpod {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git push origin --delete @Arguments
+    git push origin --delete @Arguments
 }
 
 function gpu {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git push upstream @Arguments
+    git push upstream @Arguments
 }
 
 function grb {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git rebase @Arguments
+    git rebase @Arguments
 }
 
 function grba {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git rebase --abort @Arguments
+    git rebase --abort @Arguments
 }
 
 function grbc {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git rebase --continue @Arguments
+    git rebase --continue @Arguments
 }
 
 function grbi {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git rebase --interactive @Arguments
+    git rebase --interactive @Arguments
 }
 
 function grbo {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git rebase --onto @Arguments
+    git rebase --onto @Arguments
 }
 
 function grbs {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git rebase --skip @Arguments
+    git rebase --skip @Arguments
 }
 
 function grf {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git reflog @Arguments
+    git reflog @Arguments
 }
 
 function gr {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git remote @Arguments
+    git remote @Arguments
 }
 
 function grv {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git remote --verbose @Arguments
+    git remote --verbose @Arguments
 }
 
 function gra {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git remote add @Arguments
+    git remote add @Arguments
 }
 
 function grrm {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git remote remove @Arguments
+    git remote remove @Arguments
 }
 
 function grmv {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git remote rename @Arguments
+    git remote rename @Arguments
 }
 
 function grset {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git remote set-url @Arguments
+    git remote set-url @Arguments
 }
 
 function grup {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git remote update @Arguments
+    git remote update @Arguments
 }
 
 function grh {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git reset @Arguments
+    git reset @Arguments
 }
 
 function gru {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git reset -- @Arguments
+    git reset -- @Arguments
 }
 
 function grhh {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git reset --hard @Arguments
+    git reset --hard @Arguments
 }
 
 function grhk {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git reset --keep @Arguments
+    git reset --keep @Arguments
 }
 
 function grhs {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git reset --soft @Arguments
+    git reset --soft @Arguments
 }
 
 function grs {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git restore @Arguments
+    git restore @Arguments
 }
 
 function grss {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git restore --source @Arguments
+    git restore --source @Arguments
 }
 
 function grst {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git restore --staged @Arguments
+    git restore --staged @Arguments
 }
 
 function grev {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git revert @Arguments
+    git revert @Arguments
 }
 
 function greva {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git revert --abort @Arguments
+    git revert --abort @Arguments
 }
 
 function grevc {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git revert --continue @Arguments
+    git revert --continue @Arguments
 }
 
 function grm {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git rm @Arguments
+    git rm @Arguments
 }
 
 function grmc {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git rm --cached @Arguments
+    git rm --cached @Arguments
 }
 
 function gcount {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git shortlog --summary --numbered @Arguments
+    git shortlog --summary --numbered @Arguments
 }
 
 function gsh {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git show @Arguments
+    git show @Arguments
 }
 
 function gsps {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git show --pretty=short --show-signature @Arguments
+    git show --pretty=short --show-signature @Arguments
 }
 
 function gstall {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git stash --all @Arguments
+    git stash --all @Arguments
 }
 
 function gstaa {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git stash apply @Arguments
+    git stash apply @Arguments
 }
 
 function gstc {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git stash clear @Arguments
+    git stash clear @Arguments
 }
 
 function gstd {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git stash drop @Arguments
+    git stash drop @Arguments
 }
 
 function gstl {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git stash list @Arguments
+    git stash list @Arguments
 }
 
 function gstp {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git stash pop @Arguments
+    git stash pop @Arguments
 }
 
 function gsta {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  if (Test-GitVersionAtLeast -RequiredVersion "2.13") {
-    git stash push @Arguments
-  }
-  else {
-    git stash save @Arguments
-  }
+    if (Test-GitVersionAtLeast -RequiredVersion "2.13") {
+        git stash push @Arguments
+    }
+    else {
+        git stash save @Arguments
+    }
 }
 
 function gsts {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git stash show --patch @Arguments
+    git stash show --patch @Arguments
 }
 
 function gstu {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git stash --include-untracked @Arguments
+    git stash --include-untracked @Arguments
 }
 
 function gst {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git status @Arguments
+    git status @Arguments
 }
 
 function gss {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git status --short @Arguments
+    git status --short @Arguments
 }
 
 function gsb {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git status --short --branch @Arguments
+    git status --short --branch @Arguments
 }
 
 function gsi {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git submodule init @Arguments
+    git submodule init @Arguments
 }
 
 function gsu {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git submodule update @Arguments
+    git submodule update @Arguments
 }
 
 function gsd {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git svn dcommit @Arguments
+    git svn dcommit @Arguments
 }
 
 function gsr {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git svn rebase @Arguments
+    git svn rebase @Arguments
 }
 
 function gsw {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git switch @Arguments
+    git switch @Arguments
 }
 
 function gswc {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git switch --create @Arguments
+    git switch --create @Arguments
 }
 
 function gta {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git tag --annotate @Arguments
+    git tag --annotate @Arguments
 }
 
 function gts {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git tag --sign @Arguments
+    git tag --sign @Arguments
 }
 
 function gtv {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git tag | Sort-Object -V @Arguments
+    git tag | Sort-Object -V @Arguments
 }
 
 function gignore {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git update-index --assume-unchanged @Arguments
+    git update-index --assume-unchanged @Arguments
 }
 
 function gunignore {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git update-index --no-assume-unchanged @Arguments
+    git update-index --no-assume-unchanged @Arguments
 }
 
 function gwch {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git whatchanged -p --abbrev-commit --pretty=medium @Arguments
+    git whatchanged -p --abbrev-commit --pretty=medium @Arguments
 }
 
 function gwt {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git worktree @Arguments
+    git worktree @Arguments
 }
 
 function gwta {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git worktree add @Arguments
+    git worktree add @Arguments
 }
 
 function gwtls {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git worktree list @Arguments
+    git worktree list @Arguments
 }
 
 function gwtmv {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git worktree move @Arguments
+    git worktree move @Arguments
 }
 
 function gwtrm {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git worktree remove @Arguments
+    git worktree remove @Arguments
 }
 
 function gwip {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git add -A
-  git rm (git ls-files --deleted) 2>$null
-  git commit --no-verify --no-gpg-sign --message "--wip-- [skip ci]" @Arguments
+    git add -A
+    git rm (git ls-files --deleted) 2>$null
+    git commit --no-verify --no-gpg-sign --message "--wip-- [skip ci]" @Arguments
 }
 
 function gunwip {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  $commitMessage = git rev-list --max-count=1 --format="%s" HEAD
-  if ($commitMessage -match "--wip--") {
-    git reset HEAD~1
-  }
+    $commitMessage = git rev-list --max-count=1 --format="%s" HEAD
+    if ($commitMessage -match "--wip--") {
+        git reset HEAD~1
+    }
 }
 
 function gcd {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git checkout (Get-GitDevelopBranch) @Arguments
+    git checkout (Get-GitDevelopBranch) @Arguments
 }
 
 function gcm {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git checkout (Get-GitMainBranch) @Arguments
+    git checkout (Get-GitMainBranch) @Arguments
 }
 
 function gswd {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git switch (Get-GitDevelopBranch) @Arguments
+    git switch (Get-GitDevelopBranch) @Arguments
 }
 
 function gswm {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git switch (Get-GitMainBranch) @Arguments
+    git switch (Get-GitMainBranch) @Arguments
 }
 
 function grbd {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git rebase (Get-GitDevelopBranch) @Arguments
+    git rebase (Get-GitDevelopBranch) @Arguments
 }
 
 function grbm {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git rebase (Get-GitMainBranch) @Arguments
+    git rebase (Get-GitMainBranch) @Arguments
 }
 
 function grbom {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git rebase "origin/$(Get-GitMainBranch)" @Arguments
+    git rebase "origin/$(Get-GitMainBranch)" @Arguments
 }
 
 function grbum {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git rebase "upstream/$(Get-GitMainBranch)" @Arguments
+    git rebase "upstream/$(Get-GitMainBranch)" @Arguments
 }
 
 function ggsup {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git branch --set-upstream-to="origin/$(Get-GitCurrentBranch)" @Arguments
+    git branch --set-upstream-to="origin/$(Get-GitCurrentBranch)" @Arguments
 }
 
 function gmom {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git merge "origin/$(Get-GitMainBranch)" @Arguments
+    git merge "origin/$(Get-GitMainBranch)" @Arguments
 }
 
 function gmum {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git merge "upstream/$(Get-GitMainBranch)" @Arguments
+    git merge "upstream/$(Get-GitMainBranch)" @Arguments
 }
 
 function gprom {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git pull --rebase origin (Get-GitMainBranch) @Arguments
+    git pull --rebase origin (Get-GitMainBranch) @Arguments
 }
 
 function gpromi {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git pull --rebase=interactive origin (Get-GitMainBranch) @Arguments
+    git pull --rebase=interactive origin (Get-GitMainBranch) @Arguments
 }
 
 function gprum {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git pull --rebase upstream (Get-GitMainBranch) @Arguments
+    git pull --rebase upstream (Get-GitMainBranch) @Arguments
 }
 
 function gprumi {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git pull --rebase=interactive upstream (Get-GitMainBranch) @Arguments
+    git pull --rebase=interactive upstream (Get-GitMainBranch) @Arguments
 }
 
 function ggpull {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git pull origin (Get-GitCurrentBranch) @Arguments
+    git pull origin (Get-GitCurrentBranch) @Arguments
 }
 
 function ggpush {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git push origin (Get-GitCurrentBranch) @Arguments
+    git push origin (Get-GitCurrentBranch) @Arguments
 }
 
 function gpsup {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git push --set-upstream origin (Get-GitCurrentBranch) @Arguments
+    git push --set-upstream origin (Get-GitCurrentBranch) @Arguments
 }
 
 function gpsupf {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  if (Test-GitVersionAtLeast -RequiredVersion "2.30") {
-    git push --set-upstream origin (Get-GitCurrentBranch) --force-with-lease --force-if-includes @Arguments
-  }
-  else {
-    git push --set-upstream origin (Get-GitCurrentBranch) --force-with-lease @Arguments
-  }
+    if (Test-GitVersionAtLeast -RequiredVersion "2.30") {
+        git push --set-upstream origin (Get-GitCurrentBranch) --force-with-lease --force-if-includes @Arguments
+    }
+    else {
+        git push --set-upstream origin (Get-GitCurrentBranch) --force-with-lease @Arguments
+    }
 }
 
 function groh {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git reset "origin/$(Get-GitCurrentBranch)" --hard @Arguments
+    git reset "origin/$(Get-GitCurrentBranch)" --hard @Arguments
 }
 
 function gluc {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git pull upstream (Get-GitCurrentBranch) @Arguments
+    git pull upstream (Get-GitCurrentBranch) @Arguments
 }
 
 function  glum {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git pull upstream (Get-GitMainBranch) @Arguments
+    git pull upstream (Get-GitMainBranch) @Arguments
 }
 
 function gdct {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git describe --tags (git rev-list --tags --max-count=1) @Arguments
+    git describe --tags (git rev-list --tags --max-count=1) @Arguments
 }
 
 function gdnolock {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git diff @Arguments ":(exclude)package-lock.json" ":(exclude)*.lock"
+    git diff @Arguments ":(exclude)package-lock.json" ":(exclude)*.lock"
 }
 function gdv {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git diff -w @Arguments | Out-Host
+    git diff -w @Arguments | Out-Host
 }
 
 function gpristine {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git reset --hard; git clean --force -dfx
+    git reset --hard; git clean --force -dfx
 }
 
 function gwipe {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git reset --hard; git clean --force -df
+    git reset --hard; git clean --force -df
 }
 
 function gignored {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git ls-files -v | Where-Object { $_ -match "^[a-z]" }
+    git ls-files -v | Where-Object { $_ -match "^[a-z]" }
 }
 
 function gbda {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  $mainBranch = Get-GitMainBranch
-  $developBranch = Get-GitDevelopBranch
-  git branch --no-color --merged | Where-Object {
-    $_ -notmatch "^[\*\+]" -and
-    $_ -notmatch "^\s*($mainBranch|$developBranch)\s*$"
-  } | ForEach-Object {
-    git branch --delete $_.Trim() 2>$null
-  }
+    $mainBranch = Get-GitMainBranch
+    $developBranch = Get-GitDevelopBranch
+    git branch --no-color --merged | Where-Object {
+        $_ -notmatch "^[\*\+]" -and
+        $_ -notmatch "^\s*($mainBranch|$developBranch)\s*$"
+    } | ForEach-Object {
+        git branch --delete $_.Trim() 2>$null
+    }
 }
 
 function gbds {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
-
-  $defaultBranch = Get-GitMainBranch
-  if ($LASTEXITCODE -ne 0) { $defaultBranch = Get-GitDevelopBranch }
-
-  git for-each-ref refs/heads/ "--format=%(refname:short)" | ForEach-Object {
-    $branch = $_
-    $mergeBase = git merge-base $defaultBranch $branch
-    $cherry = git cherry $defaultBranch (git commit-tree (git rev-parse "$branch^{tree}") -p $mergeBase -m "_")
-    if ($cherry -match "^-") {
-      git branch -D $branch
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
     }
-  }
+
+    $defaultBranch = Get-GitMainBranch
+    if ($LASTEXITCODE -ne 0) { $defaultBranch = Get-GitDevelopBranch }
+
+    git for-each-ref refs/heads/ "--format=%(refname:short)" | ForEach-Object {
+        $branch = $_
+        $mergeBase = git merge-base $defaultBranch $branch
+        $cherry = git cherry $defaultBranch (git commit-tree (git rev-parse "$branch^{tree}") -p $mergeBase -m "_")
+        if ($cherry -match "^-") {
+            git branch -D $branch
+        }
+    }
 }
 
 function gbgd {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git branch --no-color -vv | Where-Object { $_ -match ": gone\]" } | ForEach-Object {
-    $branchName = ($_ -replace "^.{3}" -split "\s+")[0]
-    git branch -d $branchName
-  }
+    git branch --no-color -vv | Where-Object { $_ -match ": gone\]" } | ForEach-Object {
+        $branchName = ($_ -replace "^.{3}" -split "\s+")[0]
+        git branch -d $branchName
+    }
 }
 
 function gbgD {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git branch --no-color -vv | Where-Object { $_ -match ": gone\]" } | ForEach-Object {
-    $branchName = ($_ -replace "^.{3}" -split "\s+")[0]
-    git branch -D $branchName
-  }
+    git branch --no-color -vv | Where-Object { $_ -match ": gone\]" } | ForEach-Object {
+        $branchName = ($_ -replace "^.{3}" -split "\s+")[0]
+        git branch -D $branchName
+    }
 }
 
 function gbg {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git branch -vv | Where-Object { $_ -match ": gone\]" }
+    git branch -vv | Where-Object { $_ -match ": gone\]" }
 }
 
 function gccd {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  $repo = $args | Where-Object { $_ -match "(ssh://|git://|ftp(s)?://|http(s)?://|.*@)" }
-  if (!$repo) { $repo = $args[-1] }
+    $repo = $args | Where-Object { $_ -match "(ssh://|git://|ftp(s)?://|http(s)?://|.*@)" }
+    if (!$repo) { $repo = $args[-1] }
 
-  git clone --recurse-submodules @Arguments
-  if ($LASTEXITCODE -eq 0) {
-    if (Test-Path $args[-1]) {
-      Set-Location $args[-1]
+    git clone --recurse-submodules @Arguments
+    if ($LASTEXITCODE -eq 0) {
+        if (Test-Path $args[-1]) {
+            Set-Location $args[-1]
+        }
+        else {
+            $repoName = [System.IO.Path]::GetFileNameWithoutExtension($repo)
+            Set-Location $repoName
+        }
     }
-    else {
-      $repoName = [System.IO.Path]::GetFileNameWithoutExtension($repo)
-      Set-Location $repoName
-    }
-  }
 }
 
 function ggpnp {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  if ($Arguments.Count -eq 0) {
-    ggl; ggp
+    if ($Arguments.Count -eq 0) {
+        ggl; ggp
 
-  }
-  else {
-    ggl @Arguments; ggp @Arguments
-  }
+    }
+    else {
+        ggl @Arguments; ggp @Arguments
+    }
 }
 
 function ggu {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  if ($Arguments.Count -eq 0) {
-    $branch = Get-GitCurrentBranch
-    git pull --rebase origin $branch
-  }
-  else {
-    git pull --rebase origin @Arguments
-  }
+    if ($Arguments.Count -eq 0) {
+        $branch = Get-GitCurrentBranch
+        git pull --rebase origin $branch
+    }
+    else {
+        git pull --rebase origin @Arguments
+    }
 }
 
 function ggl {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  if ($Arguments.Count -eq 0) {
-    $branch = Get-GitCurrentBranch
-    git pull origin $branch
-  }
-  else {
-    git pull origin @Arguments
-  }
+    if ($Arguments.Count -eq 0) {
+        $branch = Get-GitCurrentBranch
+        git pull origin $branch
+    }
+    else {
+        git pull origin @Arguments
+    }
 }
 
 function ggp {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  if ($Arguments.Count -eq 0) {
-    $branch = Get-GitCurrentBranch
-    git push origin $branch
-  }
-  else {
-    git push origin @Arguments
-  }
+    if ($Arguments.Count -eq 0) {
+        $branch = Get-GitCurrentBranch
+        git push origin $branch
+    }
+    else {
+        git push origin @Arguments
+    }
 }
 
 function ggf {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  if ($Arguments.Count -eq 0) {
-    $branch = Get-GitCurrentBranch
-    git push --force origin $branch
-  }
-  else {
-    git push --force origin @Arguments
-  }
+    if ($Arguments.Count -eq 0) {
+        $branch = Get-GitCurrentBranch
+        git push --force origin $branch
+    }
+    else {
+        git push --force origin @Arguments
+    }
 }
 
 function ggfl {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  if ($Arguments.Count -eq 0) {
-    $branch = Get-GitCurrentBranch
-    git push --force-with-lease origin $branch
-  }
-  else {
-    git push --force-with-lease origin @Arguments
-  }
+    if ($Arguments.Count -eq 0) {
+        $branch = Get-GitCurrentBranch
+        git push --force-with-lease origin $branch
+    }
+    else {
+        git push --force-with-lease origin @Arguments
+    }
 }
 
 function glods {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git log --graph --pretty="%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ad) %C(bold blue)<%an>%Creset" --date=short @Arguments
+    git log --graph --pretty="%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ad) %C(bold blue)<%an>%Creset" --date=short @Arguments
 }
 
 function glod {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git log --graph --pretty="%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ad) %C(bold blue)<%an>%Creset" @Arguments
+    git log --graph --pretty="%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ad) %C(bold blue)<%an>%Creset" @Arguments
 }
 
 function glola {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git log --graph --pretty="%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Creset" --all @Arguments
+    git log --graph --pretty="%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Creset" --all @Arguments
 }
 
 function glols {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git log --graph --pretty="%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Creset" --stat @Arguments
+    git log --graph --pretty="%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Creset" --stat @Arguments
 }
 
 function glol {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  git log --graph --pretty="%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Creset" @Arguments
+    git log --graph --pretty="%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Creset" @Arguments
 }
 
 
 function glp {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  if ($Arguments.Count -gt 0) {
-    git log --pretty=$Arguments[0]
-  }
-  else {
-    git log
-  }
+    if ($Arguments.Count -gt 0) {
+        git log --pretty=$Arguments[0]
+    }
+    else {
+        git log
+    }
 }
 
 function gtl {
-  <#
-  .SYNOPSIS
+    <#
+    .SYNOPSIS
 
-  .DESCRIPTION
+    .DESCRIPTION
 
-  .PARAMETER Arguments
+    .PARAMETER Arguments
 
-  .INPUTS
+    .INPUTS
 
-  .OUTPUTS
+    .OUTPUTS
 
-  .EXAMPLE
+    .EXAMPLE
 
-  .NOTES
-  #>
-  [CmdletBinding()]
-  [OutputType([void])]
-  param(
-    [Parameter(ValueFromRemainingArguments)]
-    [string[]]$Arguments
-  )
+    .NOTES
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$Arguments
+    )
 
-  if (-not (Test-IsGitRepository)) {
-    Write-Error "Not a git repository (or any of the parent directories): .git"
-    return
-  }
+    if (-not (Test-IsGitRepository)) {
+        Write-Error "Not a git repository (or any of the parent directories): .git"
+        return
+    }
 
-  $pattern = if ($Arguments.Count -gt 0) { "$($Arguments[0])*" } else { "*" }
-  git tag --sort=-v:refname -n --list $pattern
+    $pattern = if ($Arguments.Count -gt 0) { "$($Arguments[0])*" } else { "*" }
+    git tag --sort=-v:refname -n --list $pattern
 }
 
 #---------------------------------------------------------------------------------------------------

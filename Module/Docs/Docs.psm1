@@ -40,87 +40,97 @@
 #---------------------------------------------------------------------------------------------------
 
 function Show-ProfileHelp {
-  <#
-  .SYNOPSIS
-    This module provides documentation for the PowerShell Profile Helper module.
+    <#
+    .SYNOPSIS
+        This module provides documentation for the PowerShell Profile Helper module.
 
-  .DESCRIPTION
-    The PowerShell Profile Helper module provides a set of utility functions to help manage the PowerShell profile and perform common tasks in the console. The module includes functions for finding files, creating and updating files, extracting files, compressing files, searching for content in files, replacing content in files, moving up directory levels, updating the module directory, updating the profile, updating PowerShell, checking for command existence, reloading the profile, getting system uptime, getting command definitions, setting environment variables, getting environment variables, getting all processes, finding processes by name, finding processes by port, stopping processes by name, stopping processes by port, getting random quotes, getting weather forecasts, starting countdown timers, starting stopwatches, displaying the wall clock, displaying a matrix rain animation, and more. The `Show-ProfileHelp` function displays detailed help documentation for each section of the module.
+    .DESCRIPTION
+        The PowerShell Profile Helper module provides a set of utility functions to help manage the PowerShell profile and perform common tasks in the console. The module includes functions for finding files, creating and updating files, extracting files, compressing files, searching for content in files, replacing content in files, moving up directory levels, updating the module directory, updating the profile, updating PowerShell, checking for command existence, reloading the profile, getting system uptime, getting command definitions, setting environment variables, getting environment variables, getting all processes, finding processes by name, finding processes by port, stopping processes by name, stopping processes by port, getting random quotes, getting weather forecasts, starting countdown timers, starting stopwatches, displaying the wall clock, displaying a matrix rain animation, and more. The `Show-ProfileHelp` function displays detailed help documentation for each section of the module.
 
-  .PARAMETER Section
-    Specifies the section of the documentation to display. Valid values are 'All', 'AWS', 'Directory', 'Docker', 'Docs', 'Environment', 'Git', 'Logging', 'Network', 'Plugins', 'Process', 'Starship', 'Update', and 'Utility'. The default value is 'All'.
+    .PARAMETER Section
+        Specifies the section of the documentation to display. Valid values are 'All', 'AWS', 'Directory', 'Docker', 'DockerCompose', 'Docs', 'Environment', 'Git', 'Helm', 'Logging', 'Network', 'Plugins', 'Process', 'Starship', 'Update', and 'Utility'. The default value is 'All'.
 
-  .INPUTS
-    Section: (Optional) Specifies the section of the documentation to display. Valid values are 'All', 'AWS', 'Directory', 'Docker', 'Docs', 'Environment', 'Git', 'Logging', 'Network', 'Plugins', 'Process', 'Starship', 'Update', and 'Utility'. The default value is 'All'.
+    .INPUTS
+        Section: (Optional) Specifies the section of the documentation to display. Valid values are 'All', 'AWS', 'Directory', 'Docker', 'DockerCompose', 'Docs', 'Environment', 'Git', 'Helm', 'Logging', 'Network', 'Plugins', 'Process', 'Starship', 'Update', and 'Utility'. The default value is 'All'.
 
-  .OUTPUTS
-    This module does not return any output.
+    .OUTPUTS
+        This module does not return any output.
 
-  .NOTES
-    This module is intended to provide documentation for the PowerShell Profile Helper module.
+    .NOTES
+        This module is intended to provide documentation for the PowerShell Profile Helper module.
 
-  .EXAMPLE
-    Show-ProfileHelp
-    Displays the help documentation for all sections of the PowerShell Profile Helper module.
+    .EXAMPLE
+        Show-ProfileHelp
+        Displays the help documentation for all sections of the PowerShell Profile Helper module.
 
-  .EXAMPLE
-    Show-ProfileHelp -Section 'Directory'
-    Displays the help documentation for the Directory section of the PowerShell Profile Helper module.
+    .EXAMPLE
+        Show-ProfileHelp -Section 'Directory'
+        Displays the help documentation for the Directory section of the PowerShell Profile Helper module.
 
-  .EXAMPLE
-    Show-ProfileHelp -Section 'AWS'
-    Displays the help documentation for the AWS plugin with all available AWS aliases and commands.
+    .EXAMPLE
+        Show-ProfileHelp -Section 'AWS'
+        Displays the help documentation for the AWS plugin with all available AWS aliases and commands.
 
-  .EXAMPLE
-    Show-ProfileHelp -Section 'Docker'
-    Displays the help documentation for the Docker plugin with all available Docker aliases and commands.
+    .EXAMPLE
+        Show-ProfileHelp -Section 'Docker'
+        Displays the help documentation for the Docker plugin with all available Docker aliases and commands.
 
-  .EXAMPLE
-    Show-ProfileHelp -Section 'Git'
-    Displays the help documentation for the Git plugin with all available Git aliases and commands.
+    .EXAMPLE
+        Show-ProfileHelp -Section 'DockerCompose'
+        Displays the help documentation for the DockerCompose plugin with all available Docker Compose aliases and commands.
 
-  .EXAMPLE
-    Show-ProfileHelp -Section 'Plugins'
-    Displays an overview of all available plugins.
+    .EXAMPLE
+        Show-ProfileHelp -Section 'Git'
+        Displays the help documentation for the Git plugin with all available Git aliases and commands.
 
-  .LINK
-    https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
-  #>
-  [CmdletBinding()]
-  [Alias("profile-help")]
-  [OutputType([void])]
-  param (
-    [Parameter(
-      Mandatory = $false,
-      Position = 0,
-      ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true,
-      HelpMessage = "Specifies the section of the documentation to display."
-    )]
-    [ValidateSet(
-      'All',
-      'AWS',
-      'Directory',
-      'Docker',
-      'Docs',
-      'Environment',
-      'Git',
-      'Logging',
-      'Network',
-      'Plugins',
-      'Process',
-      'Starship',
-      'Update',
-      'Utility'
-    )]
-    [string]$Section = 'All'
-  )
+    .EXAMPLE
+        Show-ProfileHelp -Section 'Helm'
+        Displays the help documentation for the Helm plugin with all available Helm aliases and commands.
 
-  $Title = @"
+    .EXAMPLE
+        Show-ProfileHelp -Section 'Plugins'
+        Displays an overview of all available plugins.
+
+    .LINK
+        https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
+    #>
+    [CmdletBinding()]
+    [Alias("profile-help")]
+    [OutputType([void])]
+    param (
+        [Parameter(
+            Mandatory = $false,
+            Position = 0,
+            ValueFromPipeline = $true,
+            ValueFromPipelineByPropertyName = $true,
+            HelpMessage = "Specifies the section of the documentation to display."
+        )]
+        [ValidateSet(
+            'All',
+            'AWS',
+            'Directory',
+            'Docker',
+            'DockerCompose',
+            'Docs',
+            'Environment',
+            'Git',
+            'Helm',
+            'Logging',
+            'Network',
+            'Plugins',
+            'Process',
+            'Starship',
+            'Update',
+            'Utility'
+        )]
+        [string]$Section = 'All'
+    )
+
+    $Title = @"
 $($PSStyle.Foreground.Cyan)PowerShell Profile Helper$($PSStyle.Reset)
 "@
 
-  $Directory = @"
+    $Directory = @"
 $($PSStyle.Foreground.Yellow)Directory Module$($PSStyle.Reset)
     $($PSStyle.Foreground.Green)Find-Files$($PSStyle.Reset) -Name <Name>
     $($PSStyle.Foreground.Magenta)ff$($PSStyle.Reset) -Name <Name>
@@ -190,14 +200,14 @@ $($PSStyle.Foreground.Yellow)Directory Module$($PSStyle.Reset)
         Moves up five directory levels.
 "@
 
-  $Docs = @"
+    $Docs = @"
 $($PSStyle.Foreground.Yellow)Docs Module$($PSStyle.Reset)
     $($PSStyle.Foreground.Green)Show-ProfileHelp$($PSStyle.Reset)
     $($PSStyle.Foreground.Magenta)profile-help$($PSStyle.Reset)
         Displays the help documentation for the PowerShell Profile Helper module.
 "@
 
-  $Environment = @"
+    $Environment = @"
 $($PSStyle.Foreground.Yellow)Environment Module$($PSStyle.Reset)
     $($PSStyle.Foreground.Green)Invoke-ReloadPathEnvironmentVariable$($PSStyle.Reset)
     $($PSStyle.Foreground.Magenta)reload-env-path$($PSStyle.Reset)
@@ -237,14 +247,14 @@ $($PSStyle.Foreground.Yellow)Environment Module$($PSStyle.Reset)
         Global variable to test if the machine can connect to GitHub.
 "@
 
-  $Logging = @"
+    $Logging = @"
 $($PSStyle.Foreground.Yellow)Logging Module$($PSStyle.Reset)
     $($PSStyle.Foreground.Green)Write-LogMessage$($PSStyle.Reset) -Message <Message> [-Level <Level>]
     $($PSStyle.Foreground.Magenta)log-message$($PSStyle.Reset) -Message <Message> [-Level <Level>]
         Logs a message with a timestamp and log level. The default log level is "INFO".
 "@
 
-  $Network = @"
+    $Network = @"
 $($PSStyle.Foreground.Yellow)Network Module$($PSStyle.Reset)
     $($PSStyle.Foreground.Green)Get-MyIPAddress$($PSStyle.Reset) [-Local] [-IPv4] [-IPv6] [-ComputerName <ComputerName>]
     $($PSStyle.Foreground.Magenta)my-ip$($PSStyle.Reset) [-Local] [-IPv4] [-IPv6] [-ComputerName <ComputerName>]
@@ -255,7 +265,7 @@ $($PSStyle.Foreground.Yellow)Network Module$($PSStyle.Reset)
         Flushes the DNS cache.
 "@
 
-  $Process = @"
+    $Process = @"
 $($PSStyle.Foreground.Yellow)Process Module$($PSStyle.Reset)
     $($PSStyle.Foreground.Green)Get-SystemInfo$($PSStyle.Reset)
     $($PSStyle.Foreground.Magenta)sysinfo$($PSStyle.Reset)
@@ -286,7 +296,7 @@ $($PSStyle.Foreground.Yellow)Process Module$($PSStyle.Reset)
         Clears windows cache, temp files, and internet explorer cache.
 "@
 
-  $Plugins = @"
+    $Plugins = @"
 $($PSStyle.Foreground.Yellow)Plugins Module$($PSStyle.Reset)
     This module contains various plugins that extend PowerShell functionality.
     Each plugin provides specialized commands and aliases for specific tools or workflows.
@@ -299,7 +309,7 @@ $($PSStyle.Foreground.Yellow)Plugins Module$($PSStyle.Reset)
     Use 'Show-ProfileHelp -Section AWS', 'Show-ProfileHelp -Section Docker', or 'Show-ProfileHelp -Section Git' to view specific plugin documentation.
 "@
 
-  $PluginsGit = @"
+    $PluginsGit = @"
 $($PSStyle.Foreground.Yellow)Plugins Module - Git Plugin$($PSStyle.Reset)
     $($PSStyle.Foreground.Cyan)Comprehensive Git aliases and shortcuts$($PSStyle.Reset)
 
@@ -404,7 +414,7 @@ $($PSStyle.Foreground.Yellow)Plugins Module - Git Plugin$($PSStyle.Reset)
     Over 160+ Git aliases available - see full documentation for complete list.
 "@
 
-  $PluginsAWS = @"
+    $PluginsAWS = @"
 $($PSStyle.Foreground.Yellow)Plugins Module - AWS Plugin$($PSStyle.Reset)
     $($PSStyle.Foreground.Cyan)Comprehensive AWS CLI integration with advanced features$($PSStyle.Reset)
 
@@ -455,7 +465,7 @@ $($PSStyle.Foreground.Yellow)Plugins Module - AWS Plugin$($PSStyle.Reset)
     12 AWS functions available for complete credential and profile management.
 "@
 
-  $PluginsDocker = @"
+    $PluginsDocker = @"
 $($PSStyle.Foreground.Yellow)Plugins Module - Docker Plugin$($PSStyle.Reset)
     $($PSStyle.Foreground.Cyan)Complete Docker CLI integration with PowerShell aliases$($PSStyle.Reset)
 
@@ -512,14 +522,125 @@ $($PSStyle.Foreground.Yellow)Plugins Module - Docker Plugin$($PSStyle.Reset)
     37 Docker aliases available for complete container lifecycle management.
 "@
 
-  $Starship = @"
+    $PluginsDockerCompose = @"
+$($PSStyle.Foreground.Yellow)Plugins Module - Docker Compose Plugin$($PSStyle.Reset)
+    $($PSStyle.Foreground.Cyan)Complete Docker Compose CLI integration with PowerShell aliases$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Core Commands:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)dco$($PSStyle.Reset) <args>         - Docker Compose base command
+        $($PSStyle.Foreground.Magenta)dcb$($PSStyle.Reset) [service]      - Build or rebuild services
+        $($PSStyle.Foreground.Magenta)dce$($PSStyle.Reset) <service> <cmd> - Execute commands in containers
+        $($PSStyle.Foreground.Magenta)dcps$($PSStyle.Reset)               - List containers
+        $($PSStyle.Foreground.Magenta)dcrestart$($PSStyle.Reset) [service] - Restart services
+        $($PSStyle.Foreground.Magenta)dcrm$($PSStyle.Reset) [service]     - Remove stopped containers
+        $($PSStyle.Foreground.Magenta)dcr$($PSStyle.Reset) <service> <cmd> - Run one-time commands
+        $($PSStyle.Foreground.Magenta)dcstop$($PSStyle.Reset) [service]   - Stop services
+        $($PSStyle.Foreground.Magenta)dcstart$($PSStyle.Reset) [service]  - Start services
+        $($PSStyle.Foreground.Magenta)dck$($PSStyle.Reset) [service]      - Kill running containers
+
+    $($PSStyle.Foreground.Green)Service Management:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)dcup$($PSStyle.Reset) [service]     - Create and start containers
+        $($PSStyle.Foreground.Magenta)dcupb$($PSStyle.Reset) [service]    - Create and start with build
+        $($PSStyle.Foreground.Magenta)dcupd$($PSStyle.Reset) [service]    - Create and start in detached mode
+        $($PSStyle.Foreground.Magenta)dcupdb$($PSStyle.Reset) [service]   - Create and start detached with build
+        $($PSStyle.Foreground.Magenta)dcdn$($PSStyle.Reset) [options]     - Stop and remove containers, networks
+
+    $($PSStyle.Foreground.Green)Monitoring & Logs:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)dcl$($PSStyle.Reset) [service]      - View container logs
+        $($PSStyle.Foreground.Magenta)dclf$($PSStyle.Reset) [service]     - Follow log output
+        $($PSStyle.Foreground.Magenta)dclF$($PSStyle.Reset) [service]     - Follow new log entries only
+
+    $($PSStyle.Foreground.Green)Image Operations:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)dcpull$($PSStyle.Reset) [service]   - Pull service images
+
+    $($PSStyle.Foreground.Green)Examples:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Start all services in background
+        dcupd
+
+        # Build and start web service
+        dcupb web
+
+        # Execute bash in web container
+        dce web bash
+
+        # Follow logs for all services
+        dclf
+
+        # Stop and clean up everything
+        dcdn --volumes$($PSStyle.Reset)
+
+    Note: Supports both Docker Compose v1 (docker-compose) and v2 (docker compose).
+    20 Docker Compose functions available for complete multi-container management.
+"@
+
+    $PluginsHelm = @"
+$($PSStyle.Foreground.Yellow)Plugins Module - Helm Plugin$($PSStyle.Reset)
+    $($PSStyle.Foreground.Cyan)Complete Helm CLI integration with PowerShell aliases for Kubernetes package management$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Core Commands:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)h$($PSStyle.Reset) <args>           - Helm base command
+        $($PSStyle.Foreground.Magenta)hin$($PSStyle.Reset) <release> <chart> - Install Helm charts
+        $($PSStyle.Foreground.Magenta)hun$($PSStyle.Reset) <release>      - Uninstall Helm releases
+        $($PSStyle.Foreground.Magenta)hse$($PSStyle.Reset) <query>        - Search for Helm charts
+        $($PSStyle.Foreground.Magenta)hup$($PSStyle.Reset) <release> <chart> - Upgrade Helm releases
+
+    $($PSStyle.Foreground.Green)Repository Management:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Add repositories
+        h repo add stable https://charts.helm.sh/stable
+        h repo add bitnami https://charts.bitnami.com/bitnami
+
+        # Update repositories
+        h repo update
+
+        # List repositories
+        h repo list$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Chart Operations:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Search for charts
+        hse repo nginx
+        hse hub wordpress
+
+        # Install applications
+        hin my-nginx stable/nginx
+        hin my-app ./my-chart --namespace production
+
+        # Upgrade applications
+        hup my-nginx stable/nginx
+        hup my-app ./my-chart --install$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Release Management:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# List releases
+        h list
+        h list --all-namespaces
+
+        # Get release information
+        h get values my-release
+        h status my-release
+
+        # Uninstall releases
+        hun my-release
+        hun my-release --keep-history$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Examples:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Complete deployment workflow
+        h repo add bitnami https://charts.bitnami.com/bitnami
+        hse repo wordpress
+        hin my-wordpress bitnami/wordpress --namespace production
+        h status my-wordpress -n production
+        hup my-wordpress bitnami/wordpress -n production$($PSStyle.Reset)
+
+    Note: Includes automatic PowerShell completion for enhanced productivity.
+    5 Helm functions available for complete Kubernetes package management.
+"@
+
+    $Starship = @"
 $($PSStyle.Foreground.Yellow)Starship Module$($PSStyle.Reset)
     $($PSStyle.Foreground.Green)Invoke-StarshipTransientFunction$($PSStyle.Reset)
     $($PSStyle.Foreground.Magenta)starship-transient$($PSStyle.Reset)
         Invokes the Starship module transiently to load the Starship prompt, enhancing the appearance and functionality of the PowerShell prompt.
 "@
 
-  $Update = @"
+    $Update = @"
 $($PSStyle.Foreground.Yellow)Update Module$($PSStyle.Reset)
     $($PSStyle.Foreground.Green)Update-LocalProfileModuleDirectory$($PSStyle.Reset) [-LocalPath <LocalPath>]
     $($PSStyle.Foreground.Magenta)update-local-module$($PSStyle.Reset) [-LocalPath <LocalPath>]
@@ -538,7 +659,7 @@ $($PSStyle.Foreground.Yellow)Update Module$($PSStyle.Reset)
         Updates the Windows Terminal configuration file with the latest settings from the GitHub repository.
 "@
 
-  $Utility = @"
+    $Utility = @"
 $($PSStyle.Foreground.Yellow)Utility Module$($PSStyle.Reset)
     $($PSStyle.Foreground.Green)Test-Administrator$($PSStyle.Reset)
     $($PSStyle.Foreground.Magenta)is-admin$($PSStyle.Reset)
@@ -597,75 +718,84 @@ $($PSStyle.Foreground.Yellow)Utility Module$($PSStyle.Reset)
         Converts a size value to a specified unit and formats it.
 "@
 
-  switch ($Section) {
-    'All' {
-      Write-Host $Title
-      Write-Host $Directory
-      Write-Host $Docs
-      Write-Host $Environment
-      Write-Host $Logging
-      Write-Host $Network
-      Write-Host $Plugins
-      Write-Host $Process
-      Write-Host $Starship
-      Write-Host $Update
-      Write-Host $Utility
+    switch ($Section) {
+        'All' {
+            Write-Host $Title
+            Write-Host $Directory
+            Write-Host $Docs
+            Write-Host $Environment
+            Write-Host $Logging
+            Write-Host $Network
+            Write-Host $Plugins
+            Write-Host $Process
+            Write-Host $Starship
+            Write-Host $Update
+            Write-Host $Utility
+        }
+        'AWS' {
+            Write-Host $Title
+            Write-Host $PluginsAWS
+        }
+        'Directory' {
+            Write-Host $Title
+            Write-Host $Directory
+        }
+        'Docker' {
+            Write-Host $Title
+            Write-Host $PluginsDocker
+        }
+        'DockerCompose' {
+            Write-Host $Title
+            Write-Host $PluginsDockerCompose
+        }
+        'Docs' {
+            Write-Host $Title
+            Write-Host $Docs
+        }
+        'Environment' {
+            Write-Host $Title
+            Write-Host $Environment
+        }
+        'Git' {
+            Write-Host $Title
+            Write-Host $PluginsGit
+        }
+        'Helm' {
+            Write-Host $Title
+            Write-Host $PluginsHelm
+        }
+        'Logging' {
+            Write-Host $Title
+            Write-Host $Logging
+        }
+        'Network' {
+            Write-Host $Title
+            Write-Host $Network
+        }
+        'Plugins' {
+            Write-Host $Title
+            Write-Host $Plugins
+        }
+        'Process' {
+            Write-Host $Title
+            Write-Host $Process
+        }
+        'Starship' {
+            Write-Host $Title
+            Write-Host $Starship
+        }
+        'Update' {
+            Write-Host $Title
+            Write-Host $Update
+        }
+        'Utility' {
+            Write-Host $Title
+            Write-Host $Utility
+        }
+        default {
+            Write-Host $Title
+            Write-Host $Docs
+        }
     }
-    'AWS' {
-      Write-Host $Title
-      Write-Host $PluginsAWS
-    }
-    'Directory' {
-      Write-Host $Title
-      Write-Host $Directory
-    }
-    'Docker' {
-      Write-Host $Title
-      Write-Host $PluginsDocker
-    }
-    'Docs' {
-      Write-Host $Title
-      Write-Host $Docs
-    }
-    'Environment' {
-      Write-Host $Title
-      Write-Host $Environment
-    }
-    'Git' {
-      Write-Host $Title
-      Write-Host $PluginsGit
-    }
-    'Logging' {
-      Write-Host $Title
-      Write-Host $Logging
-    }
-    'Network' {
-      Write-Host $Title
-      Write-Host $Network
-    }
-    'Plugins' {
-      Write-Host $Title
-      Write-Host $Plugins
-    }
-    'Process' {
-      Write-Host $Title
-      Write-Host $Process
-    }
-    'Starship' {
-      Write-Host $Title
-      Write-Host $Starship
-    }
-    'Update' {
-      Write-Host $Title
-      Write-Host $Update
-    }
-    'Utility' {
-      Write-Host $Title
-      Write-Host $Utility
-    }
-    Default {
-      Write-Host $Title
-      Write-Host $Docs
-    }
-  }
 }
+

@@ -1,5 +1,5 @@
 function Read-FigletFont {
-  <#
+    <#
   .SYNOPSIS
     Read the contents of a FIGlet font file.
 
@@ -25,56 +25,56 @@ function Read-FigletFont {
   .LINK
     https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
   #>
-  [CmdletBinding()]
-  [OutputType([hashtable])]
-  param (
-    [Parameter(
-      Mandatory = $true,
-      Position = 0,
-      ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true,
-      HelpMessage = "The path to the FIGlet font file to read."
-    )]
-    [Alias("f")]
-    [string]$FontPath
-  )
+    [CmdletBinding()]
+    [OutputType([hashtable])]
+    param (
+        [Parameter(
+            Mandatory = $true,
+            Position = 0,
+            ValueFromPipeline = $true,
+            ValueFromPipelineByPropertyName = $true,
+            HelpMessage = "The path to the FIGlet font file to read."
+        )]
+        [Alias("f")]
+        [string]$FontPath
+    )
 
-  if (!(Test-Path $FontPath)) {
-    Write-Host ("Error: Font file not found at {0}" -f $FontPath) -ForegroundColor Red
-    return $null
-  }
-
-  $lines = Get-Content -Path $FontPath -Encoding UTF8
-  if ($lines.Count -eq 0) {
-    Write-Host "Error: Font file is empty or unreadable." -ForegroundColor Red
-    return $null
-  }
-
-  $fontData = @{}
-  $header = $lines[0] -split " "
-  $hardBlank = $header[0][4]
-  $charHeight = [int]$header[1]
-  $charStartIndex = 1
-
-  for ($i = 32; $i -lt 127; $i++) {
-    $charLines = @()
-    for ($j = 0; $j -lt $charHeight; $j++) {
-      $lineIndex = $charStartIndex + ($i - 32) * $charHeight + $j
-      if ($lineIndex -ge $lines.Count) { continue }
-      $charLine = $lines[$lineIndex] -replace "[@$hardBlank]", " "
-      $charLines += $charLine -replace ".$", ""
+    if (!(Test-Path $FontPath)) {
+        Write-Host ("Error: Font file not found at {0}" -f $FontPath) -ForegroundColor Red
+        return $null
     }
-    $fontData[[char]$i] = $charLines
-  }
 
-  return @{
-    "fontData"   = $fontData
-    "charHeight" = $charHeight
-  }
+    $lines = Get-Content -Path $FontPath -Encoding UTF8
+    if ($lines.Count -eq 0) {
+        Write-Host "Error: Font file is empty or unreadable." -ForegroundColor Red
+        return $null
+    }
+
+    $fontData = @{}
+    $header = $lines[0] -split " "
+    $hardBlank = $header[0][4]
+    $charHeight = [int]$header[1]
+    $charStartIndex = 1
+
+    for ($i = 32; $i -lt 127; $i++) {
+        $charLines = @()
+        for ($j = 0; $j -lt $charHeight; $j++) {
+            $lineIndex = $charStartIndex + ($i - 32) * $charHeight + $j
+            if ($lineIndex -ge $lines.Count) { continue }
+            $charLine = $lines[$lineIndex] -replace "[@$hardBlank]", " "
+            $charLines += $charLine -replace ".$", ""
+        }
+        $fontData[[char]$i] = $charLines
+    }
+
+    return @{
+        "fontData"   = $fontData
+        "charHeight" = $charHeight
+    }
 }
 
 function Convert-TextToAscii {
-  <#
+    <#
   .SYNOPSIS
     Converts text to ASCII art using a specified FIGlet font.
 
@@ -104,54 +104,54 @@ function Convert-TextToAscii {
   .LINK
     https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
   #>
-  [CmdletBinding()]
-  [OutputType([string])]
-  param (
-    [Parameter(
-      Mandatory = $true,
-      Position = 0,
-      ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true,
-      HelpMessage = "The text to convert to ASCII art."
-    )]
-    [Alias("t")]
-    [string]$Text,
+    [CmdletBinding()]
+    [OutputType([string])]
+    param (
+        [Parameter(
+            Mandatory = $true,
+            Position = 0,
+            ValueFromPipeline = $true,
+            ValueFromPipelineByPropertyName = $true,
+            HelpMessage = "The text to convert to ASCII art."
+        )]
+        [Alias("t")]
+        [string]$Text,
 
-    [Parameter(
-      Mandatory = $true,
-      Position = 1,
-      ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true,
-      HelpMessage = "The FIGlet font data extracted from a font file."
-    )]
-    [Alias("f")]
-    [hashtable]$Font
-  )
+        [Parameter(
+            Mandatory = $true,
+            Position = 1,
+            ValueFromPipeline = $true,
+            ValueFromPipelineByPropertyName = $true,
+            HelpMessage = "The FIGlet font data extracted from a font file."
+        )]
+        [Alias("f")]
+        [hashtable]$Font
+    )
 
-  if ($null -eq $Font) {
-    Write-Host "Error: Font data is empty. Check font file." -ForegroundColor Red
-    return
-  }
-
-  $output = @()
-  for ($i = 0; $i -lt $Font.charHeight; $i++) {
-    $line = ""
-    foreach ($char in $Text.ToCharArray()) {
-      if ($Font.fontData.ContainsKey($char)) {
-        $line += $Font.fontData[$char][$i] + "  "
-      }
-      else {
-        $line += " " * 8
-      }
+    if ($null -eq $Font) {
+        Write-Host "Error: Font data is empty. Check font file." -ForegroundColor Red
+        return
     }
-    $output += $line
-  }
 
-  return $output -join "`n"
+    $output = @()
+    for ($i = 0; $i -lt $Font.charHeight; $i++) {
+        $line = ""
+        foreach ($char in $Text.ToCharArray()) {
+            if ($Font.fontData.ContainsKey($char)) {
+                $line += $Font.fontData[$char][$i] + "  "
+            }
+            else {
+                $line += " " * 8
+            }
+        }
+        $output += $line
+    }
+
+    return $output -join "`n"
 }
 
 function Get-ParseTime {
-  <#
+    <#
   .SYNOPSIS
     Parses a time string into a DateTime object.
 
@@ -177,37 +177,37 @@ function Get-ParseTime {
   .LINK
     https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
   #>
-  [CmdletBinding()]
-  [OutputType([datetime])]
-  param (
-    [Parameter(
-      Mandatory = $true,
-      Position = 0,
-      ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true,
-      HelpMessage = "The time string to parse."
-    )]
-    [Alias("t")]
-    [string]$TimeString
-  )
+    [CmdletBinding()]
+    [OutputType([datetime])]
+    param (
+        [Parameter(
+            Mandatory = $true,
+            Position = 0,
+            ValueFromPipeline = $true,
+            ValueFromPipelineByPropertyName = $true,
+            HelpMessage = "The time string to parse."
+        )]
+        [Alias("t")]
+        [string]$TimeString
+    )
 
-  try {
-    $targetTime = [datetime]::ParseExact($TimeString, "h:mmtt", $null)
-  }
-  catch {
     try {
-      $targetTime = [datetime]::ParseExact($TimeString, "HH:mm", $null)
+        $targetTime = [datetime]::ParseExact($TimeString, "h:mmtt", $null)
     }
     catch {
-      Write-LogMessage -Message "Invalid duration or time format: $TimeString" -Level "ERROR"
-      exit 1
+        try {
+            $targetTime = [datetime]::ParseExact($TimeString, "HH:mm", $null)
+        }
+        catch {
+            Write-LogMessage -Message "Invalid duration or time format: $TimeString" -Level "ERROR"
+            exit 1
+        }
     }
-  }
-  return $targetTime
+    return $targetTime
 }
 
 function Format-ConvertSize {
-  <#
+    <#
   .SYNOPSIS
     Formats a numeric value into a human-readable string using scaling units.
 
@@ -247,69 +247,70 @@ function Format-ConvertSize {
   .LINK
     https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
   #>
-  [CmdletBinding()]
-  param (
-    [Parameter(
-      Mandatory = $true,
-      Position = 0,
-      ValueFromPipelineByPropertyName = $true,
-      ValueFromPipeline = $true,
-      HelpMessage = "The numeric value to format."
-    )]
-    [Alias("v")]
-    [ValidateNotNullOrEmpty()]
-    [double]$Value,
+    [CmdletBinding()]
+    param (
+        [Parameter(
+            Mandatory = $true,
+            Position = 0,
+            ValueFromPipelineByPropertyName = $true,
+            ValueFromPipeline = $true,
+            HelpMessage = "The numeric value to format."
+        )]
+        [Alias("v")]
+        [ValidateNotNullOrEmpty()]
+        [double]$Value,
 
-    [Parameter(
-      Mandatory = $false,
-      Position = 1,
-      ValueFromPipelineByPropertyName = $true,
-      ValueFromPipeline = $true,
-      HelpMessage = "An array of units to use for formatting."
-    )]
-    [Alias("u")]
-    [ValidateNotNullOrEmpty()]
-    [string[]]$Units = @("Bytes", "KB", "MB", "GB", "TB", "PB", "EB"),
+        [Parameter(
+            Mandatory = $false,
+            Position = 1,
+            ValueFromPipelineByPropertyName = $true,
+            ValueFromPipeline = $true,
+            HelpMessage = "An array of units to use for formatting."
+        )]
+        [Alias("u")]
+        [ValidateNotNullOrEmpty()]
+        [string[]]$Units = @("Bytes", "KB", "MB", "GB", "TB", "PB", "EB"),
 
-    [Parameter(
-      Mandatory = $false,
-      Position = 2,
-      ValueFromPipelineByPropertyName = $true,
-      ValueFromPipeline = $true,
-      HelpMessage = "The factor used to scale the value between units."
-    )]
-    [Alias("s")]
-    [ValidateRange(1, [double]::MaxValue)]
-    [double]$Scale = 1024,
+        [Parameter(
+            Mandatory = $false,
+            Position = 2,
+            ValueFromPipelineByPropertyName = $true,
+            ValueFromPipeline = $true,
+            HelpMessage = "The factor used to scale the value between units."
+        )]
+        [Alias("s")]
+        [ValidateRange(1, [double]::MaxValue)]
+        [double]$Scale = 1024,
 
-    [Parameter(
-      Mandatory = $false,
-      Position = 3,
-      ValueFromPipelineByPropertyName = $true,
-      ValueFromPipeline = $true,
-      HelpMessage = "The number of decimal places to include in the output."
-    )]
-    [Alias("d")]
-    [ValidateRange(0, 10)]
-    [int]$DecimalPlaces = 1
-  )
+        [Parameter(
+            Mandatory = $false,
+            Position = 3,
+            ValueFromPipelineByPropertyName = $true,
+            ValueFromPipeline = $true,
+            HelpMessage = "The number of decimal places to include in the output."
+        )]
+        [Alias("d")]
+        [ValidateRange(0, 10)]
+        [int]$DecimalPlaces = 1
+    )
 
-  if ($Value -lt 0) { return "N/A" }
-  if ($Value -eq 0) { return "0 $($Units[0])" }
+    if ($Value -lt 0) { return "N/A" }
+    if ($Value -eq 0) { return "0 $($Units[0])" }
 
-  $tier = 0
-  [double]$scaledValue = $Value
+    $tier = 0
+    [double]$scaledValue = $Value
 
-  while ($scaledValue -ge $Scale -and $tier -lt ($Units.Length - 1)) {
-    $scaledValue /= $Scale
-    $tier++
-  }
+    while ($scaledValue -ge $Scale -and $tier -lt ($Units.Length - 1)) {
+        $scaledValue /= $Scale
+        $tier++
+    }
 
-  $currentDecimalPlaces = $DecimalPlaces
-  if ($tier -eq 0 -or ($scaledValue - [System.Math]::Truncate($scaledValue)) -eq 0) {
-    $currentDecimalPlaces = 0
-  }
+    $currentDecimalPlaces = $DecimalPlaces
+    if ($tier -eq 0 -or ($scaledValue - [System.Math]::Truncate($scaledValue)) -eq 0) {
+        $currentDecimalPlaces = 0
+    }
 
-  $formatted = $scaledValue.ToString("F$currentDecimalPlaces")
-  return "$formatted $($Units[$tier])"
+    $formatted = $scaledValue.ToString("F$currentDecimalPlaces")
+    return "$formatted $($Units[$tier])"
 }
+
