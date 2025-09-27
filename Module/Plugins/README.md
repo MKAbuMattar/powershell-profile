@@ -58,6 +58,14 @@ Comprehensive Ruby CLI integration with 25+ PowerShell functions and convenient 
 **Location:** `Module/Plugins/Ruby/`  
 **Documentation:** [Ruby Plugin README](Ruby/README.md)
 
+#### **[QRCode Plugin](QRCode/README.md)**
+
+Generate QR codes directly from PowerShell using the qrcode.show API service. Provides functions to create QR codes in both PNG and SVG formats with full PowerShell pipeline integration, interactive multi-line input mode, file export capabilities, and cross-platform support for web development and documentation needs.
+
+**Key Features:** QR code generation (PNG/SVG), PowerShell pipeline support, interactive multi-line input, file export, service connectivity testing, bash-compatible aliases (qrcode/qrsvg), web API integration  
+**Location:** `Module/Plugins/QRCode/`  
+**Documentation:** [QRCode Plugin README](QRCode/README.md)
+
 ### **Package Managers**
 
 #### **[NPM Plugin](NPM/README.md)**

@@ -251,6 +251,14 @@ else {
     Write-Warning "Plugin-Poetry module not found at: $PluginPoetryModulePath"
 }
 
+$PluginsQRCodeModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Plugins/QRCode/QRCode.psd1'
+if (Test-Path $PluginsQRCodeModulePath) {
+    Import-Module $PluginsQRCodeModulePath -Force -ErrorAction SilentlyContinue
+}
+else {
+    Write-Warning "Plugin-QRCode module not found at: $PluginsQRCodeModulePath"
+}
+
 $PluginRubyModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Plugins/Ruby/Ruby.psd1'
 if (Test-Path $PluginRubyModulePath) {
     Import-Module $PluginRubyModulePath -Force -ErrorAction SilentlyContinue
