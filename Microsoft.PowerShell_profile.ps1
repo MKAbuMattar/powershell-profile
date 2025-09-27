@@ -227,13 +227,13 @@ else {
     Write-Warning "Plugin-Pipenv module not found at: $PluginPipenvModulePath"
 }
 
-# $PluginPNPMModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Plugins/PNPM/PNPM.psd1'
-# if (Test-Path $PluginPNPMModulePath) {
-#     Import-Module $PluginPNPMModulePath -Force -ErrorAction SilentlyContinue
-# }
-# else {
-#     Write-Warning "Plugin-PNPM module not found at: $PluginPNPMModulePath"
-# }
+$PluginPNPMModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Plugins/PNPM/PNPM.psd1'
+if (Test-Path $PluginPNPMModulePath) {
+    Import-Module $PluginPNPMModulePath -Force -ErrorAction SilentlyContinue
+}
+else {
+    Write-Warning "Plugin-PNPM module not found at: $PluginPNPMModulePath"
+}
 
 $PluginPoetryModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Plugins/Poetry/Poetry.psd1'
 if (Test-Path $PluginPoetryModulePath) {
@@ -387,7 +387,7 @@ Set-Alias -Name vim -Value $EDITOR
 #------------------------------------------------------
 # Run FastFetch
 #------------------------------------------------------
-if (Test-CommandExists FastFetch) {
-    Invoke-Expression -Command "Clear-Host"
-    Invoke-Expression -Command "FastFetch"
-}
+# if (Test-CommandExists FastFetch) {
+#     Invoke-Expression -Command "Clear-Host"
+#     Invoke-Expression -Command "FastFetch"
+# }

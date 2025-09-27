@@ -48,10 +48,10 @@ function Show-ProfileHelp {
         The PowerShell Profile Helper module provides a set of utility functions to help manage the PowerShell profile and perform common tasks in the console. The module includes functions for finding files, creating and updating files, extracting files, compressing files, searching for content in files, replacing content in files, moving up directory levels, updating the module directory, updating the profile, updating PowerShell, checking for command existence, reloading the profile, getting system uptime, getting command definitions, setting environment variables, getting environment variables, getting all processes, finding processes by name, finding processes by port, stopping processes by name, stopping processes by port, getting random quotes, getting weather forecasts, starting countdown timers, starting stopwatches, displaying the wall clock, displaying a matrix rain animation, and more. The `Show-ProfileHelp` function displays detailed help documentation for each section of the module.
 
     .PARAMETER Section
-        Specifies the section of the documentation to display. Valid values are 'All', 'AWS', 'Directory', 'Docker', 'DockerCompose', 'Docs', 'Environment', 'Git', 'Helm', 'Kubectl', 'Logging', 'Network', 'NPM', 'PIP', 'Pipenv', 'Poetry', 'Plugins', 'Process', 'Starship', 'Terraform', 'Terragrunt', 'UV', 'Update', 'Utility', and 'Yarn'. The default value is 'All'.
+        Specifies the section of the documentation to display. Valid values are 'All', 'AWS', 'Directory', 'Docker', 'DockerCompose', 'Docs', 'Environment', 'Git', 'Helm', 'Kubectl', 'Logging', 'Network', 'NPM', 'PIP', 'Pipenv', 'PNPM', 'Poetry', 'Plugins', 'Process', 'Starship', 'Terraform', 'Terragrunt', 'UV', 'Update', 'Utility', and 'Yarn'. The default value is 'All'.
 
     .INPUTS
-        Section: (Optional) Specifies the section of the documentation to display. Valid values are 'All', 'AWS', 'Directory', 'Docker', 'DockerCompose', 'Docs', 'Environment', 'Git', 'Helm', 'Kubectl', 'Logging', 'Network', 'NPM', 'PIP', 'Pipenv', 'Poetry', 'Plugins', 'Process', 'Starship', 'Terraform', 'Terragrunt', 'UV', 'Update', 'Utility', and 'Yarn'. The default value is 'All'.
+        Section: (Optional) Specifies the section of the documentation to display. Valid values are 'All', 'AWS', 'Directory', 'Docker', 'DockerCompose', 'Docs', 'Environment', 'Git', 'Helm', 'Kubectl', 'Logging', 'Network', 'NPM', 'PIP', 'Pipenv', 'PNPM', 'Poetry', 'Plugins', 'Process', 'Starship', 'Terraform', 'Terragrunt', 'UV', 'Update', 'Utility', and 'Yarn'. The default value is 'All'.
 
     .OUTPUTS
         This module does not return any output.
@@ -128,6 +128,10 @@ function Show-ProfileHelp {
         Displays the help documentation for the Deno plugin with all available Deno aliases and commands.
 
     .EXAMPLE
+        Show-ProfileHelp -Section 'PNPM'
+        Displays the help documentation for the PNPM plugin with all available pnpm aliases and commands.
+
+    .EXAMPLE
         Show-ProfileHelp -Section 'Plugins'
         Displays an overview of all available plugins.
 
@@ -162,6 +166,7 @@ function Show-ProfileHelp {
             'Network',
             'PIP',
             'Pipenv',
+            'PNPM',
             'Plugins',
             'Poetry',
             'Process',
@@ -361,6 +366,7 @@ $($PSStyle.Foreground.Yellow)Plugins Module$($PSStyle.Reset)
         $($PSStyle.Foreground.Cyan)Kubectl Plugin$($PSStyle.Reset) - Complete kubectl CLI integration with PowerShell aliases (40+ commands)
         $($PSStyle.Foreground.Cyan)NPM Plugin$($PSStyle.Reset) - Complete NPM CLI integration with PowerShell aliases (40+ commands)
         $($PSStyle.Foreground.Cyan)PIP Plugin$($PSStyle.Reset) - Complete PIP CLI integration with PowerShell aliases (20+ commands)
+        $($PSStyle.Foreground.Cyan)PNPM Plugin$($PSStyle.Reset) - Comprehensive PNPM CLI integration with PowerShell aliases (68+ commands)
         $($PSStyle.Foreground.Cyan)Pipenv Plugin$($PSStyle.Reset) - Complete Pipenv CLI integration with PowerShell aliases (20+ commands)
         $($PSStyle.Foreground.Cyan)Poetry Plugin$($PSStyle.Reset) - Complete Poetry CLI integration with PowerShell aliases (20+ commands)
         $($PSStyle.Foreground.Cyan)Terraform Plugin$($PSStyle.Reset) - Complete Terraform CLI integration with PowerShell aliases (40+ commands)
@@ -892,6 +898,98 @@ $($PSStyle.Foreground.Yellow)Plugins Module - PIP Plugin$($PSStyle.Reset)
 
     Note: Includes automatic PowerShell completion and 25+ pip commands with aliases.
     Complete pip integration for Python package management.
+"@
+
+    $PluginsPNPM = @"
+$($PSStyle.Foreground.Yellow)Plugins Module - PNPM Plugin$($PSStyle.Reset)
+    $($PSStyle.Foreground.Cyan)Comprehensive PNPM CLI integration with 68+ PowerShell functions and aliases$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Core Commands:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)p$($PSStyle.Reset) <args>             - Base pnpm command wrapper
+        $($PSStyle.Foreground.Magenta)pa$($PSStyle.Reset) <package>          - Add packages to dependencies
+        $($PSStyle.Foreground.Magenta)pad$($PSStyle.Reset) <package>         - Add packages to dev-dependencies
+        $($PSStyle.Foreground.Magenta)pao$($PSStyle.Reset) <package>         - Add packages to optional dependencies
+        $($PSStyle.Foreground.Magenta)pap$($PSStyle.Reset) <package>         - Add packages to peer dependencies
+
+    $($PSStyle.Foreground.Green)Package Management:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Install packages
+        pa express cors helmet         # Add to dependencies
+        pad jest eslint typescript     # Add to dev-dependencies
+        pao fsevents                  # Add to optional dependencies
+        pap react vue                 # Add to peer dependencies
+        
+        # Update and maintain
+        pup                           # Update all packages
+        pupi                          # Interactive package updates
+        prm unused-package            # Remove packages$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Installation & Setup:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Project lifecycle
+        pi                            # Install dependencies
+        pif                           # Install from frozen lockfile (CI/CD)
+        pin                           # Initialize new package.json$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Script Execution:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Run scripts
+        pr build                      # Run script from package.json
+        ps                            # Run start script
+        pd                            # Run dev script
+        pb                            # Run build script
+        pt                            # Run test script
+        ptc                           # Run tests with coverage$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Development Tools:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Code quality
+        pln                           # Run lint script
+        plnf                          # Run lint with auto-fix
+        pf                            # Run format script
+        px eslint src/                # Execute from node_modules/.bin
+        pdlx create-react-app my-app  # Execute without installing$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Store Management:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# PNPM store operations
+        psts                          # Check store status
+        pspr                          # Prune unreferenced packages
+        pstp                          # Show store path
+        pst status                    # General store management$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Information & Analysis:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Package information
+        pls                           # List installed packages
+        pout                          # Check outdated packages
+        paud                          # Run security audit
+        paudf                         # Fix security vulnerabilities
+        pw lodash                     # Show why package is installed$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Advanced Features:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# PNPM-specific capabilities
+        ppatch lodash@4.17.21         # Create package patch
+        ppatchc /tmp/patch-dir        # Commit package patch
+        plnk ../local-package         # Link local package
+        pfetch                        # Fetch packages to store
+        pimp                          # Import from npm lockfile
+        pdep dist                     # Deploy for production$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Configuration:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Environment setup
+        pcfgl                         # List all configuration
+        pcfgs registry https://...     # Set configuration values
+        pcfgg store-dir               # Get configuration values
+        penv use --global lts         # Manage Node.js versions
+        psetup                        # Setup PNPM$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Examples:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Complete PNPM workflow
+        pin                           # Initialize new project
+        pa express fastify           # Add production dependencies
+        pad jest nodemon typescript   # Add development dependencies
+        pi                            # Install all dependencies
+        pd                            # Start development server
+        paud && paudf                 # Security audit and fix
+        psts && pspr                  # Store maintenance$($PSStyle.Reset)
+
+    Note: PNPM provides fast, disk-efficient package management with strict dependency resolution.
+    Includes 68+ commands covering all PNPM features with automatic PowerShell completion.
 "@
 
     $PluginsPipenv = @"
@@ -1587,6 +1685,10 @@ $($PSStyle.Foreground.Yellow)Utility Module$($PSStyle.Reset)
         'Pipenv' {
             Write-Host $Title
             Write-Host $PluginsPipenv
+        }
+        'PNPM' {
+            Write-Host $Title
+            Write-Host $PluginsPNPM
         }
         'Plugins' {
             Write-Host $Title

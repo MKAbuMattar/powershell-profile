@@ -126,7 +126,7 @@
         'pcfgl',
         'ppatch',
         'ppatchc',
-        'pf',
+        'pfetch',
         'plnk',
         'punlnk',
         'pimp',
