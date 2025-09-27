@@ -48,10 +48,10 @@ function Show-ProfileHelp {
         The PowerShell Profile Helper module provides a set of utility functions to help manage the PowerShell profile and perform common tasks in the console. The module includes functions for finding files, creating and updating files, extracting files, compressing files, searching for content in files, replacing content in files, moving up directory levels, updating the module directory, updating the profile, updating PowerShell, checking for command existence, reloading the profile, getting system uptime, getting command definitions, setting environment variables, getting environment variables, getting all processes, finding processes by name, finding processes by port, stopping processes by name, stopping processes by port, getting random quotes, getting weather forecasts, starting countdown timers, starting stopwatches, displaying the wall clock, displaying a matrix rain animation, and more. The `Show-ProfileHelp` function displays detailed help documentation for each section of the module.
 
     .PARAMETER Section
-        Specifies the section of the documentation to display. Valid values are 'All', 'AWS', 'Conda', 'Directory', 'Docker', 'DockerCompose', 'Docs', 'Environment', 'Git', 'Helm', 'Kubectl', 'Logging', 'Network', 'NPM', 'PIP', 'Pipenv', 'PNPM', 'Poetry', 'Plugins', 'Process', 'Ruby', 'Starship', 'Terraform', 'Terragrunt', 'UV', 'Update', 'Utility', 'VSCode', and 'Yarn'. The default value is 'All'.
+        Specifies the section of the documentation to display. Valid values are 'All', 'AWS', 'Conda', 'Directory', 'Docker', 'DockerCompose', 'Docs', 'Environment', 'Git', 'Helm', 'Kubectl', 'Logging', 'Network', 'NPM', 'PIP', 'Pipenv', 'PNPM', 'Poetry', 'Plugins', 'Process', 'Ruby', 'Rust', 'Starship', 'Terraform', 'Terragrunt', 'UV', 'Update', 'Utility', 'VSCode', and 'Yarn'. The default value is 'All'.
 
     .INPUTS
-        Section: (Optional) Specifies the section of the documentation to display. Valid values are 'All', 'AWS', 'Conda', 'Directory', 'Docker', 'DockerCompose', 'Docs', 'Environment', 'Git', 'Helm', 'Kubectl', 'Logging', 'Network', 'NPM', 'PIP', 'Pipenv', 'PNPM', 'Poetry', 'Plugins', 'Process', 'Ruby', 'Starship', 'Terraform', 'Terragrunt', 'UV', 'Update', 'Utility', 'VSCode', and 'Yarn'. The default value is 'All'.
+        Section: (Optional) Specifies the section of the documentation to display. Valid values are 'All', 'AWS', 'Conda', 'Directory', 'Docker', 'DockerCompose', 'Docs', 'Environment', 'Git', 'Helm', 'Kubectl', 'Logging', 'Network', 'NPM', 'PIP', 'Pipenv', 'PNPM', 'Poetry', 'Plugins', 'Process', 'Ruby', 'Rust', 'Starship', 'Terraform', 'Terragrunt', 'UV', 'Update', 'Utility', 'VSCode', and 'Yarn'. The default value is 'All'.
 
     .OUTPUTS
         This module does not return any output.
@@ -144,6 +144,10 @@ function Show-ProfileHelp {
         Displays the help documentation for the Ruby plugin with all available Ruby aliases and commands.
 
     .EXAMPLE
+        Show-ProfileHelp -Section 'Rust'
+        Displays the help documentation for the Rust plugin with all available Cargo and Rustup aliases and commands.
+
+    .EXAMPLE
         Show-ProfileHelp -Section 'Plugins'
         Displays an overview of all available plugins.
 
@@ -187,6 +191,7 @@ function Show-ProfileHelp {
             'QRCode',
             'Ruby',
             'Rsync',
+            'Rust',
             'Starship',
             'Terraform',
             'Terragrunt',
@@ -1971,9 +1976,171 @@ $($PSStyle.Foreground.Yellow)Utility Module$($PSStyle.Reset)
     $($PSStyle.Foreground.Magenta)du$($PSStyle.Reset) [-Path <Path>] [-Unit <Unit>]
         Retrieves the disk usage for a specified path.
 
+    $($PSStyle.Foreground.Green)Base64 Utilities:$($PSStyle.Reset)
+    $($PSStyle.Foreground.Green)ConvertTo-Base64$($PSStyle.Reset) [-Text <Text>]
+    $($PSStyle.Foreground.Magenta)e64$($PSStyle.Reset) [-Text <Text>]
+        Encodes text or pipeline input to Base64 format.
+
+    $($PSStyle.Foreground.Green)ConvertTo-Base64File$($PSStyle.Reset) -FilePath <FilePath>
+    $($PSStyle.Foreground.Magenta)ef64$($PSStyle.Reset) -FilePath <FilePath>
+        Encodes a file's content to Base64 and saves it to a new file with .txt extension.
+
+    $($PSStyle.Foreground.Green)ConvertFrom-Base64$($PSStyle.Reset) [-Base64Text <Base64Text>]
+    $($PSStyle.Foreground.Magenta)d64$($PSStyle.Reset) [-Base64Text <Base64Text>]
+        Decodes Base64 encoded text to plain text.
+
     $($PSStyle.Foreground.Green)Format-ConvertSize$($PSStyle.Reset) -Value <Value> [-Units <Units>] [-Scale <Scale>] [-DecimalPlaces <DecimalPlaces>]
     $($PSStyle.Foreground.Magenta)convert-size$($PSStyle.Reset) -Value <Value> [-Units <Units>] [-Scale <Scale>] [-DecimalPlaces <DecimalPlaces>]
         Converts a size value to a specified unit and formats it.
+
+    $($PSStyle.Foreground.Green)GitIgnore Utilities:$($PSStyle.Reset)
+    $($PSStyle.Foreground.Green)Get-GitIgnore$($PSStyle.Reset) <technologies...> [-OutputPath <Path>] [-Append]
+    $($PSStyle.Foreground.Magenta)gi$($PSStyle.Reset) <technologies...> [-OutputPath <Path>] [-Append]
+        Generates .gitignore content for specified technologies using gitignore.io API.
+
+    $($PSStyle.Foreground.Green)Get-GitIgnoreList$($PSStyle.Reset) [-Filter <Filter>] [-GridView]
+    $($PSStyle.Foreground.Magenta)gilist$($PSStyle.Reset) [-Filter <Filter>] [-GridView]
+        Lists all available gitignore templates with optional filtering.
+
+    $($PSStyle.Foreground.Green)New-GitIgnoreFile$($PSStyle.Reset) <technologies...> [-Path <Path>] [-Backup] [-Force]
+    $($PSStyle.Foreground.Magenta)ginew$($PSStyle.Reset) <technologies...> [-Path <Path>] [-Backup] [-Force]
+        Creates a new .gitignore file with specified technology templates.
+
+    $($PSStyle.Foreground.Green)Add-GitIgnoreContent$($PSStyle.Reset) <technologies...> [-Path <Path>]
+    $($PSStyle.Foreground.Magenta)giadd$($PSStyle.Reset) <technologies...> [-Path <Path>]
+        Adds additional technology templates to an existing .gitignore file.
+
+    $($PSStyle.Foreground.Green)Test-GitIgnoreService$($PSStyle.Reset)
+    $($PSStyle.Foreground.Magenta)gitest$($PSStyle.Reset)
+        Tests connectivity to the gitignore.io API service.
+"@
+
+    $PluginsRust = @"
+$($PSStyle.Foreground.Yellow)Plugins Module - Rust Plugin$($PSStyle.Reset)
+    $($PSStyle.Foreground.Cyan)Comprehensive Cargo and Rustup CLI integration with 70+ PowerShell functions and aliases$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Core Cargo Commands:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)cg$($PSStyle.Reset) <args>                - Base Cargo command wrapper
+        $($PSStyle.Foreground.Magenta)cgn$($PSStyle.Reset) <name>               - Create new Rust project
+        $($PSStyle.Foreground.Magenta)cgni$($PSStyle.Reset) <name>              - Create new library project
+        $($PSStyle.Foreground.Magenta)cginit$($PSStyle.Reset)                   - Initialize Cargo project in current directory
+
+    $($PSStyle.Foreground.Green)Build and Run Operations:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Build operations
+        cgb                              # Build project (debug)
+        cgbr                             # Build project (release)
+        cgba                             # Build all targets
+        cgbf                             # Build all features
+        cgbp                             # Build with profile$($PSStyle.Reset)
+
+        $($PSStyle.Foreground.Cyan)# Run operations
+        cgr                              # Run project (debug)
+        cgrr                             # Run project (release)
+        cgw                              # Watch and rebuild project$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Testing and Quality:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Testing commands
+        cgt                              # Run tests
+        cgtr                             # Run tests (release mode)
+        cgbh                             # Run benchmarks
+        cgta                             # Test all targets
+        cgtt                             # Test single-threaded$($PSStyle.Reset)
+
+        $($PSStyle.Foreground.Cyan)# Code quality
+        cgc                              # Check compilation
+        cgcl                             # Clean build artifacts
+        cgcy                             # Run Clippy linter
+        cgf                              # Format code
+        cgfa                             # Format all code
+        cgfx                             # Fix code issues
+        cgaud                            # Security audit$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Documentation and Dependencies:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Documentation
+        cgd                              # Build and open docs
+        cgdr                             # Build docs (release)
+        cgdo                             # Open documentation$($PSStyle.Reset)
+
+        $($PSStyle.Foreground.Cyan)# Dependency management
+        cga <crate>                      # Add dependency
+        cgad <crate>                     # Add dev dependency
+        cgu                              # Update dependencies
+        cgo                              # Show outdated packages
+        cgv                              # Vendor dependencies
+        cgtree                           # Show dependency tree$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Advanced Build Tools:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Cross-compilation and tools
+        cgx                              # Build with Zig
+        cgxw                             # Build cross-platform
+        cgxt <target>                    # Set build target
+        cgfl                             # Generate flamegraph
+        cgbl                             # Show binary bloat
+        cgl                              # LLVM code coverage
+        cgm                              # Show modules
+        cgex                             # Expand macros$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Package Management:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Binary and package operations
+        cgi <crate>                      # Install binary crate
+        cgun <crate>                     # Uninstall binary crate
+        cgp                              # Publish package
+        cgs <query>                      # Search crates.io
+        cgcp                             # Create package$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Project Templates:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Template creation
+        cgnb <name>                      # New binary template
+        cgnl <name>                      # New library template
+        cgnt <template>                  # New from template$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Core Rustup Commands:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)ru$($PSStyle.Reset)                       - Update all toolchains
+        $($PSStyle.Foreground.Magenta)rus$($PSStyle.Reset)                      - Update stable toolchain
+        $($PSStyle.Foreground.Magenta)run$($PSStyle.Reset)                      - Update nightly toolchain
+        $($PSStyle.Foreground.Magenta)rti$($PSStyle.Reset) <toolchain>          - Install specific toolchain
+
+    $($PSStyle.Foreground.Green)Toolchain Management:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Toolchain operations
+        rtl                              # List installed toolchains
+        rtu <toolchain>                  # Uninstall toolchain
+        rde <toolchain>                  # Set default toolchain
+        rns <cmd>                        # Run with stable
+        rnn <cmd>                        # Run with nightly$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Component Management:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Component operations
+        rca <component>                  # Add component
+        rcl                              # List components
+        rcr <component>                  # Remove component$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Target Management:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Compilation targets
+        rtaa <target>                    # Add target
+        rtal                             # List available targets
+        rtar <target>                    # Remove target$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Override and Information:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Directory overrides and info
+        rpr <toolchain>                  # Set directory override
+        rpl                              # List overrides
+        rpn                              # Remove override
+        rws                              # Show rustc path
+        rsh                              # Show toolchain info
+        rdo                              # Open Rust documentation$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Complete Rust Development Workflow:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Full project setup and development
+        cgn my_project && cd my_project  # Create and enter project
+        rca clippy rustfmt               # Add essential components
+        cgb                              # Build project
+        cgt                              # Run tests
+        cgcy                             # Run linter
+        cgf                              # Format code
+        cgr                              # Run application$($PSStyle.Reset)
+
+    Note: Supports both Cargo and Rustup with automatic tool detection.
+    Includes 49+ Cargo aliases and 21+ Rustup aliases for complete Rust development workflow.
 "@
 
     switch ($Section) {
@@ -2081,6 +2248,10 @@ $($PSStyle.Foreground.Yellow)Utility Module$($PSStyle.Reset)
         'Ruby' {
             Write-Host $Title
             Write-Host $PluginsRuby
+        }
+        'Rust' {
+            Write-Host $Title
+            Write-Host $PluginsRust
         }
         'Rsync' {
             Write-Host $Title

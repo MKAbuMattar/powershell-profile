@@ -66,6 +66,14 @@ Comprehensive Ruby CLI integration with 25+ PowerShell functions and convenient 
 **Location:** `Module/Plugins/Ruby/`  
 **Documentation:** [Ruby Plugin README](Ruby/README.md)
 
+#### **[Rust Plugin](Rust/README.md)**
+
+Comprehensive Cargo and Rustup CLI integration with 70+ PowerShell functions and convenient aliases for Rust development, toolchain management, and systems programming. Provides complete development workflow automation including building, testing, dependency management, cross-compilation, and toolchain operations with automatic PowerShell completion for modern Rust development.
+
+**Key Features:** Cargo CLI shortcuts (49+ aliases), Rustup toolchain management (21+ aliases), build automation (debug/release/cross-platform), dependency management, testing and benchmarking, code quality tools (Clippy, formatting), documentation generation, package publishing, target and component management, development workflow automation  
+**Location:** `Module/Plugins/Rust/`  
+**Documentation:** [Rust Plugin README](Rust/README.md)
+
 #### **[QRCode Plugin](QRCode/README.md)**
 
 Generate QR codes directly from PowerShell using the qrcode.show API service. Provides functions to create QR codes in both PNG and SVG formats with full PowerShell pipeline integration, interactive multi-line input mode, file export capabilities, and cross-platform support for web development and documentation needs.

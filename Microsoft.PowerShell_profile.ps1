@@ -154,6 +154,7 @@ $ModuleList = @(
     @{ Name = 'Plugin-Poetry'; Path = 'Plugins/Poetry/Poetry.psd1' },
     @{ Name = 'Plugin-QRCode'; Path = 'Plugins/QRCode/QRCode.psd1' },
     @{ Name = 'Plugin-Ruby'; Path = 'Plugins/Ruby/Ruby.psd1' },
+    @{ Name = 'Plugin-Rust'; Path = 'Plugins/Rust/Rust.psd1' },
     @{ Name = 'Plugin-Rsync'; Path = 'Plugins/Rsync/Rsync.psd1' },
     @{ Name = 'Plugin-Terraform'; Path = 'Plugins/Terraform/Terraform.psd1' },
     @{ Name = 'Plugin-Terragrunt'; Path = 'Plugins/Terragrunt/Terragrunt.psd1' },

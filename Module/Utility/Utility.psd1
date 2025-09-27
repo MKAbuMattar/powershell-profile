@@ -68,7 +68,15 @@
         'Get-WallClock',
         'Get-PrayerTimes',
         'Start-Matrix',
-        'Get-DiskUsage'
+        'Get-DiskUsage',
+        'ConvertTo-Base64',
+        'ConvertTo-Base64File',
+        'ConvertFrom-Base64',
+        'Get-GitIgnore',
+        'Get-GitIgnoreList', 
+        'New-GitIgnoreFile',
+        'Add-GitIgnoreContent',
+        'Test-GitIgnoreService'
     )
     CmdletsToExport      = @()
     VariablesToExport    = @()
@@ -85,7 +93,15 @@
         'wallclock',
         'prayer',
         'matrix',
-        'du'
+        'du',
+        'e64',
+        'ef64',
+        'd64',
+        'gitignore',
+        'gilist',
+        'ginew', 
+        'giadd',
+        'gitest'
     )
     PrivateData          = @{
         PSData = @{
