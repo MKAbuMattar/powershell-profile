@@ -48,10 +48,10 @@ function Show-ProfileHelp {
         The PowerShell Profile Helper module provides a set of utility functions to help manage the PowerShell profile and perform common tasks in the console. The module includes functions for finding files, creating and updating files, extracting files, compressing files, searching for content in files, replacing content in files, moving up directory levels, updating the module directory, updating the profile, updating PowerShell, checking for command existence, reloading the profile, getting system uptime, getting command definitions, setting environment variables, getting environment variables, getting all processes, finding processes by name, finding processes by port, stopping processes by name, stopping processes by port, getting random quotes, getting weather forecasts, starting countdown timers, starting stopwatches, displaying the wall clock, displaying a matrix rain animation, and more. The `Show-ProfileHelp` function displays detailed help documentation for each section of the module.
 
     .PARAMETER Section
-        Specifies the section of the documentation to display. Valid values are 'All', 'AWS', 'Conda', 'Directory', 'Docker', 'DockerCompose', 'Docs', 'Environment', 'Git', 'Helm', 'Kubectl', 'Logging', 'Network', 'NPM', 'PIP', 'Pipenv', 'PNPM', 'Poetry', 'Plugins', 'Process', 'Starship', 'Terraform', 'Terragrunt', 'UV', 'Update', 'Utility', 'VSCode', and 'Yarn'. The default value is 'All'.
+        Specifies the section of the documentation to display. Valid values are 'All', 'AWS', 'Conda', 'Directory', 'Docker', 'DockerCompose', 'Docs', 'Environment', 'Git', 'Helm', 'Kubectl', 'Logging', 'Network', 'NPM', 'PIP', 'Pipenv', 'PNPM', 'Poetry', 'Plugins', 'Process', 'Ruby', 'Starship', 'Terraform', 'Terragrunt', 'UV', 'Update', 'Utility', 'VSCode', and 'Yarn'. The default value is 'All'.
 
     .INPUTS
-        Section: (Optional) Specifies the section of the documentation to display. Valid values are 'All', 'AWS', 'Conda', 'Directory', 'Docker', 'DockerCompose', 'Docs', 'Environment', 'Git', 'Helm', 'Kubectl', 'Logging', 'Network', 'NPM', 'PIP', 'Pipenv', 'PNPM', 'Poetry', 'Plugins', 'Process', 'Starship', 'Terraform', 'Terragrunt', 'UV', 'Update', 'Utility', 'VSCode', and 'Yarn'. The default value is 'All'.
+        Section: (Optional) Specifies the section of the documentation to display. Valid values are 'All', 'AWS', 'Conda', 'Directory', 'Docker', 'DockerCompose', 'Docs', 'Environment', 'Git', 'Helm', 'Kubectl', 'Logging', 'Network', 'NPM', 'PIP', 'Pipenv', 'PNPM', 'Poetry', 'Plugins', 'Process', 'Ruby', 'Starship', 'Terraform', 'Terragrunt', 'UV', 'Update', 'Utility', 'VSCode', and 'Yarn'. The default value is 'All'.
 
     .OUTPUTS
         This module does not return any output.
@@ -140,6 +140,10 @@ function Show-ProfileHelp {
         Displays the help documentation for the VSCode plugin with all available VS Code aliases and commands.
 
     .EXAMPLE
+        Show-ProfileHelp -Section 'Ruby'
+        Displays the help documentation for the Ruby plugin with all available Ruby aliases and commands.
+
+    .EXAMPLE
         Show-ProfileHelp -Section 'Plugins'
         Displays an overview of all available plugins.
 
@@ -179,6 +183,7 @@ function Show-ProfileHelp {
             'Plugins',
             'Poetry',
             'Process',
+            'Ruby',
             'Starship',
             'Terraform',
             'Terragrunt',
@@ -1667,6 +1672,63 @@ $($PSStyle.Foreground.Yellow)Plugins Module - Deno Plugin$($PSStyle.Reset)
     Complete TypeScript/JavaScript runtime with modern development tools.
 "@
 
+    $PluginsRuby = @"
+$($PSStyle.Foreground.Yellow)Plugins Module - Ruby Plugin$($PSStyle.Reset)
+    $($PSStyle.Foreground.Cyan)Comprehensive Ruby CLI integration with 25+ PowerShell functions and aliases$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Core Ruby Commands:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)rb$($PSStyle.Reset) <args>              - Base Ruby command wrapper
+        $($PSStyle.Foreground.Magenta)rrun$($PSStyle.Reset) "<code>"          - Execute Ruby code inline
+        $($PSStyle.Foreground.Magenta)rserver$($PSStyle.Reset) [path] [port]  - Start Ruby HTTP development server
+        $($PSStyle.Foreground.Magenta)rfind$($PSStyle.Reset) "<pattern>"      - Find and search in Ruby files
+
+    $($PSStyle.Foreground.Green)Ruby Execution:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Basic Ruby operations
+        rb --version                 # Check Ruby version
+        rb script.rb                 # Run Ruby script
+        rrun "puts 'Hello World'"    # Execute inline Ruby code
+        rrun "puts RUBY_VERSION"     # Show Ruby version in code$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Development Server:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Ruby development server (requires webrick)
+        rserver                      # Serve current directory on port 8080
+        rserver ./public -Port 3000  # Serve specific directory and port
+        Start-RubyServer . -Port 4000 # Use full function name$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)File Operations:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Search Ruby files
+        rfind "class"                # Find all Ruby files containing "class"
+        rfind "def initialize" ./src # Search for constructors in src directory
+        Find-RubyFiles "module"      # Search for modules$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Gem Management:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Install and manage gems
+        gein rails                   # Install rails gem
+        gein bundler rake --no-document # Install multiple gems without docs
+        geun old_gem                 # Uninstall gem
+        geli                         # List installed gems
+        gei rails                    # Get gem information$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Advanced Gem Operations:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Gem utilities
+        sgem install system_gem      # Install with elevated privileges
+        geclup                       # Preview gem cleanup
+        geo rails                    # Open gem source code
+        geoe bundler                 # Open gem in editor
+        geca certificate.pem         # Add gem certificate$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Ruby Development Workflow:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Complete Ruby development setup
+        rb --version                 # Check Ruby installation
+        gein bundler rake            # Install essential gems
+        rserver ./app -Port 3000     # Start development server
+        rfind "TODO"                 # Find code comments
+        rrun "puts 'Development ready!'"  # Test Ruby execution$($PSStyle.Reset)
+
+    Note: Supports Ruby execution, gem management, development server, and file searching.
+    Includes 25+ commands covering complete Ruby development workflow with cross-platform support.
+"@
+
     $Starship = @"
 $($PSStyle.Foreground.Yellow)Starship Module$($PSStyle.Reset)
     $($PSStyle.Foreground.Green)Invoke-StarshipTransientFunction$($PSStyle.Reset)
@@ -1845,6 +1907,10 @@ $($PSStyle.Foreground.Yellow)Utility Module$($PSStyle.Reset)
         'Process' {
             Write-Host $Title
             Write-Host $Process
+        }
+        'Ruby' {
+            Write-Host $Title
+            Write-Host $PluginsRuby
         }
         'Starship' {
             Write-Host $Title

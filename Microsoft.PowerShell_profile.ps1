@@ -251,6 +251,14 @@ else {
     Write-Warning "Plugin-Poetry module not found at: $PluginPoetryModulePath"
 }
 
+$PluginRubyModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Plugins/Ruby/Ruby.psd1'
+if (Test-Path $PluginRubyModulePath) {
+    Import-Module $PluginRubyModulePath -Force -ErrorAction SilentlyContinue
+}
+else {
+    Write-Warning "Plugin-Ruby module not found at: $PluginRubyModulePath"
+}
+
 $PluginTerraformModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Plugins/Terraform/Terraform.psd1'
 if (Test-Path $PluginTerraformModulePath) {
     Import-Module $PluginTerraformModulePath -Force -ErrorAction SilentlyContinue

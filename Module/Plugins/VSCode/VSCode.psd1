@@ -91,6 +91,6 @@
         }
 
     }
-    HelpInfoURI            = ''
+    HelpInfoURI            = 'https://github.com/MKAbuMattar/powershell-profile/blob/main/Module/Plugins/VSCode/README.md'
     DefaultCommandPrefix   = ''
 }

@@ -50,6 +50,14 @@ Comprehensive VS Code CLI integration with 20+ PowerShell functions and convenie
 **Location:** `Module/Plugins/VSCode/`  
 **Documentation:** [VSCode Plugin README](VSCode/README.md)
 
+#### **[Ruby Plugin](Ruby/README.md)**
+
+Comprehensive Ruby CLI integration with 25+ PowerShell functions and convenient aliases for Ruby development and gem management. Provides Ruby execution, gem operations, file searching, development server, and comprehensive Ruby workflow automation with automatic PowerShell completion for modern Ruby development and scripting.
+
+**Key Features:** Ruby command coverage, gem management (install/uninstall/list/info), Ruby file searching with pattern matching, built-in development server, inline Ruby execution, gem certificate management, cleanup and maintenance tools, cross-platform support  
+**Location:** `Module/Plugins/Ruby/`  
+**Documentation:** [Ruby Plugin README](Ruby/README.md)
+
 ### **Package Managers**
 
 #### **[NPM Plugin](NPM/README.md)**
