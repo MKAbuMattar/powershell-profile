@@ -50,35 +50,35 @@
 # Check if Terminal Icons module is installed
 #---------------------------------------------------------------------------------------------------
 if (-not (Get-Module -ListAvailable -Name Terminal-Icons)) {
-  Install-Module -Name Terminal-Icons -Scope CurrentUser -Force -SkipPublisherCheck
+    Install-Module -Name Terminal-Icons -Scope CurrentUser -Force -SkipPublisherCheck
 }
 
 #---------------------------------------------------------------------------------------------------
 # Check if PowerShellGet module is installed
 #---------------------------------------------------------------------------------------------------
 if (-not (Get-Module -ListAvailable -Name PowerShellGet)) {
-  Install-Module -Name PowerShellGet -Scope CurrentUser -Force -SkipPublisherCheck
+    Install-Module -Name PowerShellGet -Scope CurrentUser -Force -SkipPublisherCheck
 }
 
 #---------------------------------------------------------------------------------------------------
 # Check if CompletionPredictor module is installed
 #---------------------------------------------------------------------------------------------------
 if (-not (Get-Module -ListAvailable -Name CompletionPredictor)) {
-  Install-Module -Name CompletionPredictor -Scope CurrentUser -Force -SkipPublisherCheck
+    Install-Module -Name CompletionPredictor -Scope CurrentUser -Force -SkipPublisherCheck
 }
 
 #---------------------------------------------------------------------------------------------------
 # Check if PSReadLine module is installed
 #---------------------------------------------------------------------------------------------------
 if (-not (Get-Module -ListAvailable -Name PSReadLine)) {
-  Install-Module -Name PSReadLine -Scope CurrentUser -Force -SkipPublisherCheck
+    Install-Module -Name PSReadLine -Scope CurrentUser -Force -SkipPublisherCheck
 }
 
 #---------------------------------------------------------------------------------------------------
 # Check if Posh-Git module is installed
 #---------------------------------------------------------------------------------------------------
 if (-not (Get-Module -ListAvailable -Name Posh-Git)) {
-  Install-Module -Name Posh-Git -Scope CurrentUser -Force -SkipPublisherCheck
+    Install-Module -Name Posh-Git -Scope CurrentUser -Force -SkipPublisherCheck
 }
 
 #---------------------------------------------------------------------------------------------------
@@ -99,110 +99,78 @@ Set-PSReadLineOption -HistoryNoDuplicates
 Set-PSReadLineOption -BellStyle None
 Set-PSReadLineOption -Colors @{ "Selection" = "`e[7m" }
 Set-PSReadLineKeyHandler -Chord '"', "'" `
-  -BriefDescription SmartInsertQuote `
-  -LongDescription "Insert paired quotes if not already on a quote" `
-  -ScriptBlock {
-  param($key, $arg)
+    -BriefDescription SmartInsertQuote `
+    -LongDescription "Insert paired quotes if not already on a quote" `
+    -ScriptBlock {
+    param($key, $arg)
 
-  $line = $null
-  $cursor = $null
-  [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$line, [ref]$cursor)
-
-  if ($line.Length -gt $cursor -and $line[$cursor] -eq $key.KeyChar) {
-    # Just move the cursor
-    [Microsoft.PowerShell.PSConsoleReadLine]::SetCursorPosition($cursor + 1)
-  }
-  else {
-    # Insert matching quotes, move cursor to be in between the quotes
-    [Microsoft.PowerShell.PSConsoleReadLine]::Insert("$($key.KeyChar)" * 2)
+    $line = $null
+    $cursor = $null
     [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$line, [ref]$cursor)
-    [Microsoft.PowerShell.PSConsoleReadLine]::SetCursorPosition($cursor - 1)
-  }
+
+    if ($line.Length -gt $cursor -and $line[$cursor] -eq $key.KeyChar) {
+        # Just move the cursor
+        [Microsoft.PowerShell.PSConsoleReadLine]::SetCursorPosition($cursor + 1)
+    }
+    else {
+        # Insert matching quotes, move cursor to be in between the quotes
+        [Microsoft.PowerShell.PSConsoleReadLine]::Insert("$($key.KeyChar)" * 2)
+        [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$line, [ref]$cursor)
+        [Microsoft.PowerShell.PSConsoleReadLine]::SetCursorPosition($cursor - 1)
+    }
 }
 
 #---------------------------------------------------------------------------------------------------
-# Import the custom modules
+# Import the custom modules and plugins
 #---------------------------------------------------------------------------------------------------
-$DirectoryModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Directory/Directory.psd1'
-if (Test-Path $DirectoryModulePath) {
-  Import-Module $DirectoryModulePath -Force -ErrorAction SilentlyContinue
-}
-else {
-  Write-Warning "Directory module not found at: $DirectoryModulePath"
-}
+$BaseModuleDir = Join-Path -Path $PSScriptRoot -ChildPath 'Module'
 
+$ModuleList = @(
+    # Core Modules
+    @{ Name = 'Directory'; Path = 'Directory/Directory.psd1' },
+    @{ Name = 'Docs'; Path = 'Docs/Docs.psd1' },
+    @{ Name = 'Environment'; Path = 'Environment/Environment.psd1' },
+    @{ Name = 'Logging'; Path = 'Logging/Logging.psd1' },
+    @{ Name = 'Network'; Path = 'Network/Network.psd1' },
+    @{ Name = 'Process'; Path = 'Process/Process.psd1' },
+    @{ Name = 'Starship'; Path = 'Starship/Starship.psd1' },
+    @{ Name = 'Update'; Path = 'Update/Update.psd1' },
+    @{ Name = 'Utility'; Path = 'Utility/Utility.psd1' },
 
-$DocsModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Docs/Docs.psd1'
-if (Test-Path $DocsModulePath) {
-  Import-Module $DocsModulePath -Force -ErrorAction SilentlyContinue
-}
-else {
-  Write-Warning "Docs module not found at: $DocsModulePath"
-}
+    # Plugin Modules (Grouped for readability)
+    @{ Name = 'Plugin-AWS'; Path = 'Plugins/AWS/AWS.psd1' },
+    @{ Name = 'Plugin-Conda'; Path = 'Plugins/Conda/Conda.psd1' },
+    @{ Name = 'Plugin-Deno'; Path = 'Plugins/Deno/Deno.psd1' },
+    @{ Name = 'Plugin-Docker'; Path = 'Plugins/Docker/Docker.psd1' },
+    @{ Name = 'Plugin-DockerCompose'; Path = 'Plugins/DockerCompose/DockerCompose.psd1' },
+    @{ Name = 'Plugin-Git'; Path = 'Plugins/Git/Git.psd1' },
+    @{ Name = 'Plugin-Helm'; Path = 'Plugins/Helm/Helm.psd1' },
+    @{ Name = 'Plugin-Kubectl'; Path = 'Plugins/Kubectl/Kubectl.psd1' },
+    @{ Name = 'Plugin-NPM'; Path = 'Plugins/NPM/NPM.psd1' },
+    @{ Name = 'Plugin-PIP'; Path = 'Plugins/PIP/PIP.psd1' },
+    @{ Name = 'Plugin-Pipenv'; Path = 'Plugins/Pipenv/Pipenv.psd1' },
+    @{ Name = 'Plugin-PNPM'; Path = 'Plugins/PNPM/PNPM.psd1' },
+    @{ Name = 'Plugin-Poetry'; Path = 'Plugins/Poetry/Poetry.psd1' },
+    @{ Name = 'Plugin-QRCode'; Path = 'Plugins/QRCode/QRCode.psd1' },
+    @{ Name = 'Plugin-Ruby'; Path = 'Plugins/Ruby/Ruby.psd1' },
+    @{ Name = 'Plugin-Rsync'; Path = 'Plugins/Rsync/Rsync.psd1' },
+    @{ Name = 'Plugin-Terraform'; Path = 'Plugins/Terraform/Terraform.psd1' },
+    @{ Name = 'Plugin-Terragrunt'; Path = 'Plugins/Terragrunt/Terragrunt.psd1' },
+    @{ Name = 'Plugin-UV'; Path = 'Plugins/UV/UV.psd1' },
+    @{ Name = 'Plugin-VSCode'; Path = 'Plugins/VSCode/VSCode.psd1' },
+    @{ Name = 'Plugin-Yarn'; Path = 'Plugins/Yarn/Yarn.psd1' }
+)
 
-$EnvironmentModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Environment/Environment.psd1'
-if (Test-Path $EnvironmentModulePath) {
-  Import-Module $EnvironmentModulePath -Force -ErrorAction SilentlyContinue
-}
-else {
-  Write-Warning "Environment module not found at: $EnvironmentModulePath"
-}
+foreach ($Module in $ModuleList) {
+    $ModulePath = Join-Path -Path $BaseModuleDir -ChildPath $Module.Path
+    $ModuleName = $Module.Name
 
-$PluginGitModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Plugins/Git/Git.psd1'
-if (Test-Path $PluginGitModulePath) {
-  Import-Module $PluginGitModulePath -Force -ErrorAction SilentlyContinue
-}
-else {
-  Write-Warning "Plugin-Git module not found at: $PluginGitModulePath"
-}
-
-$LoggingModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Logging/Logging.psd1'
-if (Test-Path $LoggingModulePath) {
-  Import-Module $LoggingModulePath -Force -ErrorAction SilentlyContinue
-}
-else {
-  Write-Warning "Logging module not found at: $LoggingModulePath"
-}
-Import-Module $LoggingModulePath -Force -ErrorAction SilentlyContinue
-
-$NetworkModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Network/Network.psd1'
-if (Test-Path $NetworkModulePath) {
-  Import-Module $NetworkModulePath -Force -ErrorAction SilentlyContinue
-}
-else {
-  Write-Warning "Network module not found at: $NetworkModulePath"
-}
-
-$ProcessModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Process/Process.psd1'
-if (Test-Path $ProcessModulePath) {
-  Import-Module $ProcessModulePath -Force -ErrorAction SilentlyContinue
-}
-else {
-  Write-Warning "Process module not found at: $ProcessModulePath"
-}
-
-$StarshipModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Starship/Starship.psd1'
-if (Test-Path $StarshipModulePath) {
-  Import-Module $StarshipModulePath -Force -ErrorAction SilentlyContinue
-}
-else {
-  Write-Warning "Starship module not found at: $StarshipModulePath"
-}
-
-$UpdateModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Update/Update.psd1'
-if (Test-Path $UpdateModulePath) {
-  Import-Module $UpdateModulePath -Force -ErrorAction SilentlyContinue
-}
-else {
-  Write-Warning "Update module not found at: $UpdateModulePath"
-}
-
-$UtilityModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Utility/Utility.psd1'
-if (Test-Path $UtilityModulePath) {
-  Import-Module $UtilityModulePath -Force -ErrorAction SilentlyContinue
-}
-else {
-  Write-Warning "Utility module not found at: $UtilityModulePath"
+    if (Test-Path $ModulePath) {
+        Import-Module $ModulePath -Force -ErrorAction SilentlyContinue
+    }
+    else {
+        Write-Warning "$ModuleName module not found at: $ModulePath"
+    }
 }
 
 #---------------------------------------------------------------------------------------------------
@@ -224,28 +192,28 @@ $ChocolateyProfile = "$ENV:CHOCOLATEYINSTALL\helpers\chocolateyProfile.psm1"
 # Import Chocolatey Profile
 #---------------------------------------------------------------------------------------------------
 if (Test-Path $ChocolateyProfile) {
-  Import-Module $ChocolateyProfile
+    Import-Module $ChocolateyProfile
 }
 
 #---------------------------------------------------------------------------------------------------
 # Invoke the profile update function
 #---------------------------------------------------------------------------------------------------
 if ($global:AutoUpdateProfile -eq $true) {
-  &${function:Update-LocalProfileModuleDirectory} -ErrorAction SilentlyContinue
+    &${function:Update-LocalProfileModuleDirectory} -ErrorAction SilentlyContinue
 }
 
 #---------------------------------------------------------------------------------------------------
 # Invoke the profile update function
 #---------------------------------------------------------------------------------------------------
 if ($global:AutoUpdateProfile -eq $true) {
-  &${function:Update-Profile} -ErrorAction SilentlyContinue
+    &${function:Update-Profile} -ErrorAction SilentlyContinue
 }
 
 #---------------------------------------------------------------------------------------------------
 # Invoke the PowerShell update function
 #---------------------------------------------------------------------------------------------------
 if ($global:AutoUpdatePowerShell -eq $true) {
-  &${function:Update-PowerShell} -ErrorAction SilentlyContinue
+    &${function:Update-PowerShell} -ErrorAction SilentlyContinue
 }
 
 #------------------------------------------------------
@@ -268,7 +236,7 @@ Set-Alias -Name vim -Value $EDITOR
 #------------------------------------------------------
 # Run FastFetch
 #------------------------------------------------------
-if (Test-CommandExists FastFetch) {
-  Invoke-Expression -Command "Clear-Host"
-  Invoke-Expression -Command "FastFetch"
-}
+# if (Test-CommandExists FastFetch) {
+#     Invoke-Expression -Command "Clear-Host"
+#     Invoke-Expression -Command "FastFetch"
+# }

@@ -1,0 +1,48 @@
+@{
+    RootModule           = 'QRCode.psm1'
+    ModuleVersion        = '4.1.0'
+    CompatiblePSEditions = @(
+        'Desktop',
+        'Core'
+    )
+    GUID                 = '8f2c3d1e-5a6b-7c8d-9e0f-1a2b3c4d5e6f'
+    Author               = 'Mohammad Abu Mattar'
+    CompanyName          = 'MKAbuMattar'
+    Copyright            = '(c) 2025 Mohammad Abu Mattar. All rights reserved.'
+    Description          = 'QRCode plugin for PowerShell Profile - Generate QR codes via qrcode.show API. Provides functions to create QR codes in PNG and SVG formats with PowerShell pipeline support.'
+    PowerShellVersion    = '7.0'
+    FunctionsToExport    = @(
+        'New-QRCode',
+        'New-QRCodeSVG',
+        'Test-QRCodeService',
+        'Save-QRCode'
+    )
+    CmdletsToExport      = @()
+    VariablesToExport    = @()
+    AliasesToExport      = @(
+        'qrcode',
+        'qrsvg'
+    )
+    PrivateData          = @{
+        PSData = @{
+            Tags                       = @(
+                'QRCode',
+                'QR',
+                'Code',
+                'Generator',
+                'API',
+                'Web',
+                'Image',
+                'SVG',
+                'PNG',
+                'Utility',
+                'Development'
+            )
+            LicenseUri                 = 'https://github.com/MKAbuMattar/powershell-profile/blob/main/LICENSE'
+            ProjectUri                 = 'https://github.com/MKAbuMattar/powershell-profile'
+            IconUri                    = 'https://raw.githubusercontent.com/MKAbuMattar/powershell-profile/main/assets/icon.png'
+            ExternalModuleDependencies = @()
+        }
+    }
+    HelpInfoURI          = 'https://github.com/MKAbuMattar/powershell-profile/blob/main/Module/Plugins/QRCode/README.md'
+}

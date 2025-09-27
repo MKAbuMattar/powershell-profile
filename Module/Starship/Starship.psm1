@@ -40,7 +40,7 @@
 #---------------------------------------------------------------------------------------------------
 
 function Invoke-StarshipTransientFunction {
-  <#
+    <#
   .SYNOPSIS
     Invokes the Starship module transiently to load the Starship prompt.
 
@@ -66,12 +66,13 @@ function Invoke-StarshipTransientFunction {
   .LINK
     https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
   #>
-  [CmdletBinding()]
-  [Alias("starship-transient")]
-  [OutputType([void])]
-  param (
-    # This function does not accept any parameters
-  )
+    [CmdletBinding()]
+    [Alias("starship-transient")]
+    [OutputType([void])]
+    param (
+        # This function does not accept any parameters
+    )
 
-  &starship module character
+    &starship module character
 }
+

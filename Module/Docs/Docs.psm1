@@ -40,77 +40,169 @@
 #---------------------------------------------------------------------------------------------------
 
 function Show-ProfileHelp {
-  <#
-  .SYNOPSIS
-    This module provides documentation for the PowerShell Profile Helper module.
+    <#
+    .SYNOPSIS
+        This module provides documentation for the PowerShell Profile Helper module.
 
-  .DESCRIPTION
-    The PowerShell Profile Helper module provides a set of utility functions to help manage the PowerShell profile and perform common tasks in the console. The module includes functions for finding files, creating and updating files, extracting files, compressing files, searching for content in files, replacing content in files, moving up directory levels, updating the module directory, updating the profile, updating PowerShell, checking for command existence, reloading the profile, getting system uptime, getting command definitions, setting environment variables, getting environment variables, getting all processes, finding processes by name, finding processes by port, stopping processes by name, stopping processes by port, getting random quotes, getting weather forecasts, starting countdown timers, starting stopwatches, displaying the wall clock, displaying a matrix rain animation, and more. The `Show-ProfileHelp` function displays detailed help documentation for each section of the module.
+    .DESCRIPTION
+        The PowerShell Profile Helper module provides a set of utility functions to help manage the PowerShell profile and perform common tasks in the console. The module includes functions for finding files, creating and updating files, extracting files, compressing files, searching for content in files, replacing content in files, moving up directory levels, updating the module directory, updating the profile, updating PowerShell, checking for command existence, reloading the profile, getting system uptime, getting command definitions, setting environment variables, getting environment variables, getting all processes, finding processes by name, finding processes by port, stopping processes by name, stopping processes by port, getting random quotes, getting weather forecasts, starting countdown timers, starting stopwatches, displaying the wall clock, displaying a matrix rain animation, and more. The `Show-ProfileHelp` function displays detailed help documentation for each section of the module.
 
-  .PARAMETER Section
-    Specifies the section of the documentation to display. Valid values are 'All', 'Directory', 'Docs', 'Environment', 'Git', 'Logging', 'Network', 'Plugins', 'Process', 'Starship', 'Update', and 'Utility'. The default value is 'All'.
+    .PARAMETER Section
+        Specifies the section of the documentation to display. Valid values are 'All', 'AWS', 'Conda', 'Directory', 'Docker', 'DockerCompose', 'Docs', 'Environment', 'Git', 'Helm', 'Kubectl', 'Logging', 'Network', 'NPM', 'PIP', 'Pipenv', 'PNPM', 'Poetry', 'Plugins', 'Process', 'Ruby', 'Starship', 'Terraform', 'Terragrunt', 'UV', 'Update', 'Utility', 'VSCode', and 'Yarn'. The default value is 'All'.
 
-  .INPUTS
-    Section: (Optional) Specifies the section of the documentation to display. Valid values are 'All', 'Directory', 'Docs', 'Environment', 'Git', 'Logging', 'Network', 'Plugins', 'Process', 'Starship', 'Update', and 'Utility'. The default value is 'All'.
+    .INPUTS
+        Section: (Optional) Specifies the section of the documentation to display. Valid values are 'All', 'AWS', 'Conda', 'Directory', 'Docker', 'DockerCompose', 'Docs', 'Environment', 'Git', 'Helm', 'Kubectl', 'Logging', 'Network', 'NPM', 'PIP', 'Pipenv', 'PNPM', 'Poetry', 'Plugins', 'Process', 'Ruby', 'Starship', 'Terraform', 'Terragrunt', 'UV', 'Update', 'Utility', 'VSCode', and 'Yarn'. The default value is 'All'.
 
-  .OUTPUTS
-    This module does not return any output.
+    .OUTPUTS
+        This module does not return any output.
 
-  .NOTES
-    This module is intended to provide documentation for the PowerShell Profile Helper module.
+    .NOTES
+        This module is intended to provide documentation for the PowerShell Profile Helper module.
 
-  .EXAMPLE
-    Show-ProfileHelp
-    Displays the help documentation for all sections of the PowerShell Profile Helper module.
+    .EXAMPLE
+        Show-ProfileHelp
+        Displays the help documentation for all sections of the PowerShell Profile Helper module.
 
-  .EXAMPLE
-    Show-ProfileHelp -Section 'Directory'
-    Displays the help documentation for the Directory section of the PowerShell Profile Helper module.
+    .EXAMPLE
+        Show-ProfileHelp -Section 'Directory'
+        Displays the help documentation for the Directory section of the PowerShell Profile Helper module.
 
-  .EXAMPLE
-    Show-ProfileHelp -Section 'Git'
-    Displays the help documentation for the Git plugin with all available Git aliases and commands.
+    .EXAMPLE
+        Show-ProfileHelp -Section 'AWS'
+        Displays the help documentation for the AWS plugin with all available AWS aliases and commands.
 
-  .EXAMPLE
-    Show-ProfileHelp -Section 'Plugins'
-    Displays an overview of all available plugins.
+    .EXAMPLE
+        Show-ProfileHelp -Section 'Docker'
+        Displays the help documentation for the Docker plugin with all available Docker aliases and commands.
 
-  .LINK
-    https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
-  #>
-  [CmdletBinding()]
-  [Alias("profile-help")]
-  [OutputType([void])]
-  param (
-    [Parameter(
-      Mandatory = $false,
-      Position = 0,
-      ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true,
-      HelpMessage = "Specifies the section of the documentation to display."
-    )]
-    [ValidateSet(
-      'All',
-      'Directory',
-      'Docs',
-      'Environment',
-      'Git',
-      'Logging',
-      'Network',
-      'Plugins',
-      'Process',
-      'Starship',
-      'Update',
-      'Utility'
-    )]
-    [string]$Section = 'All'
-  )
+    .EXAMPLE
+        Show-ProfileHelp -Section 'DockerCompose'
+        Displays the help documentation for the DockerCompose plugin with all available Docker Compose aliases and commands.
 
-  $Title = @"
+    .EXAMPLE
+        Show-ProfileHelp -Section 'Git'
+        Displays the help documentation for the Git plugin with all available Git aliases and commands.
+
+    .EXAMPLE
+        Show-ProfileHelp -Section 'Helm'
+        Displays the help documentation for the Helm plugin with all available Helm aliases and commands.
+
+    .EXAMPLE
+        Show-ProfileHelp -Section 'Kubectl'
+        Displays the help documentation for the Kubectl plugin with all available kubectl aliases and commands.
+
+    .EXAMPLE
+        Show-ProfileHelp -Section 'NPM'
+        Displays the help documentation for the NPM plugin with all available npm aliases and commands.
+
+    .EXAMPLE
+        Show-ProfileHelp -Section 'PIP'
+        Displays the help documentation for the PIP plugin with all available pip aliases and commands.
+
+    .EXAMPLE
+        Show-ProfileHelp -Section 'Pipenv'
+        Displays the help documentation for the Pipenv plugin with all available pipenv aliases and commands.
+
+    .EXAMPLE
+        Show-ProfileHelp -Section 'Poetry'
+        Displays the help documentation for the Poetry plugin with all available poetry aliases and commands.
+
+    .EXAMPLE
+        Show-ProfileHelp -Section 'Terraform'
+        Displays the help documentation for the Terraform plugin with all available terraform aliases and commands.
+
+    .EXAMPLE
+        Show-ProfileHelp -Section 'Terragrunt'
+        Displays the help documentation for the Terragrunt plugin with all available terragrunt aliases and commands.
+
+    .EXAMPLE
+        Show-ProfileHelp -Section 'UV'
+        Displays the help documentation for the UV plugin with all available UV aliases and commands.
+
+    .EXAMPLE
+        Show-ProfileHelp -Section 'Yarn'
+        Displays the help documentation for the Yarn plugin with all available Yarn aliases and commands.
+
+    .EXAMPLE
+        Show-ProfileHelp -Section 'Deno'
+        Displays the help documentation for the Deno plugin with all available Deno aliases and commands.
+
+    .EXAMPLE
+        Show-ProfileHelp -Section 'PNPM'
+        Displays the help documentation for the PNPM plugin with all available pnpm aliases and commands.
+
+    .EXAMPLE
+        Show-ProfileHelp -Section 'Conda'
+        Displays the help documentation for the Conda plugin with all available conda aliases and commands.
+
+    .EXAMPLE
+        Show-ProfileHelp -Section 'VSCode'
+        Displays the help documentation for the VSCode plugin with all available VS Code aliases and commands.
+
+    .EXAMPLE
+        Show-ProfileHelp -Section 'Ruby'
+        Displays the help documentation for the Ruby plugin with all available Ruby aliases and commands.
+
+    .EXAMPLE
+        Show-ProfileHelp -Section 'Plugins'
+        Displays an overview of all available plugins.
+
+    .LINK
+        https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
+    #>
+    [CmdletBinding()]
+    [Alias("profile-help")]
+    [OutputType([void])]
+    param (
+        [Parameter(
+            Mandatory = $false,
+            Position = 0,
+            ValueFromPipeline = $true,
+            ValueFromPipelineByPropertyName = $true,
+            HelpMessage = "Specifies the section of the documentation to display."
+        )]
+        [ValidateSet(
+            'All',
+            'AWS',
+            'Conda',
+            'Deno',
+            'Directory',
+            'Docker',
+            'DockerCompose',
+            'Docs',
+            'Environment',
+            'Git',
+            'Helm',
+            'Kubectl',
+            'Logging',
+            'NPM',
+            'Network',
+            'PIP',
+            'Pipenv',
+            'PNPM',
+            'Plugins',
+            'Poetry',
+            'Process',
+            'QRCode',
+            'Ruby',
+            'Rsync',
+            'Starship',
+            'Terraform',
+            'Terragrunt',
+            'UV',
+            'Update',
+            'Utility',
+            'VSCode',
+            'Yarn'
+        )]
+        [string]$Section = 'All'
+    )
+
+    $Title = @"
 $($PSStyle.Foreground.Cyan)PowerShell Profile Helper$($PSStyle.Reset)
 "@
 
-  $Directory = @"
+    $Directory = @"
 $($PSStyle.Foreground.Yellow)Directory Module$($PSStyle.Reset)
     $($PSStyle.Foreground.Green)Find-Files$($PSStyle.Reset) -Name <Name>
     $($PSStyle.Foreground.Magenta)ff$($PSStyle.Reset) -Name <Name>
@@ -180,14 +272,14 @@ $($PSStyle.Foreground.Yellow)Directory Module$($PSStyle.Reset)
         Moves up five directory levels.
 "@
 
-  $Docs = @"
+    $Docs = @"
 $($PSStyle.Foreground.Yellow)Docs Module$($PSStyle.Reset)
     $($PSStyle.Foreground.Green)Show-ProfileHelp$($PSStyle.Reset)
     $($PSStyle.Foreground.Magenta)profile-help$($PSStyle.Reset)
         Displays the help documentation for the PowerShell Profile Helper module.
 "@
 
-  $Environment = @"
+    $Environment = @"
 $($PSStyle.Foreground.Yellow)Environment Module$($PSStyle.Reset)
     $($PSStyle.Foreground.Green)Invoke-ReloadPathEnvironmentVariable$($PSStyle.Reset)
     $($PSStyle.Foreground.Magenta)reload-env-path$($PSStyle.Reset)
@@ -227,14 +319,14 @@ $($PSStyle.Foreground.Yellow)Environment Module$($PSStyle.Reset)
         Global variable to test if the machine can connect to GitHub.
 "@
 
-  $Logging = @"
+    $Logging = @"
 $($PSStyle.Foreground.Yellow)Logging Module$($PSStyle.Reset)
     $($PSStyle.Foreground.Green)Write-LogMessage$($PSStyle.Reset) -Message <Message> [-Level <Level>]
     $($PSStyle.Foreground.Magenta)log-message$($PSStyle.Reset) -Message <Message> [-Level <Level>]
         Logs a message with a timestamp and log level. The default log level is "INFO".
 "@
 
-  $Network = @"
+    $Network = @"
 $($PSStyle.Foreground.Yellow)Network Module$($PSStyle.Reset)
     $($PSStyle.Foreground.Green)Get-MyIPAddress$($PSStyle.Reset) [-Local] [-IPv4] [-IPv6] [-ComputerName <ComputerName>]
     $($PSStyle.Foreground.Magenta)my-ip$($PSStyle.Reset) [-Local] [-IPv4] [-IPv6] [-ComputerName <ComputerName>]
@@ -245,7 +337,7 @@ $($PSStyle.Foreground.Yellow)Network Module$($PSStyle.Reset)
         Flushes the DNS cache.
 "@
 
-  $Process = @"
+    $Process = @"
 $($PSStyle.Foreground.Yellow)Process Module$($PSStyle.Reset)
     $($PSStyle.Foreground.Green)Get-SystemInfo$($PSStyle.Reset)
     $($PSStyle.Foreground.Magenta)sysinfo$($PSStyle.Reset)
@@ -276,18 +368,33 @@ $($PSStyle.Foreground.Yellow)Process Module$($PSStyle.Reset)
         Clears windows cache, temp files, and internet explorer cache.
 "@
 
-  $Plugins = @"
+    $Plugins = @"
 $($PSStyle.Foreground.Yellow)Plugins Module$($PSStyle.Reset)
     This module contains various plugins that extend PowerShell functionality.
     Each plugin provides specialized commands and aliases for specific tools or workflows.
 
     Available Plugins:
+        $($PSStyle.Foreground.Cyan)AWS Plugin$($PSStyle.Reset) - Comprehensive AWS CLI integration with profile management and MFA support (12 commands)
+        $($PSStyle.Foreground.Cyan)Deno Plugin$($PSStyle.Reset) - Comprehensive Deno CLI integration with PowerShell aliases (25+ commands)
+        $($PSStyle.Foreground.Cyan)Docker Plugin$($PSStyle.Reset) - Complete Docker CLI integration with PowerShell aliases (37 commands)
+        $($PSStyle.Foreground.Cyan)DockerCompose Plugin$($PSStyle.Reset) - Complete Docker Compose CLI integration with PowerShell aliases (20 commands)
         $($PSStyle.Foreground.Cyan)Git Plugin$($PSStyle.Reset) - Comprehensive Git aliases and shortcuts (160+ commands)
+        $($PSStyle.Foreground.Cyan)Helm Plugin$($PSStyle.Reset) - Complete Helm CLI integration with PowerShell aliases (20+ commands)
+        $($PSStyle.Foreground.Cyan)Kubectl Plugin$($PSStyle.Reset) - Complete kubectl CLI integration with PowerShell aliases (40+ commands)
+        $($PSStyle.Foreground.Cyan)NPM Plugin$($PSStyle.Reset) - Complete NPM CLI integration with PowerShell aliases (40+ commands)
+        $($PSStyle.Foreground.Cyan)PIP Plugin$($PSStyle.Reset) - Complete PIP CLI integration with PowerShell aliases (20+ commands)
+        $($PSStyle.Foreground.Cyan)PNPM Plugin$($PSStyle.Reset) - Comprehensive PNPM CLI integration with PowerShell aliases (68+ commands)
+        $($PSStyle.Foreground.Cyan)Pipenv Plugin$($PSStyle.Reset) - Complete Pipenv CLI integration with PowerShell aliases (20+ commands)
+        $($PSStyle.Foreground.Cyan)Poetry Plugin$($PSStyle.Reset) - Complete Poetry CLI integration with PowerShell aliases (20+ commands)
+        $($PSStyle.Foreground.Cyan)Terraform Plugin$($PSStyle.Reset) - Complete Terraform CLI integration with PowerShell aliases (40+ commands)
+        $($PSStyle.Foreground.Cyan)Terragrunt Plugin$($PSStyle.Reset) - Complete Terragrunt CLI integration with PowerShell aliases (20+ commands)
+        $($PSStyle.Foreground.Cyan)UV Plugin$($PSStyle.Reset) - Complete UV CLI integration with PowerShell aliases (20+ commands)
+        $($PSStyle.Foreground.Cyan)Yarn Plugin$($PSStyle.Reset) - Complete Yarn CLI integration with PowerShell aliases (40+ commands)
 
-    Use 'Show-ProfileHelp -Section Git' to view specific plugin documentation.
+    Use $($PSStyle.Foreground.Magenta)Show-ProfileHelp -Section '<PluginName>'$($PSStyle.Reset) to view detailed documentation for each plugin.
 "@
 
-  $PluginsGit = @"
+    $PluginsGit = @"
 $($PSStyle.Foreground.Yellow)Plugins Module - Git Plugin$($PSStyle.Reset)
     $($PSStyle.Foreground.Cyan)Comprehensive Git aliases and shortcuts$($PSStyle.Reset)
 
@@ -392,14 +499,1340 @@ $($PSStyle.Foreground.Yellow)Plugins Module - Git Plugin$($PSStyle.Reset)
     Over 160+ Git aliases available - see full documentation for complete list.
 "@
 
-  $Starship = @"
+    $PluginsAWS = @"
+$($PSStyle.Foreground.Yellow)Plugins Module - AWS Plugin$($PSStyle.Reset)
+    $($PSStyle.Foreground.Cyan)Comprehensive AWS CLI integration with advanced features$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Basic Information:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)agp$($PSStyle.Reset)                 - Show current AWS profile
+        $($PSStyle.Foreground.Magenta)agr$($PSStyle.Reset)                 - Show current AWS region
+        $($PSStyle.Foreground.Magenta)aws-profiles$($PSStyle.Reset)        - List all configured profiles
+        $($PSStyle.Foreground.Magenta)aws-regions$($PSStyle.Reset)         - List all available regions
+
+    $($PSStyle.Foreground.Green)Profile & Region Management:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)asp$($PSStyle.Reset) <profile>       - Set AWS profile with optional SSO
+        $($PSStyle.Foreground.Magenta)asp$($PSStyle.Reset) <profile> login - Set profile and perform SSO login
+        $($PSStyle.Foreground.Magenta)asp$($PSStyle.Reset) <profile> logout- Set profile and perform SSO logout
+        $($PSStyle.Foreground.Magenta)asr$($PSStyle.Reset) <region>        - Set AWS region with validation
+        $($PSStyle.Foreground.Magenta)asp$($PSStyle.Reset)                 - Clear current profile
+        $($PSStyle.Foreground.Magenta)asr$($PSStyle.Reset)                 - Clear current region
+
+    $($PSStyle.Foreground.Green)Advanced Operations:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)acp$($PSStyle.Reset) <profile>       - Advanced profile switching with MFA/role assumption
+        $($PSStyle.Foreground.Magenta)acp$($PSStyle.Reset) <profile> <mfa> - Switch profile with MFA token
+        $($PSStyle.Foreground.Magenta)aws-change-key$($PSStyle.Reset) <prof>- Rotate access keys securely
+
+    $($PSStyle.Foreground.Green)Key Features:$($PSStyle.Reset)
+        • Multi-Factor Authentication (MFA) support with configurable session duration
+        • Cross-account role assumption with external ID support
+        • AWS SSO integration for seamless login/logout operations
+        • State persistence across PowerShell sessions (when enabled)
+        • Secure access key rotation with guided workflow
+        • Profile and region validation against AWS configuration
+        • PowerShell prompt integration for AWS context display
+
+    $($PSStyle.Foreground.Green)Configuration Examples:$($PSStyle.Reset)
+        # Enable state persistence
+        $($PSStyle.Foreground.Cyan)\$env:AWS_PROFILE_STATE_ENABLED = 'true'$($PSStyle.Reset)
+
+        # Configure MFA in AWS profile
+        $($PSStyle.Foreground.Cyan)[profile my-profile]
+        mfa_serial = arn:aws:iam::123456789012:mfa/username
+        duration_seconds = 3600$($PSStyle.Reset)
+
+        # Configure cross-account role
+        $($PSStyle.Foreground.Cyan)[profile cross-account]
+        role_arn = arn:aws:iam::987654321098:role/CrossAccountRole
+        source_profile = my-profile
+        external_id = unique-external-id$($PSStyle.Reset)
+
+    Note: Requires AWS CLI installation and proper credential configuration.
+    12 AWS functions available for complete credential and profile management.
+"@
+
+    $PluginsDocker = @"
+$($PSStyle.Foreground.Yellow)Plugins Module - Docker Plugin$($PSStyle.Reset)
+    $($PSStyle.Foreground.Cyan)Complete Docker CLI integration with PowerShell aliases$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Container Operations:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)dcls$($PSStyle.Reset)               - List running containers
+        $($PSStyle.Foreground.Magenta)dclsa$($PSStyle.Reset)              - List all containers
+        $($PSStyle.Foreground.Magenta)dps$($PSStyle.Reset)                - Show running containers
+        $($PSStyle.Foreground.Magenta)dpsa$($PSStyle.Reset)               - Show all containers
+        $($PSStyle.Foreground.Magenta)dr$($PSStyle.Reset) <image>         - Run a new container
+        $($PSStyle.Foreground.Magenta)drit$($PSStyle.Reset) <image>       - Run interactive container
+        $($PSStyle.Foreground.Magenta)dst$($PSStyle.Reset) <container>    - Start a container
+        $($PSStyle.Foreground.Magenta)dstp$($PSStyle.Reset) <container>   - Stop a container
+        $($PSStyle.Foreground.Magenta)drs$($PSStyle.Reset) <container>    - Restart a container
+        $($PSStyle.Foreground.Magenta)drm$($PSStyle.Reset) <container>    - Remove a container
+        $($PSStyle.Foreground.Magenta)drm!$($PSStyle.Reset) <container>   - Force remove container
+        $($PSStyle.Foreground.Magenta)dsta$($PSStyle.Reset)               - Stop all running containers
+
+    $($PSStyle.Foreground.Green)Image Operations:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)dbl$($PSStyle.Reset) <args>         - Build an image
+        $($PSStyle.Foreground.Magenta)dib$($PSStyle.Reset) <args>         - Build an image
+        $($PSStyle.Foreground.Magenta)dils$($PSStyle.Reset)               - List images
+        $($PSStyle.Foreground.Magenta)dirm$($PSStyle.Reset) <image>       - Remove an image
+        $($PSStyle.Foreground.Magenta)dit$($PSStyle.Reset) <image> <tag>  - Tag an image
+        $($PSStyle.Foreground.Magenta)dipu$($PSStyle.Reset) <image>       - Push an image
+        $($PSStyle.Foreground.Magenta)dipru$($PSStyle.Reset)              - Remove unused images
+        $($PSStyle.Foreground.Magenta)dpu$($PSStyle.Reset) <image>        - Pull an image
+
+    $($PSStyle.Foreground.Green)Network Operations:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)dnc$($PSStyle.Reset) <network>      - Create a network
+        $($PSStyle.Foreground.Magenta)dnls$($PSStyle.Reset)               - List networks
+        $($PSStyle.Foreground.Magenta)dnrm$($PSStyle.Reset) <network>     - Remove a network
+        $($PSStyle.Foreground.Magenta)dncn$($PSStyle.Reset) <net> <cont>  - Connect to network
+        $($PSStyle.Foreground.Magenta)dndcn$($PSStyle.Reset) <net> <cont> - Disconnect from network
+
+    $($PSStyle.Foreground.Green)Volume Operations:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)dvls$($PSStyle.Reset)               - List volumes
+        $($PSStyle.Foreground.Magenta)dvprune$($PSStyle.Reset)            - Remove unused volumes
+
+    $($PSStyle.Foreground.Green)Monitoring & Inspection:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)dcin$($PSStyle.Reset) <container>   - Inspect a container
+        $($PSStyle.Foreground.Magenta)dii$($PSStyle.Reset) <image>        - Inspect an image
+        $($PSStyle.Foreground.Magenta)dni$($PSStyle.Reset) <network>      - Inspect a network
+        $($PSStyle.Foreground.Magenta)dvi$($PSStyle.Reset) <volume>       - Inspect a volume
+        $($PSStyle.Foreground.Magenta)dlo$($PSStyle.Reset) <container>    - View container logs
+        $($PSStyle.Foreground.Magenta)dpo$($PSStyle.Reset) <container>    - Show container ports
+        $($PSStyle.Foreground.Magenta)dsts$($PSStyle.Reset)               - Show container stats
+        $($PSStyle.Foreground.Magenta)dtop$($PSStyle.Reset) <container>   - Show container processes
+
+    $($PSStyle.Foreground.Green)Execution:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)dxc$($PSStyle.Reset) <cont> <cmd>   - Execute command in container
+        $($PSStyle.Foreground.Magenta)dxcit$($PSStyle.Reset) <cont> <cmd> - Execute interactive command
+
+    Note: All Docker functions pass arguments directly to Docker CLI.
+    37 Docker aliases available for complete container lifecycle management.
+"@
+
+    $PluginsDockerCompose = @"
+$($PSStyle.Foreground.Yellow)Plugins Module - Docker Compose Plugin$($PSStyle.Reset)
+    $($PSStyle.Foreground.Cyan)Complete Docker Compose CLI integration with PowerShell aliases$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Core Commands:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)dco$($PSStyle.Reset) <args>         - Docker Compose base command
+        $($PSStyle.Foreground.Magenta)dcb$($PSStyle.Reset) [service]      - Build or rebuild services
+        $($PSStyle.Foreground.Magenta)dce$($PSStyle.Reset) <service> <cmd> - Execute commands in containers
+        $($PSStyle.Foreground.Magenta)dcps$($PSStyle.Reset)               - List containers
+        $($PSStyle.Foreground.Magenta)dcrestart$($PSStyle.Reset) [service] - Restart services
+        $($PSStyle.Foreground.Magenta)dcrm$($PSStyle.Reset) [service]     - Remove stopped containers
+        $($PSStyle.Foreground.Magenta)dcr$($PSStyle.Reset) <service> <cmd> - Run one-time commands
+        $($PSStyle.Foreground.Magenta)dcstop$($PSStyle.Reset) [service]   - Stop services
+        $($PSStyle.Foreground.Magenta)dcstart$($PSStyle.Reset) [service]  - Start services
+        $($PSStyle.Foreground.Magenta)dck$($PSStyle.Reset) [service]      - Kill running containers
+
+    $($PSStyle.Foreground.Green)Service Management:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)dcup$($PSStyle.Reset) [service]     - Create and start containers
+        $($PSStyle.Foreground.Magenta)dcupb$($PSStyle.Reset) [service]    - Create and start with build
+        $($PSStyle.Foreground.Magenta)dcupd$($PSStyle.Reset) [service]    - Create and start in detached mode
+        $($PSStyle.Foreground.Magenta)dcupdb$($PSStyle.Reset) [service]   - Create and start detached with build
+        $($PSStyle.Foreground.Magenta)dcdn$($PSStyle.Reset) [options]     - Stop and remove containers, networks
+
+    $($PSStyle.Foreground.Green)Monitoring & Logs:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)dcl$($PSStyle.Reset) [service]      - View container logs
+        $($PSStyle.Foreground.Magenta)dclf$($PSStyle.Reset) [service]     - Follow log output
+        $($PSStyle.Foreground.Magenta)dclF$($PSStyle.Reset) [service]     - Follow new log entries only
+
+    $($PSStyle.Foreground.Green)Image Operations:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)dcpull$($PSStyle.Reset) [service]   - Pull service images
+
+    $($PSStyle.Foreground.Green)Examples:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Start all services in background
+        dcupd
+
+        # Build and start web service
+        dcupb web
+
+        # Execute bash in web container
+        dce web bash
+
+        # Follow logs for all services
+        dclf
+
+        # Stop and clean up everything
+        dcdn --volumes$($PSStyle.Reset)
+
+    Note: Supports both Docker Compose v1 (docker-compose) and v2 (docker compose).
+    20 Docker Compose functions available for complete multi-container management.
+"@
+
+    $PluginsHelm = @"
+$($PSStyle.Foreground.Yellow)Plugins Module - Helm Plugin$($PSStyle.Reset)
+    $($PSStyle.Foreground.Cyan)Complete Helm CLI integration with PowerShell aliases for Kubernetes package management$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Core Commands:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)h$($PSStyle.Reset) <args>           - Helm base command
+        $($PSStyle.Foreground.Magenta)hin$($PSStyle.Reset) <release> <chart> - Install Helm charts
+        $($PSStyle.Foreground.Magenta)hun$($PSStyle.Reset) <release>      - Uninstall Helm releases
+        $($PSStyle.Foreground.Magenta)hse$($PSStyle.Reset) <query>        - Search for Helm charts
+        $($PSStyle.Foreground.Magenta)hup$($PSStyle.Reset) <release> <chart> - Upgrade Helm releases
+
+    $($PSStyle.Foreground.Green)Repository Management:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Add repositories
+        h repo add stable https://charts.helm.sh/stable
+        h repo add bitnami https://charts.bitnami.com/bitnami
+
+        # Update repositories
+        h repo update
+
+        # List repositories
+        h repo list$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Chart Operations:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Search for charts
+        hse repo nginx
+        hse hub wordpress
+
+        # Install applications
+        hin my-nginx stable/nginx
+        hin my-app ./my-chart --namespace production
+
+        # Upgrade applications
+        hup my-nginx stable/nginx
+        hup my-app ./my-chart --install$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Release Management:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# List releases
+        h list
+        h list --all-namespaces
+
+        # Get release information
+        h get values my-release
+        h status my-release
+
+        # Uninstall releases
+        hun my-release
+        hun my-release --keep-history$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Examples:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Complete deployment workflow
+        h repo add bitnami https://charts.bitnami.com/bitnami
+        hse repo wordpress
+        hin my-wordpress bitnami/wordpress --namespace production
+        h status my-wordpress -n production
+        hup my-wordpress bitnami/wordpress -n production$($PSStyle.Reset)
+
+    Note: Includes automatic PowerShell completion for enhanced productivity.
+    5 Helm functions available for complete Kubernetes package management.
+"@
+
+    $PluginsKubectl = @"
+$($PSStyle.Foreground.Yellow)Plugins Module - Kubectl Plugin$($PSStyle.Reset)
+    $($PSStyle.Foreground.Cyan)Comprehensive kubectl CLI integration with 100+ PowerShell functions and aliases$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Core Commands:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)k$($PSStyle.Reset) <args>            - Base kubectl command wrapper
+        $($PSStyle.Foreground.Magenta)kca$($PSStyle.Reset) <args>          - Commands against all namespaces
+        $($PSStyle.Foreground.Magenta)kaf$($PSStyle.Reset) <file>          - Apply YAML files
+        $($PSStyle.Foreground.Magenta)keti$($PSStyle.Reset) <pod>          - Interactive container exec
+
+    $($PSStyle.Foreground.Green)Pod Management:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# List and manage pods
+        kgp                    # Get pods
+        kgpa                   # Get all pods in all namespaces
+        kgpw                   # Watch pods
+        kgpwide                # Get pods with wide output
+        kdp my-pod             # Describe pod
+        kdelp my-pod           # Delete pod
+        keti my-pod            # Interactive exec into pod$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Service & Networking:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Service operations
+        kgs                    # Get services
+        kgsa                   # Get services in all namespaces
+        kds my-service         # Describe service
+        kpf svc/my-svc 8080:80 # Port forward to service$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Deployment Management:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Deployment operations
+        kgd                    # Get deployments
+        kgda                   # Get deployments in all namespaces
+        ksd my-app --replicas=5 # Scale deployment
+        krsd my-app            # Rollout status
+        kres deployment my-app  # Restart deployment$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Configuration & Context:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Context management
+        kcgc                   # List contexts
+        kcuc dev-cluster       # Switch context
+        kccc                   # Current context
+        kcn my-namespace       # Set namespace$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Logging & Monitoring:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# View logs
+        kl my-pod              # Get logs
+        klf my-pod             # Follow logs
+        kl1h my-pod            # Last hour logs
+        klf1m my-pod           # Follow logs last minute
+        kge                    # Get events
+        kgew                   # Watch events$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Resource Management:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Various resources
+        kgcm                   # Get configmaps
+        kgsec                  # Get secrets
+        kgns                   # Get namespaces
+        kga                    # Get all resources
+        kgaa                   # Get all in all namespaces$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Examples:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Complete workflow
+        kcgc                               # List contexts
+        kcuc production                    # Switch to production
+        kgp                               # List pods
+        klf my-app-pod                    # Follow logs
+        ksd my-app --replicas=3           # Scale application
+        kaf deployment.yaml               # Apply configuration$($PSStyle.Reset)
+
+    Note: Includes automatic PowerShell completion and 100+ kubectl commands with aliases.
+    Complete kubectl integration for Kubernetes cluster management.
+"@
+
+    $PluginsNPM = @"
+$($PSStyle.Foreground.Yellow)Plugins Module - NPM Plugin$($PSStyle.Reset)
+    $($PSStyle.Foreground.Cyan)Comprehensive npm CLI integration with 35+ PowerShell functions and aliases$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Core Commands:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)npm$($PSStyle.Reset) <args>          - Base npm command wrapper
+        $($PSStyle.Foreground.Magenta)npmg$($PSStyle.Reset) <package>       - Install packages globally
+        $($PSStyle.Foreground.Magenta)npmS$($PSStyle.Reset) <package>       - Install and save to dependencies
+        $($PSStyle.Foreground.Magenta)npmD$($PSStyle.Reset) <package>       - Install and save to dev-dependencies
+
+    $($PSStyle.Foreground.Green)Package Management:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Install packages
+        npmS express               # Save to dependencies
+        npmD jest eslint           # Save to dev-dependencies  
+        npmg typescript nodemon    # Install globally
+        npmF                       # Force reinstall packages
+        
+        # Update and maintain
+        npmO                       # Check outdated packages
+        npmU                       # Update all packages
+        npmU express               # Update specific package$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Development Workflow:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Project lifecycle
+        npmI                       # Initialize new package
+        npmst                      # npm start
+        npmt                       # npm test
+        npmrd                      # npm run dev
+        npmrb                      # npm run build
+        npmR lint                  # Run custom scripts$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Information & Discovery:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Package information
+        npmV                       # Show npm version
+        npmL                       # List installed packages
+        npmL0                      # List top-level only
+        npmi express               # Get package info
+        npmSe react                # Search packages$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Security & Maintenance:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Security and diagnostics
+        npma                       # Run security audit
+        npmaf                      # Fix vulnerabilities
+        npmc clean                 # Clean npm cache
+        npmdoc                     # Run npm doctor$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Configuration & Auth:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Registry management
+        npmwho                     # Current npm user
+        npmlogin                   # Login to registry
+        npmlogout                  # Logout from registry
+        npmcg registry             # Get config values
+        npmcs registry https://... # Set config values$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Examples:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Complete workflow
+        npmI -y                           # Initialize package
+        npmS express cors helmet          # Install dependencies
+        npmD jest supertest nodemon       # Install dev dependencies
+        npmst                            # Start development
+        npma && npmaf                    # Security audit and fix
+        npmP                             # Publish package$($PSStyle.Reset)
+
+    Note: Includes automatic PowerShell completion and 35+ npm commands with aliases.
+    Complete npm integration for Node.js package management.
+"@
+
+    $PluginsPIP = @"
+$($PSStyle.Foreground.Yellow)Plugins Module - PIP Plugin$($PSStyle.Reset)
+    $($PSStyle.Foreground.Cyan)Comprehensive pip CLI integration with 25+ PowerShell functions and aliases$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Core Commands:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)pip$($PSStyle.Reset) <args>          - Base pip command wrapper
+        $($PSStyle.Foreground.Magenta)pipi$($PSStyle.Reset) <package>       - Install Python packages
+        $($PSStyle.Foreground.Magenta)pipu$($PSStyle.Reset) <package>       - Upgrade packages to latest
+        $($PSStyle.Foreground.Magenta)pipun$($PSStyle.Reset) <package>      - Uninstall Python packages
+
+    $($PSStyle.Foreground.Green)Package Management:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Install and manage packages
+        pipi requests numpy         # Install packages
+        pipu package1 package2      # Upgrade packages  
+        pipun old-package          # Uninstall packages
+        pipiu user-package         # Install for current user
+        pipie .                    # Install in editable mode
+        
+        # Information and discovery
+        pipl                       # List installed packages
+        piplo                      # List outdated packages
+        pips numpy                 # Show package information$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Requirements & Bulk Operations:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Requirements management
+        pipreq                     # Create requirements.txt
+        pipir                      # Install from requirements.txt
+        pipir dev-requirements.txt # Install from custom file
+        
+        # Bulk operations
+        pipupall                   # Upgrade all packages
+        pipunall                   # Uninstall all packages (dangerous!)$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)GitHub Integration:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Install from GitHub
+        pipig user/repo            # Install from GitHub repo
+        pipigb user/repo branch    # Install from specific branch
+        pipigp user/repo 123       # Install from pull request$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Advanced Operations:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Advanced pip functionality
+        pipck                      # Check dependencies
+        pipw package               # Build wheel
+        pipd package -d downloads/ # Download without installing
+        pipc list                  # Show pip configuration
+        pipcc info                 # Cache information$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Examples:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Complete Python workflow
+        python -m venv myproject          # Create virtual environment
+        myproject\\Scripts\\Activate.ps1   # Activate environment
+        pipi requests flask pytest       # Install packages
+        pipreq                           # Create requirements
+        pipck                           # Check dependencies
+        pipupall                        # Keep packages updated$($PSStyle.Reset)
+
+    Note: Includes automatic PowerShell completion and 25+ pip commands with aliases.
+    Complete pip integration for Python package management.
+"@
+
+    $PluginsPNPM = @"
+$($PSStyle.Foreground.Yellow)Plugins Module - PNPM Plugin$($PSStyle.Reset)
+    $($PSStyle.Foreground.Cyan)Comprehensive PNPM CLI integration with 68+ PowerShell functions and aliases$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Core Commands:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)p$($PSStyle.Reset) <args>             - Base pnpm command wrapper
+        $($PSStyle.Foreground.Magenta)pa$($PSStyle.Reset) <package>          - Add packages to dependencies
+        $($PSStyle.Foreground.Magenta)pad$($PSStyle.Reset) <package>         - Add packages to dev-dependencies
+        $($PSStyle.Foreground.Magenta)pao$($PSStyle.Reset) <package>         - Add packages to optional dependencies
+        $($PSStyle.Foreground.Magenta)pap$($PSStyle.Reset) <package>         - Add packages to peer dependencies
+
+    $($PSStyle.Foreground.Green)Package Management:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Install packages
+        pa express cors helmet         # Add to dependencies
+        pad jest eslint typescript     # Add to dev-dependencies
+        pao fsevents                  # Add to optional dependencies
+        pap react vue                 # Add to peer dependencies
+        
+        # Update and maintain
+        pup                           # Update all packages
+        pupi                          # Interactive package updates
+        prm unused-package            # Remove packages$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Installation & Setup:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Project lifecycle
+        pi                            # Install dependencies
+        pif                           # Install from frozen lockfile (CI/CD)
+        pin                           # Initialize new package.json$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Script Execution:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Run scripts
+        pr build                      # Run script from package.json
+        ps                            # Run start script
+        pd                            # Run dev script
+        pb                            # Run build script
+        pt                            # Run test script
+        ptc                           # Run tests with coverage$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Development Tools:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Code quality
+        pln                           # Run lint script
+        plnf                          # Run lint with auto-fix
+        pf                            # Run format script
+        px eslint src/                # Execute from node_modules/.bin
+        pdlx create-react-app my-app  # Execute without installing$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Store Management:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# PNPM store operations
+        psts                          # Check store status
+        pspr                          # Prune unreferenced packages
+        pstp                          # Show store path
+        pst status                    # General store management$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Information & Analysis:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Package information
+        pls                           # List installed packages
+        pout                          # Check outdated packages
+        paud                          # Run security audit
+        paudf                         # Fix security vulnerabilities
+        pw lodash                     # Show why package is installed$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Advanced Features:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# PNPM-specific capabilities
+        ppatch lodash@4.17.21         # Create package patch
+        ppatchc /tmp/patch-dir        # Commit package patch
+        plnk ../local-package         # Link local package
+        pfetch                        # Fetch packages to store
+        pimp                          # Import from npm lockfile
+        pdep dist                     # Deploy for production$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Configuration:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Environment setup
+        pcfgl                         # List all configuration
+        pcfgs registry https://...     # Set configuration values
+        pcfgg store-dir               # Get configuration values
+        penv use --global lts         # Manage Node.js versions
+        psetup                        # Setup PNPM$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Examples:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Complete PNPM workflow
+        pin                           # Initialize new project
+        pa express fastify           # Add production dependencies
+        pad jest nodemon typescript   # Add development dependencies
+        pi                            # Install all dependencies
+        pd                            # Start development server
+        paud && paudf                 # Security audit and fix
+        psts && pspr                  # Store maintenance$($PSStyle.Reset)
+
+    Note: PNPM provides fast, disk-efficient package management with strict dependency resolution.
+    Includes 68+ commands covering all PNPM features with automatic PowerShell completion.
+"@
+
+    $PluginsConda = @"
+$($PSStyle.Foreground.Yellow)Plugins Module - Conda Plugin$($PSStyle.Reset)
+    $($PSStyle.Foreground.Cyan)Comprehensive Conda CLI integration with 40+ PowerShell functions and aliases$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Core Commands:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)cn$($PSStyle.Reset) <args>             - Base conda command wrapper
+        $($PSStyle.Foreground.Magenta)cna$($PSStyle.Reset) <env>             - Activate environment
+        $($PSStyle.Foreground.Magenta)cnab$($PSStyle.Reset)                  - Activate base environment
+        $($PSStyle.Foreground.Magenta)cnde$($PSStyle.Reset)                  - Deactivate current environment
+
+    $($PSStyle.Foreground.Green)Environment Management:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Create environments
+        cncr myenv python=3.9         # Create named environment
+        cncn myenv                     # Create with auto-confirm
+        cncp /path/to/env             # Create at specific path
+        cncf environment.yml          # Create from YAML file
+        
+        # Manage environments
+        cnel                          # List all environments
+        cnee environment.yml          # Export current environment
+        cneu environment.yml          # Update from YAML file
+        cnrn myenv                    # Remove environment by name$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Package Management:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Install and manage packages
+        cni numpy pandas matplotlib   # Install packages
+        cniy scikit-learn            # Install with auto-confirm
+        cnr unused-package           # Remove packages
+        cnry old-package             # Remove with auto-confirm
+        
+        # Updates and maintenance
+        cnu numpy                    # Update specific packages
+        cnua                         # Update all packages
+        cnuc                         # Update conda itself$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Information & Search:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Package information
+        cnl                          # List installed packages
+        cnle packages.txt            # Export package list
+        cnles explicit.txt           # Create explicit spec file
+        cnsr tensorflow              # Search for packages$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Configuration:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Environment configuration
+        cnconf                       # Manage configuration
+        cncss                        # Show config sources
+        cnconfg channels             # Get config values
+        cnconfs channels conda-forge # Set config values
+        cnconfr channels conda-forge # Remove config values
+        cnconfa channels conda-forge # Add config values$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Maintenance:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Cleanup and optimization
+        cncl                         # Clean caches and temp files
+        cncla                        # Clean everything thoroughly$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Data Science Workflow:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Complete data science setup
+        cncn ds-env python=3.10      # Create data science environment
+        cna ds-env                   # Activate environment
+        cni jupyter pandas numpy matplotlib scikit-learn  # Install DS packages
+        cnee ds-environment.yml      # Export for team sharing
+        cnuc && cnua                 # Keep conda and packages updated$($PSStyle.Reset)
+
+    Note: Conda provides comprehensive environment and package management for data science.
+    Includes 40+ commands covering all conda features with automatic PowerShell completion.
+"@
+
+    $PluginsPipenv = @"
+$($PSStyle.Foreground.Yellow)Plugins Module - Pipenv Plugin$($PSStyle.Reset)
+    $($PSStyle.Foreground.Cyan)Comprehensive pipenv CLI integration with 15+ PowerShell functions and aliases$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Core Commands:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)pipenv$($PSStyle.Reset) <args>         - Base pipenv command wrapper
+        $($PSStyle.Foreground.Magenta)psh$($PSStyle.Reset)                   - Activate pipenv shell
+        $($PSStyle.Foreground.Magenta)prun$($PSStyle.Reset) <command>        - Run commands in virtual environment
+        $($PSStyle.Foreground.Magenta)pwh$($PSStyle.Reset)                   - Show project directory path
+        $($PSStyle.Foreground.Magenta)pvenv$($PSStyle.Reset)                 - Show virtual environment path
+        $($PSStyle.Foreground.Magenta)ppy$($PSStyle.Reset)                   - Show Python interpreter path
+
+    $($PSStyle.Foreground.Green)Package Management:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Install and manage packages
+        pi requests flask           # Install packages
+        pidev pytest black flake8  # Install development dependencies
+        pu old-package              # Uninstall packages
+        pupd                        # Update all packages
+        pupd requests               # Update specific package$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Dependency Management:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Lock and sync dependencies
+        pl                          # Generate Pipfile.lock
+        pl --dev                    # Lock with development dependencies
+        psy                         # Install from Pipfile.lock
+        psy --dev                   # Sync including dev dependencies
+        preq > requirements.txt     # Generate requirements.txt
+        preq --dev                  # Generate dev requirements$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Information & Maintenance:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Security and maintenance
+        pch                         # Check for vulnerabilities
+        pcl                         # Clean unused dependencies
+        pgr                         # Show dependency graph
+        po requests                 # Open package in editor
+        pscr test                   # Run predefined scripts$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Auto-Shell Management:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Automatic virtual environment activation
+        Enable-PipenvAutoShell      # Enable auto-activation
+        Disable-PipenvAutoShell     # Disable auto-activation
+        Test-PipenvAutoShell        # Check current state
+        Invoke-PipenvShellToggle    # Manual toggle$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Examples:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# New project workflow
+        mkdir myproject && cd myproject  # Create and enter directory
+        pi --python 3.9                 # Initialize with Python 3.9
+        pi requests flask                # Install dependencies  
+        pidev pytest black              # Install dev dependencies
+        pl                               # Generate lock file
+        prun python app.py               # Run application
+        
+        # Existing project workflow
+        cd existing-project              # Auto-activates environment
+        psy --dev                        # Install all dependencies
+        prun pytest                      # Run tests
+        pch                              # Check security
+        pcl                              # Clean unused packages$($PSStyle.Reset)
+
+    Note: Includes automatic shell activation/deactivation and 15+ pipenv commands.
+    Complete pipenv integration for Python virtual environment management.
+"@
+
+    $PluginsPoetry = @"
+$($PSStyle.Foreground.Yellow)Plugins Module - Poetry Plugin$($PSStyle.Reset)
+    $($PSStyle.Foreground.Cyan)Comprehensive Poetry CLI integration with 30+ PowerShell functions and aliases$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Core Commands:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)poetry$($PSStyle.Reset) <args>         - Base Poetry command wrapper
+        $($PSStyle.Foreground.Magenta)pin$($PSStyle.Reset)                   - Initialize new Poetry project
+        $($PSStyle.Foreground.Magenta)pnew$($PSStyle.Reset) <name>           - Create new project with structure
+        $($PSStyle.Foreground.Magenta)pch$($PSStyle.Reset)                   - Check project configuration
+        $($PSStyle.Foreground.Magenta)pcmd$($PSStyle.Reset)                  - List available packages
+
+    $($PSStyle.Foreground.Green)Dependency Management:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Add and manage dependencies
+        pad requests flask fastapi      # Add production dependencies
+        pad pytest black --group dev    # Add development dependencies
+        prm old-package                 # Remove dependencies
+        pup                            # Update all dependencies
+        pup requests                   # Update specific package
+        
+        # Installation and synchronization
+        pinst                          # Install all dependencies
+        pinst --no-dev                 # Install without dev dependencies
+        psync                          # Sync environment with lock file$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Environment Management:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Virtual environment operations
+        psh                            # Activate Poetry shell
+        prun python app.py             # Run commands in environment
+        pvinf                          # Show environment information
+        ppath                          # Show environment path
+        pvu python3.9                  # Use specific Python version
+        pvrm python3.9                 # Remove virtual environment$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Build and Publishing:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Project distribution
+        pbld                           # Build project packages
+        pbld --format wheel            # Build specific format
+        ppub                           # Publish to PyPI
+        ppub --repository testpypi     # Publish to test PyPI
+        ppub --build                   # Build and publish together$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Lock File and Export:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Dependency locking and export
+        plck                           # Update lock file
+        plck --no-update               # Lock without updating
+        pexp                           # Export to requirements.txt
+        pexp --dev -o dev-requirements.txt  # Export dev dependencies$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Information and Discovery:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Package information
+        pshw                           # Show all installed packages
+        pshw requests                  # Show specific package info
+        pslt                           # Show latest package versions
+        ptree                          # Show dependency tree
+        ptree --no-dev                 # Tree without dev dependencies$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Configuration and Self-Management:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Poetry configuration
+        pconf                          # Show all configuration
+        pconf virtualenvs.in-project true  # Enable in-project venvs
+        pvoff                          # Disable venv creation
+        
+        # Poetry self-management
+        psup                           # Update Poetry itself
+        psad poetry-plugin-export      # Add Poetry plugins
+        pplug                          # Show installed plugins$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Examples:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# New project workflow
+        pnew myproject                 # Create new project
+        cd myproject                   # Enter project directory
+        pad fastapi uvicorn           # Add dependencies
+        pad pytest black --group dev  # Add dev dependencies
+        prun python app.py            # Run application
+        
+        # Existing project workflow
+        cd existing-poetry-project     # Enter project
+        pinst                         # Install dependencies
+        prun pytest                   # Run tests
+        pbld && ppub                  # Build and publish$($PSStyle.Reset)
+
+    Note: Includes comprehensive Poetry CLI integration and 30+ poetry commands.
+    Complete Poetry integration for modern Python dependency management.
+"@
+
+    $PluginsTerraform = @"
+$($PSStyle.Foreground.Yellow)Plugins Module - Terraform Plugin$($PSStyle.Reset)
+    $($PSStyle.Foreground.Cyan)Comprehensive Terraform CLI integration with 20+ PowerShell functions and aliases$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Core Commands:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)tf$($PSStyle.Reset) <args>             - Base Terraform command wrapper
+        $($PSStyle.Foreground.Magenta)tfi$($PSStyle.Reset)                   - Initialize working directory
+        $($PSStyle.Foreground.Magenta)tfp$($PSStyle.Reset)                   - Create execution plan
+        $($PSStyle.Foreground.Magenta)tfa$($PSStyle.Reset)                   - Apply configuration
+        $($PSStyle.Foreground.Magenta)tfd$($PSStyle.Reset)                   - Destroy infrastructure
+
+    $($PSStyle.Foreground.Green)Initialization Variants:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Initialize with different options
+        tfi                            # Standard initialization
+        tfir                           # Init with reconfiguration
+        tfiu                           # Init with provider upgrade
+        tfiur                          # Init with upgrade and reconfig$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Plan and Apply Operations:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Planning and deployment
+        tfp                            # Create execution plan
+        tfp -out=tfplan                # Save plan to file
+        tfa                            # Apply with confirmation
+        tfaa                           # Apply with auto-approval
+        tfa tfplan                     # Apply saved plan$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Destruction Operations:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Infrastructure destruction
+        tfd                            # Destroy with confirmation
+        tfd!                           # Destroy with auto-approval
+        tfd -target=resource.name      # Destroy specific resource$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Code Management:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Code formatting and validation
+        tff                            # Format configuration files
+        tffr                           # Format recursively
+        tfv                            # Validate configuration
+        tft                            # Execute tests$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)State Management:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# State operations
+        tfs list                       # List resources in state
+        tfs show resource.name         # Show specific resource
+        tfs mv old.name new.name       # Move resource in state
+        tfs rm resource.name           # Remove from state$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Output and Information:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Information retrieval
+        tfo                            # Show all outputs
+        tfo output_name                # Show specific output
+        tfsh                           # Show current state
+        tfsh tfplan                    # Show saved plan$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Interactive Tools:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Interactive exploration
+        tfc                            # Launch Terraform console$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Workspace Integration:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Workspace awareness for prompts
+        Get-TerraformWorkspace         # Get current workspace
+        Get-TerraformPromptInfo        # Get workspace for prompt
+        Get-TerraformVersionPromptInfo # Get version for prompt$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Examples:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Complete infrastructure workflow
+        tfi                            # Initialize Terraform
+        tff && tfv                     # Format and validate
+        tfp -out=plan.tf               # Create execution plan
+        tfa plan.tf                    # Apply the plan
+        tfo                            # Check outputs
+        
+        # State management workflow
+        tfs list                       # List all resources
+        tfs show aws_instance.web      # Inspect specific resource
+        tfsh -json > state.json        # Export state as JSON
+        
+        # Destruction workflow
+        tfp -destroy                   # Plan destruction
+        tfd!                           # Destroy with auto-approval$($PSStyle.Reset)
+
+    Note: Includes comprehensive Terraform CLI integration and 20+ terraform commands.
+    Complete Terraform integration for Infrastructure as Code management.
+"@
+
+    $PluginsTerragrunt = @"
+$($PSStyle.Foreground.Yellow)Plugins Module - Terragrunt Plugin$($PSStyle.Reset)
+    $($PSStyle.Foreground.Cyan)Comprehensive Terragrunt CLI integration with 25+ PowerShell functions and aliases$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Core Commands:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)tg$($PSStyle.Reset) <args>             - Base Terragrunt command wrapper
+        $($PSStyle.Foreground.Magenta)tgi$($PSStyle.Reset)                   - terragrunt init
+        $($PSStyle.Foreground.Magenta)tgp$($PSStyle.Reset)                   - terragrunt plan
+        $($PSStyle.Foreground.Magenta)tga$($PSStyle.Reset)                   - terragrunt apply
+        $($PSStyle.Foreground.Magenta)tgd$($PSStyle.Reset)                   - terragrunt destroy
+        $($PSStyle.Foreground.Magenta)tgr$($PSStyle.Reset)                   - terragrunt refresh
+        $($PSStyle.Foreground.Magenta)tgf$($PSStyle.Reset) / $($PSStyle.Foreground.Magenta)tgfmt$($PSStyle.Reset)          - terragrunt hclfmt
+        $($PSStyle.Foreground.Magenta)tgv$($PSStyle.Reset)                   - terragrunt validate
+
+    $($PSStyle.Foreground.Green)Multi-Module Commands:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)tgpa$($PSStyle.Reset)                  - terragrunt plan-all
+        $($PSStyle.Foreground.Magenta)tgaa$($PSStyle.Reset)                  - terragrunt apply-all
+        $($PSStyle.Foreground.Magenta)tgda$($PSStyle.Reset)                  - terragrunt destroy-all
+        $($PSStyle.Foreground.Magenta)tgra$($PSStyle.Reset)                  - terragrunt refresh-all
+        $($PSStyle.Foreground.Magenta)tgva$($PSStyle.Reset)                  - terragrunt validate-all
+
+    $($PSStyle.Foreground.Green)State Management:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)tgsl$($PSStyle.Reset)                  - terragrunt state list
+        $($PSStyle.Foreground.Magenta)tgss$($PSStyle.Reset) <resource>       - terragrunt state show <resource>
+        $($PSStyle.Foreground.Magenta)tgsm$($PSStyle.Reset) <src> <dest>     - terragrunt state mv <src> <dest>
+        $($PSStyle.Foreground.Magenta)tgsr$($PSStyle.Reset) <resource>       - terragrunt state rm <resource>
+        $($PSStyle.Foreground.Magenta)tgsh$($PSStyle.Reset)                  - terragrunt show
+
+    $($PSStyle.Foreground.Green)Dependency Management:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)tggo$($PSStyle.Reset)                  - terragrunt output-all
+        $($PSStyle.Foreground.Magenta)tgomg$($PSStyle.Reset)                 - terragrunt output-module-groups
+        $($PSStyle.Foreground.Magenta)tggd$($PSStyle.Reset)                  - terragrunt graph-dependencies
+        $($PSStyle.Foreground.Magenta)tgrj$($PSStyle.Reset)                  - terragrunt render-json
+
+    $($PSStyle.Foreground.Green)Utility Commands:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)tgvi$($PSStyle.Reset)                  - terragrunt validate-inputs
+        $($PSStyle.Foreground.Magenta)tgpv$($PSStyle.Reset)                  - terragrunt providers
+        $($PSStyle.Foreground.Magenta)tgget$($PSStyle.Reset)                 - terragrunt get
+        $($PSStyle.Foreground.Magenta)tgver$($PSStyle.Reset)                 - terragrunt --version
+        $($PSStyle.Foreground.Magenta)tgifm$($PSStyle.Reset) <source>        - terragrunt init-from-module <source>
+
+    $($PSStyle.Foreground.Green)Workspace Functions:$($PSStyle.Reset)
+        Get-TerragruntWorkingDir       # Get Terragrunt working directory
+        Get-TerragruntConfigPath       # Get path to terragrunt.hcl
+        Get-TerragruntCacheDir         # Get cache directory path
+
+    $($PSStyle.Foreground.Green)Example Workflows:$($PSStyle.Reset)
+        # Initialize and plan single module
+        tgi && tgp
+
+        # Apply all modules in dependency order
+        tgaa --terragrunt-parallelism 3
+
+        # Format and validate all configurations
+        tgf && tgva
+
+        # Generate dependency graph and render JSON
+        tggd && tgrj
+
+        # State management operations
+        tgsl                           # List all resources
+        tgss aws_instance.web          # Show specific resource
+        tgsm old_name new_name         # Move resource
+
+    Note: Includes comprehensive Terragrunt CLI integration and 25+ terragrunt commands.
+    Complete DRY Infrastructure as Code workflow with dependency management.
+"@
+
+    $PluginsUV = @"
+$($PSStyle.Foreground.Yellow)Plugins Module - UV Plugin$($PSStyle.Reset)
+    $($PSStyle.Foreground.Cyan)Comprehensive UV (Python package manager) CLI integration with 25+ PowerShell functions and aliases$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Core Commands:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)uv$($PSStyle.Reset) <args>             - Base UV command wrapper
+        $($PSStyle.Foreground.Magenta)uva$($PSStyle.Reset) <packages>        - uv add <packages>
+        $($PSStyle.Foreground.Magenta)uvrm$($PSStyle.Reset) <packages>       - uv remove <packages>
+        $($PSStyle.Foreground.Magenta)uvs$($PSStyle.Reset)                   - uv sync
+        $($PSStyle.Foreground.Magenta)uvr$($PSStyle.Reset) <command>         - uv run <command>
+        $($PSStyle.Foreground.Magenta)uvi$($PSStyle.Reset) [project]         - uv init [project]
+
+    $($PSStyle.Foreground.Green)Dependency Management:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)uvl$($PSStyle.Reset)                   - uv lock
+        $($PSStyle.Foreground.Magenta)uvlr$($PSStyle.Reset)                  - uv lock --refresh
+        $($PSStyle.Foreground.Magenta)uvlu$($PSStyle.Reset)                  - uv lock --upgrade
+        $($PSStyle.Foreground.Magenta)uvsr$($PSStyle.Reset)                  - uv sync --refresh
+        $($PSStyle.Foreground.Magenta)uvsu$($PSStyle.Reset)                  - uv sync --upgrade
+        $($PSStyle.Foreground.Magenta)uvexp$($PSStyle.Reset)                 - uv export (requirements.txt)
+
+    $($PSStyle.Foreground.Green)Python and Environment:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)uvpy$($PSStyle.Reset) <args>           - uv python <args>
+        $($PSStyle.Foreground.Magenta)uvp$($PSStyle.Reset) <args>            - uv pip <args>
+        $($PSStyle.Foreground.Magenta)uvv$($PSStyle.Reset) [name]            - uv venv [name]
+
+    $($PSStyle.Foreground.Green)Tool Management:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)uvt$($PSStyle.Reset) <args>            - uv tool <args>
+        $($PSStyle.Foreground.Magenta)uvx$($PSStyle.Reset) / $($PSStyle.Foreground.Magenta)uvtr$($PSStyle.Reset) <tool>       - uv tool run <tool> (uvx)
+        $($PSStyle.Foreground.Magenta)uvti$($PSStyle.Reset) <tools>          - uv tool install <tools>
+        $($PSStyle.Foreground.Magenta)uvtu$($PSStyle.Reset) <tools>          - uv tool uninstall <tools>
+        $($PSStyle.Foreground.Magenta)uvtl$($PSStyle.Reset)                  - uv tool list
+        $($PSStyle.Foreground.Magenta)uvtup$($PSStyle.Reset) [tools]         - uv tool upgrade [tools]
+
+    $($PSStyle.Foreground.Green)Project Lifecycle:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)uvb$($PSStyle.Reset)                   - uv build
+        $($PSStyle.Foreground.Magenta)uvpub$($PSStyle.Reset)                 - uv publish
+
+    $($PSStyle.Foreground.Green)Utility Commands:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)uvup$($PSStyle.Reset)                  - uv self update
+        $($PSStyle.Foreground.Magenta)uvver$($PSStyle.Reset)                 - uv --version
+
+    $($PSStyle.Foreground.Green)Project Functions:$($PSStyle.Reset)
+        Test-UVProject             # Check if UV project
+        Get-UVProjectInfo          # Get project information
+        Get-UVVirtualEnvPath       # Get virtual environment path
+
+    $($PSStyle.Foreground.Green)Example Workflows:$($PSStyle.Reset)
+        # Initialize and setup new project
+        uvi myproject && cd myproject
+        uva requests flask pytest --dev
+
+        # Daily development workflow
+        uva pandas                 # Add dependency
+        uvr pytest               # Run tests
+        uvx black .              # Format code
+
+        # Tool management
+        uvti black flake8 mypy   # Install tools
+        uvx black .              # Run formatter
+        uvx flake8 src/          # Run linter
+
+        # Environment management
+        uvv                      # Create virtual env
+        uvs                      # Sync dependencies
+        uvexp                    # Export requirements
+
+    Note: Includes comprehensive UV CLI integration and 25+ UV commands.
+    Complete modern Python package management with dependency resolution.
+"@
+
+    $PluginsVSCode = @"
+$($PSStyle.Foreground.Yellow)Plugins Module - VSCode Plugin$($PSStyle.Reset)
+    $($PSStyle.Foreground.Cyan)Comprehensive VS Code CLI integration with 20+ PowerShell functions and aliases$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Core Commands:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)vsc$($PSStyle.Reset) <args>             - Base VS Code command wrapper
+        Get-VSCodeVersion          - Get VS Code version information
+        Get-VSCodeExtensions       - List installed VS Code extensions
+        Test-VSCodeInstalled       - Check if any VS Code flavour is available
+
+    $($PSStyle.Foreground.Green)File Operations:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Open and manage files
+        vsc                          # Open current directory
+        vsc file.txt                 # Open specific file
+        vsca ./src ./docs           # Add folders to last active window
+        vscd old.js new.js          # Open files in diff mode
+        vscg file.py:25:10           # Go to line 25, column 10
+        vscw config.json            # Open and wait for file to be closed$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Window Management:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Control VS Code windows
+        vscn ./project              # Open in new window
+        vscr ./project              # Reuse existing window
+        vscw commit-msg.txt         # Wait for file to be closed (Git integration)$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Extension Management:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Install and manage extensions
+        vscie ms-python.python      # Install Python extension
+        vscie ms-vscode.powershell  # Install PowerShell extension
+        vscue old.extension.id      # Uninstall extension
+        vscde ./project             # Open without any extensions (troubleshooting)$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Customization:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Profiles and custom directories
+        vscp web-dev ./project      # Open with specific profile
+        vscu ./portable-vscode      # Use custom user data directory
+        vsced ./custom-extensions   # Use custom extensions directory$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Debug & Logging:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Debugging and troubleshooting
+        vscv ./project              # Enable verbose logging
+        vscl debug ./project        # Set specific log level (trace, debug, info, warn, error)$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)VS Code Flavour Detection:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Automatic detection priority:
+        # 1. Manual preference: $env:VSCODE = 'code-insiders'
+        # 2. VS Code (stable): 'code' command
+        # 3. VS Code Insiders: 'code-insiders' command  
+        # 4. VSCodium: 'codium' command$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Development Workflow:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Complete development setup
+        $env:VSCODE = 'code-insiders'  # Set preferred flavour
+        vscn ./frontend              # Open frontend in new window
+        vscn ./backend               # Open backend in new window
+        vscp data-science ./analysis # Open with data science profile
+        vscie ms-python.python       # Install essential extensions$($PSStyle.Reset)
+
+    Note: Supports VS Code (stable), VS Code Insiders, and VSCodium with automatic detection.
+    Includes 20+ commands covering file operations, window management, and extension control.
+"@
+
+    $PluginsYarn = @"
+$($PSStyle.Foreground.Yellow)Plugins Module - Yarn Plugin$($PSStyle.Reset)
+    $($PSStyle.Foreground.Cyan)Comprehensive Yarn CLI integration with 40+ PowerShell functions and aliases$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Core Commands:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)y$($PSStyle.Reset) <args>              - yarn <args> (base wrapper)
+        $($PSStyle.Foreground.Magenta)ya$($PSStyle.Reset) <packages>         - yarn add <packages>
+        $($PSStyle.Foreground.Magenta)yad$($PSStyle.Reset) <packages>        - yarn add --dev <packages>
+        $($PSStyle.Foreground.Magenta)yap$($PSStyle.Reset) <packages>        - yarn add --peer <packages>
+        $($PSStyle.Foreground.Magenta)yrm$($PSStyle.Reset) <packages>        - yarn remove <packages>
+        $($PSStyle.Foreground.Magenta)yup$($PSStyle.Reset) [packages]        - yarn upgrade [packages]
+
+    $($PSStyle.Foreground.Green)Installation:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)yin$($PSStyle.Reset)                   - yarn install
+        $($PSStyle.Foreground.Magenta)yii$($PSStyle.Reset)                   - yarn install --immutable (Berry) / --frozen-lockfile (Classic)
+        $($PSStyle.Foreground.Magenta)yifl$($PSStyle.Reset)                  - yarn install --frozen-lockfile (alias for yii)
+
+    $($PSStyle.Foreground.Green)Development Scripts:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)yi$($PSStyle.Reset) [args]             - yarn init [args]
+        $($PSStyle.Foreground.Magenta)yrun$($PSStyle.Reset) <script>         - yarn run <script>
+        $($PSStyle.Foreground.Magenta)yst$($PSStyle.Reset) [args]            - yarn start [args]
+        $($PSStyle.Foreground.Magenta)yd$($PSStyle.Reset) [args]             - yarn dev [args]
+        $($PSStyle.Foreground.Magenta)yb$($PSStyle.Reset) [args]             - yarn build [args]
+        $($PSStyle.Foreground.Magenta)ys$($PSStyle.Reset) [args]             - yarn serve [args]
+        $($PSStyle.Foreground.Magenta)yt$($PSStyle.Reset) [args]             - yarn test [args]
+        $($PSStyle.Foreground.Magenta)ytc$($PSStyle.Reset) [args]            - yarn test --coverage [args]
+
+    $($PSStyle.Foreground.Green)Code Quality:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)yln$($PSStyle.Reset) [args]            - yarn lint [args]
+        $($PSStyle.Foreground.Magenta)ylnf$($PSStyle.Reset) [args]           - yarn lint --fix [args]
+        $($PSStyle.Foreground.Magenta)yf$($PSStyle.Reset) [args]             - yarn format [args]
+
+    $($PSStyle.Foreground.Green)Workspace Management:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)yw$($PSStyle.Reset) <workspace> <cmd>  - yarn workspace <workspace> <cmd>
+        $($PSStyle.Foreground.Magenta)yws$($PSStyle.Reset) <args>            - yarn workspaces <args>
+
+    $($PSStyle.Foreground.Green)Information & Utility:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)yy$($PSStyle.Reset) <package>          - yarn why <package>
+        $($PSStyle.Foreground.Magenta)yv$($PSStyle.Reset) [version]          - yarn version [version]
+        $($PSStyle.Foreground.Magenta)yh$($PSStyle.Reset) [command]          - yarn help [command]
+        $($PSStyle.Foreground.Magenta)yp$($PSStyle.Reset) [args]             - yarn pack [args]
+        $($PSStyle.Foreground.Magenta)ycc$($PSStyle.Reset)                   - yarn cache clean
+
+    $($PSStyle.Foreground.Green)Berry-Specific (Yarn 2+):$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)ydlx$($PSStyle.Reset) <package> [args] - yarn dlx <package> [args]
+        $($PSStyle.Foreground.Magenta)yn$($PSStyle.Reset) [args]             - yarn node [args]
+
+    $($PSStyle.Foreground.Green)Classic-Specific (Yarn 1.x):$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)yga$($PSStyle.Reset) <packages>        - yarn global add <packages>
+        $($PSStyle.Foreground.Magenta)ygls$($PSStyle.Reset) [args]           - yarn global list [args]
+        $($PSStyle.Foreground.Magenta)ygrm$($PSStyle.Reset) <packages>       - yarn global remove <packages>
+        $($PSStyle.Foreground.Magenta)ygu$($PSStyle.Reset) [packages]        - yarn global upgrade [packages]
+        $($PSStyle.Foreground.Magenta)yls$($PSStyle.Reset) [args]            - yarn list [args]
+        $($PSStyle.Foreground.Magenta)yout$($PSStyle.Reset) [args]           - yarn outdated [args]
+        $($PSStyle.Foreground.Magenta)yuca$($PSStyle.Reset)                  - yarn global upgrade && yarn cache clean
+
+    $($PSStyle.Foreground.Green)Interactive Commands:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)yui$($PSStyle.Reset) [args]            - yarn upgrade-interactive [args]
+        $($PSStyle.Foreground.Magenta)yuil$($PSStyle.Reset) [args]           - yarn upgrade-interactive --latest [args] (Classic only)
+
+    $($PSStyle.Foreground.Green)Utility Functions:$($PSStyle.Reset)
+        Test-YarnInstalled         # Check if Yarn is available
+        Test-YarnBerry             # Check if using Yarn Berry (v2+)
+        Get-YarnVersion           # Get installed Yarn version
+        Get-YarnGlobalPath        # Get global bin directory path
+
+    $($PSStyle.Foreground.Green)Example Workflows:$($PSStyle.Reset)
+        # Initialize and setup new project
+        yi -y                    # Initialize with defaults
+        ya react typescript      # Add dependencies
+        yad jest @types/jest    # Add dev dependencies
+
+        # Daily development workflow
+        yin                      # Install dependencies
+        yd                       # Start development server
+        yt --watch              # Run tests in watch mode
+        yb                      # Build for production
+
+        # Workspace operations (monorepo)
+        yw frontend build       # Build frontend workspace
+        yws foreach run test   # Test all workspaces
+
+        # Maintenance operations
+        yui                     # Interactive upgrade
+        ycc                     # Clean cache
+
+    Note: Includes comprehensive Yarn CLI integration and 40+ yarn commands.
+    Supports both Classic (v1.x) and Berry (v2+) with automatic version detection.
+"@
+
+    $PluginsDeno = @"
+$($PSStyle.Foreground.Yellow)Plugins Module - Deno Plugin$($PSStyle.Reset)
+    $($PSStyle.Foreground.Cyan)Comprehensive Deno CLI integration with 25+ PowerShell functions and aliases$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Core Commands:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)d$($PSStyle.Reset) <args>              - deno <args> (base wrapper)
+        $($PSStyle.Foreground.Magenta)dh$($PSStyle.Reset) [command]          - deno help [command]
+
+    $($PSStyle.Foreground.Green)Bundle and Compile:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)db$($PSStyle.Reset) <source> [output]  - deno bundle <source> [output]
+        $($PSStyle.Foreground.Magenta)dc$($PSStyle.Reset) <args>             - deno compile <args>
+
+    $($PSStyle.Foreground.Green)Development Workflow:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)dca$($PSStyle.Reset) <files>           - deno cache <files>
+        $($PSStyle.Foreground.Magenta)dfmt$($PSStyle.Reset) [paths]          - deno fmt [paths]
+        $($PSStyle.Foreground.Magenta)dli$($PSStyle.Reset) [paths]           - deno lint [paths]
+
+    $($PSStyle.Foreground.Green)Run Operations:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)drn$($PSStyle.Reset) <script> [args]   - deno run <script> [args]
+        $($PSStyle.Foreground.Magenta)drA$($PSStyle.Reset) <script> [args]   - deno run -A <script> [args] (all permissions)
+        $($PSStyle.Foreground.Magenta)drw$($PSStyle.Reset) <script> [args]   - deno run --watch <script> [args]
+        $($PSStyle.Foreground.Magenta)dru$($PSStyle.Reset) <script> [args]   - deno run --unstable <script> [args]
+
+    $($PSStyle.Foreground.Green)Test and Quality:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)dts$($PSStyle.Reset) [args]            - deno test [args]
+        $($PSStyle.Foreground.Magenta)dch$($PSStyle.Reset) <files>           - deno check <files>
+
+    $($PSStyle.Foreground.Green)Utility Commands:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)dup$($PSStyle.Reset) [args]            - deno upgrade [args]
+        $($PSStyle.Foreground.Magenta)di$($PSStyle.Reset) <args>             - deno install <args>
+        $($PSStyle.Foreground.Magenta)dun$($PSStyle.Reset) <name>            - deno uninstall <name>
+        $($PSStyle.Foreground.Magenta)dinf$($PSStyle.Reset) [module]         - deno info [module]
+
+    $($PSStyle.Foreground.Green)Interactive and Documentation:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)de$($PSStyle.Reset) <code>             - deno eval <code>
+        $($PSStyle.Foreground.Magenta)dr$($PSStyle.Reset) [args]             - deno repl [args]
+        $($PSStyle.Foreground.Magenta)ddoc$($PSStyle.Reset) [module]         - deno doc [module]
+        $($PSStyle.Foreground.Magenta)dt$($PSStyle.Reset) [args]             - deno types [args]
+
+    $($PSStyle.Foreground.Green)Project Management:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)dinit$($PSStyle.Reset) [project]       - deno init [project]
+        $($PSStyle.Foreground.Magenta)dtask$($PSStyle.Reset) <task> [args]   - deno task <task> [args]
+        $($PSStyle.Foreground.Magenta)dsv$($PSStyle.Reset) <script> [args]   - deno serve <script> [args]
+        $($PSStyle.Foreground.Magenta)dpub$($PSStyle.Reset) [args]           - deno publish [args]
+
+    $($PSStyle.Foreground.Green)Utility Functions:$($PSStyle.Reset)
+        Test-DenoInstalled        # Check if Deno is available
+        Get-DenoVersion          # Get installed Deno version
+        Initialize-DenoCompletion # Setup tab completion
+
+    $($PSStyle.Foreground.Green)Example Workflows:$($PSStyle.Reset)
+        # Initialize and develop new project
+        dinit my-deno-app        # Initialize project
+        dfmt && dli             # Format and lint
+        drw main.ts             # Run in watch mode
+
+        # Bundle and compile workflow
+        db src/main.ts bundle.js # Bundle for distribution
+        dc --output=app main.ts  # Compile to executable
+
+        # Testing and quality workflow
+        dts --coverage          # Run tests with coverage
+        dch src/*.ts           # Type check files
+        dfmt && dli --fix      # Format and fix linting
+
+        # Runtime operations
+        drA server.ts          # Run with all permissions
+        de 'console.log("Hi")' # Evaluate expression
+        dr --unstable          # Interactive REPL
+
+    Note: Includes comprehensive Deno CLI integration and 25+ deno commands.
+    Complete TypeScript/JavaScript runtime with modern development tools.
+"@
+
+    $PluginsRuby = @"
+$($PSStyle.Foreground.Yellow)Plugins Module - Ruby Plugin$($PSStyle.Reset)
+    $($PSStyle.Foreground.Cyan)Comprehensive Ruby CLI integration with 25+ PowerShell functions and aliases$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Core Ruby Commands:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)rb$($PSStyle.Reset) <args>              - Base Ruby command wrapper
+        $($PSStyle.Foreground.Magenta)rrun$($PSStyle.Reset) "<code>"          - Execute Ruby code inline
+        $($PSStyle.Foreground.Magenta)rserver$($PSStyle.Reset) [path] [port]  - Start Ruby HTTP development server
+        $($PSStyle.Foreground.Magenta)rfind$($PSStyle.Reset) "<pattern>"      - Find and search in Ruby files
+
+    $($PSStyle.Foreground.Green)Ruby Execution:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Basic Ruby operations
+        rb --version                 # Check Ruby version
+        rb script.rb                 # Run Ruby script
+        rrun "puts 'Hello World'"    # Execute inline Ruby code
+        rrun "puts RUBY_VERSION"     # Show Ruby version in code$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Development Server:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Ruby development server (requires webrick)
+        rserver                      # Serve current directory on port 8080
+        rserver ./public -Port 3000  # Serve specific directory and port
+        Start-RubyServer . -Port 4000 # Use full function name$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)File Operations:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Search Ruby files
+        rfind "class"                # Find all Ruby files containing "class"
+        rfind "def initialize" ./src # Search for constructors in src directory
+        Find-RubyFiles "module"      # Search for modules$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Gem Management:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Install and manage gems
+        gein rails                   # Install rails gem
+        gein bundler rake --no-document # Install multiple gems without docs
+        geun old_gem                 # Uninstall gem
+        geli                         # List installed gems
+        gei rails                    # Get gem information$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Advanced Gem Operations:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Gem utilities
+        sgem install system_gem      # Install with elevated privileges
+        geclup                       # Preview gem cleanup
+        geo rails                    # Open gem source code
+        geoe bundler                 # Open gem in editor
+        geca certificate.pem         # Add gem certificate$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Ruby Development Workflow:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Complete Ruby development setup
+        rb --version                 # Check Ruby installation
+        gein bundler rake            # Install essential gems
+        rserver ./app -Port 3000     # Start development server
+        rfind "TODO"                 # Find code comments
+        rrun "puts 'Development ready!'"  # Test Ruby execution$($PSStyle.Reset)
+
+    Note: Supports Ruby execution, gem management, development server, and file searching.
+    Includes 25+ commands covering complete Ruby development workflow with cross-platform support.
+"@
+
+    $PluginsQRCode = @"
+$($PSStyle.Foreground.Yellow)Plugins Module - QRCode Plugin$($PSStyle.Reset)
+    $($PSStyle.Foreground.Cyan)Generate QR codes directly from PowerShell using qrcode.show API service$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Core Functions:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)qrcode$($PSStyle.Reset) <text>           - Generate QR code in PNG format
+        $($PSStyle.Foreground.Magenta)qrsvg$($PSStyle.Reset) <text>            - Generate QR code in SVG format
+        New-QRCode <text>            - Full function for PNG QR codes
+        New-QRCodeSVG <text>         - Full function for SVG QR codes
+
+    $($PSStyle.Foreground.Green)Basic QR Code Generation:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Simple text QR codes
+        qrcode "Hello World"         # Generate PNG QR code
+        qrsvg "Hello World"          # Generate SVG QR code
+        New-QRCode "GitHub URL"       # Using full function name$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Pipeline Support:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# PowerShell pipeline integration
+        "https://github.com" | qrcode           # From pipeline
+        Get-Location | New-QRCode                # Current directory path
+        "Line 1", "Line 2" | qrcode             # Multiple inputs (joined)
+        Get-Date | New-QRCodeSVG                 # Date as QR code$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Interactive Mode:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Multi-line text input
+        qrcode                       # Enter interactive mode
+        # Type multiple lines, then Ctrl+Z (Windows) or Ctrl+D (Unix)
+        New-QRCode                   # Same with full function$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)File Operations:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Save QR codes to files
+        Save-QRCode -InputText "Hello" -Path "qr.png"     # Save PNG
+        Save-QRCode -InputText "Hello" -Path "qr.svg"     # Save SVG
+        New-QRCodeSVG "Text" | Out-File "output.svg"     # Pipeline to file$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Utility Functions:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Service and testing
+        Test-QRCodeService           # Check qrcode.show connectivity
+        Save-QRCode "URL" "file.png" # Direct save function$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Development Workflow:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Quick QR code generation
+        Test-QRCodeService           # Verify service availability
+        git remote get-url origin | qrcode        # Repo URL as QR
+        Get-Location | qrsvg | Out-File "path.svg" # Save current path
+        "Meeting: $(Get-Date)" | qrcode            # Dynamic content$($PSStyle.Reset)
+
+    Note: Requires internet connectivity to access qrcode.show API service.
+    Supports PNG and SVG formats with full PowerShell pipeline integration.
+"@
+
+    $PluginsRsync = @"
+$($PSStyle.Foreground.Yellow)Plugins Module - Rsync Plugin$($PSStyle.Reset)
+    $($PSStyle.Foreground.Cyan)Rsync file synchronization with PowerShell integration and cross-platform support$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Core Functions:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)rsync$($PSStyle.Reset) <args>            - Standard rsync command
+        $($PSStyle.Foreground.Magenta)rsync-copy$($PSStyle.Reset) <src> <dest> - Copy files/directories with progress
+        $($PSStyle.Foreground.Magenta)rsync-move$($PSStyle.Reset) <src> <dest> - Move files/directories
+        $($PSStyle.Foreground.Magenta)rsync-sync$($PSStyle.Reset) <src> <dest> - Synchronize directories
+        $($PSStyle.Foreground.Magenta)rsync-backup$($PSStyle.Reset) <src> <dest> - Create backups with timestamps
+
+    $($PSStyle.Foreground.Green)Network Operations:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Remote file synchronization
+        rsync-copy "local/path" "user@host:/remote/path"    # Upload files
+        rsync-copy "user@host:/remote/path" "local/path"    # Download files
+        rsync-sync "local/dir/" "user@host:/remote/dir/"    # Sync directories
+        rsync-backup "data/" "backup@server:/backups/"      # Remote backup$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Local Operations:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Local file synchronization
+        rsync-copy "source/" "destination/"        # Copy directory
+        rsync-sync "source/" "backup/"             # Sync to backup
+        rsync-move "old/location" "new/location"   # Move directory
+        rsync-backup "important/" "backups/"       # Local backup$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Advanced Features:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# With progress and verbose output
+        rsync-copy -v "large/dataset/" "backup/"        # Verbose mode
+        rsync-sync -P "source/" "destination/"          # Progress display
+        rsync-backup "project/" "archive/" -n           # Dry run mode
+        Test-RsyncPath "/path/to/check"                  # Validate paths$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Safety Features:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Built-in confirmations and validations
+        rsync-move                   # Requires confirmation (destructive)
+        Test-RsyncRemotePath "host"  # Test remote connectivity
+        rsync -n                     # Dry run for testing
+        Test-RsyncPath "path"        # Validate local paths$($PSStyle.Reset)
+
+    Note: Requires rsync to be installed on the system. Includes path validation,
+    confirmation prompts for destructive operations, and cross-platform compatibility.
+"@
+
+    $Starship = @"
 $($PSStyle.Foreground.Yellow)Starship Module$($PSStyle.Reset)
     $($PSStyle.Foreground.Green)Invoke-StarshipTransientFunction$($PSStyle.Reset)
     $($PSStyle.Foreground.Magenta)starship-transient$($PSStyle.Reset)
         Invokes the Starship module transiently to load the Starship prompt, enhancing the appearance and functionality of the PowerShell prompt.
 "@
 
-  $Update = @"
+    $Update = @"
 $($PSStyle.Foreground.Yellow)Update Module$($PSStyle.Reset)
     $($PSStyle.Foreground.Green)Update-LocalProfileModuleDirectory$($PSStyle.Reset) [-LocalPath <LocalPath>]
     $($PSStyle.Foreground.Magenta)update-local-module$($PSStyle.Reset) [-LocalPath <LocalPath>]
@@ -418,7 +1851,7 @@ $($PSStyle.Foreground.Yellow)Update Module$($PSStyle.Reset)
         Updates the Windows Terminal configuration file with the latest settings from the GitHub repository.
 "@
 
-  $Utility = @"
+    $Utility = @"
 $($PSStyle.Foreground.Yellow)Utility Module$($PSStyle.Reset)
     $($PSStyle.Foreground.Green)Test-Administrator$($PSStyle.Reset)
     $($PSStyle.Foreground.Magenta)is-admin$($PSStyle.Reset)
@@ -477,67 +1910,148 @@ $($PSStyle.Foreground.Yellow)Utility Module$($PSStyle.Reset)
         Converts a size value to a specified unit and formats it.
 "@
 
-  switch ($Section) {
-    'All' {
-      Write-Host $Title
-      Write-Host $Directory
-      Write-Host $Docs
-      Write-Host $Environment
-      Write-Host $Logging
-      Write-Host $Network
-      Write-Host $Plugins
-      Write-Host $Process
-      Write-Host $Starship
-      Write-Host $Update
-      Write-Host $Utility
+    switch ($Section) {
+        'All' {
+            Write-Host $Title
+            Write-Host $Directory
+            Write-Host $Docs
+            Write-Host $Environment
+            Write-Host $Logging
+            Write-Host $Network
+            Write-Host $Plugins
+            Write-Host $Process
+            Write-Host $Starship
+            Write-Host $Update
+            Write-Host $Utility
+        }
+        'AWS' {
+            Write-Host $Title
+            Write-Host $PluginsAWS
+        }
+        'Conda' {
+            Write-Host $Title
+            Write-Host $PluginsConda
+        }
+        'Deno' {
+            Write-Host $Title
+            Write-Host $PluginsDeno
+        }
+        'Directory' {
+            Write-Host $Title
+            Write-Host $Directory
+        }
+        'Docker' {
+            Write-Host $Title
+            Write-Host $PluginsDocker
+        }
+        'DockerCompose' {
+            Write-Host $Title
+            Write-Host $PluginsDockerCompose
+        }
+        'Docs' {
+            Write-Host $Title
+            Write-Host $Docs
+        }
+        'Environment' {
+            Write-Host $Title
+            Write-Host $Environment
+        }
+        'Git' {
+            Write-Host $Title
+            Write-Host $PluginsGit
+        }
+        'Helm' {
+            Write-Host $Title
+            Write-Host $PluginsHelm
+        }
+        'Kubectl' {
+            Write-Host $Title
+            Write-Host $PluginsKubectl
+        }
+        'Logging' {
+            Write-Host $Title
+            Write-Host $Logging
+        }
+        'NPM' {
+            Write-Host $Title
+            Write-Host $PluginsNPM
+        }
+        'Network' {
+            Write-Host $Title
+            Write-Host $Network
+        }
+        'PIP' {
+            Write-Host $Title
+            Write-Host $PluginsPIP
+        }
+        'Pipenv' {
+            Write-Host $Title
+            Write-Host $PluginsPipenv
+        }
+        'PNPM' {
+            Write-Host $Title
+            Write-Host $PluginsPNPM
+        }
+        'Plugins' {
+            Write-Host $Title
+            Write-Host $Plugins
+        }
+        'Poetry' {
+            Write-Host $Title
+            Write-Host $PluginsPoetry
+        }
+        'Process' {
+            Write-Host $Title
+            Write-Host $Process
+        }
+        'QRCode' {
+            Write-Host $Title
+            Write-Host $PluginsQRCode
+        }
+        'Ruby' {
+            Write-Host $Title
+            Write-Host $PluginsRuby
+        }
+        'Rsync' {
+            Write-Host $Title
+            Write-Host $PluginsRsync
+        }
+        'Starship' {
+            Write-Host $Title
+            Write-Host $Starship
+        }
+        'Terraform' {
+            Write-Host $Title
+            Write-Host $PluginsTerraform
+        }
+        'Terragrunt' {
+            Write-Host $Title
+            Write-Host $PluginsTerragrunt
+        }
+        'UV' {
+            Write-Host $Title
+            Write-Host $PluginsUV
+        }
+        'Update' {
+            Write-Host $Title
+            Write-Host $Update
+        }
+        'Utility' {
+            Write-Host $Title
+            Write-Host $Utility
+        }
+        'VSCode' {
+            Write-Host $Title
+            Write-Host $PluginsVSCode
+        }
+        'Yarn' {
+            Write-Host $Title
+            Write-Host $PluginsYarn
+        }
+        default {
+            Write-Host $Title
+            Write-Host $Docs
+        }
     }
-    'Directory' {
-      Write-Host $Title
-      Write-Host $Directory
-    }
-    'Docs' {
-      Write-Host $Title
-      Write-Host $Docs
-    }
-    'Environment' {
-      Write-Host $Title
-      Write-Host $Environment
-    }
-    'Git' {
-      Write-Host $Title
-      Write-Host $PluginsGit
-    }
-    'Logging' {
-      Write-Host $Title
-      Write-Host $Logging
-    }
-    'Network' {
-      Write-Host $Title
-      Write-Host $Network
-    }
-    'Plugins' {
-      Write-Host $Title
-      Write-Host $Plugins
-    }
-    'Process' {
-      Write-Host $Title
-      Write-Host $Process
-    }
-    'Starship' {
-      Write-Host $Title
-      Write-Host $Starship
-    }
-    'Update' {
-      Write-Host $Title
-      Write-Host $Update
-    }
-    'Utility' {
-      Write-Host $Title
-      Write-Host $Utility
-    }
-    Default {
-      Write-Host $Title
-      Write-Host $Docs
-    }
-  }
 }
+

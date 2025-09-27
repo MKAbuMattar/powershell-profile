@@ -40,7 +40,7 @@
 #---------------------------------------------------------------------------------------------------
 
 function Get-SystemInfo {
-  <#
+    <#
   .SYNOPSIS
     Retrieves the system information.
 
@@ -66,34 +66,34 @@ function Get-SystemInfo {
   .LINK
     https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
   #>
-  [CmdletBinding()]
-  [Alias("sysinfo")]
-  [OutputType([PSCustomObject])]
-  param (
-    # This function does not accept any parameters
-  )
+    [CmdletBinding()]
+    [Alias("sysinfo")]
+    [OutputType([PSCustomObject])]
+    param (
+        # This function does not accept any parameters
+    )
 
-  try {
-    $os = Get-CimInstance -ClassName Win32_OperatingSystem
-    $processor = Get-CimInstance -ClassName Win32_Processor
-    $architecture = Get-CimInstance -ClassName Win32_ComputerSystem
+    try {
+        $os = Get-CimInstance -ClassName Win32_OperatingSystem
+        $processor = Get-CimInstance -ClassName Win32_Processor
+        $architecture = Get-CimInstance -ClassName Win32_ComputerSystem
 
-    [PSCustomObject]@{
-      "Operating System" = $os.Caption
-      "Version"          = $os.Version
-      "Architecture"     = $architecture.SystemType
-      "Processor"        = $processor.Name
-      "Cores"            = $processor.NumberOfCores
-      "Threads"          = $processor.NumberOfLogicalProcessors
+        [PSCustomObject]@{
+            "Operating System" = $os.Caption
+            "Version"          = $os.Version
+            "Architecture"     = $architecture.SystemType
+            "Processor"        = $processor.Name
+            "Cores"            = $processor.NumberOfCores
+            "Threads"          = $processor.NumberOfLogicalProcessors
+        }
     }
-  }
-  catch {
-    Write-LogMessage -Message "Failed to retrieve system information." -Level "ERROR"
-  }
+    catch {
+        Write-LogMessage -Message "Failed to retrieve system information." -Level "ERROR"
+    }
 }
 
 function Get-AllProcesses {
-  <#
+    <#
   .SYNOPSIS
     Retrieves a list of all running processes.
 
@@ -119,35 +119,35 @@ function Get-AllProcesses {
   .LINK
     https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
   #>
-  [CmdletBinding()]
-  [Alias("pall")]
-  [OutputType([System.Diagnostics.Process[]])]
-  param (
-    [Parameter(
-      Mandatory = $false,
-      Position = 0,
-      ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true,
-      HelpMessage = "The name of a specific process to retrieve information for."
-    )]
-    [Alias("n")]
-    [string]$Name
-  )
-  try {
-    if ($Name) {
-      Get-Process $Name -ErrorAction Stop
+    [CmdletBinding()]
+    [Alias("pall")]
+    [OutputType([System.Diagnostics.Process[]])]
+    param (
+        [Parameter(
+            Mandatory = $false,
+            Position = 0,
+            ValueFromPipeline = $true,
+            ValueFromPipelineByPropertyName = $true,
+            HelpMessage = "The name of a specific process to retrieve information for."
+        )]
+        [Alias("n")]
+        [string]$Name
+    )
+    try {
+        if ($Name) {
+            Get-Process $Name -ErrorAction Stop
+        }
+        else {
+            Get-Process
+        }
     }
-    else {
-      Get-Process
+    catch {
+        Write-LogMessage -Message "Failed to retrieve process information." -Level "ERROR"
     }
-  }
-  catch {
-    Write-LogMessage -Message "Failed to retrieve process information." -Level "ERROR"
-  }
 }
 
 function Get-ProcessByName {
-  <#
+    <#
   .SYNOPSIS
     Finds a process by name.
 
@@ -173,31 +173,31 @@ function Get-ProcessByName {
   .LINK
     https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
   #>
-  [CmdletBinding()]
-  [Alias("pgrep")]
-  [OutputType([System.Diagnostics.Process[]])]
-  param (
-    [Parameter(
-      Mandatory = $true,
-      Position = 0,
-      ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true,
-      HelpMessage = "The name of the process to find."
-    )]
-    [Alias("n")]
-    [string]$Name
-  )
+    [CmdletBinding()]
+    [Alias("pgrep")]
+    [OutputType([System.Diagnostics.Process[]])]
+    param (
+        [Parameter(
+            Mandatory = $true,
+            Position = 0,
+            ValueFromPipeline = $true,
+            ValueFromPipelineByPropertyName = $true,
+            HelpMessage = "The name of the process to find."
+        )]
+        [Alias("n")]
+        [string]$Name
+    )
 
-  try {
-    Get-Process $name -ErrorAction Stop
-  }
-  catch {
-    Write-Warning "No process with the name '$Name' found."
-  }
+    try {
+        Get-Process $name -ErrorAction Stop
+    }
+    catch {
+        Write-Warning "No process with the name '$Name' found."
+    }
 }
 
 function Get-ProcessByPort {
-  <#
+    <#
   .SYNOPSIS
     Finds a process by port.
 
@@ -223,31 +223,31 @@ function Get-ProcessByPort {
   .LINK
     https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
   #>
-  [CmdletBinding()]
-  [Alias("portgrep")]
-  [OutputType([System.Diagnostics.Process[]])]
-  param (
-    [Parameter(
-      Mandatory = $true,
-      Position = 0,
-      ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true,
-      HelpMessage = "The port number to search for."
-    )]
-    [Alias("p")]
-    [int]$Port
-  )
+    [CmdletBinding()]
+    [Alias("portgrep")]
+    [OutputType([System.Diagnostics.Process[]])]
+    param (
+        [Parameter(
+            Mandatory = $true,
+            Position = 0,
+            ValueFromPipeline = $true,
+            ValueFromPipelineByPropertyName = $true,
+            HelpMessage = "The port number to search for."
+        )]
+        [Alias("p")]
+        [int]$Port
+    )
 
-  try {
-    Get-NetTCPConnection -LocalPort $Port -ErrorAction Stop
-  }
-  catch {
-    Write-Warning "No process using port '$Port' found."
-  }
+    try {
+        Get-NetTCPConnection -LocalPort $Port -ErrorAction Stop
+    }
+    catch {
+        Write-Warning "No process using port '$Port' found."
+    }
 }
 
 function Stop-ProcessByName {
-  <#
+    <#
   .SYNOPSIS
     Terminates a process by name.
 
@@ -273,32 +273,32 @@ function Stop-ProcessByName {
   .LINK
     https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
   #>
-  [CmdletBinding()]
-  [Alias("pkill")]
-  [OutputType([void])]
-  param (
-    [Parameter(
-      Mandatory = $true,
-      Position = 0,
-      ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true,
-      HelpMessage = "The name of the process to terminate."
-    )]
-    [Alias("n")]
-    [string]$Name
-  )
+    [CmdletBinding()]
+    [Alias("pkill")]
+    [OutputType([void])]
+    param (
+        [Parameter(
+            Mandatory = $true,
+            Position = 0,
+            ValueFromPipeline = $true,
+            ValueFromPipelineByPropertyName = $true,
+            HelpMessage = "The name of the process to terminate."
+        )]
+        [Alias("n")]
+        [string]$Name
+    )
 
-  $process = Get-Process $Name -ErrorAction SilentlyContinue
-  if ($process) {
-    $process | Stop-Process -Force
-  }
-  else {
-    Write-LogMessage -Message "No process with the name '$Name' found." -Level "WARNING"
-  }
+    $process = Get-Process $Name -ErrorAction SilentlyContinue
+    if ($process) {
+        $process | Stop-Process -Force
+    }
+    else {
+        Write-LogMessage -Message "No process with the name '$Name' found." -Level "WARNING"
+    }
 }
 
 function Stop-ProcessByPort {
-  <#
+    <#
   .SYNOPSIS
     Terminates a process by port.
 
@@ -324,32 +324,32 @@ function Stop-ProcessByPort {
   .LINK
     https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
   #>
-  [CmdletBinding()]
-  [Alias("portkill")]
-  [OutputType([void])]
-  param (
-    [Parameter(
-      Mandatory = $true,
-      Position = 0,
-      ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true,
-      HelpMessage = "The port number of the process to terminate."
-    )]
-    [Alias("p")]
-    [int]$Port
-  )
+    [CmdletBinding()]
+    [Alias("portkill")]
+    [OutputType([void])]
+    param (
+        [Parameter(
+            Mandatory = $true,
+            Position = 0,
+            ValueFromPipeline = $true,
+            ValueFromPipelineByPropertyName = $true,
+            HelpMessage = "The port number of the process to terminate."
+        )]
+        [Alias("p")]
+        [int]$Port
+    )
 
-  $process = Get-NetTCPConnection -LocalPort $Port -ErrorAction SilentlyContinue
-  if ($process) {
-    $process | Stop-Process -Force
-  }
-  else {
-    Write-LogMessage -Message "No process using port '$Port' found." -Level "WARNING"
-  }
+    $process = Get-NetTCPConnection -LocalPort $Port -ErrorAction SilentlyContinue
+    if ($process) {
+        $process | Stop-Process -Force
+    }
+    else {
+        Write-LogMessage -Message "No process using port '$Port' found." -Level "WARNING"
+    }
 }
 
 function Invoke-ClearCache {
-  <#
+    <#
   .SYNOPSIS
     Clears windows cache, temp files, and internet explorer cache.
 
@@ -391,60 +391,61 @@ function Invoke-ClearCache {
   .LINK
     https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
   #>
-  [CmdletBinding()]
-  [Alias("clear-cache")]
-  [OutputType([void])]
-  param (
-    [Parameter(
-      Mandatory = $false,
-      Position = 0,
-      ValueFromPipeline = $true,
-      ValueFromPipelineByPropertyName = $true,
-      HelpMessage = "The type of cache to clear."
-    )]
-    [ValidateSet(
-      "All",
-      "Prefetch",
-      "WindowsTemp",
-      "UserTemp",
-      "IECache"
-    )]
-    [Alias("c")]
-    [string]$Type = "All"
-  )
+    [CmdletBinding()]
+    [Alias("clear-cache")]
+    [OutputType([void])]
+    param (
+        [Parameter(
+            Mandatory = $false,
+            Position = 0,
+            ValueFromPipeline = $true,
+            ValueFromPipelineByPropertyName = $true,
+            HelpMessage = "The type of cache to clear."
+        )]
+        [ValidateSet(
+            "All",
+            "Prefetch",
+            "WindowsTemp",
+            "UserTemp",
+            "IECache"
+        )]
+        [Alias("c")]
+        [string]$Type = "All"
+    )
 
-  switch ($Type) {
-    "All" {
-      Write-LogMessage "Clearing Windows Prefetch..."
-      Remove-Item -Path "$env:SystemRoot\Prefetch\*" -Force -ErrorAction SilentlyContinue
+    switch ($Type) {
+        "All" {
+            Write-LogMessage "Clearing Windows Prefetch..."
+            Remove-Item -Path "$env:SystemRoot\Prefetch\*" -Force -ErrorAction SilentlyContinue
 
-      Write-LogMessage "Clearing Windows Temp..."
-      Remove-Item -Path "$env:SystemRoot\Temp\*" -Recurse -Force -ErrorAction SilentlyContinue
+            Write-LogMessage "Clearing Windows Temp..."
+            Remove-Item -Path "$env:SystemRoot\Temp\*" -Recurse -Force -ErrorAction SilentlyContinue
 
-      Write-LogMessage "Clearing User Temp..."
-      Remove-Item -Path "$env:TEMP\*" -Recurse -Force -ErrorAction SilentlyContinue
+            Write-LogMessage "Clearing User Temp..."
+            Remove-Item -Path "$env:TEMP\*" -Recurse -Force -ErrorAction SilentlyContinue
 
-      Write-LogMessage "Clearing Internet Explorer Cache..."
-      Remove-Item -Path "$env:LOCALAPPDATA\Microsoft\Windows\INetCache\*" -Recurse -Force -ErrorAction SilentlyContinue
+            Write-LogMessage "Clearing Internet Explorer Cache..."
+            Remove-Item -Path "$env:LOCALAPPDATA\Microsoft\Windows\INetCache\*" -Recurse -Force -ErrorAction SilentlyContinue
+        }
+        "Prefetch" {
+            Write-LogMessage "Clearing Windows Prefetch..."
+            Remove-Item -Path "$env:SystemRoot\Prefetch\*" -Force -ErrorAction SilentlyContinue
+        }
+        "WindowsTemp" {
+            Write-LogMessage "Clearing Windows Temp..."
+            Remove-Item -Path "$env:SystemRoot\Temp\*" -Recurse -Force -ErrorAction SilentlyContinue
+        }
+        "UserTemp" {
+            Write-LogMessage "Clearing User Temp..."
+            Remove-Item -Path "$env:TEMP\*" -Recurse -Force -ErrorAction SilentlyContinue
+        }
+        "IECache" {
+            Write-LogMessage "Clearing Internet Explorer Cache..."
+            Remove-Item -Path "$env:LOCALAPPDATA\Microsoft\Windows\INetCache\*" -Recurse -Force -ErrorAction SilentlyContinue
+        }
+        default {
+            Write-LogMessage "Invalid cache type: $Type" -Level "ERROR"
+        }
     }
-    "Prefetch" {
-      Write-LogMessage "Clearing Windows Prefetch..."
-      Remove-Item -Path "$env:SystemRoot\Prefetch\*" -Force -ErrorAction SilentlyContinue
-    }
-    "WindowsTemp" {
-      Write-LogMessage "Clearing Windows Temp..."
-      Remove-Item -Path "$env:SystemRoot\Temp\*" -Recurse -Force -ErrorAction SilentlyContinue
-    }
-    "UserTemp" {
-      Write-LogMessage "Clearing User Temp..."
-      Remove-Item -Path "$env:TEMP\*" -Recurse -Force -ErrorAction SilentlyContinue
-    }
-    "IECache" {
-      Write-LogMessage "Clearing Internet Explorer Cache..."
-      Remove-Item -Path "$env:LOCALAPPDATA\Microsoft\Windows\INetCache\*" -Recurse -Force -ErrorAction SilentlyContinue
-    }
-    default {
-      Write-LogMessage "Invalid cache type: $Type" -Level "ERROR"
-    }
-  }
 }
+
