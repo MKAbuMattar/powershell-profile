@@ -48,10 +48,10 @@ function Show-ProfileHelp {
         The PowerShell Profile Helper module provides a set of utility functions to help manage the PowerShell profile and perform common tasks in the console. The module includes functions for finding files, creating and updating files, extracting files, compressing files, searching for content in files, replacing content in files, moving up directory levels, updating the module directory, updating the profile, updating PowerShell, checking for command existence, reloading the profile, getting system uptime, getting command definitions, setting environment variables, getting environment variables, getting all processes, finding processes by name, finding processes by port, stopping processes by name, stopping processes by port, getting random quotes, getting weather forecasts, starting countdown timers, starting stopwatches, displaying the wall clock, displaying a matrix rain animation, and more. The `Show-ProfileHelp` function displays detailed help documentation for each section of the module.
 
     .PARAMETER Section
-        Specifies the section of the documentation to display. Valid values are 'All', 'AWS', 'Conda', 'Directory', 'Docker', 'DockerCompose', 'Docs', 'Environment', 'Git', 'Helm', 'Kubectl', 'Logging', 'Network', 'NPM', 'PIP', 'Pipenv', 'PNPM', 'Poetry', 'Plugins', 'Process', 'Starship', 'Terraform', 'Terragrunt', 'UV', 'Update', 'Utility', and 'Yarn'. The default value is 'All'.
+        Specifies the section of the documentation to display. Valid values are 'All', 'AWS', 'Conda', 'Directory', 'Docker', 'DockerCompose', 'Docs', 'Environment', 'Git', 'Helm', 'Kubectl', 'Logging', 'Network', 'NPM', 'PIP', 'Pipenv', 'PNPM', 'Poetry', 'Plugins', 'Process', 'Starship', 'Terraform', 'Terragrunt', 'UV', 'Update', 'Utility', 'VSCode', and 'Yarn'. The default value is 'All'.
 
     .INPUTS
-        Section: (Optional) Specifies the section of the documentation to display. Valid values are 'All', 'AWS', 'Conda', 'Directory', 'Docker', 'DockerCompose', 'Docs', 'Environment', 'Git', 'Helm', 'Kubectl', 'Logging', 'Network', 'NPM', 'PIP', 'Pipenv', 'PNPM', 'Poetry', 'Plugins', 'Process', 'Starship', 'Terraform', 'Terragrunt', 'UV', 'Update', 'Utility', and 'Yarn'. The default value is 'All'.
+        Section: (Optional) Specifies the section of the documentation to display. Valid values are 'All', 'AWS', 'Conda', 'Directory', 'Docker', 'DockerCompose', 'Docs', 'Environment', 'Git', 'Helm', 'Kubectl', 'Logging', 'Network', 'NPM', 'PIP', 'Pipenv', 'PNPM', 'Poetry', 'Plugins', 'Process', 'Starship', 'Terraform', 'Terragrunt', 'UV', 'Update', 'Utility', 'VSCode', and 'Yarn'. The default value is 'All'.
 
     .OUTPUTS
         This module does not return any output.
@@ -136,6 +136,10 @@ function Show-ProfileHelp {
         Displays the help documentation for the Conda plugin with all available conda aliases and commands.
 
     .EXAMPLE
+        Show-ProfileHelp -Section 'VSCode'
+        Displays the help documentation for the VSCode plugin with all available VS Code aliases and commands.
+
+    .EXAMPLE
         Show-ProfileHelp -Section 'Plugins'
         Displays an overview of all available plugins.
 
@@ -181,6 +185,7 @@ function Show-ProfileHelp {
             'UV',
             'Update',
             'Utility',
+            'VSCode',
             'Yarn'
         )]
         [string]$Section = 'All'
@@ -1436,6 +1441,68 @@ $($PSStyle.Foreground.Yellow)Plugins Module - UV Plugin$($PSStyle.Reset)
     Complete modern Python package management with dependency resolution.
 "@
 
+    $PluginsVSCode = @"
+$($PSStyle.Foreground.Yellow)Plugins Module - VSCode Plugin$($PSStyle.Reset)
+    $($PSStyle.Foreground.Cyan)Comprehensive VS Code CLI integration with 20+ PowerShell functions and aliases$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Core Commands:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)vsc$($PSStyle.Reset) <args>             - Base VS Code command wrapper
+        Get-VSCodeVersion          - Get VS Code version information
+        Get-VSCodeExtensions       - List installed VS Code extensions
+        Test-VSCodeInstalled       - Check if any VS Code flavour is available
+
+    $($PSStyle.Foreground.Green)File Operations:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Open and manage files
+        vsc                          # Open current directory
+        vsc file.txt                 # Open specific file
+        vsca ./src ./docs           # Add folders to last active window
+        vscd old.js new.js          # Open files in diff mode
+        vscg file.py:25:10           # Go to line 25, column 10
+        vscw config.json            # Open and wait for file to be closed$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Window Management:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Control VS Code windows
+        vscn ./project              # Open in new window
+        vscr ./project              # Reuse existing window
+        vscw commit-msg.txt         # Wait for file to be closed (Git integration)$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Extension Management:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Install and manage extensions
+        vscie ms-python.python      # Install Python extension
+        vscie ms-vscode.powershell  # Install PowerShell extension
+        vscue old.extension.id      # Uninstall extension
+        vscde ./project             # Open without any extensions (troubleshooting)$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Customization:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Profiles and custom directories
+        vscp web-dev ./project      # Open with specific profile
+        vscu ./portable-vscode      # Use custom user data directory
+        vsced ./custom-extensions   # Use custom extensions directory$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Debug & Logging:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Debugging and troubleshooting
+        vscv ./project              # Enable verbose logging
+        vscl debug ./project        # Set specific log level (trace, debug, info, warn, error)$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)VS Code Flavour Detection:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Automatic detection priority:
+        # 1. Manual preference: $env:VSCODE = 'code-insiders'
+        # 2. VS Code (stable): 'code' command
+        # 3. VS Code Insiders: 'code-insiders' command  
+        # 4. VSCodium: 'codium' command$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Development Workflow:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Complete development setup
+        $env:VSCODE = 'code-insiders'  # Set preferred flavour
+        vscn ./frontend              # Open frontend in new window
+        vscn ./backend               # Open backend in new window
+        vscp data-science ./analysis # Open with data science profile
+        vscie ms-python.python       # Install essential extensions$($PSStyle.Reset)
+
+    Note: Supports VS Code (stable), VS Code Insiders, and VSCodium with automatic detection.
+    Includes 20+ commands covering file operations, window management, and extension control.
+"@
+
     $PluginsYarn = @"
 $($PSStyle.Foreground.Yellow)Plugins Module - Yarn Plugin$($PSStyle.Reset)
     $($PSStyle.Foreground.Cyan)Comprehensive Yarn CLI integration with 40+ PowerShell functions and aliases$($PSStyle.Reset)
@@ -1802,6 +1869,10 @@ $($PSStyle.Foreground.Yellow)Utility Module$($PSStyle.Reset)
         'Utility' {
             Write-Host $Title
             Write-Host $Utility
+        }
+        'VSCode' {
+            Write-Host $Title
+            Write-Host $PluginsVSCode
         }
         'Yarn' {
             Write-Host $Title

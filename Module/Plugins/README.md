@@ -42,6 +42,14 @@ Comprehensive Deno CLI integration with 25+ PowerShell functions and convenient 
 **Location:** `Module/Plugins/Deno/`  
 **Documentation:** [Deno Plugin README](Deno/README.md)
 
+#### **[VSCode Plugin](VSCode/README.md)**
+
+Comprehensive VS Code CLI integration with 20+ PowerShell functions and convenient aliases for Visual Studio Code, VS Code Insiders, and VSCodium. Provides automatic VS Code flavour detection, file operations, extension management, and comprehensive VS Code workflow automation with automatic PowerShell completion for modern development.
+
+**Key Features:** Automatic VS Code flavour detection, file and folder operations, window management, extension management, profile and user data customization, debug and logging options, tab completion, performance optimization  
+**Location:** `Module/Plugins/VSCode/`  
+**Documentation:** [VSCode Plugin README](VSCode/README.md)
+
 ### **Package Managers**
 
 #### **[NPM Plugin](NPM/README.md)**

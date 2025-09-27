@@ -275,6 +275,14 @@ else {
     Write-Warning "Plugin-UV module not found at: $PluginUVModulePath"
 }
 
+$PluginVSCodeModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Plugins/VSCode/VSCode.psd1'
+if (Test-Path $PluginVSCodeModulePath) {
+    Import-Module $PluginVSCodeModulePath -Force -ErrorAction SilentlyContinue
+}
+else {
+    Write-Warning "Plugin-VSCode module not found at: $PluginVSCodeModulePath"
+}
+
 $PluginYarnModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Plugins/Yarn/Yarn.psd1'
 if (Test-Path $PluginYarnModulePath) {
     Import-Module $PluginYarnModulePath -Force -ErrorAction SilentlyContinue
