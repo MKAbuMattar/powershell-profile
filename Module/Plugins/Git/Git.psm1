@@ -1,4 +1,46 @@
 ﻿#---------------------------------------------------------------------------------------------------
+# MKAbuMattar's PowerShell Profile - Git Plugin
+#
+#
+#                             .
+#         ..                .''
+#         .,'..,.         ..,;,'
+#          ,;;;;,,       .,,;;;
+#           ,;;;;;'    .',;;;
+#            ,;;;;,'...,;;;,
+#             ,;;;;;,,;;;;.
+#              ,;;;;;;;;;
+#              .,;;;;;;;
+#              .,;;;;;;;'
+#              .,;;;;;;;,'
+#            .',;;;;;;;;;;,.
+#          ..,;;;;;;;;;;;;;,.
+#         .';;;;;.   ';;;;;;,'
+#        .,;;;;.      ,; .;; .,
+#        ',;;;.        .
+#        .,;;.
+#        ,;
+#        .
+#
+#      "The only way to do great work is to love what you do."
+#                           - Steve Jobs
+#
+#
+# Author: Mohammad Abu Mattar
+#
+# Description:
+#       This module provides Git command aliases and utility functions for improved Git workflow
+#       in PowerShell environments.
+#
+# Created: 2025-09-26
+# Updated: 2025-09-26
+#
+# GitHub: https://github.com/MKAbuMattar/powershell-profile
+#
+# Version: 4.1.0
+#---------------------------------------------------------------------------------------------------
+
+#---------------------------------------------------------------------------------------------------
 # Import the custom Git modules
 #---------------------------------------------------------------------------------------------------
 $BaseModuleDir = Join-Path -Path $PSScriptRoot -ChildPath '/'
@@ -6780,10 +6822,3 @@ function gtl {
     $pattern = if ($Arguments.Count -gt 0) { "$($Arguments[0])*" } else { "*" }
     git tag --sort=-v:refname -n --list $pattern
 }
-
-#---------------------------------------------------------------------------------------------------
-# Export Module Members
-#---------------------------------------------------------------------------------------------------
-
-# Export all functions
-Export-ModuleMember -Function * -Alias *

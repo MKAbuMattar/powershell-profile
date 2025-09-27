@@ -1,3 +1,46 @@
+#---------------------------------------------------------------------------------------------------
+# MKAbuMattar's PowerShell Profile - QRCode Manifest
+#
+#
+#                             .
+#         ..                .''
+#         .,'..,.         ..,;,'
+#          ,;;;;,,       .,,;;;
+#           ,;;;;;'    .',;;;
+#            ,;;;;,'...,;;;,
+#             ,;;;;;,,;;;;.
+#              ,;;;;;;;;;
+#              .,;;;;;;;
+#              .,;;;;;;;'
+#              .,;;;;;;;,'
+#            .',;;;;;;;;;;,.
+#          ..,;;;;;;;;;;;;;,.
+#         .';;;;;.   ';;;;;;,'
+#        .,;;;;.      ,; .;; .,
+#        ',;;;.        .
+#        .,;;.
+#        ,;
+#        .
+#
+#      "The only way to do great work is to love what you do."
+#                           - Steve Jobs
+#
+#
+# Author: Mohammad Abu Mattar
+#
+# Description:
+#       This module provides functions to generate QR codes using the qrcode.show API.
+#       It supports creating QR codes in PNG and SVG formats, with options for interactive
+#       input and file saving.
+#
+# Created: 2025-09-27
+# Updated: 2025-09-27
+#
+# GitHub: https://github.com/MKAbuMattar/powershell-profile
+#
+# Version: 4.1.0
+#---------------------------------------------------------------------------------------------------
+
 @{
     RootModule           = 'QRCode.psm1'
     ModuleVersion        = '4.1.0'

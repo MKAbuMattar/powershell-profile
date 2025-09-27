@@ -1,5 +1,5 @@
 #---------------------------------------------------------------------------------------------------
-# MKAbuMattar's PowerShell Profile
+# MKAbuMattar's PowerShell Profile - Docker Plugin
 #
 #
 #                             .
@@ -1089,10 +1089,3 @@ function Invoke-DockerVolumePrune {
 
     docker volume prune @Arguments
 }
-
-#---------------------------------------------------------------------------------------------------
-# Export Module Members
-#---------------------------------------------------------------------------------------------------
-
-# Export all functions
-Export-ModuleMember -Function * -Alias *

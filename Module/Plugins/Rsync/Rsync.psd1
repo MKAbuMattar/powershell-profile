@@ -1,3 +1,46 @@
+#---------------------------------------------------------------------------------------------------
+# MKAbuMattar's PowerShell Profile - Rsync Manifest
+#
+#
+#                             .
+#         ..                .''
+#         .,'..,.         ..,;,'
+#          ,;;;;,,       .,,;;;
+#           ,;;;;;'    .',;;;
+#            ,;;;;,'...,;;;,
+#             ,;;;;;,,;;;;.
+#              ,;;;;;;;;;
+#              .,;;;;;;;
+#              .,;;;;;;;'
+#              .,;;;;;;;,'
+#            .',;;;;;;;;;;,.
+#          ..,;;;;;;;;;;;;;,.
+#         .';;;;;.   ';;;;;;,'
+#        .,;;;;.      ,; .;; .,
+#        ',;;;.        .
+#        .,;;.
+#        ,;
+#        .
+#
+#      "The only way to do great work is to love what you do."
+#                           - Steve Jobs
+#
+#
+# Author: Mohammad Abu Mattar
+#
+# Description:
+#       This module provides Rsync plugin for PowerShell Profile - File synchronization and
+#       transfer operations. Provides PowerShell functions for common rsync operations including
+#       copy, move, update, and synchronize with progress reporting and cross-platform support.
+#
+# Created: 2025-09-27
+# Updated: 2025-09-27
+#
+# GitHub: https://github.com/MKAbuMattar/powershell-profile
+#
+# Version: 4.1.0
+#---------------------------------------------------------------------------------------------------
+
 @{
     RootModule           = 'Rsync.psm1'
     ModuleVersion        = '4.1.0'

@@ -1,3 +1,47 @@
+#---------------------------------------------------------------------------------------------------
+# MKAbuMattar's PowerShell Profile - Ruby Manifest
+#
+#
+#                             .
+#         ..                .''
+#         .,'..,.         ..,;,'
+#          ,;;;;,,       .,,;;;
+#           ,;;;;;'    .',;;;
+#            ,;;;;,'...,;;;,
+#             ,;;;;;,,;;;;.
+#              ,;;;;;;;;;
+#              .,;;;;;;;
+#              .,;;;;;;;'
+#              .,;;;;;;;,'
+#            .',;;;;;;;;;;,.
+#          ..,;;;;;;;;;;;;;,.
+#         .';;;;;.   ';;;;;;,'
+#        .,;;;;.      ,; .;; .,
+#        ',;;;.        .
+#        .,;;.
+#        ,;
+#        .
+#
+#      "The only way to do great work is to love what you do."
+#                           - Steve Jobs
+#
+#
+# Author: Mohammad Abu Mattar
+#
+# Description:
+#       This module provides Ruby CLI shortcuts and utility functions for Ruby development
+#       and gem management in PowerShell environments. Supports Ruby execution, gem operations,
+#       file searching, development server, and comprehensive Ruby workflow automation for
+#       modern Ruby development and scripting.
+#
+# Created: 2025-09-27
+# Updated: 2025-09-27
+#
+# GitHub: https://github.com/MKAbuMattar/powershell-profile
+#
+# Version: 4.1.0
+#---------------------------------------------------------------------------------------------------
+
 @{
     RootModule             = 'Ruby.psm1'
     ModuleVersion          = '4.1.0'

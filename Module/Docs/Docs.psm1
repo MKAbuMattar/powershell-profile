@@ -1,5 +1,5 @@
 #---------------------------------------------------------------------------------------------------
-# MKAbuMattar's PowerShell Profile
+# MKAbuMattar's PowerShell Profile - Docs Module
 #
 #
 #                             .

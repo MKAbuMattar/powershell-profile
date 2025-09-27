@@ -1,3 +1,45 @@
+#---------------------------------------------------------------------------------------------------
+# MKAbuMattar's PowerShell Profile - Directory Manifest
+#
+#
+#                             .
+#         ..                .''
+#         .,'..,.         ..,;,'
+#          ,;;;;,,       .,,;;;
+#           ,;;;;;'    .',;;;
+#            ,;;;;,'...,;;;,
+#             ,;;;;;,,;;;;.
+#              ,;;;;;;;;;
+#              .,;;;;;;;
+#              .,;;;;;;;'
+#              .,;;;;;;;,'
+#            .',;;;;;;;;;;,.
+#          ..,;;;;;;;;;;;;;,.
+#         .';;;;;.   ';;;;;;,'
+#        .,;;;;.      ,; .;; .,
+#        ',;;;.        .
+#        .,;;.
+#        ,;
+#        .
+#
+#      "The only way to do great work is to love what you do."
+#                           - Steve Jobs
+#
+#
+# Author: Mohammad Abu Mattar
+#
+# Description:
+#       This Module contains various directory and file management
+#       functions to enhance productivity in PowerShell.
+#
+# Created: 2021-09-01
+# Updated: 2025-09-24
+#
+# GitHub: https://github.com/MKAbuMattar/powershell-profile
+#
+# Version: 4.1.0
+#---------------------------------------------------------------------------------------------------
+
 @{
     RootModule           = 'Directory.psm1'
     ModuleVersion        = '4.1.0'

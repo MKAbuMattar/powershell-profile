@@ -1,3 +1,47 @@
+#---------------------------------------------------------------------------------------------------
+# MKAbuMattar's PowerShell Profile - Deno Manifest
+#
+#
+#                             .
+#         ..                .''
+#         .,'..,.         ..,;,'
+#          ,;;;;,,       .,,;;;
+#           ,;;;;;'    .',;;;
+#            ,;;;;,'...,;;;,
+#             ,;;;;;,,;;;;.
+#              ,;;;;;;;;;
+#              .,;;;;;;;
+#              .,;;;;;;;'
+#              .,;;;;;;;,'
+#            .',;;;;;;;;;;,.
+#          ..,;;;;;;;;;;;;;,.
+#         .';;;;;.   ';;;;;;,'
+#        .,;;;;.      ,; .;; .,
+#        ',;;;.        .
+#        .,;;.
+#        ,;
+#        .
+#
+#      "The only way to do great work is to love what you do."
+#                           - Steve Jobs
+#
+#
+# Author: Mohammad Abu Mattar
+#
+# Description:
+#       This module provides Deno CLI shortcuts and utility functions for TypeScript/JavaScript
+#       runtime operations in PowerShell environments. Supports bundling, compilation, caching,
+#       formatting, linting, running, testing, and upgrade functionality with comprehensive
+#       development workflow automation.
+#
+# Created: 2025-09-26
+# Updated: 2025-09-26
+#
+# GitHub: https://github.com/MKAbuMattar/powershell-profile
+#
+# Version: 4.1.0
+#---------------------------------------------------------------------------------------------------
+
 @{  
     RootModule             = 'Deno.psm1'
     ModuleVersion          = '4.1.0'

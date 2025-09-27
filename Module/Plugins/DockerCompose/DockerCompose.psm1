@@ -1,12 +1,42 @@
 #---------------------------------------------------------------------------------------------------
 # MKAbuMattar's PowerShell Profile - Docker Compose Plugin
 #
+#
+#                             .
+#         ..                .''
+#         .,'..,.         ..,;,'
+#          ,;;;;,,       .,,;;;
+#           ,;;;;;'    .',;;;
+#            ,;;;;,'...,;;;,
+#             ,;;;;;,,;;;;.
+#              ,;;;;;;;;;
+#              .,;;;;;;;
+#              .,;;;;;;;'
+#              .,;;;;;;;,'
+#            .',;;;;;;;;;;,.
+#          ..,;;;;;;;;;;;;;,.
+#         .';;;;;.   ';;;;;;,'
+#        .,;;;;.      ,; .;; .,
+#        ',;;;.        .
+#        .,;;.
+#        ,;
+#        .
+#
+#      "The only way to do great work is to love what you do."
+#                           - Steve Jobs
+#
+#
+# Author: Mohammad Abu Mattar
+#
 # Description:
 #       This module provides Docker Compose CLI shortcuts and utility functions for improved
 #       Docker Compose workflow in PowerShell environments.
 #
-# Author: Mohammad Abu Mattar
 # Created: 2025-09-26
+# Updated: 2025-09-26
+#
+# GitHub: https://github.com/MKAbuMattar/powershell-profile
+#
 # Version: 4.1.0
 #---------------------------------------------------------------------------------------------------
 
@@ -921,11 +951,3 @@ function Invoke-DockerComposeKill {
     $cmd = Get-DockerComposeCommand
     & $cmd.Split(' ')[0] $cmd.Split(' ')[1..$cmd.Split(' ').Length] 'kill' $Arguments
 }
-
-#---------------------------------------------------------------------------------------------------
-# Export Module Members
-#---------------------------------------------------------------------------------------------------
-
-# Export all functions
-Export-ModuleMember -Function * -Alias *
-

@@ -1,7 +1,7 @@
 #Requires -Version 7.0
 
 #---------------------------------------------------------------------------------------------------
-# MKAbuMattar's PowerShell Profile - QRCode Plugin
+# MKAbuMattar's PowerShell Profile - Rsync Plugin
 #
 #
 #                             .
@@ -31,9 +31,9 @@
 # Author: Mohammad Abu Mattar
 #
 # Description:
-#       This module provides QR code generation functionality using the qrcode.show API.
-#       It includes functions to create QR codes in PNG and SVG formats, with support for
-#       PowerShell pipeline input and interactive mode.
+#       This module provides Rsync plugin for PowerShell Profile - File synchronization and
+#       transfer operations. Provides PowerShell functions for common rsync operations including
+#       copy, move, update, and synchronize with progress reporting and cross-platform support.
 #
 # Created: 2025-09-27
 # Updated: 2025-09-27
