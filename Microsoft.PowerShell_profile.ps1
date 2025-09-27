@@ -121,239 +121,56 @@ Set-PSReadLineKeyHandler -Chord '"', "'" `
 }
 
 #---------------------------------------------------------------------------------------------------
-# Import the custom modules
+# Import the custom modules and plugins
 #---------------------------------------------------------------------------------------------------
-$DirectoryModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Directory/Directory.psd1'
-if (Test-Path $DirectoryModulePath) {
-    Import-Module $DirectoryModulePath -Force -ErrorAction SilentlyContinue
-}
-else {
-    Write-Warning "Directory module not found at: $DirectoryModulePath"
-}
+$BaseModuleDir = Join-Path -Path $PSScriptRoot -ChildPath 'Module'
 
-$DocsModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Docs/Docs.psd1'
-if (Test-Path $DocsModulePath) {
-    Import-Module $DocsModulePath -Force -ErrorAction SilentlyContinue
-}
-else {
-    Write-Warning "Docs module not found at: $DocsModulePath"
-}
+$ModuleList = @(
+    # Core Modules
+    @{ Name = 'Directory'; Path = 'Directory/Directory.psd1' },
+    @{ Name = 'Docs'; Path = 'Docs/Docs.psd1' },
+    @{ Name = 'Environment'; Path = 'Environment/Environment.psd1' },
+    @{ Name = 'Logging'; Path = 'Logging/Logging.psd1' },
+    @{ Name = 'Network'; Path = 'Network/Network.psd1' },
+    @{ Name = 'Process'; Path = 'Process/Process.psd1' },
+    @{ Name = 'Starship'; Path = 'Starship/Starship.psd1' },
+    @{ Name = 'Update'; Path = 'Update/Update.psd1' },
+    @{ Name = 'Utility'; Path = 'Utility/Utility.psd1' },
 
-$EnvironmentModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Environment/Environment.psd1'
-if (Test-Path $EnvironmentModulePath) {
-    Import-Module $EnvironmentModulePath -Force -ErrorAction SilentlyContinue
-}
-else {
-    Write-Warning "Environment module not found at: $EnvironmentModulePath"
-}
+    # Plugin Modules (Grouped for readability)
+    @{ Name = 'Plugin-AWS'; Path = 'Plugins/AWS/AWS.psd1' },
+    @{ Name = 'Plugin-Conda'; Path = 'Plugins/Conda/Conda.psd1' },
+    @{ Name = 'Plugin-Deno'; Path = 'Plugins/Deno/Deno.psd1' },
+    @{ Name = 'Plugin-Docker'; Path = 'Plugins/Docker/Docker.psd1' },
+    @{ Name = 'Plugin-DockerCompose'; Path = 'Plugins/DockerCompose/DockerCompose.psd1' },
+    @{ Name = 'Plugin-Git'; Path = 'Plugins/Git/Git.psd1' },
+    @{ Name = 'Plugin-Helm'; Path = 'Plugins/Helm/Helm.psd1' },
+    @{ Name = 'Plugin-Kubectl'; Path = 'Plugins/Kubectl/Kubectl.psd1' },
+    @{ Name = 'Plugin-NPM'; Path = 'Plugins/NPM/NPM.psd1' },
+    @{ Name = 'Plugin-PIP'; Path = 'Plugins/PIP/PIP.psd1' },
+    @{ Name = 'Plugin-Pipenv'; Path = 'Plugins/Pipenv/Pipenv.psd1' },
+    @{ Name = 'Plugin-PNPM'; Path = 'Plugins/PNPM/PNPM.psd1' },
+    @{ Name = 'Plugin-Poetry'; Path = 'Plugins/Poetry/Poetry.psd1' },
+    @{ Name = 'Plugin-QRCode'; Path = 'Plugins/QRCode/QRCode.psd1' },
+    @{ Name = 'Plugin-Ruby'; Path = 'Plugins/Ruby/Ruby.psd1' },
+    @{ Name = 'Plugin-Rsync'; Path = 'Plugins/Rsync/Rsync.psd1' },
+    @{ Name = 'Plugin-Terraform'; Path = 'Plugins/Terraform/Terraform.psd1' },
+    @{ Name = 'Plugin-Terragrunt'; Path = 'Plugins/Terragrunt/Terragrunt.psd1' },
+    @{ Name = 'Plugin-UV'; Path = 'Plugins/UV/UV.psd1' },
+    @{ Name = 'Plugin-VSCode'; Path = 'Plugins/VSCode/VSCode.psd1' },
+    @{ Name = 'Plugin-Yarn'; Path = 'Plugins/Yarn/Yarn.psd1' }
+)
 
-$PluginAWSModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Plugins/AWS/AWS.psd1'
-if (Test-Path $PluginAWSModulePath) {
-    Import-Module $PluginAWSModulePath -Force -ErrorAction SilentlyContinue
-}
-else {
-    Write-Warning "Plugin-AWS module not found at: $PluginAWSModulePath"
-}
+foreach ($Module in $ModuleList) {
+    $ModulePath = Join-Path -Path $BaseModuleDir -ChildPath $Module.Path
+    $ModuleName = $Module.Name
 
-$PluginCondaModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Plugins/Conda/Conda.psd1'
-if (Test-Path $PluginCondaModulePath) {
-    Import-Module $PluginCondaModulePath -Force -ErrorAction SilentlyContinue
-}
-else {
-    Write-Warning "Plugin-Conda module not found at: $PluginCondaModulePath"
-}
-
-$PluginDenoModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Plugins/Deno/Deno.psd1'
-if (Test-Path $PluginDenoModulePath) {
-    Import-Module $PluginDenoModulePath -Force -ErrorAction SilentlyContinue
-}
-else {
-    Write-Warning "Plugin-Deno module not found at: $PluginDenoModulePath"
-}
-
-$PluginDockerModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Plugins/Docker/Docker.psd1'
-if (Test-Path $PluginDockerModulePath) {
-    Import-Module $PluginDockerModulePath -Force -ErrorAction SilentlyContinue
-}
-else {
-    Write-Warning "Plugin-Docker module not found at: $PluginDockerModulePath"
-}
-
-$PluginDockerComposeModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Plugins/DockerCompose/DockerCompose.psd1'
-if (Test-Path $PluginDockerComposeModulePath) {
-    Import-Module $PluginDockerComposeModulePath -Force -ErrorAction SilentlyContinue
-}
-else {
-    Write-Warning "Plugin-DockerCompose module not found at: $PluginDockerComposeModulePath"
-}
-
-$PluginGitModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Plugins/Git/Git.psd1'
-if (Test-Path $PluginGitModulePath) {
-    Import-Module $PluginGitModulePath -Force -ErrorAction SilentlyContinue
-}
-else {
-    Write-Warning "Plugin-Git module not found at: $PluginGitModulePath"
-}
-
-$PluginHelmModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Plugins/Helm/Helm.psd1'
-if (Test-Path $PluginHelmModulePath) {
-    Import-Module $PluginHelmModulePath -Force -ErrorAction SilentlyContinue
-}
-else {
-    Write-Warning "Plugin-Helm module not found at: $PluginHelmModulePath"
-}
-
-$PluginKubectlModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Plugins/Kubectl/Kubectl.psd1'
-if (Test-Path $PluginKubectlModulePath) {
-    Import-Module $PluginKubectlModulePath -Force -ErrorAction SilentlyContinue
-}
-else {
-    Write-Warning "Plugin-Kubectl module not found at: $PluginKubectlModulePath"
-}
-
-$PluginNPMModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Plugins/NPM/NPM.psd1'
-if (Test-Path $PluginNPMModulePath) {
-    Import-Module $PluginNPMModulePath -Force -ErrorAction SilentlyContinue
-}
-else {
-    Write-Warning "Plugin-NPM module not found at: $PluginNPMModulePath"
-}
-
-$PluginPIPModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Plugins/PIP/PIP.psd1'
-if (Test-Path $PluginPIPModulePath) {
-    Import-Module $PluginPIPModulePath -Force -ErrorAction SilentlyContinue
-}
-else {
-    Write-Warning "Plugin-PIP module not found at: $PluginPIPModulePath"
-}
-
-$PluginPipenvModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Plugins/Pipenv/Pipenv.psd1'
-if (Test-Path $PluginPipenvModulePath) {
-    Import-Module $PluginPipenvModulePath -Force -ErrorAction SilentlyContinue
-}
-else {
-    Write-Warning "Plugin-Pipenv module not found at: $PluginPipenvModulePath"
-}
-
-$PluginPNPMModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Plugins/PNPM/PNPM.psd1'
-if (Test-Path $PluginPNPMModulePath) {
-    Import-Module $PluginPNPMModulePath -Force -ErrorAction SilentlyContinue
-}
-else {
-    Write-Warning "Plugin-PNPM module not found at: $PluginPNPMModulePath"
-}
-
-$PluginPoetryModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Plugins/Poetry/Poetry.psd1'
-if (Test-Path $PluginPoetryModulePath) {
-    Import-Module $PluginPoetryModulePath -Force -ErrorAction SilentlyContinue
-}
-else {
-    Write-Warning "Plugin-Poetry module not found at: $PluginPoetryModulePath"
-}
-
-$PluginsQRCodeModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Plugins/QRCode/QRCode.psd1'
-if (Test-Path $PluginsQRCodeModulePath) {
-    Import-Module $PluginsQRCodeModulePath -Force -ErrorAction SilentlyContinue
-}
-else {
-    Write-Warning "Plugin-QRCode module not found at: $PluginsQRCodeModulePath"
-}
-
-$PluginRubyModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Plugins/Ruby/Ruby.psd1'
-if (Test-Path $PluginRubyModulePath) {
-    Import-Module $PluginRubyModulePath -Force -ErrorAction SilentlyContinue
-}
-else {
-    Write-Warning "Plugin-Ruby module not found at: $PluginRubyModulePath"
-}
-
-$PluginTerraformModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Plugins/Terraform/Terraform.psd1'
-if (Test-Path $PluginTerraformModulePath) {
-    Import-Module $PluginTerraformModulePath -Force -ErrorAction SilentlyContinue
-}
-else {
-    Write-Warning "Plugin-Terraform module not found at: $PluginTerraformModulePath"
-}
-
-$PluginTerragruntModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Plugins/Terragrunt/Terragrunt.psd1'
-if (Test-Path $PluginTerragruntModulePath) {
-    Import-Module $PluginTerragruntModulePath -Force -ErrorAction SilentlyContinue
-}
-else {
-    Write-Warning "Plugin-Terragrunt module not found at: $PluginTerragruntModulePath"
-}
-
-$PluginUVModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Plugins/UV/UV.psd1'
-if (Test-Path $PluginUVModulePath) {
-    Import-Module $PluginUVModulePath -Force -ErrorAction SilentlyContinue
-}
-else {
-    Write-Warning "Plugin-UV module not found at: $PluginUVModulePath"
-}
-
-$PluginVSCodeModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Plugins/VSCode/VSCode.psd1'
-if (Test-Path $PluginVSCodeModulePath) {
-    Import-Module $PluginVSCodeModulePath -Force -ErrorAction SilentlyContinue
-}
-else {
-    Write-Warning "Plugin-VSCode module not found at: $PluginVSCodeModulePath"
-}
-
-$PluginYarnModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Plugins/Yarn/Yarn.psd1'
-if (Test-Path $PluginYarnModulePath) {
-    Import-Module $PluginYarnModulePath -Force -ErrorAction SilentlyContinue
-}
-else {
-    Write-Warning "Plugin-Yarn module not found at: $PluginYarnModulePath"
-}
-
-$LoggingModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Logging/Logging.psd1'
-if (Test-Path $LoggingModulePath) {
-    Import-Module $LoggingModulePath -Force -ErrorAction SilentlyContinue
-}
-else {
-    Write-Warning "Logging module not found at: $LoggingModulePath"
-}
-Import-Module $LoggingModulePath -Force -ErrorAction SilentlyContinue
-
-$NetworkModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Network/Network.psd1'
-if (Test-Path $NetworkModulePath) {
-    Import-Module $NetworkModulePath -Force -ErrorAction SilentlyContinue
-}
-else {
-    Write-Warning "Network module not found at: $NetworkModulePath"
-}
-
-$ProcessModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Process/Process.psd1'
-if (Test-Path $ProcessModulePath) {
-    Import-Module $ProcessModulePath -Force -ErrorAction SilentlyContinue
-}
-else {
-    Write-Warning "Process module not found at: $ProcessModulePath"
-}
-
-$StarshipModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Starship/Starship.psd1'
-if (Test-Path $StarshipModulePath) {
-    Import-Module $StarshipModulePath -Force -ErrorAction SilentlyContinue
-}
-else {
-    Write-Warning "Starship module not found at: $StarshipModulePath"
-}
-
-$UpdateModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Update/Update.psd1'
-if (Test-Path $UpdateModulePath) {
-    Import-Module $UpdateModulePath -Force -ErrorAction SilentlyContinue
-}
-else {
-    Write-Warning "Update module not found at: $UpdateModulePath"
-}
-
-$UtilityModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Utility/Utility.psd1'
-if (Test-Path $UtilityModulePath) {
-    Import-Module $UtilityModulePath -Force -ErrorAction SilentlyContinue
-}
-else {
-    Write-Warning "Utility module not found at: $UtilityModulePath"
+    if (Test-Path $ModulePath) {
+        Import-Module $ModulePath -Force -ErrorAction SilentlyContinue
+    }
+    else {
+        Write-Warning "$ModuleName module not found at: $ModulePath"
+    }
 }
 
 #---------------------------------------------------------------------------------------------------

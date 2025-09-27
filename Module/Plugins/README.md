@@ -166,6 +166,14 @@ Comprehensive kubectl CLI integration with 100+ PowerShell functions and conveni
 **Location:** `Module/Plugins/Kubectl/`  
 **Documentation:** [Kubectl Plugin README](Kubectl/README.md)
 
+#### **[Rsync Plugin](Rsync/README.md)**
+
+Comprehensive Rsync CLI integration with PowerShell functions and convenient aliases for efficient file synchronization and backup operations. Provides cross-platform file synchronization, remote backup capabilities, progress monitoring, and complete workflow automation with safety confirmations for destructive operations.
+
+**Key Features:** rsync CLI shortcuts, local and remote synchronization, backup automation with timestamps, progress display and verbose output, path validation and safety confirmations, cross-platform support (Windows/Unix)  
+**Location:** `Module/Plugins/Rsync/`  
+**Documentation:** [Rsync Plugin README](Rsync/README.md)
+
 ### **Cloud & Container Platforms**
 
 #### **[AWS Plugin](AWS/README.md)**
@@ -294,6 +302,7 @@ Get-Command -Module Git                  # All Git functions
 Show-ProfileHelp -Section 'Plugins'     # Overview of all plugins
 Show-ProfileHelp -Section 'PNPM'        # Detailed PNPM documentation
 Show-ProfileHelp -Section 'Docker'      # Detailed Docker documentation
+Show-ProfileHelp -Section 'Rsync'       # Detailed Rsync documentation
 profile-help -Section 'Git'             # Detailed Git documentation
 ```
 
@@ -350,6 +359,12 @@ tf apply                                 # Apply changes
 k get pods                               # List pods
 k logs -f pod-name                       # Follow logs
 k describe service my-service            # Describe service
+
+# File synchronization with Rsync
+rsync-copy "source/" "backup/"           # Copy files locally
+rsync-sync "local/dir/" "user@host:/remote/"  # Sync to remote
+rsync-backup "project/" "archive/"       # Create backup with timestamp
+rsync-move "old/path/" "new/path/"       # Move files (requires confirmation)
 
 # AWS operations
 Set-AWSProfile production                # Switch AWS profile

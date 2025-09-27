@@ -185,6 +185,7 @@ function Show-ProfileHelp {
             'Process',
             'QRCode',
             'Ruby',
+            'Rsync',
             'Starship',
             'Terraform',
             'Terragrunt',
@@ -1781,6 +1782,49 @@ $($PSStyle.Foreground.Yellow)Plugins Module - QRCode Plugin$($PSStyle.Reset)
     Supports PNG and SVG formats with full PowerShell pipeline integration.
 "@
 
+    $PluginsRsync = @"
+$($PSStyle.Foreground.Yellow)Plugins Module - Rsync Plugin$($PSStyle.Reset)
+    $($PSStyle.Foreground.Cyan)Rsync file synchronization with PowerShell integration and cross-platform support$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Core Functions:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)rsync$($PSStyle.Reset) <args>            - Standard rsync command
+        $($PSStyle.Foreground.Magenta)rsync-copy$($PSStyle.Reset) <src> <dest> - Copy files/directories with progress
+        $($PSStyle.Foreground.Magenta)rsync-move$($PSStyle.Reset) <src> <dest> - Move files/directories
+        $($PSStyle.Foreground.Magenta)rsync-sync$($PSStyle.Reset) <src> <dest> - Synchronize directories
+        $($PSStyle.Foreground.Magenta)rsync-backup$($PSStyle.Reset) <src> <dest> - Create backups with timestamps
+
+    $($PSStyle.Foreground.Green)Network Operations:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Remote file synchronization
+        rsync-copy "local/path" "user@host:/remote/path"    # Upload files
+        rsync-copy "user@host:/remote/path" "local/path"    # Download files
+        rsync-sync "local/dir/" "user@host:/remote/dir/"    # Sync directories
+        rsync-backup "data/" "backup@server:/backups/"      # Remote backup$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Local Operations:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Local file synchronization
+        rsync-copy "source/" "destination/"        # Copy directory
+        rsync-sync "source/" "backup/"             # Sync to backup
+        rsync-move "old/location" "new/location"   # Move directory
+        rsync-backup "important/" "backups/"       # Local backup$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Advanced Features:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# With progress and verbose output
+        rsync-copy -v "large/dataset/" "backup/"        # Verbose mode
+        rsync-sync -P "source/" "destination/"          # Progress display
+        rsync-backup "project/" "archive/" -n           # Dry run mode
+        Test-RsyncPath "/path/to/check"                  # Validate paths$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Safety Features:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Built-in confirmations and validations
+        rsync-move                   # Requires confirmation (destructive)
+        Test-RsyncRemotePath "host"  # Test remote connectivity
+        rsync -n                     # Dry run for testing
+        Test-RsyncPath "path"        # Validate local paths$($PSStyle.Reset)
+
+    Note: Requires rsync to be installed on the system. Includes path validation,
+    confirmation prompts for destructive operations, and cross-platform compatibility.
+"@
+
     $Starship = @"
 $($PSStyle.Foreground.Yellow)Starship Module$($PSStyle.Reset)
     $($PSStyle.Foreground.Green)Invoke-StarshipTransientFunction$($PSStyle.Reset)
@@ -1967,6 +2011,10 @@ $($PSStyle.Foreground.Yellow)Utility Module$($PSStyle.Reset)
         'Ruby' {
             Write-Host $Title
             Write-Host $PluginsRuby
+        }
+        'Rsync' {
+            Write-Host $Title
+            Write-Host $PluginsRsync
         }
         'Starship' {
             Write-Host $Title
