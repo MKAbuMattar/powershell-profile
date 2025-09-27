@@ -1,3 +1,47 @@
+#---------------------------------------------------------------------------------------------------
+# MKAbuMattar's PowerShell Profile - VSCode Manifest
+#
+#
+#                             .
+#         ..                .''
+#         .,'..,.         ..,;,'
+#          ,;;;;,,       .,,;;;
+#           ,;;;;;'    .',;;;
+#            ,;;;;,'...,;;;,
+#             ,;;;;;,,;;;;.
+#              ,;;;;;;;;;
+#              .,;;;;;;;
+#              .,;;;;;;;'
+#              .,;;;;;;;,'
+#            .',;;;;;;;;;;,.
+#          ..,;;;;;;;;;;;;;,.
+#         .';;;;;.   ';;;;;;,'
+#        .,;;;;.      ,; .;; .,
+#        ',;;;.        .
+#        .,;;.
+#        ,;
+#        .
+#
+#      "The only way to do great work is to love what you do."
+#                           - Steve Jobs
+#
+#
+# Author: Mohammad Abu Mattar
+#
+# Description:
+#       This module provides VS Code CLI shortcuts and utility functions for Visual Studio Code,
+#       VS Code Insiders, and VSCodium in PowerShell environments. Supports automatic VS Code
+#       flavour detection, file operations, extension management, and comprehensive VS Code
+#       workflow automation for modern development.
+#
+# Created: 2025-09-27
+# Updated: 2025-09-27
+#
+# GitHub: https://github.com/MKAbuMattar/powershell-profile
+#
+# Version: 4.1.0
+#---------------------------------------------------------------------------------------------------
+
 @{
     RootModule             = 'VSCode.psm1'
     ModuleVersion          = '4.1.0'

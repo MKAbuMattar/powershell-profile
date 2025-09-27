@@ -1,3 +1,46 @@
+#---------------------------------------------------------------------------------------------------
+# MKAbuMattar's PowerShell Profile - NPM Manifest
+#
+#
+#                             .
+#         ..                .''
+#         .,'..,.         ..,;,'
+#          ,;;;;,,       .,,;;;
+#           ,;;;;;'    .',;;;
+#            ,;;;;,'...,;;;,
+#             ,;;;;;,,;;;;.
+#              ,;;;;;;;;;
+#              .,;;;;;;;
+#              .,;;;;;;;'
+#              .,;;;;;;;,'
+#            .',;;;;;;;;;;,.
+#          ..,;;;;;;;;;;;;;,.
+#         .';;;;;.   ';;;;;;,'
+#        .,;;;;.      ,; .;; .,
+#        ',;;;.        .
+#        .,;;.
+#        ,;
+#        .
+#
+#      "The only way to do great work is to love what you do."
+#                           - Steve Jobs
+#
+#
+# Author: Mohammad Abu Mattar
+#
+# Description:
+#       This module provides npm CLI shortcuts and utility functions for improved Node.js
+#       package management workflow in PowerShell environments. Converts 30+ common npm
+#       aliases from zsh/bash to PowerShell functions with full parameter support.
+#
+# Created: 2025-09-26
+# Updated: 2025-09-26
+#
+# GitHub: https://github.com/MKAbuMattar/powershell-profile
+#
+# Version: 4.1.0
+#---------------------------------------------------------------------------------------------------
+
 @{
     RootModule             = 'NPM.psm1'
     ModuleVersion          = '4.1.0'

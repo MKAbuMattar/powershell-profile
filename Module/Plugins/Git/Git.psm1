@@ -1,20 +1,65 @@
 ﻿#---------------------------------------------------------------------------------------------------
+# MKAbuMattar's PowerShell Profile - Git Plugin
+#
+#
+#                             .
+#         ..                .''
+#         .,'..,.         ..,;,'
+#          ,;;;;,,       .,,;;;
+#           ,;;;;;'    .',;;;
+#            ,;;;;,'...,;;;,
+#             ,;;;;;,,;;;;.
+#              ,;;;;;;;;;
+#              .,;;;;;;;
+#              .,;;;;;;;'
+#              .,;;;;;;;,'
+#            .',;;;;;;;;;;,.
+#          ..,;;;;;;;;;;;;;,.
+#         .';;;;;.   ';;;;;;,'
+#        .,;;;;.      ,; .;; .,
+#        ',;;;.        .
+#        .,;;.
+#        ,;
+#        .
+#
+#      "The only way to do great work is to love what you do."
+#                           - Steve Jobs
+#
+#
+# Author: Mohammad Abu Mattar
+#
+# Description:
+#       This module provides Git command aliases and utility functions for improved Git workflow
+#       in PowerShell environments.
+#
+# Created: 2025-09-26
+# Updated: 2025-09-26
+#
+# GitHub: https://github.com/MKAbuMattar/powershell-profile
+#
+# Version: 4.1.0
+#---------------------------------------------------------------------------------------------------
+
+#---------------------------------------------------------------------------------------------------
 # Import the custom Git modules
 #---------------------------------------------------------------------------------------------------
-$GitCoreModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Core/Core.psd1'
-if (Test-Path $GitCoreModulePath) {
-    Import-Module $GitCoreModulePath -Force -Global
-}
-else {
-    Write-Warning "Git-Core module not found at: $GitCoreModulePath"
-}
+$BaseModuleDir = Join-Path -Path $PSScriptRoot -ChildPath '/'
 
-$GitUtilityModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Utility/Utility.psd1'
-if (Test-Path $GitUtilityModulePath) {
-    Import-Module $GitUtilityModulePath -Force -Global
-}
-else {
-    Write-Warning "Git-Utility module not found at: $GitUtilityModulePath"
+$ModuleList = @(
+    @{ Name = 'Core'; Path = 'Core/Core.psd1' }
+    @{ Name = 'Utility'; Path = 'Utility/Utility.psd1' }
+)
+
+foreach ($Module in $ModuleList) {
+    $ModulePath = Join-Path -Path $BaseModuleDir -ChildPath $Module.Path
+    $ModuleName = $Module.Name
+
+    if (Test-Path $ModulePath) {
+        Import-Module $ModulePath -Force -ErrorAction SilentlyContinue
+    }
+    else {
+        Write-Warning "$ModuleName module not found at: $ModulePath"
+    }
 }
 
 function g {
@@ -6777,10 +6822,3 @@ function gtl {
     $pattern = if ($Arguments.Count -gt 0) { "$($Arguments[0])*" } else { "*" }
     git tag --sort=-v:refname -n --list $pattern
 }
-
-#---------------------------------------------------------------------------------------------------
-# Export Module Members
-#---------------------------------------------------------------------------------------------------
-
-# Export all functions
-Export-ModuleMember -Function * -Alias *

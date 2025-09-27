@@ -40,7 +40,6 @@
 # Version: 4.1.0
 #---------------------------------------------------------------------------------------------------
 
-# Test if Helm is installed and available
 function Test-HelmInstalled {
     <#
     .SYNOPSIS
@@ -363,10 +362,3 @@ function Invoke-HelmUpgrade {
 
     & helm upgrade $Arguments
 }
-
-#---------------------------------------------------------------------------------------------------
-# Export Module Members
-#---------------------------------------------------------------------------------------------------
-
-# Export all functions
-Export-ModuleMember -Function * -Alias *
