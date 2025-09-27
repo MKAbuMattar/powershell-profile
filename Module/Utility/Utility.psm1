@@ -29,7 +29,10 @@
 # Author: Mohammad Abu Mattar
 #
 # Description:
-#       This Module provides general utility functions for PowerShell scripts and modules.
+#       This Module provides a set of utility functions for various common tasks in PowerShell.
+#       It includes functions for checking administrator privileges,
+#       checking command existence, reloading the profile, getting system uptime,
+#       getting command definitions, starting countdown timers, and starting stopwatches.
 #
 # Created: 2021-09-01
 # Updated: 2025-09-24
@@ -40,46 +43,28 @@
 #---------------------------------------------------------------------------------------------------
 
 #---------------------------------------------------------------------------------------------------
-# Import the custom Git modules
+# Import the custom utility modules
 #---------------------------------------------------------------------------------------------------
-$MatrixModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Matrix/Matrix.psd1'
-if (Test-Path $MatrixModulePath) {
-    Import-Module $MatrixModulePath -Force -Global
-}
-else {
-    Write-Warning "Matrix module not found at: $MatrixModulePath"
-}
+$BaseModuleDir = Join-Path -Path $PSScriptRoot -ChildPath '/'
 
-$PrayerTimesModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'PrayerTimes/PrayerTimes.psd1'
-if (Test-Path $PrayerTimesModulePath) {
-    Import-Module $PrayerTimesModulePath -Force -Global
-}
-else {
-    Write-Warning "PrayerTimes module not found at: $PrayerTimesModulePath"
-}
+$ModuleList = @(
+    @{ Name = 'Matrix'; Path = 'Matrix/Matrix.psd1' }
+    @{ Name = 'PrayerTimes'; Path = 'PrayerTimes/PrayerTimes.psd1' }
+    @{ Name = 'RandomQuote'; Path = 'RandomQuote/RandomQuote.psd1' }
+    @{ Name = 'Utility'; Path = 'Utility/Utility.psd1' }
+    @{ Name = 'WeatherForecast'; Path = 'WeatherForecast/WeatherForecast.psd1' }
+)
 
-$RandomQuoteModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'RandomQuote/RandomQuote.psd1'
-if (Test-Path $RandomQuoteModulePath) {
-    Import-Module $RandomQuoteModulePath -Force -Global
-}
-else {
-    Write-Warning "RandomQuote module not found at: $RandomQuoteModulePath"
-}
+foreach ($Module in $ModuleList) {
+    $ModulePath = Join-Path -Path $BaseModuleDir -ChildPath $Module.Path
+    $ModuleName = $Module.Name
 
-$UtilityModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Utility/Utility.psd1'
-if (Test-Path $UtilityModulePath) {
-    Import-Module $UtilityModulePath -Force -Global
-}
-else {
-    Write-Warning "Utility module not found at: $UtilityModulePath"
-}
-
-$WeatherForecastModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'WeatherForecast/WeatherForecast.psd1'
-if (Test-Path $WeatherForecastModulePath) {
-    Import-Module $WeatherForecastModulePath -Force -Global
-}
-else {
-    Write-Warning "WeatherForecast module not found at: $WeatherForecastModulePath"
+    if (Test-Path $ModulePath) {
+        Import-Module $ModulePath -Force -ErrorAction SilentlyContinue
+    }
+    else {
+        Write-Warning "$ModuleName module not found at: $ModulePath"
+    }
 }
 
 function Test-Administrator {
@@ -1040,4 +1025,3 @@ function Get-DiskUsage {
         }
     }
 }
-
