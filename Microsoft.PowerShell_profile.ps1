@@ -186,7 +186,7 @@ Invoke-Expression (&starship init powershell)
 #---------------------------------------------------------------------------------------------------
 # Set Chocolatey Profile
 #---------------------------------------------------------------------------------------------------
-$ChocolateyProfile = "$ENV:CHOCOLATEYINSTALL\helpers\chocolateyProfile.psm1"
+$ChocolateyProfile = Join-Path -Path $ENV:CHOCOLATEYINSTALL -ChildPath 'helpers\chocolateyProfile.psm1'
 
 #---------------------------------------------------------------------------------------------------
 # Import Chocolatey Profile
