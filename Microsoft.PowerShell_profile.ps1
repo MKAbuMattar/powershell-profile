@@ -155,6 +155,14 @@ else {
     Write-Warning "Plugin-AWS module not found at: $PluginAWSModulePath"
 }
 
+$PluginCondaModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Plugins/Conda/Conda.psd1'
+if (Test-Path $PluginCondaModulePath) {
+    Import-Module $PluginCondaModulePath -Force -ErrorAction SilentlyContinue
+}
+else {
+    Write-Warning "Plugin-Conda module not found at: $PluginCondaModulePath"
+}
+
 $PluginDenoModulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Module/Plugins/Deno/Deno.psd1'
 if (Test-Path $PluginDenoModulePath) {
     Import-Module $PluginDenoModulePath -Force -ErrorAction SilentlyContinue

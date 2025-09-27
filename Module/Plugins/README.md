@@ -52,6 +52,14 @@ Comprehensive npm CLI integration with 35+ PowerShell functions and convenient a
 **Location:** `Module/Plugins/NPM/`  
 **Documentation:** [NPM Plugin README](NPM/README.md)
 
+#### **[Conda Plugin](Conda/README.md)**
+
+Comprehensive Conda CLI integration with 40+ PowerShell functions and convenient aliases for data science environment management, package installation, and Python/R development workflow automation. Provides complete environment lifecycle management, package operations, configuration management, and advanced Conda features with automatic PowerShell completion for modern data science and scientific computing.
+
+**Key Features:** Conda CLI shortcuts, environment management (create/activate/deactivate/remove), package operations with dependency resolution, configuration management, data science workflow automation, environment reproducibility, maintenance tools, tab completion  
+**Location:** `Module/Plugins/Conda/`  
+**Documentation:** [Conda Plugin README](Conda/README.md)
+
 #### **[PNPM Plugin](PNPM/README.md)**
 
 Comprehensive PNPM CLI integration with 68+ PowerShell functions and convenient aliases for fast, disk space efficient package management. Provides complete workspace support, dependency management, development workflow automation, and advanced PNPM features with automatic PowerShell completion for modern JavaScript/Node.js development.

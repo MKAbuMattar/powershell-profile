@@ -48,10 +48,10 @@ function Show-ProfileHelp {
         The PowerShell Profile Helper module provides a set of utility functions to help manage the PowerShell profile and perform common tasks in the console. The module includes functions for finding files, creating and updating files, extracting files, compressing files, searching for content in files, replacing content in files, moving up directory levels, updating the module directory, updating the profile, updating PowerShell, checking for command existence, reloading the profile, getting system uptime, getting command definitions, setting environment variables, getting environment variables, getting all processes, finding processes by name, finding processes by port, stopping processes by name, stopping processes by port, getting random quotes, getting weather forecasts, starting countdown timers, starting stopwatches, displaying the wall clock, displaying a matrix rain animation, and more. The `Show-ProfileHelp` function displays detailed help documentation for each section of the module.
 
     .PARAMETER Section
-        Specifies the section of the documentation to display. Valid values are 'All', 'AWS', 'Directory', 'Docker', 'DockerCompose', 'Docs', 'Environment', 'Git', 'Helm', 'Kubectl', 'Logging', 'Network', 'NPM', 'PIP', 'Pipenv', 'PNPM', 'Poetry', 'Plugins', 'Process', 'Starship', 'Terraform', 'Terragrunt', 'UV', 'Update', 'Utility', and 'Yarn'. The default value is 'All'.
+        Specifies the section of the documentation to display. Valid values are 'All', 'AWS', 'Conda', 'Directory', 'Docker', 'DockerCompose', 'Docs', 'Environment', 'Git', 'Helm', 'Kubectl', 'Logging', 'Network', 'NPM', 'PIP', 'Pipenv', 'PNPM', 'Poetry', 'Plugins', 'Process', 'Starship', 'Terraform', 'Terragrunt', 'UV', 'Update', 'Utility', and 'Yarn'. The default value is 'All'.
 
     .INPUTS
-        Section: (Optional) Specifies the section of the documentation to display. Valid values are 'All', 'AWS', 'Directory', 'Docker', 'DockerCompose', 'Docs', 'Environment', 'Git', 'Helm', 'Kubectl', 'Logging', 'Network', 'NPM', 'PIP', 'Pipenv', 'PNPM', 'Poetry', 'Plugins', 'Process', 'Starship', 'Terraform', 'Terragrunt', 'UV', 'Update', 'Utility', and 'Yarn'. The default value is 'All'.
+        Section: (Optional) Specifies the section of the documentation to display. Valid values are 'All', 'AWS', 'Conda', 'Directory', 'Docker', 'DockerCompose', 'Docs', 'Environment', 'Git', 'Helm', 'Kubectl', 'Logging', 'Network', 'NPM', 'PIP', 'Pipenv', 'PNPM', 'Poetry', 'Plugins', 'Process', 'Starship', 'Terraform', 'Terragrunt', 'UV', 'Update', 'Utility', and 'Yarn'. The default value is 'All'.
 
     .OUTPUTS
         This module does not return any output.
@@ -132,6 +132,10 @@ function Show-ProfileHelp {
         Displays the help documentation for the PNPM plugin with all available pnpm aliases and commands.
 
     .EXAMPLE
+        Show-ProfileHelp -Section 'Conda'
+        Displays the help documentation for the Conda plugin with all available conda aliases and commands.
+
+    .EXAMPLE
         Show-ProfileHelp -Section 'Plugins'
         Displays an overview of all available plugins.
 
@@ -152,6 +156,7 @@ function Show-ProfileHelp {
         [ValidateSet(
             'All',
             'AWS',
+            'Conda',
             'Deno',
             'Directory',
             'Docker',
@@ -992,6 +997,74 @@ $($PSStyle.Foreground.Yellow)Plugins Module - PNPM Plugin$($PSStyle.Reset)
     Includes 68+ commands covering all PNPM features with automatic PowerShell completion.
 "@
 
+    $PluginsConda = @"
+$($PSStyle.Foreground.Yellow)Plugins Module - Conda Plugin$($PSStyle.Reset)
+    $($PSStyle.Foreground.Cyan)Comprehensive Conda CLI integration with 40+ PowerShell functions and aliases$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Core Commands:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)cn$($PSStyle.Reset) <args>             - Base conda command wrapper
+        $($PSStyle.Foreground.Magenta)cna$($PSStyle.Reset) <env>             - Activate environment
+        $($PSStyle.Foreground.Magenta)cnab$($PSStyle.Reset)                  - Activate base environment
+        $($PSStyle.Foreground.Magenta)cnde$($PSStyle.Reset)                  - Deactivate current environment
+
+    $($PSStyle.Foreground.Green)Environment Management:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Create environments
+        cncr myenv python=3.9         # Create named environment
+        cncn myenv                     # Create with auto-confirm
+        cncp /path/to/env             # Create at specific path
+        cncf environment.yml          # Create from YAML file
+        
+        # Manage environments
+        cnel                          # List all environments
+        cnee environment.yml          # Export current environment
+        cneu environment.yml          # Update from YAML file
+        cnrn myenv                    # Remove environment by name$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Package Management:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Install and manage packages
+        cni numpy pandas matplotlib   # Install packages
+        cniy scikit-learn            # Install with auto-confirm
+        cnr unused-package           # Remove packages
+        cnry old-package             # Remove with auto-confirm
+        
+        # Updates and maintenance
+        cnu numpy                    # Update specific packages
+        cnua                         # Update all packages
+        cnuc                         # Update conda itself$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Information & Search:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Package information
+        cnl                          # List installed packages
+        cnle packages.txt            # Export package list
+        cnles explicit.txt           # Create explicit spec file
+        cnsr tensorflow              # Search for packages$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Configuration:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Environment configuration
+        cnconf                       # Manage configuration
+        cncss                        # Show config sources
+        cnconfg channels             # Get config values
+        cnconfs channels conda-forge # Set config values
+        cnconfr channels conda-forge # Remove config values
+        cnconfa channels conda-forge # Add config values$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Maintenance:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Cleanup and optimization
+        cncl                         # Clean caches and temp files
+        cncla                        # Clean everything thoroughly$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Data Science Workflow:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Complete data science setup
+        cncn ds-env python=3.10      # Create data science environment
+        cna ds-env                   # Activate environment
+        cni jupyter pandas numpy matplotlib scikit-learn  # Install DS packages
+        cnee ds-environment.yml      # Export for team sharing
+        cnuc && cnua                 # Keep conda and packages updated$($PSStyle.Reset)
+
+    Note: Conda provides comprehensive environment and package management for data science.
+    Includes 40+ commands covering all conda features with automatic PowerShell completion.
+"@
+
     $PluginsPipenv = @"
 $($PSStyle.Foreground.Yellow)Plugins Module - Pipenv Plugin$($PSStyle.Reset)
     $($PSStyle.Foreground.Cyan)Comprehensive pipenv CLI integration with 15+ PowerShell functions and aliases$($PSStyle.Reset)
@@ -1629,6 +1702,10 @@ $($PSStyle.Foreground.Yellow)Utility Module$($PSStyle.Reset)
         'AWS' {
             Write-Host $Title
             Write-Host $PluginsAWS
+        }
+        'Conda' {
+            Write-Host $Title
+            Write-Host $PluginsConda
         }
         'Deno' {
             Write-Host $Title
