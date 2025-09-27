@@ -42,6 +42,14 @@ Comprehensive Deno CLI integration with 25+ PowerShell functions and convenient 
 **Location:** `Module/Plugins/Deno/`  
 **Documentation:** [Deno Plugin README](Deno/README.md)
 
+#### **[Flutter Plugin](Flutter/README.md)**
+
+Comprehensive Flutter CLI integration with 14+ PowerShell functions and convenient aliases for cross-platform mobile, web, and desktop app development. Provides complete development workflow automation with device management, build processes, package management, SDK channel switching, and multi-platform support for Android, iOS, web, Windows, macOS, and Linux development.
+
+**Key Features:** Flutter CLI shortcuts, cross-platform development, build automation (APK/iOS/web/desktop), device management, package management with pub commands, SDK channel management, multiple run modes (debug/profile/release), PowerShell tab completion, hot reload support  
+**Location:** `Module/Plugins/Flutter/`  
+**Documentation:** [Flutter Plugin README](Flutter/README.md)
+
 #### **[VSCode Plugin](VSCode/README.md)**
 
 Comprehensive VS Code CLI integration with 20+ PowerShell functions and convenient aliases for Visual Studio Code, VS Code Insiders, and VSCodium. Provides automatic VS Code flavour detection, file operations, extension management, and comprehensive VS Code workflow automation with automatic PowerShell completion for modern development.
@@ -302,6 +310,7 @@ Get-Command -Module Git                  # All Git functions
 Show-ProfileHelp -Section 'Plugins'     # Overview of all plugins
 Show-ProfileHelp -Section 'PNPM'        # Detailed PNPM documentation
 Show-ProfileHelp -Section 'Docker'      # Detailed Docker documentation
+Show-ProfileHelp -Section 'Flutter'     # Detailed Flutter documentation
 Show-ProfileHelp -Section 'Rsync'       # Detailed Rsync documentation
 profile-help -Section 'Git'             # Detailed Git documentation
 ```
@@ -330,6 +339,12 @@ ys                                       # Start development
 pipi requests flask pytest              # Install with pip
 poetry add requests flask pytest        # Add with poetry
 uv add requests flask pytest            # Add with uv (fastest)
+
+# Flutter development
+fl create my_app && cd my_app            # Create Flutter project
+flget                                    # Get dependencies
+flrd                                     # Start development with hot reload
+flb apk --release                        # Build release APK
 ```
 
 ### **Container Management:**

@@ -143,6 +143,7 @@ $ModuleList = @(
     @{ Name = 'Plugin-Deno'; Path = 'Plugins/Deno/Deno.psd1' },
     @{ Name = 'Plugin-Docker'; Path = 'Plugins/Docker/Docker.psd1' },
     @{ Name = 'Plugin-DockerCompose'; Path = 'Plugins/DockerCompose/DockerCompose.psd1' },
+    @{ Name = 'Plugin-Flutter'; Path = 'Plugins/Flutter/Flutter.psd1' },
     @{ Name = 'Plugin-Git'; Path = 'Plugins/Git/Git.psd1' },
     @{ Name = 'Plugin-Helm'; Path = 'Plugins/Helm/Helm.psd1' },
     @{ Name = 'Plugin-Kubectl'; Path = 'Plugins/Kubectl/Kubectl.psd1' },

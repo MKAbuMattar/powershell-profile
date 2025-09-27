@@ -171,6 +171,7 @@ function Show-ProfileHelp {
             'DockerCompose',
             'Docs',
             'Environment',
+            'Flutter',
             'Git',
             'Helm',
             'Kubectl',
@@ -379,6 +380,7 @@ $($PSStyle.Foreground.Yellow)Plugins Module$($PSStyle.Reset)
         $($PSStyle.Foreground.Cyan)Deno Plugin$($PSStyle.Reset) - Comprehensive Deno CLI integration with PowerShell aliases (25+ commands)
         $($PSStyle.Foreground.Cyan)Docker Plugin$($PSStyle.Reset) - Complete Docker CLI integration with PowerShell aliases (37 commands)
         $($PSStyle.Foreground.Cyan)DockerCompose Plugin$($PSStyle.Reset) - Complete Docker Compose CLI integration with PowerShell aliases (20 commands)
+        $($PSStyle.Foreground.Cyan)Flutter Plugin$($PSStyle.Reset) - Comprehensive Flutter CLI integration for cross-platform app development (14+ commands)
         $($PSStyle.Foreground.Cyan)Git Plugin$($PSStyle.Reset) - Comprehensive Git aliases and shortcuts (160+ commands)
         $($PSStyle.Foreground.Cyan)Helm Plugin$($PSStyle.Reset) - Complete Helm CLI integration with PowerShell aliases (5+ commands)
         $($PSStyle.Foreground.Cyan)Kubectl Plugin$($PSStyle.Reset) - Complete kubectl CLI integration with PowerShell aliases (100+ commands)
@@ -1787,6 +1789,65 @@ $($PSStyle.Foreground.Yellow)Plugins Module - QRCode Plugin$($PSStyle.Reset)
     Supports PNG and SVG formats with full PowerShell pipeline integration.
 "@
 
+    $PluginsFlutter = @"
+$($PSStyle.Foreground.Yellow)Plugins Module - Flutter Plugin$($PSStyle.Reset)
+    $($PSStyle.Foreground.Cyan)Comprehensive Flutter CLI integration for cross-platform app development$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Core Functions:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)flu$($PSStyle.Reset) <args>             - Flutter CLI wrapper
+        $($PSStyle.Foreground.Magenta)flattach$($PSStyle.Reset)              - Attach to running application
+        $($PSStyle.Foreground.Magenta)flb$($PSStyle.Reset) <target>          - Build Flutter application
+        $($PSStyle.Foreground.Magenta)flchnl$($PSStyle.Reset) <channel>      - Manage Flutter SDK channels
+        $($PSStyle.Foreground.Magenta)flc$($PSStyle.Reset)                   - Clean build files and caches
+        $($PSStyle.Foreground.Magenta)fldvcs$($PSStyle.Reset)                - List available devices
+        $($PSStyle.Foreground.Magenta)fldoc$($PSStyle.Reset)                 - Run Flutter doctor
+
+    $($PSStyle.Foreground.Green)Application Development:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Create and run Flutter apps
+        flu create my_app                   # Create new Flutter project
+        flr                                 # Run app (debug mode)
+        flrd                                # Run in debug mode
+        flrp                                # Run in profile mode
+        flrr                                # Run in release mode
+        flr --device chrome                 # Run on specific device$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Build Operations:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Build for different platforms
+        flb apk                             # Build Android APK
+        flb appbundle                       # Build Android App Bundle
+        flb ios                             # Build iOS application
+        flb web                             # Build web application
+        flb windows                         # Build Windows desktop app
+        flb macos                           # Build macOS desktop app$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Package Management:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Manage dependencies
+        flget                               # Get package dependencies
+        flpub add http                      # Add new package
+        flpub remove old_package            # Remove package
+        flpub upgrade                       # Upgrade packages
+        flpub run build_runner build        # Run custom scripts$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)SDK Management:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Manage Flutter SDK
+        flchnl                              # Show current channel
+        flchnl stable                       # Switch to stable channel
+        flchnl beta                         # Switch to beta channel
+        flupgrd                             # Upgrade Flutter SDK
+        fldoc                               # Check Flutter installation$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Development Workflow:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Complete development cycle
+        flu create my_app && cd my_app      # Create and enter project
+        flget                               # Get dependencies
+        fldvcs                              # Check available devices
+        flrd                                # Start development with hot reload
+        flb apk --release                   # Build release APK$($PSStyle.Reset)
+
+    Note: Requires Flutter SDK installed and accessible via PATH.
+    Supports Android, iOS, web, Windows, macOS, and Linux development.
+"@
+
     $PluginsRsync = @"
 $($PSStyle.Foreground.Yellow)Plugins Module - Rsync Plugin$($PSStyle.Reset)
     $($PSStyle.Foreground.Cyan)Rsync file synchronization with PowerShell integration and cross-platform support$($PSStyle.Reset)
@@ -1960,6 +2021,10 @@ $($PSStyle.Foreground.Yellow)Utility Module$($PSStyle.Reset)
         'Environment' {
             Write-Host $Title
             Write-Host $Environment
+        }
+        'Flutter' {
+            Write-Host $Title
+            Write-Host $PluginsFlutter
         }
         'Git' {
             Write-Host $Title
