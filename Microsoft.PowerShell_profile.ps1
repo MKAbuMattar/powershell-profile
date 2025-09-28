@@ -126,16 +126,16 @@ Set-PSReadLineKeyHandler -Chord '"', "'" `
 $BaseModuleDir = Join-Path -Path $PSScriptRoot -ChildPath 'Module'
 
 $ModuleList = @(
-    @{ Name = 'Directory'; Path = 'Directory/Directory.psd1' },
-    @{ Name = 'Docs'; Path = 'Docs/Docs.psd1' },
-    @{ Name = 'Environment'; Path = 'Environment/Environment.psd1' },
-    @{ Name = 'Logging'; Path = 'Logging/Logging.psd1' },
-    @{ Name = 'Network'; Path = 'Network/Network.psd1' },
-    @{ Name = 'Plugins'; Path = 'Plugins/Plugins.psd1' },
-    @{ Name = 'Process'; Path = 'Process/Process.psd1' },
-    @{ Name = 'Starship'; Path = 'Starship/Starship.psd1' },
-    @{ Name = 'Update'; Path = 'Update/Update.psd1' },
-    @{ Name = 'Utility'; Path = 'Utility/Utility.psd1' }
+    @{ Name = 'Module-Directory'; Path = 'Directory/Directory.psd1' },
+    @{ Name = 'Module-Docs'; Path = 'Docs/Docs.psd1' },
+    @{ Name = 'Module-Environment'; Path = 'Environment/Environment.psd1' },
+    @{ Name = 'Module-Logging'; Path = 'Logging/Logging.psd1' },
+    @{ Name = 'Module-Network'; Path = 'Network/Network.psd1' },
+    @{ Name = 'Module-Plugins'; Path = 'Plugins/Plugins.psd1' },
+    @{ Name = 'Module-Process'; Path = 'Process/Process.psd1' },
+    @{ Name = 'Module-Starship'; Path = 'Starship/Starship.psd1' },
+    @{ Name = 'Module-Update'; Path = 'Update/Update.psd1' },
+    @{ Name = 'Module-Utility'; Path = 'Utility/Utility.psd1' }
 )
 
 foreach ($Module in $ModuleList) {

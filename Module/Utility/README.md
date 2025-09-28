@@ -1,6 +1,6 @@
-<!-- filepath: c:\Users\MKAbuMattar\Work\powershell-profile\Module\Utility\README.md -->
-
 # Utility Module
+
+The Utility module is a comprehensive collection of general-purpose PowerShell functions designed to enhance your command-line experience and streamline everyday tasks. This module provides essential utilities for system administration, development workflows, productivity enhancement, and data manipulation - all integrated seamlessly into your PowerShell environment.
 
 ## **Table of Contents**
 
@@ -250,33 +250,32 @@ Digital rain matrix animation for console entertainment.
 
 **Documentation:** [Matrix Animation README](Matrix/README.md)**Key Functions:**
 
-### **Web & Network Tools**- `Get-RandomQuote` (alias: `quote`) - Fetch random quotes### **Development Tools** - `countdown -Duration "30m" -Title "Meeting starts in:"`
+### **Web & Network Tools**
 
-#### **Web Search Integration\*\***Key Features:\*\* Multiple quote sources, inspirational content, API integration - `countdown -Until "17:00" -Title "End of Workday"`
+#### **Web Search Integration**
 
-Integrated web search functionality with multiple search engines.**Location:** `Module/Utility/RandomQuote/`
+Comprehensive web search functionality with 30+ search engines including Google, Bing, Brave, DuckDuckGo, GitHub, AI platforms, package repositories, and more.
 
-**Key Functions:\*\***Documentation:** [Random Quote README](RandomQuote/README.md)#### **[Base64 Encoding/Decoding](Base64/README.md)\*\*
+**Key Functions:**
 
--   `Start-WebSearch` (alias: `web-search`, `ws`) - Interactive web search
+-   `Start-WebSearch` (alias: `web-search`, `ws`) - Interactive web search with 30+ engines
+-   `Search-Google` (alias: `wsggl`) - Google search
+-   `Search-Bing` (alias: `wsbing`) - Microsoft Bing search
+-   `Search-Brave` (alias: `wsbrave`, `wsbrs`) - Privacy-focused Brave search
+-   `Search-DuckDuckGo` (alias: `wsddg`) - Privacy-focused DuckDuckGo search
+-   `Search-GitHub` (alias: `wsgh`) - GitHub repository search
+-   `Search-StackOverflow` (alias: `wsso`) - Stack Overflow Q&A
+-   `Search-ChatGPT` (alias: `wschatgpt`) - OpenAI ChatGPT
+-   `Search-Claude` (alias: `wschaude`) - Anthropic Claude AI
+-   `Search-Perplexity` (alias: `wsppai`) - Perplexity AI search
+-   `Search-DockerHub` (alias: `wsdocker`) - Docker container search
+-   `Search-NPM` (alias: `wsnpm`) - Node.js package search
+-   `Search-YouTube` (alias: `wsyt`) - YouTube video search
+-   And 17+ more search engines...
 
--   `Search-Google` (alias: `wsggl`) - Google search#### **[Weather Forecast](WeatherForecast/README.md)**- **`Start-Stopwatch`** (Alias: `stopwatch`):
+**Key Features:** 30+ search engines, cross-platform browser launching, URL encoding, interactive menu, AI integration, developer tools
 
--   `Search-DuckDuckGo` (alias: `wsddg`) - DuckDuckGo search
-
--   `Search-GitHub` (alias: `wsgh`) - GitHub repository searchGet weather information and forecasts for any location worldwide.Complete Base64 encoding and decoding utilities with file and text support.
-
--   `Search-StackOverflow` (alias: `wsso`) - Stack Overflow search
-
--   `Search-Wikipedia` (alias: `wswiki`) - Wikipedia search**Key Functions:** - _Description:_ Starts a stopwatch timer. Pressing Enter typically stops it and displays the elapsed time.
-
--   `Search-Reddit` (alias: `wsrdt`) - Reddit search
-
--   `Get-WeatherForecast` (alias: `weather`) - Weather forecasts with customizable formats
-
-**Key Features:** Multiple search engines, cross-platform browser launching, URL encoding, interactive menu
-
-**Location:** `Module/Utility/WebSearch/` **Key Functions:** - _Usage:_ `stopwatch -Title "Task Timer"`
+**Location:** `Module/Utility/WebSearch/`
 
 **Documentation:** [Web Search README](WebSearch/README.md)
 
@@ -290,7 +289,7 @@ Integrated web search functionality with multiple search engines.**Location:** `
 
 **Documentation:** [Weather Forecast README](WeatherForecast/README.md)
 
-````powershell
+`````powershell
 
 # Check system status-   `ConvertFrom-Base64` (alias: `d64`) - Decode Base64 to text - **`Get-WallClock`** (Alias: `clock`):
 
@@ -392,21 +391,36 @@ wallclock -TimeZone "Pacific Standard Time"   # Display clock
 
 
 
-```powershellDigital rain matrix animation for console entertainment.
-
-# Web searches
-
-ws                                       # Interactive search menu-   `Test-GitIgnoreService` (alias: `gitest`) - Test API connectivity
-
+```powershell
+# Web searches (30+ engines supported)
+ws                                       # Interactive search menu
 ws google "PowerShell tutorial"          # Direct Google search
+ws github "awesome-powershell"           # Search GitHub repositories
+ws chatgpt "explain async programming"   # Ask ChatGPT
+ws dockerhub "nginx alpine"             # Search Docker images
+ws npm "react hooks"                     # Search NPM packages
+ws youtube "PowerShell scripting"        # Search YouTube videos
+ws stackoverflow "powershell arrays"     # Search Stack Overflow
+ws wikipedia "PowerShell"               # Search Wikipedia
 
-wsgh "awesome-powershell"                # Search GitHub repositories**Key Functions:**
+# Privacy-focused searches
+ws duckduckgo "secure coding"           # DuckDuckGo
+ws brave "privacy tools"                # Brave search
+ws startpage "anonymous browsing"       # Startpage
 
-wsso "powershell arrays"                 # Search Stack Overflow
+# International searches
+ws yandex "программирование"             # Yandex (Russian)
+ws baidu "编程教程"                      # Baidu (Chinese)
 
-wswiki "PowerShell"                      # Search Wikipedia-   `Start-Matrix` (alias: `matrix`) - Matrix rain animation with customizable speed - _Description:_ Retrieves and displays disk usage statistics for the current drive or a specified path.
+# Development package searches
+ws packagist "laravel"                  # PHP packages
+ws gopkg "gin framework"                # Go packages
+ws rscrate "tokio async"                # Rust crates
 
-````
+# AI platforms
+ws claude "code review best practices"  # Claude AI
+ws perplexity "latest tech trends"      # Perplexity AI
+```
 
 **Key Features:** Console animation, configurable speed, entertainment utility **Key Features:** Template generation, API integration, file management, technology filtering - _Usage:_ `du` or `du "C:\Users"`
 
@@ -502,7 +516,7 @@ Each utility follows a consistent modular structure:-   `Get-DiskUsage` (alias: 
 
    Test-ModuleManifest "Module/Utility/UtilityName/UtilityName.psd1"-   `Search-StackOverflow` (alias: `wsso`) - Stack Overflow search**Location:** `Module/Utility/QRCode/` - _Usage:_ `ginew node python` or `ginew visualstudio -Backup`
 
-````
+`````
 
 -   `Search-Wikipedia` (alias: `wswiki`) - Wikipedia search
 

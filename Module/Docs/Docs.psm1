@@ -48,10 +48,10 @@ function Show-ProfileHelp {
         The PowerShell Profile Helper module provides a set of utility functions to help manage the PowerShell profile and perform common tasks in the console. The module includes functions for finding files, creating and updating files, extracting files, compressing files, searching for content in files, replacing content in files, moving up directory levels, updating the module directory, updating the profile, updating PowerShell, checking for command existence, reloading the profile, getting system uptime, getting command definitions, setting environment variables, getting environment variables, getting all processes, finding processes by name, finding processes by port, stopping processes by name, stopping processes by port, getting random quotes, getting weather forecasts, starting countdown timers, starting stopwatches, displaying the wall clock, displaying a matrix rain animation, and more. The `Show-ProfileHelp` function displays detailed help documentation for each section of the module.
 
     .PARAMETER Section
-        Specifies the section of the documentation to display. Valid values are 'All', 'AWS', 'Conda', 'Directory', 'Docker', 'DockerCompose', 'Docs', 'Environment', 'Git', 'Helm', 'Kubectl', 'Logging', 'Network', 'NPM', 'PIP', 'Pipenv', 'PNPM', 'Poetry', 'Plugins', 'Process', 'Ruby', 'Rust', 'Starship', 'Terraform', 'Terragrunt', 'UV', 'Update', 'Utility', 'VSCode', and 'Yarn'. The default value is 'All'.
+        Specifies the section of the documentation to display. Valid values are 'All', 'AWS', 'Base64', 'Conda', 'Directory', 'Docker', 'DockerCompose', 'Docs', 'Environment', 'Git', 'GitIgnore', 'Helm', 'Kubectl', 'Logging', 'Network', 'NPM', 'PIP', 'Pipenv', 'PNPM', 'Poetry', 'Plugins', 'Process', 'Productivity', 'QRCode', 'Ruby', 'Rust', 'Starship', 'SystemAdmin', 'Terraform', 'Terragrunt', 'UV', 'Update', 'Utility', 'VSCode', 'WebSearch', and 'Yarn'. The default value is 'All'.
 
     .INPUTS
-        Section: (Optional) Specifies the section of the documentation to display. Valid values are 'All', 'AWS', 'Conda', 'Directory', 'Docker', 'DockerCompose', 'Docs', 'Environment', 'Git', 'Helm', 'Kubectl', 'Logging', 'Network', 'NPM', 'PIP', 'Pipenv', 'PNPM', 'Poetry', 'Plugins', 'Process', 'Ruby', 'Rust', 'Starship', 'Terraform', 'Terragrunt', 'UV', 'Update', 'Utility', 'VSCode', and 'Yarn'. The default value is 'All'.
+        Section: (Optional) Specifies the section of the documentation to display. Valid values are 'All', 'AWS', 'Base64', 'Conda', 'Directory', 'Docker', 'DockerCompose', 'Docs', 'Environment', 'Git', 'GitIgnore', 'Helm', 'Kubectl', 'Logging', 'Network', 'NPM', 'PIP', 'Pipenv', 'PNPM', 'Poetry', 'Plugins', 'Process', 'Productivity', 'QRCode', 'Ruby', 'Rust', 'Starship', 'SystemAdmin', 'Terraform', 'Terragrunt', 'UV', 'Update', 'Utility', 'VSCode', 'WebSearch', and 'Yarn'. The default value is 'All'.
 
     .OUTPUTS
         This module does not return any output.
@@ -1873,6 +1873,57 @@ $($PSStyle.Foreground.Yellow)Update Module$($PSStyle.Reset)
 
     $Utility = @"
 $($PSStyle.Foreground.Yellow)Utility Module$($PSStyle.Reset)
+    This module provides essential utilities for system administration, development workflows, 
+    productivity enhancement, and data manipulation - all integrated seamlessly into your PowerShell environment.
+
+    Available Utilities:
+        $($PSStyle.Foreground.Cyan)System Administration$($PSStyle.Reset) - Administrator privileges, system info, disk usage analysis (7 commands)
+        $($PSStyle.Foreground.Cyan)Base64 Utilities$($PSStyle.Reset) - Complete Base64 encoding/decoding with file and text support (3 commands)
+        $($PSStyle.Foreground.Cyan)GitIgnore Management$($PSStyle.Reset) - Comprehensive .gitignore file management using gitignore.io API (5 commands)
+        $($PSStyle.Foreground.Cyan)QRCode Generation$($PSStyle.Reset) - Generate QR codes directly from PowerShell using qrcode.show API (4 commands)
+        $($PSStyle.Foreground.Cyan)WebSearch Integration$($PSStyle.Reset) - Comprehensive web search with 30+ search engines (30+ commands)
+        $($PSStyle.Foreground.Cyan)Random Quote Generator$($PSStyle.Reset) - Fetch inspirational quotes from online APIs (1 command)
+        $($PSStyle.Foreground.Cyan)Weather Forecast$($PSStyle.Reset) - Get weather information for any location worldwide (1 command)
+        $($PSStyle.Foreground.Cyan)Prayer Times$($PSStyle.Reset) - Get accurate Islamic prayer times for any city (1 command)
+        $($PSStyle.Foreground.Cyan)Timing Utilities$($PSStyle.Reset) - Essential timing tools for productivity (3 commands)
+        $($PSStyle.Foreground.Cyan)Matrix Animation$($PSStyle.Reset) - Digital rain matrix animation for console entertainment (1 command)
+
+    Use $($PSStyle.Foreground.Magenta)Show-ProfileHelp -Section '<UtilityName>'$($PSStyle.Reset) to view detailed documentation for each utility.
+
+    $($PSStyle.Foreground.Green)Common Utility Workflows:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Development setup
+        ginew node react typescript     # Create comprehensive .gitignore
+        ef64 config.json                # Encode sensitive config
+        qrcode "https://localhost:3000" # QR for local development
+        
+        # Daily productivity
+        quote && weather               # Morning inspiration and weather
+        countdown "01:00:00"           # Focus session timer
+        ws stackoverflow "PowerShell error handling"  # Quick research
+        
+        # System administration
+        is-admin || Write-Warning "Need admin rights"
+        du C:\Projects -Unit GB        # Check project disk usage
+        uptime                        # System health check
+        
+        # Content creation workflow
+        "My secret data" | e64 | Set-Clipboard  # Encode and copy
+        qrcode "Contact: john@example.com" > contact.png  # Business card QR$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Quick Reference:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)System: is-admin, uptime, du, reload-profile
+        Base64: e64, d64, ef64
+        Git: ginew, giadd, gilist
+        QR: qrcode, qrsvg
+        Search: ws, wsgh, wsso, wsggl
+        Time: weather, quote, countdown, stopwatch$($PSStyle.Reset)
+"@
+
+    $UtilitySystemAdmin = @"
+$($PSStyle.Foreground.Yellow)Utility Module - System Administration$($PSStyle.Reset)
+    Essential system administration utilities for privilege management and environment validation.
+
+    $($PSStyle.Foreground.Green)Administrator Privileges & System Info:$($PSStyle.Reset)
     $($PSStyle.Foreground.Green)Test-Administrator$($PSStyle.Reset)
     $($PSStyle.Foreground.Magenta)is-admin$($PSStyle.Reset)
         Checks if the current user has administrator privileges.
@@ -1893,39 +1944,35 @@ $($PSStyle.Foreground.Yellow)Utility Module$($PSStyle.Reset)
     $($PSStyle.Foreground.Magenta)def$($PSStyle.Reset) -Name <Name>
         Gets the definition of a command.
 
-    $($PSStyle.Foreground.Green)Get-RandomQuote$($PSStyle.Reset)
-    $($PSStyle.Foreground.Magenta)quote$($PSStyle.Reset)
-        Retrieves a random quote from an online API.
-
-    $($PSStyle.Foreground.Green)Get-WeatherForecast$($PSStyle.Reset) [-Location <Location>] [-Glyphs] [-Moon] [-Format <Format>] [-Lang <Lang>]
-    $($PSStyle.Foreground.Magenta)weather$($PSStyle.Reset) [-Location <Location>] [-Glyphs] [-Moon] [-Format <Format>] [-Lang <Lang>]
-        Gets the weather forecast for a specified location.
-
-    $($PSStyle.Foreground.Green)Start-Countdown$($PSStyle.Reset) -Duration <Duration> [-CountUp] [-Title <Title>]
-    $($PSStyle.Foreground.Magenta)countdown$($PSStyle.Reset) -Duration <Duration> [-CountUp] [-Title <Title>]
-        Starts a countdown timer.
-
-    $($PSStyle.Foreground.Green)Start-Stopwatch$($PSStyle.Reset) [-Title <Title>]
-    $($PSStyle.Foreground.Magenta)stopwatch$($PSStyle.Reset) [-Title <Title>]
-        Starts a stopwatch.
-
-    $($PSStyle.Foreground.Green)Get-WallClock$($PSStyle.Reset) [-Title <Title>] [-TimeZone <TimeZone>]
-    $($PSStyle.Foreground.Magenta)wallclock$($PSStyle.Reset) [-Title <Title>] [-TimeZone <TimeZone>]
-        Displays the current time in a large font using the FIGlet utility.
-
-    $($PSStyle.Foreground.Green)Get-PrayerTimes$($PSStyle.Reset) -City <City> -Country <Country> [-Method <Method>] [-Use24HourFormat]
-    $($PSStyle.Foreground.Magenta)prayer$($PSStyle.Reset) -City <City> -Country <Country> [-Method <Method>] [-Use24HourFormat]
-        Retrieves the prayer times for a specified city and country.
-
-    $($PSStyle.Foreground.Green)Start-Matrix$($PSStyle.Reset) [-SleepTime <SleepTime>]
-    $($PSStyle.Foreground.Magenta)matrix$($PSStyle.Reset) [-SleepTime <SleepTime>]
-        Displays a matrix rain animation in the console.
-
+    $($PSStyle.Foreground.Green)Disk Usage Analysis:$($PSStyle.Reset)
     $($PSStyle.Foreground.Green)Get-DiskUsage$($PSStyle.Reset) [-Path <Path>] [-Unit <Unit>]
     $($PSStyle.Foreground.Magenta)du$($PSStyle.Reset) [-Path <Path>] [-Unit <Unit>]
         Retrieves the disk usage for a specified path.
 
-    $($PSStyle.Foreground.Green)Base64 Utilities:$($PSStyle.Reset)
+    $($PSStyle.Foreground.Green)Format-ConvertSize$($PSStyle.Reset) -Value <Value> [-Units <Units>] [-Scale <Scale>] [-DecimalPlaces <DecimalPlaces>]
+    $($PSStyle.Foreground.Magenta)convert-size$($PSStyle.Reset) -Value <Value> [-Units <Units>] [-Scale <Scale>] [-DecimalPlaces <DecimalPlaces>]
+        Converts a size value to a specified unit and formats it.
+
+    $($PSStyle.Foreground.Green)Examples:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# System administration workflow
+        is-admin                         # Check admin privileges
+        command-exists git               # Verify Git installation
+        uptime                          # Check system uptime
+        du C:\Users                      # Check directory size
+        
+        # Disk usage analysis
+        du . -Unit GB                   # Current dir in GB
+        convert-size 1073741824 -Units Bytes -Scale GB  # Convert bytes to GB
+        
+        # Profile management
+        reload-profile                  # Reload PowerShell profile
+        def Get-ChildItem              # Show command definition$($PSStyle.Reset)
+"@
+
+    $UtilityBase64 = @"
+$($PSStyle.Foreground.Yellow)Utility Module - Base64 Utilities$($PSStyle.Reset)
+    Complete Base64 encoding and decoding utilities with file and text support.
+
     $($PSStyle.Foreground.Green)ConvertTo-Base64$($PSStyle.Reset) [-Text <Text>]
     $($PSStyle.Foreground.Magenta)e64$($PSStyle.Reset) [-Text <Text>]
         Encodes text or pipeline input to Base64 format.
@@ -1938,11 +1985,25 @@ $($PSStyle.Foreground.Yellow)Utility Module$($PSStyle.Reset)
     $($PSStyle.Foreground.Magenta)d64$($PSStyle.Reset) [-Base64Text <Base64Text>]
         Decodes Base64 encoded text to plain text.
 
-    $($PSStyle.Foreground.Green)Format-ConvertSize$($PSStyle.Reset) -Value <Value> [-Units <Units>] [-Scale <Scale>] [-DecimalPlaces <DecimalPlaces>]
-    $($PSStyle.Foreground.Magenta)convert-size$($PSStyle.Reset) -Value <Value> [-Units <Units>] [-Scale <Scale>] [-DecimalPlaces <DecimalPlaces>]
-        Converts a size value to a specified unit and formats it.
+    $($PSStyle.Foreground.Green)Examples:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Text encoding/decoding
+        "Hello World" | e64             # Encode text to Base64
+        e64 "PowerShell rocks"          # Encode specific text
+        "SGVsbG8gV29ybGQ=" | d64         # Decode Base64 text
+        
+        # File operations
+        ef64 config.json                # Encode file to Base64
+        ef64 image.png                  # Encode binary file
+        
+        # Pipeline workflow
+        Get-Content secret.txt | e64 | Set-Content secret.b64
+        Get-Content secret.b64 | d64 | Set-Content decoded.txt$($PSStyle.Reset)
+"@
 
-    $($PSStyle.Foreground.Green)GitIgnore Utilities:$($PSStyle.Reset)
+    $UtilityGitIgnore = @"
+$($PSStyle.Foreground.Yellow)Utility Module - GitIgnore Management$($PSStyle.Reset)
+    Comprehensive .gitignore file management using the gitignore.io API service.
+
     $($PSStyle.Foreground.Green)Get-GitIgnore$($PSStyle.Reset) <technologies...> [-OutputPath <Path>] [-Append]
     $($PSStyle.Foreground.Magenta)gitignore$($PSStyle.Reset) <technologies...> [-OutputPath <Path>] [-Append]
         Generates .gitignore content for specified technologies using gitignore.io API.
@@ -1963,70 +2024,190 @@ $($PSStyle.Foreground.Yellow)Utility Module$($PSStyle.Reset)
     $($PSStyle.Foreground.Magenta)gitest$($PSStyle.Reset)
         Tests connectivity to the gitignore.io API service.
 
-    $($PSStyle.Foreground.Green)WebSearch Utilities:$($PSStyle.Reset)
+    $($PSStyle.Foreground.Green)Examples:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Project initialization workflow
+        gilist -Filter node             # Find Node.js templates
+        ginew node visualstudiocode     # Create .gitignore for Node + VSCode
+        giadd macos windows linux       # Add OS-specific ignores
+        
+        # Technology-specific projects
+        ginew python django             # Python web project
+        ginew dotnetcore visualstudio   # .NET project
+        ginew react node yarn           # React project
+        
+        # Advanced usage
+        gitignore python --OutputPath custom.gitignore  # Custom output
+        gitignore node -Append          # Append to existing file
+        gilist -GridView               # Interactive selection
+        gitest                         # Verify service availability$($PSStyle.Reset)
+"@
+
+    $UtilityQRCode = @"
+$($PSStyle.Foreground.Yellow)Utility Module - QRCode Generation$($PSStyle.Reset)
+    Generate QR codes directly from PowerShell using the qrcode.show API service.
+
+    $($PSStyle.Foreground.Green)New-QRCode$($PSStyle.Reset) <text> [-Size <Size>] [-Format <Format>]
+    $($PSStyle.Foreground.Magenta)qrcode$($PSStyle.Reset) <text> [-Size <Size>] [-Format <Format>]
+        Generates QR codes in PNG format using qrcode.show API service.
+
+    $($PSStyle.Foreground.Green)New-QRCodeSVG$($PSStyle.Reset) <text> [-Size <Size>]
+    $($PSStyle.Foreground.Magenta)qrsvg$($PSStyle.Reset) <text> [-Size <Size>]
+        Generates QR codes in SVG format using qrcode.show API service.
+
+    $($PSStyle.Foreground.Green)Save-QRCode$($PSStyle.Reset) -Text <Text> -FilePath <FilePath>
+        Saves QR code output to a file with proper format detection (PNG/SVG).
+
+    $($PSStyle.Foreground.Green)Test-QRCodeService$($PSStyle.Reset)
+        Tests connectivity to the qrcode.show API service.
+
+    $($PSStyle.Foreground.Green)Examples:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Basic QR code generation
+        qrcode "https://github.com"      # Generate QR for URL
+        qrcode "Hello World" -Size 200  # Custom size QR code
+        qrsvg "PowerShell" -Size 150    # SVG format QR code
+        
+        # Save QR codes to files
+        Save-QRCode -Text "https://microsoft.com" -FilePath "microsoft.png"
+        Save-QRCode -Text "Contact Info" -FilePath "contact.svg"
+        
+        # Batch QR generation
+        @("URL1", "URL2", "URL3") | ForEach-Object { qrcode $_ }
+        
+        # Service validation
+        Test-QRCodeService             # Check API availability$($PSStyle.Reset)
+"@
+
+    $UtilityWebSearch = @"
+$($PSStyle.Foreground.Yellow)Utility Module - WebSearch Integration (30+ Search Engines)$($PSStyle.Reset)
+    Comprehensive web search functionality with 30+ search engines including Google, Bing, GitHub, AI platforms, and package repositories.
+
+    $($PSStyle.Foreground.Green)Main Function:$($PSStyle.Reset)
     $($PSStyle.Foreground.Green)Start-WebSearch$($PSStyle.Reset) [engine] [terms...]
     $($PSStyle.Foreground.Magenta)web-search, ws$($PSStyle.Reset) [engine] [terms...]
         Interactive web search with multiple search engine options or direct search.
 
+    $($PSStyle.Foreground.Blue)General Search Engines:$($PSStyle.Reset)
     $($PSStyle.Foreground.Green)Search-Google$($PSStyle.Reset) <terms...>
     $($PSStyle.Foreground.Magenta)wsggl$($PSStyle.Reset) <terms...>
         Searches Google for the specified terms.
 
+    $($PSStyle.Foreground.Green)Search-Bing$($PSStyle.Reset) <terms...>
+    $($PSStyle.Foreground.Magenta)wsbing$($PSStyle.Reset) <terms...>
+        Searches Microsoft Bing for the specified terms.
+
+    $($PSStyle.Foreground.Green)Search-Brave$($PSStyle.Reset) <terms...>
+    $($PSStyle.Foreground.Magenta)wsbrave, wsbrs$($PSStyle.Reset) <terms...>
+        Searches Brave (privacy-focused) for the specified terms.
+
     $($PSStyle.Foreground.Green)Search-DuckDuckGo$($PSStyle.Reset) <terms...>
     $($PSStyle.Foreground.Magenta)wsddg$($PSStyle.Reset) <terms...>
-        Searches DuckDuckGo for the specified terms.
+        Searches DuckDuckGo (privacy-focused) for the specified terms.
 
+    $($PSStyle.Foreground.Green)Search-Yahoo$($PSStyle.Reset) <terms...>
+    $($PSStyle.Foreground.Magenta)wsyahoo$($PSStyle.Reset) <terms...> | $($PSStyle.Foreground.Green)Search-Startpage$($PSStyle.Reset) <terms...>
+    $($PSStyle.Foreground.Magenta)wssp$($PSStyle.Reset) <terms...> | $($PSStyle.Foreground.Green)Search-Yandex, Search-Baidu, Search-Ecosia, Search-Qwant, Search-Ask$($PSStyle.Reset) <terms...>
+
+    $($PSStyle.Foreground.Blue)Academic & Professional:$($PSStyle.Reset)
+    $($PSStyle.Foreground.Green)Search-Scholar$($PSStyle.Reset) <terms...>
+    $($PSStyle.Foreground.Magenta)wsscholar$($PSStyle.Reset) <terms...> | $($PSStyle.Foreground.Green)Search-Wikipedia$($PSStyle.Reset) <terms...>
+    $($PSStyle.Foreground.Magenta)wswiki$($PSStyle.Reset) <terms...> | $($PSStyle.Foreground.Green)Search-YouTube$($PSStyle.Reset) <terms...>
+    $($PSStyle.Foreground.Magenta)wsyt, wsyoutube$($PSStyle.Reset) <terms...>
+
+    $($PSStyle.Foreground.Blue)Development & Packages:$($PSStyle.Reset)
     $($PSStyle.Foreground.Green)Search-GitHub$($PSStyle.Reset) <terms...>
-    $($PSStyle.Foreground.Magenta)wsgh$($PSStyle.Reset) <terms...>
-        Searches GitHub repositories for the specified terms.
+    $($PSStyle.Foreground.Magenta)wsgh$($PSStyle.Reset) <terms...> | $($PSStyle.Foreground.Green)Search-StackOverflow$($PSStyle.Reset) <terms...>
+    $($PSStyle.Foreground.Magenta)wsso$($PSStyle.Reset) <terms...> | $($PSStyle.Foreground.Green)Search-DockerHub, Search-NPM, Search-Packagist, Search-GoPackages, Search-RustCrates, Search-RustDocs$($PSStyle.Reset) <terms...>
 
-    $($PSStyle.Foreground.Green)Search-StackOverflow$($PSStyle.Reset) <terms...>
-    $($PSStyle.Foreground.Magenta)wsso$($PSStyle.Reset) <terms...>
-        Searches Stack Overflow for the specified terms.
+    $($PSStyle.Foreground.Blue)AI & Chat Platforms:$($PSStyle.Reset)
+    $($PSStyle.Foreground.Green)Search-ChatGPT$($PSStyle.Reset) <terms...>
+    $($PSStyle.Foreground.Magenta)wschatgpt$($PSStyle.Reset) <terms...> | $($PSStyle.Foreground.Green)Search-Claude$($PSStyle.Reset) <terms...>
+    $($PSStyle.Foreground.Magenta)wschaude$($PSStyle.Reset) <terms...> | $($PSStyle.Foreground.Green)Search-Perplexity$($PSStyle.Reset) <terms...>
+    $($PSStyle.Foreground.Magenta)wsppai, wsperplexity$($PSStyle.Reset) <terms...>
 
-    $($PSStyle.Foreground.Green)Search-Wikipedia$($PSStyle.Reset) <terms...>
-    $($PSStyle.Foreground.Magenta)wswiki$($PSStyle.Reset) <terms...>
-        Searches Wikipedia for the specified terms.
-
+    $($PSStyle.Foreground.Blue)Social & Community:$($PSStyle.Reset)
     $($PSStyle.Foreground.Green)Search-Reddit$($PSStyle.Reset) <terms...>
     $($PSStyle.Foreground.Magenta)wsrdt$($PSStyle.Reset) <terms...>
-        Searches Reddit for the specified terms.
 
-    $($PSStyle.Foreground.Green)ConvertTo-UrlEncoded$($PSStyle.Reset) <text>
-        URL encodes a string for safe use in URLs.
+    $($PSStyle.Foreground.Blue)Utility Functions:$($PSStyle.Reset)
+    $($PSStyle.Foreground.Green)ConvertTo-UrlEncoded$($PSStyle.Reset) <text> | $($PSStyle.Foreground.Green)Start-WebBrowser$($PSStyle.Reset) <url>
 
-    $($PSStyle.Foreground.Green)Start-WebBrowser$($PSStyle.Reset) <url>
-        Launches a URL in the default browser (cross-platform).
+    $($PSStyle.Foreground.Green)Examples:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Interactive search workflow
+        ws                             # Interactive menu selection
+        web-search google "PowerShell"  # Direct search with engine
+        
+        # Development searches
+        wsgh "powershell profile"       # Search GitHub repositories
+        wsso "PowerShell regex"         # Search Stack Overflow
+        wsnpm "express middleware"      # Search NPM packages
+        
+        # AI and research
+        wschatgpt "PowerShell best practices"  # ChatGPT search
+        wsscholar "machine learning"    # Google Scholar search
+        wswiki "quantum computing"      # Wikipedia search
+        
+        # Multiple search engines
+        wsggl "news today"             # Google search
+        wsddg "privacy tools"          # DuckDuckGo (private)
+        wsbrave "open source"          # Brave search$($PSStyle.Reset)
+"@
 
-    $($PSStyle.Foreground.Green)QRCode Utilities:$($PSStyle.Reset)
-    $($PSStyle.Foreground.Green)New-QRCode$($PSStyle.Reset) <text> [-Size <Size>] [-Format <Format>]
-    $($PSStyle.Foreground.Magenta)qrcode$($PSStyle.Reset) <text> [-Size <Size>] [-Format <Format>]
-        Generates QR codes in PNG format using qrcode.show API service.
+    $UtilityProductivity = @"
+$($PSStyle.Foreground.Yellow)Utility Module - Productivity & Convenience$($PSStyle.Reset)
+    Essential utilities for productivity enhancement and daily tasks.
 
-    $($PSStyle.Foreground.Green)New-QRCodeSVG$($PSStyle.Reset) <text> [-Size <Size>]
-    $($PSStyle.Foreground.Magenta)qrsvg$($PSStyle.Reset) <text> [-Size <Size>]
-        Generates QR codes in SVG format using qrcode.show API service.
+    $($PSStyle.Foreground.Green)Random Quote Generator:$($PSStyle.Reset)
+    $($PSStyle.Foreground.Green)Get-RandomQuote$($PSStyle.Reset)
+    $($PSStyle.Foreground.Magenta)quote$($PSStyle.Reset)
+        Retrieves a random quote from an online API.
 
-    $($PSStyle.Foreground.Green)Save-QRCode$($PSStyle.Reset) -Text <Text> -FilePath <FilePath>
-        Saves QR code output to a file with proper format detection (PNG/SVG).
+    $($PSStyle.Foreground.Green)Weather Forecast:$($PSStyle.Reset)
+    $($PSStyle.Foreground.Green)Get-WeatherForecast$($PSStyle.Reset) [-Location <Location>] [-Glyphs] [-Moon] [-Format <Format>] [-Lang <Lang>]
+    $($PSStyle.Foreground.Magenta)weather$($PSStyle.Reset) [-Location <Location>] [-Glyphs] [-Moon] [-Format <Format>] [-Lang <Lang>]
+        Gets the weather forecast for a specified location.
 
-    $($PSStyle.Foreground.Green)Test-QRCodeService$($PSStyle.Reset)
-        Tests connectivity to the qrcode.show API service.
+    $($PSStyle.Foreground.Green)Prayer Times:$($PSStyle.Reset)
+    $($PSStyle.Foreground.Green)Get-PrayerTimes$($PSStyle.Reset) -City <City> -Country <Country> [-Method <Method>] [-Use24HourFormat]
+    $($PSStyle.Foreground.Magenta)prayer$($PSStyle.Reset) -City <City> -Country <Country> [-Method <Method>] [-Use24HourFormat]
+        Retrieves the prayer times for a specified city and country.
 
-    $($PSStyle.Foreground.Green)QRCode Utilities:$($PSStyle.Reset)
-    $($PSStyle.Foreground.Green)New-QRCode$($PSStyle.Reset) <text> [-Size <Size>] [-Format <Format>]
-    $($PSStyle.Foreground.Magenta)qrcode$($PSStyle.Reset) <text> [-Size <Size>] [-Format <Format>]
-        Generates QR codes in PNG format using qrcode.show API service.
+    $($PSStyle.Foreground.Green)Timing Utilities:$($PSStyle.Reset)
+    $($PSStyle.Foreground.Green)Start-Countdown$($PSStyle.Reset) -Duration <Duration> [-CountUp] [-Title <Title>]
+    $($PSStyle.Foreground.Magenta)countdown$($PSStyle.Reset) -Duration <Duration> [-CountUp] [-Title <Title>]
+        Starts a countdown timer.
 
-    $($PSStyle.Foreground.Green)New-QRCodeSVG$($PSStyle.Reset) <text> [-Size <Size>]
-    $($PSStyle.Foreground.Magenta)qrsvg$($PSStyle.Reset) <text> [-Size <Size>]
-        Generates QR codes in SVG format using qrcode.show API service.
+    $($PSStyle.Foreground.Green)Start-Stopwatch$($PSStyle.Reset) [-Title <Title>]
+    $($PSStyle.Foreground.Magenta)stopwatch$($PSStyle.Reset) [-Title <Title>]
+        Starts a stopwatch.
 
-    $($PSStyle.Foreground.Green)Save-QRCode$($PSStyle.Reset) -Text <Text> -FilePath <FilePath>
-        Saves QR code output to a file with proper format detection (PNG/SVG).
+    $($PSStyle.Foreground.Green)Get-WallClock$($PSStyle.Reset) [-Title <Title>] [-TimeZone <TimeZone>]
+    $($PSStyle.Foreground.Magenta)wallclock$($PSStyle.Reset) [-Title <Title>] [-TimeZone <TimeZone>]
+        Displays the current time in a large font using the FIGlet utility.
 
-    $($PSStyle.Foreground.Green)Test-QRCodeService$($PSStyle.Reset)
-        Tests connectivity to the qrcode.show API service.
+    $($PSStyle.Foreground.Green)Matrix Animation:$($PSStyle.Reset)
+    $($PSStyle.Foreground.Green)Start-Matrix$($PSStyle.Reset) [-SleepTime <SleepTime>]
+    $($PSStyle.Foreground.Magenta)matrix$($PSStyle.Reset) [-SleepTime <SleepTime>]
+        Displays a matrix rain animation in the console.
+
+    $($PSStyle.Foreground.Green)Examples:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Daily productivity workflow
+        quote                          # Start day with inspiration
+        weather "New York"             # Check weather forecast
+        prayer -City "London" -Country "UK" -Use24HourFormat  # Prayer times
+        
+        # Timing and focus tools
+        countdown "00:25:00" -Title "Pomodoro Session"  # 25min focus timer
+        stopwatch -Title "Code Review" # Track time spent
+        wallclock -TimeZone "UTC"      # Display world clock
+        
+        # Weather with options
+        weather -Glyphs -Moon          # Weather with symbols and moon
+        weather "Tokyo" -Format j1     # Compact JSON format
+        weather "Paris" -Lang fr       # French language
+        
+        # Entertainment and breaks
+        matrix                         # Matrix animation (Ctrl+C to exit)
+        matrix -SleepTime 50          # Slower animation$($PSStyle.Reset)
 "@
 
     $PluginsRust = @"
@@ -2290,6 +2471,30 @@ $($PSStyle.Foreground.Yellow)Plugins Module - Rust Plugin$($PSStyle.Reset)
         'Utility' {
             Write-Host $Title
             Write-Host $Utility
+        }
+        'Base64' {
+            Write-Host $Title
+            Write-Host $UtilityBase64
+        }
+        'GitIgnore' {
+            Write-Host $Title
+            Write-Host $UtilityGitIgnore
+        }
+        'QRCode' {
+            Write-Host $Title
+            Write-Host $UtilityQRCode
+        }
+        'WebSearch' {
+            Write-Host $Title
+            Write-Host $UtilityWebSearch
+        }
+        'SystemAdmin' {
+            Write-Host $Title
+            Write-Host $UtilitySystemAdmin
+        }
+        'Productivity' {
+            Write-Host $Title
+            Write-Host $UtilityProductivity
         }
         'VSCode' {
             Write-Host $Title

@@ -1,5 +1,5 @@
 #---------------------------------------------------------------------------------------------------
-# MKAbuMattar's PowerShell Profile - Update Manifest
+# MKAbuMattar's PowerShell Profile - Misc Manifest
 #
 #
 #                             .
@@ -29,10 +29,8 @@
 # Author: Mohammad Abu Mattar
 #
 # Description:
-#       This Module provides a set of utility functions for various common tasks in PowerShell.
-#       It includes functions for checking administrator privileges,
-#       checking command existence, reloading the profile, getting system uptime,
-#       getting command definitions, starting countdown timers, and starting stopwatches.
+#       This Module provides a set of miscellaneous utility functions for various 
+#       common tasks in PowerShell.
 #
 # Created: 2021-09-01
 # Updated: 2025-09-24
@@ -43,25 +41,41 @@
 #---------------------------------------------------------------------------------------------------
 
 @{
-    RootModule           = 'Utility.psm1'
+    RootModule           = 'Misc.psm1'
     ModuleVersion        = '4.1.0'
     CompatiblePSEditions = @(
         'Desktop',
         'Core'
     )
-    GUID                 = '69fba7f4-822d-4201-bec5-7f7f03edfca3'
+    GUID                 = 'c9a53499-0b33-4410-9b93-044f888da988'
     Author               = 'Mohammad Abu Mattar'
     CompanyName          = 'MKAbuMattar'
     Copyright            = '(c) 2025 Mohammad Abu Mattar. All rights reserved.'
     Description          = 'A collection of utility functions for system and process management.'
     PowerShellVersion    = '5.0'
     FunctionsToExport    = @(
-        '*'
+        'Test-Administrator',
+        'Test-CommandExists',
+        'Invoke-ReloadProfile',
+        'Get-Uptime',
+        'Get-CommandDefinition',
+        'Start-Countdown',
+        'Start-StopWatch',
+        'Get-WallClock',
+        'Get-DiskUsage'
     )
     CmdletsToExport      = @()
     VariablesToExport    = @()
     AliasesToExport      = @(
-        '*'
+        'is-admin',
+        'command-exists',
+        'reload-profile',
+        'uptime',
+        'def',
+        'countdown',
+        'stopwatch',
+        'wallclock',
+        'du'
     )
     PrivateData          = @{
         PSData = @{
