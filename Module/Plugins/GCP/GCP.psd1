@@ -1,6 +1,6 @@
 @{
     RootModule        = 'GCP.psm1'
-    ModuleVersion     = '1.0.0'
+    ModuleVersion     = '4.1.0'
     GUID              = 'f7b8c9d0-e1f2-4a5b-8c6d-9e0f1a2b3c4d'
     Author            = 'MKAbuMattar'
     CompanyName       = 'Personal'
