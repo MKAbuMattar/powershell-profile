@@ -4,15 +4,15 @@ A comprehensive PowerShell module that provides Helm CLI shortcuts and utility f
 
 ## Overview
 
-This plugin converts common Helm aliases from zsh/bash to PowerShell functions with full parameter support and comprehensive help documentation. It includes automatic PowerShell completion support and seamlessly integrates Helm package management into your PowerShell workflow.
+The Helm plugin offers a full suite of PowerShell functions that wrap around the Helm command-line tool, providing short aliases for all common operations. It includes automatic PowerShell tab completion for Helm commands, subcommands, flags, and chart names, making it easier to manage Kubernetes applications directly from PowerShell.
 
 ## Features
 
-- **Complete Helm Integration**: All essential Helm commands with short aliases
-- **PowerShell Completion**: Automatic tab completion for Helm commands and options
-- **Full Parameter Support**: All Helm arguments and options are supported
-- **Comprehensive Help**: Detailed help documentation for each function
-- **PowerShell Integration**: Native PowerShell function names with familiar aliases
+-   **Complete Helm Integration**: All essential Helm commands with short aliases
+-   **PowerShell Completion**: Automatic tab completion for Helm commands and options
+-   **Full Parameter Support**: All Helm arguments and options are supported
+-   **Comprehensive Help**: Detailed help documentation for each function
+-   **PowerShell Integration**: Native PowerShell function names with familiar aliases
 
 ## Installation
 
@@ -20,9 +20,9 @@ This plugin is automatically loaded when the PowerShell profile is imported. No 
 
 ## Prerequisites
 
-- **Helm**: Must be installed and accessible via PATH
-- **Kubernetes Cluster**: Access to a Kubernetes cluster for deployment operations
-- **PowerShell 5.0+**: Required for completion support
+-   **Helm**: Must be installed and accessible via PATH
+-   **Kubernetes Cluster**: Access to a Kubernetes cluster for deployment operations
+-   **PowerShell 5.0+**: Required for completion support
 
 ## Available Functions and Aliases
 
@@ -111,10 +111,10 @@ h install my-test ./my-chart --dry-run --debug
 
 The plugin automatically initializes Helm completion for PowerShell:
 
-- Tab completion for commands, subcommands, and flags
-- Chart name completion for install/upgrade operations
-- Release name completion for management operations
-- Namespace completion for multi-namespace operations
+-   Tab completion for commands, subcommands, and flags
+-   Chart name completion for install/upgrade operations
+-   Release name completion for management operations
+-   Namespace completion for multi-namespace operations
 
 ### Parameter Passing
 
@@ -187,19 +187,19 @@ hun test-release --namespace testing
 
 ## Requirements
 
-- **Helm 3.x**: Recommended version for full compatibility
-- **Kubernetes Cluster**: With appropriate RBAC permissions
-- **PowerShell 5.0+**: For completion and advanced features
+-   **Helm 3.x**: Recommended version for full compatibility
+-   **Kubernetes Cluster**: With appropriate RBAC permissions
+-   **PowerShell 5.0+**: For completion and advanced features
 
 ## Compatibility
 
 This plugin works with:
 
-- Helm 3.x (recommended)
-- Helm 2.x (limited support)
-- Windows PowerShell 5.1
-- PowerShell Core 6.0+
-- All Kubernetes distributions (EKS, GKE, AKS, etc.)
+-   Helm 3.x (recommended)
+-   Helm 2.x (limited support)
+-   Windows PowerShell 5.1
+-   PowerShell Core 6.0+
+-   All Kubernetes distributions (EKS, GKE, AKS, etc.)
 
 ## Troubleshooting
 
@@ -225,30 +225,3 @@ Get-Help hin -Full
 # Debug installations
 hin my-release stable/app --dry-run --debug
 ```
-
-## Security Considerations
-
-- Always validate charts before installation in production
-- Use specific chart versions rather than latest
-- Review values files for sensitive data
-- Implement proper RBAC policies for Helm operations
-- Use secure repositories and verify chart signatures
-
-## Contributing
-
-When adding new Helm commands:
-
-1. Follow the naming convention: `Invoke-Helm[Command]`
-2. Add appropriate aliases matching the zsh/bash equivalents
-3. Include comprehensive help documentation
-4. Test with multiple Helm versions
-5. Update this README with new functions
-
-## Version History
-
-- **v4.1.0**: Initial PowerShell conversion from zsh/bash aliases
-  - All core Helm commands with aliases
-  - PowerShell completion support
-  - Comprehensive help documentation
-  - Full parameter support for all operations
-  - Integration with PowerShell profile ecosystem

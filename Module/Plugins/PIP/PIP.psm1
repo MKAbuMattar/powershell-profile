@@ -30,8 +30,9 @@
 #
 # Description:
 #       This module provides pip CLI shortcuts and utility functions for improved Python
-#       package management workflow in PowerShell environments. Converts 25+ common pip
-#       aliases from zsh/bash to PowerShell functions with full parameter support.
+#       package management workflow in PowerShell environments. Includes features such
+#       as package installation, upgrading, uninstallation, requirements file management,
+#       and GitHub integration, all with full parameter support and PowerShell completion.
 #
 # Created: 2025-09-26
 # Updated: 2025-09-26
@@ -912,7 +913,6 @@ function Invoke-PipUpgradeAll {
 
     .DESCRIPTION
         Upgrades all outdated packages to their latest versions.
-        Equivalent to 'pipupall' function from zsh/bash.
 
     .EXAMPLE
         Invoke-PipUpgradeAll
@@ -970,7 +970,6 @@ function Invoke-PipUninstallAll {
 
     .DESCRIPTION
         Uninstalls all installed packages except pip, setuptools, and wheel.
-        Equivalent to 'pipunall' function from zsh/bash. Use with caution.
 
     .PARAMETER Force
         Force uninstall without confirmation.
@@ -1032,7 +1031,6 @@ function Invoke-PipInstallGitHub {
 
     .DESCRIPTION
         Installs a Python package directly from a GitHub repository.
-        Equivalent to 'pipig' function from zsh/bash.
 
     .PARAMETER Repository
         GitHub repository in format 'owner/repo'.
@@ -1079,7 +1077,6 @@ function Invoke-PipInstallGitHubBranch {
 
     .DESCRIPTION
         Installs a Python package from a specific branch of a GitHub repository.
-        Equivalent to 'pipigb' function from zsh/bash.
 
     .PARAMETER Repository
         GitHub repository in format 'owner/repo'.
@@ -1131,8 +1128,7 @@ function Invoke-PipInstallGitHubPR {
         Install package from GitHub pull request.
 
     .DESCRIPTION
-        Installs a Python package from a specific pull request of a GitHub repository.
-        Equivalent to 'pipigp' function from zsh/bash.
+        Installs a Python package from a specific pull request of a GitHub repository..
 
     .PARAMETER Repository
         GitHub repository in format 'owner/repo'.

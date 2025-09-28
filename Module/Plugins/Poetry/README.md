@@ -1,6 +1,6 @@
 # Poetry Plugin
 
-A comprehensive PowerShell module that provides convenient aliases and functions for Python dependency management using Poetry. This plugin converts all common zsh/bash Poetry shortcuts to PowerShell equivalents with enhanced functionality and cross-platform support.
+A comprehensive PowerShell module that provides convenient aliases and functions for Python dependency management using Poetry. This plugin converts all common Poetry CLI commands into easy-to-use PowerShell functions with full parameter support, virtual environment handling, and project lifecycle management.
 
 ## Overview
 

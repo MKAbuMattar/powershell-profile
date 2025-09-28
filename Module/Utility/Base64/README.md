@@ -1,6 +1,6 @@
 # Base64 Utility Module
 
-Base64 encoding and decoding utilities for PowerShell, providing equivalent functionality to bash/zsh `encode64`, `encodefile64`, and `decode64` commands.
+Base64 encoding and decoding utilities for PowerShell, providing functions to encode text and files to Base64 format and decode Base64 strings back to plain text.
 
 ## Features
 

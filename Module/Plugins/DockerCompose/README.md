@@ -2,17 +2,13 @@
 
 A comprehensive PowerShell module that provides Docker Compose CLI shortcuts and utility functions for improved Docker Compose workflow in PowerShell environments.
 
-## Overview
-
-This plugin converts common Docker Compose aliases from zsh/bash to PowerShell functions with full parameter support and comprehensive help documentation. It automatically detects whether to use `docker-compose` (v1 standalone) or `docker compose` (v2 CLI plugin) based on availability.
-
 ## Features
 
-- **Automatic Command Detection**: Intelligently selects between `docker-compose` and `docker compose`
-- **Complete Alias Coverage**: All essential Docker Compose commands with short aliases
-- **Full Parameter Support**: All Docker Compose arguments and options are supported
-- **Comprehensive Help**: Detailed help documentation for each function
-- **PowerShell Integration**: Native PowerShell function names with familiar aliases
+-   **Automatic Command Detection**: Intelligently selects between `docker-compose` and `docker compose`
+-   **Complete Alias Coverage**: All essential Docker Compose commands with short aliases
+-   **Full Parameter Support**: All Docker Compose arguments and options are supported
+-   **Comprehensive Help**: Detailed help documentation for each function
+-   **PowerShell Integration**: Native PowerShell function names with familiar aliases
 
 ## Installation
 
@@ -128,9 +124,9 @@ dcrm
 
 The plugin automatically detects the available Docker Compose command:
 
-- Prefers `docker-compose` (v1) for backward compatibility
-- Falls back to `docker compose` (v2) if v1 is not available
-- Caches the detection result for better performance
+-   Prefers `docker-compose` (v1) for backward compatibility
+-   Falls back to `docker compose` (v2) if v1 is not available
+-   Caches the detection result for better performance
 
 ### Parameter Passing
 
@@ -162,19 +158,19 @@ Get-Help dcup -Examples
 
 ## Requirements
 
-- PowerShell 5.0 or later
-- Docker Compose (either v1 standalone or v2 CLI plugin)
-- Docker Engine
+-   PowerShell 5.0 or later
+-   Docker Compose (either v1 standalone or v2 CLI plugin)
+-   Docker Engine
 
 ## Compatibility
 
 This plugin works with:
 
-- Docker Compose v1 (`docker-compose`)
-- Docker Compose v2 (`docker compose`)
-- Windows PowerShell 5.1
-- PowerShell Core 6.0+
-- All Docker Compose commands and options
+-   Docker Compose v1 (`docker-compose`)
+-   Docker Compose v2 (`docker compose`)
+-   Windows PowerShell 5.1
+-   PowerShell Core 6.0+
+-   All Docker Compose commands and options
 
 ## Troubleshooting
 
@@ -196,21 +192,3 @@ dco --help
 # Get function help
 Get-Help dcup -Full
 ```
-
-## Contributing
-
-When adding new Docker Compose commands:
-
-1. Follow the naming convention: `Invoke-DockerCompose[Command]`
-2. Add appropriate aliases matching the zsh/bash equivalents
-3. Include comprehensive help documentation
-4. Test with both Docker Compose v1 and v2
-5. Update this README with new functions
-
-## Version History
-
-- **v4.1.0**: Initial PowerShell conversion from zsh/bash aliases
-  - All core Docker Compose commands
-  - Automatic command detection
-  - Comprehensive help documentation
-  - Full parameter support

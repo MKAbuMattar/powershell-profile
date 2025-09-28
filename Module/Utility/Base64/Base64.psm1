@@ -32,7 +32,6 @@
 #       This module provides Base64 encoding and decoding utilities for PowerShell.
 #       It includes functions for encoding text and files to Base64 format,
 #       and decoding Base64 content back to plain text.
-#       Equivalent to bash/zsh encode64, encodefile64, and decode64 functions.
 #
 # Created: 2025-09-27
 # Updated: 2025-09-27
@@ -49,7 +48,7 @@ function ConvertTo-Base64 {
 
     .DESCRIPTION
         Converts input text to Base64 encoding. Can accept input from the pipeline 
-        or as a parameter. Equivalent to the bash/zsh encode64 function.
+        or as a parameter.
 
     .PARAMETER Text
         The text to encode to Base64. If not provided, reads from pipeline.
@@ -59,9 +58,6 @@ function ConvertTo-Base64 {
 
     .OUTPUTS
         Base64 encoded string.
-
-    .NOTES
-        This function provides Base64 encoding functionality similar to the bash/zsh encode64 function.
 
     .EXAMPLE
         ConvertTo-Base64 "Hello World"
@@ -113,7 +109,7 @@ function ConvertTo-Base64File {
 
     .DESCRIPTION
         Reads a file, encodes its content to Base64, and saves the result to a new file 
-        with .txt extension. Equivalent to the bash/zsh encodefile64 function.
+        with .txt extension.
 
     .PARAMETER FilePath
         The path to the file to encode.
@@ -123,9 +119,6 @@ function ConvertTo-Base64File {
 
     .OUTPUTS
         Creates a new file with Base64 encoded content.
-
-    .NOTES
-        This function provides file Base64 encoding functionality similar to the bash/zsh encodefile64 function.
 
     .EXAMPLE
         ConvertTo-Base64File "document.pdf"
@@ -176,7 +169,7 @@ function ConvertFrom-Base64 {
 
     .DESCRIPTION
         Converts Base64 encoded input back to plain text. Can accept input from the pipeline 
-        or as a parameter. Equivalent to the bash/zsh decode64 function.
+        or as a parameter.
 
     .PARAMETER Base64Text
         The Base64 encoded text to decode. If not provided, reads from pipeline.
@@ -186,9 +179,6 @@ function ConvertFrom-Base64 {
 
     .OUTPUTS
         Decoded plain text string.
-
-    .NOTES
-        This function provides Base64 decoding functionality similar to the bash/zsh decode64 function.
 
     .EXAMPLE
         ConvertFrom-Base64 "SGVsbG8gV29ybGQ="

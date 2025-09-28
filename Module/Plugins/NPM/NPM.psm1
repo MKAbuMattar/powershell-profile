@@ -30,8 +30,9 @@
 #
 # Description:
 #       This module provides npm CLI shortcuts and utility functions for improved Node.js
-#       package management workflow in PowerShell environments. Converts 30+ common npm
-#       aliases from zsh/bash to PowerShell functions with full parameter support.
+#       package management workflow in PowerShell environments. Supports package installation,
+#       updating, removal, script execution, publishing, and configuration management with
+#       automatic PowerShell completion for modern JavaScript/Node.js development.
 #
 # Created: 2025-09-26
 # Updated: 2025-09-26

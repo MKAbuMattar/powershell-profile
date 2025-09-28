@@ -30,8 +30,8 @@
 #
 # Description:
 #       This module provides Terraform CLI shortcuts and utility functions for improved Infrastructure
-#       as Code workflow in PowerShell environments. Converts 20+ common terraform aliases from zsh/bash
-#       to PowerShell functions with full parameter support, workspace awareness, and prompt integration.
+#       as Code workflow in PowerShell environments. Includes functions for initializing, planning,
+#       applying, and managing Terraform configurations with convenient aliases and prompt integration.
 #
 # Created: 2025-09-26
 # Updated: 2025-09-26

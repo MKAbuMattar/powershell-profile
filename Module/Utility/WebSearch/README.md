@@ -273,14 +273,3 @@ ws --help
 # or
 Show-WebSearchHelp
 ```
-
-## Notes
-
--   Requires internet connectivity for searches
--   URL encoding handles special characters automatically
--   On Linux, ensure you have a browser installed (GUI or terminal-based)
--   Some search engines may have rate limiting or access restrictions
-
-## Integration
-
-This module integrates seamlessly with the PowerShell Profile utility system and provides bash-compatible aliases for users familiar with the original zsh/bash web-search functionality.

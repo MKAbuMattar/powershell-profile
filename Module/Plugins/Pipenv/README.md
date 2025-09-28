@@ -1,6 +1,6 @@
 # Pipenv Plugin
 
-A comprehensive PowerShell module that provides convenient aliases and functions for Python virtual environment management using pipenv. This plugin converts common zsh/bash pipenv shortcuts to PowerShell equivalents with enhanced functionality and automatic shell management.
+A comprehensive PowerShell module that provides convenient aliases and functions for Python virtual environment management using pipenv. This plugin converts common pipenv CLI commands into easy-to-use PowerShell functions with full parameter support, automatic shell activation, and project lifecycle management.
 
 ## Overview
 

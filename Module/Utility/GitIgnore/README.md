@@ -2,7 +2,7 @@
 
 ## Overview
 
-The GitIgnore utility module provides comprehensive integration with the [gitignore.io](https://gitignore.io) API service, allowing you to generate, manage, and update `.gitignore` files directly from PowerShell. This module converts the popular zsh/bash `gi()` function to PowerShell with enhanced functionality and proper PowerShell integration.
+The GitIgnore utility module provides comprehensive integration with the [gitignore.io](https://gitignore.io) API service, allowing you to generate, manage, and update `.gitignore` files directly from PowerShell. It offers a set of user-friendly functions and aliases to streamline your Git workflow by creating `.gitignore` files tailored to your project's technologies and environments.
 
 ## Features
 
@@ -307,13 +307,11 @@ Get-Help gilist -Examples
 Get-Help ginew -Parameter Technologies
 ```
 
-## Comparison with Original zsh/bash Functions
-
-| Original                                                                               | PowerShell Equivalent          | Enhancement                             |
-| -------------------------------------------------------------------------------------- | ------------------------------ | --------------------------------------- |
-| `gi() { curl -fLw '\n' https://www.toptal.com/developers/gitignore/api/"${(j:,:)@}" }` | `Get-GitIgnore` / `gi`         | File output, error handling, validation |
-| `_gitignoreio_get_command_list()`                                                      | `Get-GitIgnoreList` / `gilist` | Filtering, grid view, formatting        |
-| `_gitignoreio()` (completion)                                                          | Built-in tab completion        | Smart caching, fallback support         |
+| PowerShell Equivalent          | Enhancement                             |
+| ------------------------------ | --------------------------------------- |
+| `Get-GitIgnore` / `gi`         | File output, error handling, validation |
+| `Get-GitIgnoreList` / `gilist` | Filtering, grid view, formatting        |
+| Built-in tab completion        | Smart caching, fallback support         |
 
 ### Advantages of PowerShell Version
 

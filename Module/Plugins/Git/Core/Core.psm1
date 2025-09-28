@@ -360,11 +360,6 @@ function Get-GitPromptInfo {
         return ""
     }
 
-    $hideInfoConfig = Invoke-GitPromptGit config --get oh-my-zsh.hide-info 2>$null
-    if ($LASTEXITCODE -eq 0 -and $hideInfoConfig -eq "1") {
-        return ""
-    }
-
     $ref = $null
 
     $ref = Invoke-GitPromptGit symbolic-ref --short HEAD 2>$null
@@ -436,11 +431,6 @@ function Test-GitDirty {
         [switch]$DisableUntrackedFiles,
         [string]$IgnoreSubmodules = "dirty"
     )
-
-    $hideDirtyConfig = Invoke-GitPromptGit config --get oh-my-zsh.hide-dirty 2>$null
-    if ($LASTEXITCODE -eq 0 -and $hideDirtyConfig -eq "1") {
-        return $CleanText
-    }
 
     $flags = @('--porcelain')
 

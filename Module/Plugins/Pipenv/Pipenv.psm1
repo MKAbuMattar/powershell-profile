@@ -30,9 +30,9 @@
 #
 # Description:
 #       This module provides pipenv CLI shortcuts and utility functions for improved Python
-#       virtual environment management workflow in PowerShell environments. Converts 15+ common
-#       pipenv aliases from zsh/bash to PowerShell functions with full parameter support and
-#       automatic shell activation functionality.
+#       virtual environment management workflow in PowerShell environments. Includes functions
+#       for initializing, activating, and managing pipenv environments with convenient aliases
+#       and automatic shell activation.
 #
 # Created: 2025-09-26
 # Updated: 2025-09-26
@@ -134,7 +134,7 @@ function Enable-PipenvAutoShell {
 
     .DESCRIPTION
         Enables automatic activation of pipenv virtual environments when entering
-        directories containing a Pipfile. This mimics the zsh plugin behavior.
+        directories containing a Pipfile.
 
     .EXAMPLE
         Enable-PipenvAutoShell

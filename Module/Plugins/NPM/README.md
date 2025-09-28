@@ -4,7 +4,7 @@ A comprehensive PowerShell module that provides npm CLI shortcuts and utility fu
 
 ## Overview
 
-This plugin converts 35+ common npm aliases and commands from zsh/bash to PowerShell functions with full parameter support and comprehensive help documentation. It includes automatic PowerShell completion support and seamlessly integrates Node.js package management into your PowerShell workflow.
+This plugin offers a complete set of PowerShell functions and aliases that wrap around the npm CLI, enabling developers to manage Node.js packages efficiently. It includes features for package installation, updating, removal, script execution, publishing, and configuration management, all with PowerShell-friendly syntax and tab completion support.
 
 ## Features
 
@@ -447,34 +447,3 @@ Get-Command *npm*      # List all npm functions
 -   **Node.js**: Version 14+ recommended for full compatibility
 -   **npm**: Latest version for optimal performance
 -   **PowerShell 5.0+**: For completion and advanced features
-
-## Compatibility
-
-This plugin works with:
-
--   npm 6.0+ (npm 9.0+ recommended)
--   Node.js 14.0+ (Node.js 18.0+ recommended)
--   Windows PowerShell 5.1
--   PowerShell Core 6.0+
--   All major npm registries (npmjs.org, private registries, etc.)
-
-## Contributing
-
-When adding new npm commands:
-
-1. Follow the naming convention: `Invoke-Npm[Command]`
-2. Add appropriate aliases matching the zsh/bash equivalents
-3. Include comprehensive help documentation
-4. Test with multiple npm versions
-5. Update this README with new functions
-
-## Version History
-
--   **v4.1.0**: Initial PowerShell conversion from zsh/bash aliases
-    -   35+ npm commands with aliases
-    -   PowerShell completion support
-    -   Comprehensive help documentation
-    -   Full parameter support for all npm operations
-    -   Security and maintenance functions
-    -   Configuration and authentication management
-    -   Integration with PowerShell profile ecosystem

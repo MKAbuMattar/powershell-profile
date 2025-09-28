@@ -450,25 +450,3 @@ This plugin is part of the MKAbuMattar PowerShell Profile. To contribute:
 2. Make your changes
 3. Test thoroughly with different VS Code flavours
 4. Submit a pull request
-
-## Credits
-
-Original zsh/bash VS Code plugin authors:
-
--   [MarsiBarsi](https://github.com/MarsiBarsi) (original author)
--   [babakks](https://github.com/babakks)
--   [SteelShot](https://github.com/SteelShot)
--   [AliSajid](https://github.com/AliSajid)
-
-PowerShell conversion and enhancements by Mohammad Abu Mattar.
-
-## License
-
-This project is licensed under the MIT License - see the main repository for details.
-
-## Links
-
--   [GitHub Repository](https://github.com/MKAbuMattar/powershell-profile)
--   [VS Code Documentation](https://code.visualstudio.com/docs)
--   [VS Code CLI Reference](https://code.visualstudio.com/docs/editor/command-line)
--   [PowerShell Documentation](https://docs.microsoft.com/en-us/powershell/)

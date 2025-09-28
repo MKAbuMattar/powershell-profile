@@ -1,6 +1,6 @@
 # Terraform Plugin
 
-A comprehensive PowerShell module that provides convenient aliases and functions for Infrastructure as Code management using Terraform. This plugin converts all common zsh/bash Terraform shortcuts to PowerShell equivalents with enhanced functionality, workspace awareness, and prompt integration.
+A comprehensive PowerShell module that provides convenient aliases and functions for Infrastructure as Code management using Terraform. This plugin converts all common Terraform CLI commands into easy-to-use PowerShell functions with full parameter support, workspace awareness, and prompt integration.
 
 ## Overview
 

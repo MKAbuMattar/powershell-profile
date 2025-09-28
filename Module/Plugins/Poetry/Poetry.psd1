@@ -30,9 +30,9 @@
 #
 # Description:
 #       This module provides Poetry CLI shortcuts and utility functions for improved Python
-#       dependency management workflow in PowerShell environments. Converts 30+ common
-#       poetry aliases from zsh/bash to PowerShell functions with full parameter support and
-#       comprehensive project lifecycle management.
+#       dependency management workflow in PowerShell environments. Includes functions for
+#       initializing, adding, removing, and managing Python packages with convenient aliases
+#       and virtual environment handling.
 #
 # Created: 2025-09-26
 # Updated: 2025-09-26

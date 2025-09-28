@@ -30,7 +30,7 @@
 #
 # Description:
 #       This module provides AWS CLI shortcuts and utility functions for improved AWS workflow
-#       in PowerShell environments. Converted from zsh/bash AWS plugin functionality.
+#       in PowerShell environments.
 #
 # Created: 2025-09-26
 # Updated: 2025-09-26

@@ -30,8 +30,8 @@
 #
 # Description:
 #       This module provides Terraform CLI shortcuts and utility functions for improved Infrastructure
-#       as Code workflow in PowerShell environments. Converts 20+ common terraform aliases from zsh/bash
-#       to PowerShell functions with full parameter support, workspace awareness, and prompt integration.
+#       as Code workflow in PowerShell environments. Includes functions for initializing, planning,
+#       applying, and managing Terraform configurations with convenient aliases and prompt integration.
 #
 # Created: 2025-09-26
 # Updated: 2025-09-26
@@ -247,8 +247,6 @@ function Get-TerraformPromptInfo {
 
     .DESCRIPTION
         Returns formatted workspace information suitable for display in a PowerShell prompt.
-        Mimics the tf_prompt_info function from zsh/bash plugins. Returns empty string if
-        in home directory or if no Terraform workspace is detected.
 
     .PARAMETER Prefix
         The prefix to display before the workspace name. Defaults to '['.
@@ -300,7 +298,6 @@ function Get-TerraformVersionPromptInfo {
 
     .DESCRIPTION
         Returns formatted version information suitable for display in a PowerShell prompt.
-        Mimics the tf_version_prompt_info function from zsh/bash plugins.
 
     .PARAMETER Prefix
         The prefix to display before the version. Defaults to '['.

@@ -4,7 +4,7 @@ A comprehensive PowerShell module that provides kubectl CLI shortcuts and utilit
 
 ## Overview
 
-This plugin converts 100+ common kubectl aliases from zsh/bash to PowerShell functions with full parameter support and comprehensive help documentation. It includes automatic PowerShell completion support and seamlessly integrates Kubernetes cluster management into your PowerShell workflow.
+The Kubectl plugin offers a full suite of PowerShell functions that wrap around the kubectl command-line tool, providing short aliases for all common operations. It includes automatic PowerShell tab completion for kubectl commands, subcommands, flags, and resource names, making it easier to manage Kubernetes clusters directly from PowerShell.
 
 ## Features
 
@@ -422,30 +422,3 @@ Get-Help kgp -Full
 k cluster-info
 k get nodes
 ```
-
-## Security Considerations
-
--   Always verify your current context before running commands
--   Use specific namespaces rather than --all-namespaces in production
--   Be cautious with delete operations
--   Implement proper RBAC policies for kubectl access
--   Use read-only contexts for monitoring operations
-
-## Contributing
-
-When adding new kubectl commands:
-
-1. Follow the naming convention: `Invoke-Kubectl[Command]`
-2. Add appropriate aliases matching the zsh/bash equivalents
-3. Include comprehensive help documentation
-4. Test with multiple kubectl versions
-5. Update this README with new functions
-
-## Version History
-
--   **v4.1.0**: Initial PowerShell conversion from zsh/bash aliases
-    -   100+ kubectl commands with aliases
-    -   PowerShell completion support
-    -   Comprehensive help documentation
-    -   Full parameter support for all operations
-    -   Integration with PowerShell profile ecosystem

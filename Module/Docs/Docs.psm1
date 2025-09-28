@@ -48,10 +48,10 @@ function Show-ProfileHelp {
         The PowerShell Profile Helper module provides a set of utility functions to help manage the PowerShell profile and perform common tasks in the console. The module includes functions for finding files, creating and updating files, extracting files, compressing files, searching for content in files, replacing content in files, moving up directory levels, updating the module directory, updating the profile, updating PowerShell, checking for command existence, reloading the profile, getting system uptime, getting command definitions, setting environment variables, getting environment variables, getting all processes, finding processes by name, finding processes by port, stopping processes by name, stopping processes by port, getting random quotes, getting weather forecasts, starting countdown timers, starting stopwatches, displaying the wall clock, displaying a matrix rain animation, and more. The `Show-ProfileHelp` function displays detailed help documentation for each section of the module.
 
     .PARAMETER Section
-        Specifies the section of the documentation to display. Valid values are 'All', 'AWS', 'Base64', 'Conda', 'Directory', 'Docker', 'DockerCompose', 'Docs', 'Environment', 'Git', 'GitIgnore', 'Helm', 'Kubectl', 'Logging', 'Network', 'NPM', 'PIP', 'Pipenv', 'PNPM', 'Poetry', 'Plugins', 'Process', 'Productivity', 'QRCode', 'Ruby', 'Rust', 'Starship', 'SystemAdmin', 'Terraform', 'Terragrunt', 'UV', 'Update', 'Utility', 'VSCode', 'WebSearch', and 'Yarn'. The default value is 'All'.
+        Specifies the section of the documentation to display. Valid values are 'All', 'AWS', 'Base64', 'Conda', 'Directory', 'Docker', 'DockerCompose', 'Docs', 'Environment', 'Flutter', 'GCP', 'Git', 'GitIgnore', 'Helm', 'Kubectl', 'Logging', 'Network', 'NPM', 'PIP', 'Pipenv', 'PNPM', 'Poetry', 'Plugins', 'Process', 'Productivity', 'QRCode', 'Ruby', 'Rust', 'Starship', 'SystemAdmin', 'Terraform', 'Terragrunt', 'UV', 'Update', 'Utility', 'VSCode', 'WebSearch', and 'Yarn'. The default value is 'All'.
 
     .INPUTS
-        Section: (Optional) Specifies the section of the documentation to display. Valid values are 'All', 'AWS', 'Base64', 'Conda', 'Directory', 'Docker', 'DockerCompose', 'Docs', 'Environment', 'Git', 'GitIgnore', 'Helm', 'Kubectl', 'Logging', 'Network', 'NPM', 'PIP', 'Pipenv', 'PNPM', 'Poetry', 'Plugins', 'Process', 'Productivity', 'QRCode', 'Ruby', 'Rust', 'Starship', 'SystemAdmin', 'Terraform', 'Terragrunt', 'UV', 'Update', 'Utility', 'VSCode', 'WebSearch', and 'Yarn'. The default value is 'All'.
+        Section: (Optional) Specifies the section of the documentation to display. Valid values are 'All', 'AWS', 'Base64', 'Conda', 'Directory', 'Docker', 'DockerCompose', 'Docs', 'Environment', 'Flutter', 'GCP', 'Git', 'GitIgnore', 'Helm', 'Kubectl', 'Logging', 'Network', 'NPM', 'PIP', 'Pipenv', 'PNPM', 'Poetry', 'Plugins', 'Process', 'Productivity', 'QRCode', 'Ruby', 'Rust', 'Starship', 'SystemAdmin', 'Terraform', 'Terragrunt', 'UV', 'Update', 'Utility', 'VSCode', 'WebSearch', and 'Yarn'. The default value is 'All'.
 
     .OUTPUTS
         This module does not return any output.
@@ -385,6 +385,7 @@ $($PSStyle.Foreground.Yellow)Plugins Module$($PSStyle.Reset)
         $($PSStyle.Foreground.Cyan)Docker Plugin$($PSStyle.Reset) - Complete Docker CLI integration with PowerShell aliases (37 commands)
         $($PSStyle.Foreground.Cyan)DockerCompose Plugin$($PSStyle.Reset) - Complete Docker Compose CLI integration with PowerShell aliases (20 commands)
         $($PSStyle.Foreground.Cyan)Flutter Plugin$($PSStyle.Reset) - Comprehensive Flutter CLI integration for cross-platform app development (14+ commands)
+        $($PSStyle.Foreground.Cyan)GCP Plugin$($PSStyle.Reset) - Comprehensive Google Cloud Platform CLI integration with 70+ commands and aliases
         $($PSStyle.Foreground.Cyan)Git Plugin$($PSStyle.Reset) - Comprehensive Git aliases and shortcuts (160+ commands)
         $($PSStyle.Foreground.Cyan)Helm Plugin$($PSStyle.Reset) - Complete Helm CLI integration with PowerShell aliases (5+ commands)
         $($PSStyle.Foreground.Cyan)Kubectl Plugin$($PSStyle.Reset) - Complete kubectl CLI integration with PowerShell aliases (100+ commands)
@@ -1802,6 +1803,116 @@ $($PSStyle.Foreground.Yellow)Plugins Module - Flutter Plugin$($PSStyle.Reset)
     Supports Android, iOS, web, Windows, macOS, and Linux development.
 "@
 
+    $PluginsGCP = @"
+$($PSStyle.Foreground.Yellow)Plugins Module - GCP Plugin$($PSStyle.Reset)
+    $($PSStyle.Foreground.Cyan)Comprehensive Google Cloud Platform CLI integration with 70+ PowerShell functions and aliases$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Core Commands:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Magenta)gcloud, gc$($PSStyle.Reset)            - Base gcloud command wrapper
+        $($PSStyle.Foreground.Magenta)gci$($PSStyle.Reset)                   - Initialize and configure gcloud
+        $($PSStyle.Foreground.Magenta)gcinf$($PSStyle.Reset)                 - Display gcloud environment details
+        $($PSStyle.Foreground.Magenta)gcv$($PSStyle.Reset)                   - Display version and components
+        $($PSStyle.Foreground.Magenta)gccu$($PSStyle.Reset)                  - Update Cloud SDK to latest version
+
+    $($PSStyle.Foreground.Green)Configuration Management:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Project and configuration setup
+        gccsp my-project                    # Set default project
+        gccca dev-config                    # Switch to configuration
+        gcccc new-config                    # Create new configuration
+        gcccl                               # List all configurations
+        gccl                                # Show current configuration
+        gccs compute/zone us-central1-a     # Set default zone$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Authentication:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Account management and authorization
+        gcal                                # Login with Google account
+        gcapat                              # Get current access token
+        gcar user@example.com               # Revoke credentials
+        gcaasa key.json                     # Activate service account
+        gcacd                               # Configure Docker authentication$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Compute Engine:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# VM instance management
+        gccc my-vm --machine-type e2-micro  # Create VM instance
+        gcpil                               # List all instances
+        gcpid my-vm                         # Describe instance
+        gcpup my-vm                         # Start instance
+        gcpdown my-vm                       # Stop instance
+        gcpssh my-vm                        # SSH to instance
+        gcpc ./file my-vm:~/file            # Copy files to/from VM
+        gcprm my-vm                         # Delete instance$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Container & Kubernetes (GKE):$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# GKE cluster operations
+        gkec my-cluster --num-nodes 3       # Create GKE cluster
+        gcccg my-cluster                    # Get cluster credentials
+        gkecl                               # List clusters
+        gccil gcr.io/project/image          # List container image tags$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)App Engine:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# App Engine application management
+        gcapc --region us-central           # Create App Engine app
+        gcapd                               # Deploy application
+        gcapb                               # Open app in browser
+        gcapl                               # View application logs
+        gcapv                               # List app versions$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)IAM Management:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Identity and Access Management
+        gciamv my-sa --display-name "SA"    # Create service account
+        gciamk my-sa@project.iam.gserviceaccount.com  # List SA keys
+        gcpa project --member user:me@example.com --role roles/viewer  # Add IAM binding
+        gciamr custom-role --permissions compute.instances.get  # Create custom role$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Storage & Services:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Cloud services management
+        gcss ls gs://bucket                 # Cloud Storage operations
+        gcsq instances list                 # Cloud SQL operations
+        gcf deploy                          # Cloud Functions operations
+        gcps topics create my-topic         # Pub/Sub operations
+        gcro deploy                         # Cloud Run operations$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Utilities:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Helpful utility commands
+        gcd                                 # Set project from directory name
+        Get-GCloudCurrentProject            # Get current project ID
+        Test-GCloudInstalled                # Check if gcloud is available
+        gcpzl                               # List compute zones
+        gcca                                # List IP addresses$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Service Shortcuts:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# Quick access to GCP services
+        gca                                 # Auth commands (gcloud auth)
+        gcb                                 # Beta commands (gcloud beta)
+        gcf                                 # Functions (gcloud functions)
+        gcki                                # KMS (gcloud kms)
+        gcla                                # Logging (gcloud logging)
+        gcma                                # Monitoring (gcloud monitoring)$($PSStyle.Reset)
+
+    $($PSStyle.Foreground.Green)Complete GCP Workflow:$($PSStyle.Reset)
+        $($PSStyle.Foreground.Cyan)# End-to-end development workflow
+        gci                                 # Initialize gcloud
+        gcal                                # Authenticate
+        gccsp my-project                    # Set project
+        gccs compute/zone us-central1-a     # Set default zone
+        
+        # Create and manage VM
+        gccc my-vm --machine-type e2-micro --image-family ubuntu-2004-lts
+        gcpil                               # List instances
+        gcpssh my-vm                        # Connect to instance
+        
+        # Create GKE cluster
+        gkec my-cluster --num-nodes 2
+        gcccg my-cluster                    # Get kubectl credentials
+        
+        # Deploy App Engine application
+        gcapd                               # Deploy from current directory
+        gcapb                               # View in browser$($PSStyle.Reset)
+
+    Note: Requires Google Cloud SDK installed and configured with valid authentication.
+    Includes 70+ commands covering all major GCP services with PowerShell integration.
+"@
+
     $PluginsRsync = @"
 $($PSStyle.Foreground.Yellow)Plugins Module - Rsync Plugin$($PSStyle.Reset)
     $($PSStyle.Foreground.Cyan)Rsync file synchronization with PowerShell integration and cross-platform support$($PSStyle.Reset)
@@ -2387,6 +2498,10 @@ $($PSStyle.Foreground.Yellow)Plugins Module - Rust Plugin$($PSStyle.Reset)
         'Flutter' {
             Write-Host $Title
             Write-Host $PluginsFlutter
+        }
+        'GCP' {
+            Write-Host $Title
+            Write-Host $PluginsGCP
         }
         'Git' {
             Write-Host $Title

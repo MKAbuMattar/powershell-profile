@@ -30,8 +30,9 @@
 #
 # Description:
 #       This module provides pip CLI shortcuts and utility functions for improved Python
-#       package management workflow in PowerShell environments. Converts 25+ common pip
-#       aliases from zsh/bash to PowerShell functions with full parameter support.
+#       package management workflow in PowerShell environments. Includes features such
+#       as package installation, upgrading, uninstallation, requirements file management,
+#       and GitHub integration, all with full parameter support and PowerShell completion.
 #
 # Created: 2025-09-26
 # Updated: 2025-09-26

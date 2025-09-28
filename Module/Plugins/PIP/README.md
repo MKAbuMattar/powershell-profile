@@ -4,7 +4,7 @@ A comprehensive PowerShell module that provides pip CLI shortcuts and utility fu
 
 ## Overview
 
-This plugin converts 25+ common pip aliases and commands from zsh/bash to PowerShell functions with full parameter support and comprehensive help documentation. It includes automatic PowerShell completion support and seamlessly integrates Python package management into your PowerShell workflow.
+This module offers convenient aliases and functions for managing Python packages using pip. It includes features such as package installation, upgrading, uninstallation, requirements file management, and GitHub integration, all with full parameter support and PowerShell completion.
 
 ## Features
 
@@ -442,36 +442,3 @@ Get-Command *pip*
 -   **Python**: Version 3.7+ recommended for full compatibility
 -   **pip**: Latest version for optimal performance (pip3 preferred)
 -   **PowerShell 5.0+**: For completion and advanced features
-
-## Compatibility
-
-This plugin works with:
-
--   pip 20.0+ (pip 23.0+ recommended)
--   Python 3.7+ (Python 3.11+ recommended)
--   Windows PowerShell 5.1
--   PowerShell Core 6.0+
--   All major Python package indexes (PyPI, private indexes, etc.)
-
-## Contributing
-
-When adding new pip commands:
-
-1. Follow the naming convention: `Invoke-Pip[Command]`
-2. Add appropriate aliases matching the zsh/bash equivalents
-3. Include comprehensive help documentation
-4. Test with multiple pip versions
-5. Update this README with new functions
-
-## Version History
-
--   **v4.1.0**: Initial PowerShell conversion from zsh/bash aliases
-    -   25+ pip commands with aliases
-    -   PowerShell completion support
-    -   Comprehensive help documentation
-    -   Full parameter support for all pip operations
-    -   GitHub integration for repository installations
-    -   Bulk operations (upgrade all, uninstall all)
-    -   Requirements file management
-    -   Advanced pip operations (cache, config, debug, etc.)
-    -   Integration with PowerShell profile ecosystem
