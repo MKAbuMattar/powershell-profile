@@ -73,6 +73,8 @@
         'Invoke-ReloadProfile',
         'Invoke-WebSearch', 
         'New-GitIgnoreFile',
+        'New-QRCode',
+        'New-QRCodeSVG',
         'Search-DuckDuckGo',
         'Search-GitHub',
         'Search-Google',
@@ -80,6 +82,7 @@
         'Search-StackOverflow',
         'Search-WebSearch',
         'Search-Wikipedia',
+        'Save-QRCode',
         'Start-Countdown', 
         'Start-Matrix', 
         'Start-StopWatch',
@@ -87,7 +90,8 @@
         'Start-WebSearch', 
         'Test-Administrator', 
         'Test-CommandExists', 
-        'Test-GitIgnoreService'
+        'Test-GitIgnoreService',
+        'Test-QRCodeService'
     )
     CmdletsToExport      = @()
     VariablesToExport    = @()
@@ -107,6 +111,8 @@
         'is-admin', 
         'matrix', 
         'prayer', 
+        'qrcode',
+        'qrsvg',
         'quote', 
         'reload-profile', 
         'stopwatch', 

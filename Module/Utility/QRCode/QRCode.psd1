@@ -87,5 +87,5 @@
             ExternalModuleDependencies = @()
         }
     }
-    HelpInfoURI          = 'https://github.com/MKAbuMattar/powershell-profile/blob/main/Module/Plugins/QRCode/README.md'
+    HelpInfoURI          = 'https://github.com/MKAbuMattar/powershell-profile/blob/main/Module/Utility/QRCode/README.md'
 }

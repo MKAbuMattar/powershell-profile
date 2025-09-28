@@ -52,6 +52,7 @@ $ModuleList = @(
     @{ Name = 'GitIgnore'; Path = 'GitIgnore/GitIgnore.psd1' }
     @{ Name = 'Matrix'; Path = 'Matrix/Matrix.psd1' }
     @{ Name = 'PrayerTimes'; Path = 'PrayerTimes/PrayerTimes.psd1' }
+    @{ Name = 'QRCode'; Path = 'QRCode/QRCode.psd1' }
     @{ Name = 'RandomQuote'; Path = 'RandomQuote/RandomQuote.psd1' }
     @{ Name = 'Utility'; Path = 'Utility/Utility.psd1' }
     @{ Name = 'WeatherForecast'; Path = 'WeatherForecast/WeatherForecast.psd1' }

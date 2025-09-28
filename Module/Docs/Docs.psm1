@@ -188,7 +188,6 @@ function Show-ProfileHelp {
             'Plugins',
             'Poetry',
             'Process',
-            'QRCode',
             'Ruby',
             'Rsync',
             'Rust',
@@ -394,7 +393,6 @@ $($PSStyle.Foreground.Yellow)Plugins Module$($PSStyle.Reset)
         $($PSStyle.Foreground.Cyan)Pipenv Plugin$($PSStyle.Reset) - Complete Pipenv CLI integration with PowerShell aliases (15+ commands)
         $($PSStyle.Foreground.Cyan)PNPM Plugin$($PSStyle.Reset) - Comprehensive PNPM CLI integration with PowerShell aliases (68+ commands)
         $($PSStyle.Foreground.Cyan)Poetry Plugin$($PSStyle.Reset) - Complete Poetry CLI integration with PowerShell aliases (30+ commands)
-        $($PSStyle.Foreground.Cyan)QRCode Plugin$($PSStyle.Reset) - Generate QR codes directly from PowerShell using qrcode.show API
         $($PSStyle.Foreground.Cyan)Rsync Plugin$($PSStyle.Reset) - Comprehensive Rsync CLI integration for file synchronization and backup
         $($PSStyle.Foreground.Cyan)Ruby Plugin$($PSStyle.Reset) - Comprehensive Ruby CLI integration with development workflow automation (25+ commands)
         $($PSStyle.Foreground.Cyan)Terraform Plugin$($PSStyle.Reset) - Complete Terraform CLI integration with PowerShell aliases (20+ commands)
@@ -1743,56 +1741,7 @@ $($PSStyle.Foreground.Yellow)Plugins Module - Ruby Plugin$($PSStyle.Reset)
     Includes 25+ commands covering complete Ruby development workflow with cross-platform support.
 "@
 
-    $PluginsQRCode = @"
-$($PSStyle.Foreground.Yellow)Plugins Module - QRCode Plugin$($PSStyle.Reset)
-    $($PSStyle.Foreground.Cyan)Generate QR codes directly from PowerShell using qrcode.show API service$($PSStyle.Reset)
 
-    $($PSStyle.Foreground.Green)Core Functions:$($PSStyle.Reset)
-        $($PSStyle.Foreground.Magenta)qrcode$($PSStyle.Reset) <text>           - Generate QR code in PNG format
-        $($PSStyle.Foreground.Magenta)qrsvg$($PSStyle.Reset) <text>            - Generate QR code in SVG format
-        New-QRCode <text>            - Full function for PNG QR codes
-        New-QRCodeSVG <text>         - Full function for SVG QR codes
-
-    $($PSStyle.Foreground.Green)Basic QR Code Generation:$($PSStyle.Reset)
-        $($PSStyle.Foreground.Cyan)# Simple text QR codes
-        qrcode "Hello World"         # Generate PNG QR code
-        qrsvg "Hello World"          # Generate SVG QR code
-        New-QRCode "GitHub URL"       # Using full function name$($PSStyle.Reset)
-
-    $($PSStyle.Foreground.Green)Pipeline Support:$($PSStyle.Reset)
-        $($PSStyle.Foreground.Cyan)# PowerShell pipeline integration
-        "https://github.com" | qrcode           # From pipeline
-        Get-Location | New-QRCode                # Current directory path
-        "Line 1", "Line 2" | qrcode             # Multiple inputs (joined)
-        Get-Date | New-QRCodeSVG                 # Date as QR code$($PSStyle.Reset)
-
-    $($PSStyle.Foreground.Green)Interactive Mode:$($PSStyle.Reset)
-        $($PSStyle.Foreground.Cyan)# Multi-line text input
-        qrcode                       # Enter interactive mode
-        # Type multiple lines, then Ctrl+Z (Windows) or Ctrl+D (Unix)
-        New-QRCode                   # Same with full function$($PSStyle.Reset)
-
-    $($PSStyle.Foreground.Green)File Operations:$($PSStyle.Reset)
-        $($PSStyle.Foreground.Cyan)# Save QR codes to files
-        Save-QRCode -InputText "Hello" -Path "qr.png"     # Save PNG
-        Save-QRCode -InputText "Hello" -Path "qr.svg"     # Save SVG
-        New-QRCodeSVG "Text" | Out-File "output.svg"     # Pipeline to file$($PSStyle.Reset)
-
-    $($PSStyle.Foreground.Green)Utility Functions:$($PSStyle.Reset)
-        $($PSStyle.Foreground.Cyan)# Service and testing
-        Test-QRCodeService           # Check qrcode.show connectivity
-        Save-QRCode "URL" "file.png" # Direct save function$($PSStyle.Reset)
-
-    $($PSStyle.Foreground.Green)Development Workflow:$($PSStyle.Reset)
-        $($PSStyle.Foreground.Cyan)# Quick QR code generation
-        Test-QRCodeService           # Verify service availability
-        git remote get-url origin | qrcode        # Repo URL as QR
-        Get-Location | qrsvg | Out-File "path.svg" # Save current path
-        "Meeting: $(Get-Date)" | qrcode            # Dynamic content$($PSStyle.Reset)
-
-    Note: Requires internet connectivity to access qrcode.show API service.
-    Supports PNG and SVG formats with full PowerShell pipeline integration.
-"@
 
     $PluginsFlutter = @"
 $($PSStyle.Foreground.Yellow)Plugins Module - Flutter Plugin$($PSStyle.Reset)
@@ -2048,6 +1997,36 @@ $($PSStyle.Foreground.Yellow)Utility Module$($PSStyle.Reset)
 
     $($PSStyle.Foreground.Green)Start-WebBrowser$($PSStyle.Reset) <url>
         Launches a URL in the default browser (cross-platform).
+
+    $($PSStyle.Foreground.Green)QRCode Utilities:$($PSStyle.Reset)
+    $($PSStyle.Foreground.Green)New-QRCode$($PSStyle.Reset) <text> [-Size <Size>] [-Format <Format>]
+    $($PSStyle.Foreground.Magenta)qrcode$($PSStyle.Reset) <text> [-Size <Size>] [-Format <Format>]
+        Generates QR codes in PNG format using qrcode.show API service.
+
+    $($PSStyle.Foreground.Green)New-QRCodeSVG$($PSStyle.Reset) <text> [-Size <Size>]
+    $($PSStyle.Foreground.Magenta)qrsvg$($PSStyle.Reset) <text> [-Size <Size>]
+        Generates QR codes in SVG format using qrcode.show API service.
+
+    $($PSStyle.Foreground.Green)Save-QRCode$($PSStyle.Reset) -Text <Text> -FilePath <FilePath>
+        Saves QR code output to a file with proper format detection (PNG/SVG).
+
+    $($PSStyle.Foreground.Green)Test-QRCodeService$($PSStyle.Reset)
+        Tests connectivity to the qrcode.show API service.
+
+    $($PSStyle.Foreground.Green)QRCode Utilities:$($PSStyle.Reset)
+    $($PSStyle.Foreground.Green)New-QRCode$($PSStyle.Reset) <text> [-Size <Size>] [-Format <Format>]
+    $($PSStyle.Foreground.Magenta)qrcode$($PSStyle.Reset) <text> [-Size <Size>] [-Format <Format>]
+        Generates QR codes in PNG format using qrcode.show API service.
+
+    $($PSStyle.Foreground.Green)New-QRCodeSVG$($PSStyle.Reset) <text> [-Size <Size>]
+    $($PSStyle.Foreground.Magenta)qrsvg$($PSStyle.Reset) <text> [-Size <Size>]
+        Generates QR codes in SVG format using qrcode.show API service.
+
+    $($PSStyle.Foreground.Green)Save-QRCode$($PSStyle.Reset) -Text <Text> -FilePath <FilePath>
+        Saves QR code output to a file with proper format detection (PNG/SVG).
+
+    $($PSStyle.Foreground.Green)Test-QRCodeService$($PSStyle.Reset)
+        Tests connectivity to the qrcode.show API service.
 "@
 
     $PluginsRust = @"
@@ -2275,10 +2254,6 @@ $($PSStyle.Foreground.Yellow)Plugins Module - Rust Plugin$($PSStyle.Reset)
         'Process' {
             Write-Host $Title
             Write-Host $Process
-        }
-        'QRCode' {
-            Write-Host $Title
-            Write-Host $PluginsQRCode
         }
         'Ruby' {
             Write-Host $Title

@@ -126,41 +126,16 @@ Set-PSReadLineKeyHandler -Chord '"', "'" `
 $BaseModuleDir = Join-Path -Path $PSScriptRoot -ChildPath 'Module'
 
 $ModuleList = @(
-    # Core Modules
     @{ Name = 'Directory'; Path = 'Directory/Directory.psd1' },
     @{ Name = 'Docs'; Path = 'Docs/Docs.psd1' },
     @{ Name = 'Environment'; Path = 'Environment/Environment.psd1' },
     @{ Name = 'Logging'; Path = 'Logging/Logging.psd1' },
     @{ Name = 'Network'; Path = 'Network/Network.psd1' },
+    @{ Name = 'Plugins'; Path = 'Plugins/Plugins.psd1' },
     @{ Name = 'Process'; Path = 'Process/Process.psd1' },
     @{ Name = 'Starship'; Path = 'Starship/Starship.psd1' },
     @{ Name = 'Update'; Path = 'Update/Update.psd1' },
-    @{ Name = 'Utility'; Path = 'Utility/Utility.psd1' },
-
-    # Plugin Modules (Grouped for readability)
-    @{ Name = 'Plugin-AWS'; Path = 'Plugins/AWS/AWS.psd1' },
-    @{ Name = 'Plugin-Conda'; Path = 'Plugins/Conda/Conda.psd1' },
-    @{ Name = 'Plugin-Deno'; Path = 'Plugins/Deno/Deno.psd1' },
-    @{ Name = 'Plugin-Docker'; Path = 'Plugins/Docker/Docker.psd1' },
-    @{ Name = 'Plugin-DockerCompose'; Path = 'Plugins/DockerCompose/DockerCompose.psd1' },
-    @{ Name = 'Plugin-Flutter'; Path = 'Plugins/Flutter/Flutter.psd1' },
-    @{ Name = 'Plugin-Git'; Path = 'Plugins/Git/Git.psd1' },
-    @{ Name = 'Plugin-Helm'; Path = 'Plugins/Helm/Helm.psd1' },
-    @{ Name = 'Plugin-Kubectl'; Path = 'Plugins/Kubectl/Kubectl.psd1' },
-    @{ Name = 'Plugin-NPM'; Path = 'Plugins/NPM/NPM.psd1' },
-    @{ Name = 'Plugin-PIP'; Path = 'Plugins/PIP/PIP.psd1' },
-    @{ Name = 'Plugin-Pipenv'; Path = 'Plugins/Pipenv/Pipenv.psd1' },
-    @{ Name = 'Plugin-PNPM'; Path = 'Plugins/PNPM/PNPM.psd1' },
-    @{ Name = 'Plugin-Poetry'; Path = 'Plugins/Poetry/Poetry.psd1' },
-    @{ Name = 'Plugin-QRCode'; Path = 'Plugins/QRCode/QRCode.psd1' },
-    @{ Name = 'Plugin-Ruby'; Path = 'Plugins/Ruby/Ruby.psd1' },
-    @{ Name = 'Plugin-Rust'; Path = 'Plugins/Rust/Rust.psd1' },
-    @{ Name = 'Plugin-Rsync'; Path = 'Plugins/Rsync/Rsync.psd1' },
-    @{ Name = 'Plugin-Terraform'; Path = 'Plugins/Terraform/Terraform.psd1' },
-    @{ Name = 'Plugin-Terragrunt'; Path = 'Plugins/Terragrunt/Terragrunt.psd1' },
-    @{ Name = 'Plugin-UV'; Path = 'Plugins/UV/UV.psd1' },
-    @{ Name = 'Plugin-VSCode'; Path = 'Plugins/VSCode/VSCode.psd1' },
-    @{ Name = 'Plugin-Yarn'; Path = 'Plugins/Yarn/Yarn.psd1' }
+    @{ Name = 'Utility'; Path = 'Utility/Utility.psd1' }
 )
 
 foreach ($Module in $ModuleList) {
