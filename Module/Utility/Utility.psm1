@@ -55,6 +55,7 @@ $ModuleList = @(
     @{ Name = 'RandomQuote'; Path = 'RandomQuote/RandomQuote.psd1' }
     @{ Name = 'Utility'; Path = 'Utility/Utility.psd1' }
     @{ Name = 'WeatherForecast'; Path = 'WeatherForecast/WeatherForecast.psd1' }
+    @{ Name = 'WebSearch'; Path = 'WebSearch/WebSearch.psd1' }
 )
 
 foreach ($Module in $ModuleList) {

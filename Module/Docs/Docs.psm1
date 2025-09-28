@@ -1995,7 +1995,7 @@ $($PSStyle.Foreground.Yellow)Utility Module$($PSStyle.Reset)
 
     $($PSStyle.Foreground.Green)GitIgnore Utilities:$($PSStyle.Reset)
     $($PSStyle.Foreground.Green)Get-GitIgnore$($PSStyle.Reset) <technologies...> [-OutputPath <Path>] [-Append]
-    $($PSStyle.Foreground.Magenta)gi$($PSStyle.Reset) <technologies...> [-OutputPath <Path>] [-Append]
+    $($PSStyle.Foreground.Magenta)gitignore$($PSStyle.Reset) <technologies...> [-OutputPath <Path>] [-Append]
         Generates .gitignore content for specified technologies using gitignore.io API.
 
     $($PSStyle.Foreground.Green)Get-GitIgnoreList$($PSStyle.Reset) [-Filter <Filter>] [-GridView]
@@ -2013,6 +2013,41 @@ $($PSStyle.Foreground.Yellow)Utility Module$($PSStyle.Reset)
     $($PSStyle.Foreground.Green)Test-GitIgnoreService$($PSStyle.Reset)
     $($PSStyle.Foreground.Magenta)gitest$($PSStyle.Reset)
         Tests connectivity to the gitignore.io API service.
+
+    $($PSStyle.Foreground.Green)WebSearch Utilities:$($PSStyle.Reset)
+    $($PSStyle.Foreground.Green)Start-WebSearch$($PSStyle.Reset) [engine] [terms...]
+    $($PSStyle.Foreground.Magenta)web-search, ws$($PSStyle.Reset) [engine] [terms...]
+        Interactive web search with multiple search engine options or direct search.
+
+    $($PSStyle.Foreground.Green)Search-Google$($PSStyle.Reset) <terms...>
+    $($PSStyle.Foreground.Magenta)wsggl$($PSStyle.Reset) <terms...>
+        Searches Google for the specified terms.
+
+    $($PSStyle.Foreground.Green)Search-DuckDuckGo$($PSStyle.Reset) <terms...>
+    $($PSStyle.Foreground.Magenta)wsddg$($PSStyle.Reset) <terms...>
+        Searches DuckDuckGo for the specified terms.
+
+    $($PSStyle.Foreground.Green)Search-GitHub$($PSStyle.Reset) <terms...>
+    $($PSStyle.Foreground.Magenta)wsgh$($PSStyle.Reset) <terms...>
+        Searches GitHub repositories for the specified terms.
+
+    $($PSStyle.Foreground.Green)Search-StackOverflow$($PSStyle.Reset) <terms...>
+    $($PSStyle.Foreground.Magenta)wsso$($PSStyle.Reset) <terms...>
+        Searches Stack Overflow for the specified terms.
+
+    $($PSStyle.Foreground.Green)Search-Wikipedia$($PSStyle.Reset) <terms...>
+    $($PSStyle.Foreground.Magenta)wswiki$($PSStyle.Reset) <terms...>
+        Searches Wikipedia for the specified terms.
+
+    $($PSStyle.Foreground.Green)Search-Reddit$($PSStyle.Reset) <terms...>
+    $($PSStyle.Foreground.Magenta)wsrdt$($PSStyle.Reset) <terms...>
+        Searches Reddit for the specified terms.
+
+    $($PSStyle.Foreground.Green)ConvertTo-UrlEncoded$($PSStyle.Reset) <text>
+        URL encodes a string for safe use in URLs.
+
+    $($PSStyle.Foreground.Green)Start-WebBrowser$($PSStyle.Reset) <url>
+        Launches a URL in the default browser (cross-platform).
 "@
 
     $PluginsRust = @"
