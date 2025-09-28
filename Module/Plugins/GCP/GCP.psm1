@@ -29,7 +29,9 @@
 # Author: Mohammad Abu Mattar
 #
 # Description:
-#       This module provides Google Cloud Platform CLI shortcuts and utility functions for improved GCP workflow
+#       This module provides Google Cloud Platform CLI shortcuts and utility functions
+#       for Google Cloud services in PowerShell environments. Supports Compute Engine,
+#       App Engine, IAM, Cloud Storage, and more with comprehensive workflow automation
 #       in PowerShell environments.
 #
 # Created: 2025-09-28
