@@ -55,6 +55,7 @@ $ModuleList = @(
     @{ Name = 'Plugin-Docker'; Path = 'Docker/Docker.psd1' },
     @{ Name = 'Plugin-DockerCompose'; Path = 'DockerCompose/DockerCompose.psd1' },
     @{ Name = 'Plugin-Flutter'; Path = 'Flutter/Flutter.psd1' },
+    @{ Name = 'Plugin-GCP'; Path = 'GCP/GCP.psd1' },
     @{ Name = 'Plugin-Git'; Path = 'Git/Git.psd1' },
     @{ Name = 'Plugin-Helm'; Path = 'Helm/Helm.psd1' },
     @{ Name = 'Plugin-Kubectl'; Path = 'Kubectl/Kubectl.psd1' },
