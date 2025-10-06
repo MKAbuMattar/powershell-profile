@@ -1891,7 +1891,7 @@ $($PSStyle.Foreground.Yellow)Plugins Module - GCP Plugin$($PSStyle.Reset)
 
     $($PSStyle.Foreground.Green)Complete GCP Workflow:$($PSStyle.Reset)
         $($PSStyle.Foreground.Cyan)# End-to-end development workflow
-        gci                                 # Initialize gcloud
+        gcin                                # Initialize gcloud
         gcal                                # Authenticate
         gccsp my-project                    # Set project
         gccs compute/zone us-central1-a     # Set default zone

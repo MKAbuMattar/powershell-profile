@@ -134,7 +134,7 @@ function Initialize-GCloudTool {
         The output of the gcloud init command.
 
     .EXAMPLE
-        gci
+        gcin
         Initializes gcloud using the alias.
 
         Initialize-GCloudTool
@@ -145,7 +145,7 @@ function Initialize-GCloudTool {
         - Interactive command that requires user input.
     #>
     [CmdletBinding()]
-    [Alias("gci")]
+    [Alias("gcin")]
     param()
     gcloud init
 }

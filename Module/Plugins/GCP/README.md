@@ -30,7 +30,7 @@ Test-GCloudInstalled
 
 ```powershell
 # Initialize gcloud (first time setup)
-gci                             # gcloud init
+gcin                             # gcloud init
 
 # Set default project
 gccsp my-project-id            # gcloud config set project
@@ -55,7 +55,7 @@ gcpil                          # gcloud compute instances list
 | Alias          | Function                  | Description                        |
 | -------------- | ------------------------- | ---------------------------------- |
 | `gcloud`, `gc` | `Invoke-GCloud`           | Base gcloud command wrapper        |
-| `gci`          | `Initialize-GCloudTool`   | Initialize and configure gcloud    |
+| `gcin`         | `Initialize-GCloudTool`   | Initialize and configure gcloud    |
 | `gcinf`        | `Get-GCloudInfo`          | Display gcloud environment details |
 | `gcv`          | `Get-GCloudVersion`       | Show version and components        |
 | `gccu`         | `Update-GCloudComponents` | Update Cloud SDK                   |
@@ -190,7 +190,7 @@ gcpil                          # gcloud compute instances list
 
 ```powershell
 # Initialize gcloud for first time
-gci
+gcin
 
 # Set up authentication
 gcal

@@ -96,7 +96,7 @@
     AliasesToExport   = @(
         'gcloud', 
         'gc',
-        'gci', 
+        'gcin', 
         'gcinf', 
         'gcv', 
         'gccu',
@@ -161,7 +161,7 @@
         'gce', 
         'gcem', 
         'gcf', 
-        'gci', 
+        'gcin', 
         'gcic', 
         'gcir', 
         'gcki', 
