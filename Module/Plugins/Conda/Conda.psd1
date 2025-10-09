@@ -64,8 +64,6 @@
     FormatsToProcess       = @()
     NestedModules          = @()
     FunctionsToExport      = @(
-        'Test-CondaInstalled',
-        'Initialize-CondaCompletion',
         'Get-CondaVersion',
         'Get-CondaInfo',
         'Get-CondaEnvs',

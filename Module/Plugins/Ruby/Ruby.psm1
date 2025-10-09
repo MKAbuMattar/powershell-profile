@@ -42,139 +42,6 @@
 # Version: 4.1.0
 #---------------------------------------------------------------------------------------------------
 
-function Test-RubyInstalled {
-    <#
-    .SYNOPSIS
-        Tests if Ruby is installed and accessible.
-
-    .DESCRIPTION
-        Checks if Ruby command is available in the current environment and validates basic functionality.
-        Used internally by other Ruby functions to ensure Ruby is available before executing commands.
-
-    .OUTPUTS
-        System.Boolean
-        Returns $true if Ruby is available, $false otherwise.
-
-    .EXAMPLE
-        Test-RubyInstalled
-        Returns $true if Ruby is installed and accessible.
-
-    .LINK
-        https://github.com/MKAbuMattar/powershell-profile/blob/main/Module/Plugins/Ruby/README.md
-    #>
-    [CmdletBinding()]
-    [OutputType([bool])]
-    param()
-
-    try {
-        $null = Get-Command ruby -ErrorAction Stop
-        $null = ruby --version 2>$null
-        return $true
-    }
-    catch {
-        Write-Warning "Ruby is not installed or not accessible. Please install Ruby to use Ruby functions."
-        return $false
-    }
-}
-
-function Test-GemInstalled {
-    <#
-    .SYNOPSIS
-        Tests if RubyGems is installed and accessible.
-
-    .DESCRIPTION
-        Checks if gem command is available in the current environment.
-        Used internally by gem-related functions to ensure gem is available before executing commands.
-
-    .OUTPUTS
-        System.Boolean
-        Returns $true if gem is available, $false otherwise.
-
-    .EXAMPLE
-        Test-GemInstalled
-        Returns $true if gem is installed and accessible.
-
-    .LINK
-        https://github.com/MKAbuMattar/powershell-profile/blob/main/Module/Plugins/Ruby/README.md
-    #>
-    [CmdletBinding()]
-    [OutputType([bool])]
-    param()
-
-    try {
-        $null = Get-Command gem -ErrorAction Stop
-        $null = gem --version 2>$null
-        return $true
-    }
-    catch {
-        Write-Warning "RubyGems is not installed or not accessible. Please install RubyGems to use gem functions."
-        return $false
-    }
-}
-
-function Initialize-RubyCompletion {
-    <#
-    .SYNOPSIS
-        Initializes Ruby completion for PowerShell.
-
-    .DESCRIPTION
-        Sets up Ruby and gem command completion for PowerShell to provide tab completion for Ruby commands,
-        gem operations, and common Ruby development tasks. This function is automatically called when the module is imported.
-
-    .EXAMPLE
-        Initialize-RubyCompletion
-        Sets up Ruby completion for the current PowerShell session.
-
-    .LINK
-        https://github.com/MKAbuMattar/powershell-profile/blob/main/Module/Plugins/Ruby/README.md
-    #>
-    [CmdletBinding()]
-    [OutputType([void])]
-    param()
-
-    if (-not (Test-RubyInstalled)) {
-        return
-    }
-
-    try {
-        Register-ArgumentCompleter -CommandName 'ruby' -ScriptBlock {
-            param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
-            
-            $rubyOptions = @(
-                '-c', '--check', '-w', '--verbose', '-W', '--warning',
-                '-d', '--debug', '-v', '--version', '-h', '--help',
-                '-e', '-i', '-I', '-r', '-s', '-S', '-T', '-x'
-            )
-            
-            $rubyOptions | Where-Object { $_ -like "$wordToComplete*" } | ForEach-Object {
-                [System.Management.Automation.CompletionResult]::new($_, $_, 'ParameterValue', $_)
-            }
-        }
-
-        if (Test-GemInstalled) {
-            Register-ArgumentCompleter -CommandName 'gem' -ScriptBlock {
-                param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
-                
-                $gemCommands = @(
-                    'install', 'uninstall', 'list', 'search', 'info', 'update', 'cleanup',
-                    'build', 'cert', 'check', 'contents', 'dependency', 'environment',
-                    'fetch', 'generate_index', 'help', 'lock', 'mirror', 'open',
-                    'outdated', 'owner', 'pristine', 'push', 'query', 'rdoc',
-                    'search', 'server', 'sources', 'specification', 'stale', 'unpack',
-                    'update', 'which', 'yank'
-                )
-                
-                $gemCommands | Where-Object { $_ -like "$wordToComplete*" } | ForEach-Object {
-                    [System.Management.Automation.CompletionResult]::new($_, $_, 'ParameterValue', $_)
-                }
-            }
-        }
-    }
-    catch {
-        Write-Verbose "Ruby completion initialization failed: $($_.Exception.Message)"
-    }
-}
-
 function Get-RubyVersion {
     <#
     .SYNOPSIS
@@ -197,10 +64,6 @@ function Get-RubyVersion {
     [CmdletBinding()]
     [OutputType([string])]
     param()
-
-    if (-not (Test-RubyInstalled)) {
-        return $null
-    }
 
     try {
         $versionOutput = ruby --version 2>$null
@@ -233,10 +96,6 @@ function Get-GemVersion {
     [CmdletBinding()]
     [OutputType([string])]
     param()
-
-    if (-not (Test-GemInstalled)) {
-        return $null
-    }
 
     try {
         $versionOutput = gem --version 2>$null
@@ -282,10 +141,6 @@ function Invoke-Ruby {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-RubyInstalled)) {
-        return
-    }
-
     & ruby @Arguments
 }
 
@@ -325,10 +180,6 @@ function Invoke-RubyExecute {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-RubyInstalled)) {
-        return
-    }
 
     $allArgs = @('-e', $Code) + $Arguments
     & ruby @allArgs
@@ -380,10 +231,6 @@ function Start-RubyServer {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-RubyInstalled)) {
-        return
-    }
 
     $allArgs = @('-run', '-e', 'httpd', $Path, '-p', $Port.ToString()) + $Arguments
     & ruby @allArgs
@@ -476,10 +323,6 @@ function Invoke-Gem {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-GemInstalled)) {
-        return
-    }
-
     & gem @Arguments
 }
 
@@ -514,10 +357,6 @@ function Invoke-SudoGem {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-GemInstalled)) {
-        return
-    }
 
     if ($env:OS -eq "Windows_NT") {
         try {
@@ -586,10 +425,6 @@ function Install-Gem {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-GemInstalled)) {
-        return
-    }
-
     $allArgs = @('install') + $Arguments
     & gem @allArgs
 }
@@ -624,10 +459,6 @@ function Uninstall-Gem {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-GemInstalled)) {
-        return
-    }
 
     $allArgs = @('uninstall') + $Arguments
     & gem @allArgs
@@ -668,10 +499,6 @@ function Get-GemList {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-GemInstalled)) {
-        return
-    }
-
     $allArgs = @('list') + $Arguments
     & gem @allArgs
 }
@@ -706,10 +533,6 @@ function Get-GemInfo {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-GemInstalled)) {
-        return
-    }
 
     $allArgs = @('info') + $Arguments
     & gem @allArgs
@@ -746,10 +569,6 @@ function Get-GemInfoAll {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-GemInstalled)) {
-        return
-    }
-
     $allArgs = @('info', '--all') + $Arguments
     & gem @allArgs
 }
@@ -784,10 +603,6 @@ function Add-GemCert {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-GemInstalled)) {
-        return
-    }
 
     $allArgs = @('cert', '--add') + $Arguments
     & gem @allArgs
@@ -824,10 +639,6 @@ function Remove-GemCert {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-GemInstalled)) {
-        return
-    }
-
     $allArgs = @('cert', '--remove') + $Arguments
     & gem @allArgs
 }
@@ -862,10 +673,6 @@ function Build-GemCert {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-GemInstalled)) {
-        return
-    }
 
     $allArgs = @('cert', '--build') + $Arguments
     & gem @allArgs
@@ -902,10 +709,6 @@ function Invoke-GemCleanup {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-GemInstalled)) {
-        return
-    }
-
     $allArgs = @('cleanup', '-n') + $Arguments
     & gem @allArgs
 }
@@ -940,10 +743,6 @@ function Invoke-GemGenerateIndex {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-GemInstalled)) {
-        return
-    }
 
     $allArgs = @('generate_index') + $Arguments
     & gem @allArgs
@@ -984,10 +783,6 @@ function Get-GemHelp {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-GemInstalled)) {
-        return
-    }
-
     $allArgs = @('help') + $Arguments
     & gem @allArgs
 }
@@ -1022,10 +817,6 @@ function Lock-Gem {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-GemInstalled)) {
-        return
-    }
 
     $allArgs = @('lock') + $Arguments
     & gem @allArgs
@@ -1062,10 +853,6 @@ function Open-Gem {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-GemInstalled)) {
-        return
-    }
-
     $allArgs = @('open') + $Arguments
     & gem @allArgs
 }
@@ -1100,10 +887,6 @@ function Open-GemEditor {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-GemInstalled)) {
-        return
-    }
 
     $allArgs = @('open', '-e') + $Arguments
     & gem @allArgs

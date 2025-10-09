@@ -43,44 +43,6 @@
 # Version: 4.1.0
 #---------------------------------------------------------------------------------------------------
 
-function Test-RsyncInstalled {
-    <#
-    .SYNOPSIS
-        Test if rsync is installed and accessible.
-
-    .DESCRIPTION
-        Verifies that rsync command is available in the current environment.
-        Used internally by other rsync functions to ensure rsync is available.
-
-    .EXAMPLE
-        Test-RsyncInstalled
-        Returns $true if rsync is available, $false otherwise.
-
-    .OUTPUTS
-        Boolean
-        Returns $true if rsync is accessible, $false otherwise.
-
-    .LINK
-        https://github.com/MKAbuMattar/powershell-profile/blob/main/Module/Plugins/Rsync/README.md
-    #>
-    [CmdletBinding()]
-    [OutputType([bool])]
-    param()
-
-    try {
-        $rsyncVersion = & rsync --version 2>$null
-        if ($rsyncVersion) {
-            Write-Verbose "Rsync is available: $($rsyncVersion[0])"
-            return $true
-        }
-        return $false
-    }
-    catch {
-        Write-Warning "Rsync is not installed or not accessible. Please install rsync to use rsync functions."
-        return $false
-    }
-}
-
 function Show-RsyncProgress {
     <#
     .SYNOPSIS
@@ -180,10 +142,6 @@ function Invoke-RsyncCopy {
         [string[]]$AdditionalArgs = @()
     )
 
-    if (-not (Test-RsyncInstalled)) {
-        return
-    }
-
     try {
         Show-RsyncProgress -Operation "Copy" -Source $Source -Destination $Destination
 
@@ -261,10 +219,6 @@ function Invoke-RsyncMove {
         [Parameter()]
         [string[]]$AdditionalArgs = @()
     )
-
-    if (-not (Test-RsyncInstalled)) {
-        return
-    }
 
     # Confirm destructive operation
     if ($PSCmdlet.ShouldProcess($Source, "Move files and remove source")) {
@@ -346,10 +300,6 @@ function Invoke-RsyncUpdate {
         [string[]]$AdditionalArgs = @()
     )
 
-    if (-not (Test-RsyncInstalled)) {
-        return
-    }
-
     try {
         Show-RsyncProgress -Operation "Update" -Source $Source -Destination $Destination
 
@@ -428,10 +378,6 @@ function Sync-RsyncDirectories {
         [string[]]$AdditionalArgs = @()
     )
 
-    if (-not (Test-RsyncInstalled)) {
-        return
-    }
-
     # Confirm destructive operation
     if ($PSCmdlet.ShouldProcess($Destination, "Synchronize and delete extraneous files")) {
         try {
@@ -479,10 +425,6 @@ function Get-RsyncVersion {
     [CmdletBinding()]
     [OutputType([string])]
     param()
-
-    if (-not (Test-RsyncInstalled)) {
-        return
-    }
 
     try {
         $versionInfo = & rsync --version

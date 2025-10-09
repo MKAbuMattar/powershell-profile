@@ -26,7 +26,6 @@ This module is included in MKAbuMattar's PowerShell Profile. It will be automati
 | Function              | Alias | Description                      |
 | --------------------- | ----- | -------------------------------- |
 | `Invoke-Conda`        | `cn`  | Base Conda command wrapper       |
-| `Test-CondaInstalled` | -     | Check if Conda is installed      |
 | `Get-CondaVersion`    | -     | Get Conda version                |
 | `Get-CondaInfo`       | -     | Get Conda system information     |
 | `Get-CondaEnvs`       | -     | Get list of environments         |
@@ -295,9 +294,6 @@ cni pandas numpy matplotlib ggplot2 dplyr
 ### Performance Optimization
 
 ```powershell
-# Check Conda installation
-Test-CondaInstalled
-
 # Get system information
 Get-CondaInfo
 
@@ -525,9 +521,6 @@ if (-not $installed) {
 ### Debug Information
 
 ```powershell
-# Check if Conda is available
-Test-CondaInstalled
-
 # Get Conda version
 Get-CondaVersion
 

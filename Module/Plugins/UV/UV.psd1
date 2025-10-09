@@ -67,9 +67,6 @@
     FormatsToProcess       = @()
     NestedModules          = @()
     FunctionsToExport      = @(
-        'Test-UVInstalled',
-        'Initialize-UVCompletion',
-        'Invoke-UV',
         'Invoke-UVAdd',
         'Invoke-UVExport',
         'Invoke-UVLock',
@@ -95,13 +92,11 @@
         'Invoke-UVToolList',
         'Invoke-UVToolUpgrade',
         'Get-UVProjectInfo',
-        'Get-UVVirtualEnvPath',
-        'Test-UVProject'
+        'Get-UVVirtualEnvPath'
     )
     CmdletsToExport        = @()
     VariablesToExport      = ''
     AliasesToExport        = @(
-        'uv',
         'uva',
         'uvexp',
         'uvl',

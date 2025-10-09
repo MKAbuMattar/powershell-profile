@@ -32,9 +32,10 @@ This plugin is automatically loaded when the PowerShell profile is imported. No 
 
 ### Core Commands
 
+> **Note:** Use the `pip` command directly for base pip operations. The module provides convenient aliases for common tasks.
+
 | Alias   | Function              | Description                         |
 | ------- | --------------------- | ----------------------------------- |
-| `pip`   | `Invoke-Pip`          | Base pip command wrapper            |
 | `pipi`  | `Invoke-PipInstall`   | Install Python packages             |
 | `pipu`  | `Invoke-PipUpgrade`   | Upgrade packages to latest versions |
 | `pipun` | `Invoke-PipUninstall` | Uninstall Python packages           |

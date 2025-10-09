@@ -42,123 +42,6 @@
 # Version: 4.1.0
 #---------------------------------------------------------------------------------------------------
 
-function Test-PoetryInstalled {
-    <#
-    .SYNOPSIS
-        Tests if Poetry is installed and accessible.
-
-    .DESCRIPTION
-        Checks if Poetry command is available in the current environment and validates basic functionality.
-        Used internally by other Poetry functions to ensure Poetry is available before executing commands.
-
-    .OUTPUTS
-        System.Boolean
-        Returns $true if Poetry is available, $false otherwise.
-
-    .EXAMPLE
-        Test-PoetryInstalled
-        Returns $true if Poetry is installed and accessible.
-
-    .LINK
-        https://github.com/MKAbuMattar/powershell-profile/blob/main/Module/Plugins/Poetry/README.md
-    #>
-    [CmdletBinding()]
-    [OutputType([bool])]
-    param()
-
-    try {
-        $null = Get-Command poetry -ErrorAction Stop
-        $null = poetry --version 2>$null
-        return $true
-    }
-    catch {
-        Write-Warning "Poetry is not installed or not accessible. Please install Poetry to use Poetry functions."
-        return $false
-    }
-}
-
-function Initialize-PoetryCompletion {
-    <#
-    .SYNOPSIS
-        Initializes Poetry completion for PowerShell.
-
-    .DESCRIPTION
-        Sets up Poetry command completion for PowerShell to provide tab completion for Poetry commands,
-        packages, and options. This function is automatically called when the module is imported.
-
-    .EXAMPLE
-        Initialize-PoetryCompletion
-        Sets up Poetry completion for the current PowerShell session.
-
-    .LINK
-        https://github.com/MKAbuMattar/powershell-profile/blob/main/Module/Plugins/Poetry/README.md
-    #>
-    [CmdletBinding()]
-    [OutputType([void])]
-    param()
-
-    if (-not (Test-PoetryInstalled)) {
-        return
-    }
-
-    try {
-        Register-ArgumentCompleter -CommandName 'poetry' -ScriptBlock {
-            param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
-            
-            $subcommands = @(
-                'add', 'build', 'check', 'config', 'env', 'export', 'init', 'install',
-                'list', 'lock', 'new', 'publish', 'remove', 'run', 'search', 'self',
-                'shell', 'show', 'update', 'version', '--help', '--version'
-            )
-            
-            $subcommands | Where-Object { $_ -like "$wordToComplete*" } | ForEach-Object {
-                [System.Management.Automation.CompletionResult]::new($_, $_, 'ParameterValue', $_)
-            }
-        }
-    }
-    catch {
-        Write-Verbose "Poetry completion initialization failed: $($_.Exception.Message)"
-    }
-}
-
-function Invoke-Poetry {
-    <#
-    .SYNOPSIS
-        Base Poetry command wrapper.
-
-    .DESCRIPTION
-        Executes Poetry commands with all provided arguments. Serves as the base wrapper
-        for all Poetry operations and ensures Poetry is available before execution.
-
-    .PARAMETER Arguments
-        All arguments to pass to Poetry command.
-
-    .EXAMPLE
-        Invoke-Poetry --version
-        Shows Poetry version.
-
-    .EXAMPLE
-        Invoke-Poetry add requests
-        Adds the requests package.
-
-    .LINK
-        https://github.com/MKAbuMattar/powershell-profile/blob/main/Module/Plugins/Poetry/README.md
-    #>
-    [CmdletBinding()]
-    [Alias("poetry")]
-    [OutputType([void])]
-    param(
-        [Parameter(ValueFromRemainingArguments = $true)]
-        [string[]]$Arguments = @()
-    )
-
-    if (-not (Test-PoetryInstalled)) {
-        return
-    }
-
-    & poetry @Arguments
-}
-
 function Invoke-PoetryInit {
     <#
     .SYNOPSIS
@@ -189,10 +72,6 @@ function Invoke-PoetryInit {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-PoetryInstalled)) {
-        return
-    }
 
     $allArgs = @('init') + $Arguments
     & poetry @allArgs
@@ -234,10 +113,6 @@ function Invoke-PoetryNew {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-PoetryInstalled)) {
-        return
-    }
 
     $allArgs = @('new')
     if ($ProjectName) {
@@ -281,10 +156,6 @@ function Invoke-PoetryCheck {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-PoetryInstalled)) {
-        return
-    }
-
     $allArgs = @('check') + $Arguments
     & poetry @allArgs
 }
@@ -319,10 +190,6 @@ function Invoke-PoetryList {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-PoetryInstalled)) {
-        return
-    }
 
     $allArgs = @('list') + $Arguments
     & poetry @allArgs
@@ -364,10 +231,6 @@ function Invoke-PoetryAdd {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-PoetryInstalled)) {
-        return
-    }
 
     $allArgs = @('add')
     if ($PackageName) {
@@ -417,10 +280,6 @@ function Invoke-PoetryRemove {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-PoetryInstalled)) {
-        return
-    }
-
     $allArgs = @('remove')
     if ($PackageName) {
         $allArgs += $PackageName
@@ -469,10 +328,6 @@ function Invoke-PoetryUpdate {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-PoetryInstalled)) {
-        return
-    }
-
     $allArgs = @('update')
     if ($PackageName) {
         $allArgs += $PackageName
@@ -515,10 +370,6 @@ function Invoke-PoetryInstall {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-PoetryInstalled)) {
-        return
-    }
-
     $allArgs = @('install') + $Arguments
     & poetry @allArgs
 }
@@ -553,10 +404,6 @@ function Invoke-PoetrySync {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-PoetryInstalled)) {
-        return
-    }
 
     $allArgs = @('install', '--sync') + $Arguments
     & poetry @allArgs
@@ -593,10 +440,6 @@ function Invoke-PoetryLock {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-PoetryInstalled)) {
-        return
-    }
-
     $allArgs = @('lock') + $Arguments
     & poetry @allArgs
 }
@@ -631,10 +474,6 @@ function Invoke-PoetryExport {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-PoetryInstalled)) {
-        return
-    }
 
     if ($Arguments.Count -eq 0) {
         & poetry export --without-hashes > requirements.txt
@@ -676,10 +515,6 @@ function Invoke-PoetryShell {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-PoetryInstalled)) {
-        return
-    }
-
     $allArgs = @('shell') + $Arguments
     & poetry @allArgs
 }
@@ -720,10 +555,6 @@ function Invoke-PoetryRun {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-PoetryInstalled)) {
-        return
-    }
 
     $allArgs = @('run')
     if ($Command) {
@@ -767,10 +598,6 @@ function Invoke-PoetryEnvInfo {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-PoetryInstalled)) {
-        return
-    }
-
     $allArgs = @('env', 'info') + $Arguments
     & poetry @allArgs
 }
@@ -805,10 +632,6 @@ function Invoke-PoetryEnvPath {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-PoetryInstalled)) {
-        return
-    }
 
     $allArgs = @('env', 'info', '--path') + $Arguments
     & poetry @allArgs
@@ -851,10 +674,6 @@ function Invoke-PoetryEnvUse {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-PoetryInstalled)) {
-        return
-    }
-
     $allArgs = @('env', 'use', $PythonVersion) + $Arguments
     & poetry @allArgs
 }
@@ -895,10 +714,6 @@ function Invoke-PoetryEnvRemove {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-PoetryInstalled)) {
-        return
-    }
 
     $allArgs = @('env', 'remove')
     if ($PythonVersion) {
@@ -942,10 +757,6 @@ function Invoke-PoetryBuild {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-PoetryInstalled)) {
-        return
-    }
-
     $allArgs = @('build') + $Arguments
     & poetry @allArgs
 }
@@ -980,10 +791,6 @@ function Invoke-PoetryPublish {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-PoetryInstalled)) {
-        return
-    }
 
     $allArgs = @('publish') + $Arguments
     & poetry @allArgs
@@ -1025,10 +832,6 @@ function Invoke-PoetryShow {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-PoetryInstalled)) {
-        return
-    }
 
     $allArgs = @('show')
     if ($PackageName) {
@@ -1078,10 +881,6 @@ function Invoke-PoetryShowLatest {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-PoetryInstalled)) {
-        return
-    }
-
     $allArgs = @('show', '--latest')
     if ($PackageName) {
         $allArgs += $PackageName
@@ -1124,10 +923,6 @@ function Invoke-PoetryShowTree {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-PoetryInstalled)) {
-        return
-    }
-
     $allArgs = @('show', '--tree') + $Arguments
     & poetry @allArgs
 }
@@ -1163,10 +958,6 @@ function Invoke-PoetryConfig {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-PoetryInstalled)) {
-        return
-    }
-
     if ($Arguments.Count -eq 0) {
         & poetry config --list
     }
@@ -1200,10 +991,6 @@ function Disable-PoetryVirtualenv {
     [Alias("pvoff")]
     [OutputType([void])]
     param()
-
-    if (-not (Test-PoetryInstalled)) {
-        return
-    }
 
     & poetry config virtualenvs.create false
     Write-Host "Poetry virtual environment creation disabled." -ForegroundColor Yellow
@@ -1239,10 +1026,6 @@ function Invoke-PoetrySelfUpdate {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-PoetryInstalled)) {
-        return
-    }
 
     $allArgs = @('self', 'update') + $Arguments
     & poetry @allArgs
@@ -1285,10 +1068,6 @@ function Invoke-PoetrySelfAdd {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-PoetryInstalled)) {
-        return
-    }
-
     $allArgs = @('self', 'add')
     if ($PluginName) {
         $allArgs += $PluginName
@@ -1330,10 +1109,6 @@ function Invoke-PoetrySelfShowPlugins {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-PoetryInstalled)) {
-        return
-    }
 
     $allArgs = @('self', 'show', 'plugins') + $Arguments
     & poetry @allArgs

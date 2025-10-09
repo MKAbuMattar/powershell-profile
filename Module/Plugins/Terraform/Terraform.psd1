@@ -55,8 +55,6 @@
     Description          = 'Comprehensive Terraform CLI integration for PowerShell with 20+ functions and aliases for Infrastructure as Code management, workspace operations, state management, and prompt integration with workspace awareness.'
     PowerShellVersion    = '5.1'
     FunctionsToExport    = @(
-        'Test-TerraformInstalled',
-        'Initialize-TerraformCompletion',
         'Invoke-Terraform',
         'Get-TerraformWorkspace',
         'Get-TerraformVersion',

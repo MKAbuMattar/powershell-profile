@@ -64,8 +64,6 @@
     FormatsToProcess       = @()
     NestedModules          = @()
     FunctionsToExport      = @(
-        'Test-PNPMInstalled',
-        'Initialize-PNPMCompletion',
         'Get-PNPMVersion',
         'Get-PNPMStorePath',
         'Invoke-PNPM',

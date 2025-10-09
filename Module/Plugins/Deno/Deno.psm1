@@ -42,85 +42,6 @@
 # Version: 4.1.0
 #---------------------------------------------------------------------------------------------------
 
-function Test-DenoInstalled {
-    <#
-    .SYNOPSIS
-        Tests if Deno is installed and accessible.
-
-    .DESCRIPTION
-        Checks if Deno command is available in the current environment and validates basic functionality.
-        Used internally by other Deno functions to ensure Deno is available before executing commands.
-
-    .OUTPUTS
-        System.Boolean
-        Returns $true if Deno is available, $false otherwise.
-
-    .EXAMPLE
-        Test-DenoInstalled
-        Returns $true if Deno is installed and accessible.
-
-    .LINK
-        https://github.com/MKAbuMattar/powershell-profile/blob/main/Module/Plugins/Deno/README.md
-    #>
-    [CmdletBinding()]
-    [OutputType([bool])]
-    param()
-
-    try {
-        $null = Get-Command deno -ErrorAction Stop
-        $null = deno --version 2>$null
-        return $true
-    }
-    catch {
-        return $false
-    }
-}
-
-function Initialize-DenoCompletion {
-    <#
-    .SYNOPSIS
-        Initializes Deno completion for PowerShell.
-
-    .DESCRIPTION
-        Sets up Deno command completion for PowerShell to provide tab completion for Deno commands,
-        subcommands, and common operations. This function is automatically called when the module is imported.
-
-    .EXAMPLE
-        Initialize-DenoCompletion
-        Sets up Deno completion for the current PowerShell session.
-
-    .LINK
-        https://github.com/MKAbuMattar/powershell-profile/blob/main/Module/Plugins/Deno/README.md
-    #>
-    [CmdletBinding()]
-    [OutputType([void])]
-    param()
-
-    if (-not (Test-DenoInstalled)) {
-        return
-    }
-
-    try {
-        Register-ArgumentCompleter -CommandName 'deno' -ScriptBlock {
-            param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
-            
-            $commonCommands = @(
-                'bundle', 'compile', 'cache', 'fmt', 'help', 'lint', 'run', 'test', 'upgrade',
-                'install', 'uninstall', 'info', 'eval', 'repl', 'doc', 'check', 'types',
-                'init', 'task', 'serve', 'publish', 'add', 'remove', 'jupyter', 'coverage',
-                'completions', 'lsp', 'vendor', 'bench'
-            )
-            
-            $commonCommands | Where-Object { $_ -like "$wordToComplete*" } | ForEach-Object {
-                [System.Management.Automation.CompletionResult]::new($_, $_, 'ParameterValue', $_)
-            }
-        }
-    }
-    catch {
-        Write-Verbose "Deno completion initialization failed: $($_.Exception.Message)"
-    }
-}
-
 function Get-DenoVersion {
     <#
     .SYNOPSIS
@@ -143,10 +64,6 @@ function Get-DenoVersion {
     [CmdletBinding()]
     [OutputType([string])]
     param()
-
-    if (-not (Test-DenoInstalled)) {
-        return $null
-    }
 
     try {
         $versionOutput = deno --version 2>$null
@@ -188,10 +105,6 @@ function Invoke-Deno {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-DenoInstalled)) {
-        return
-    }
-
     & deno @Arguments
 }
 
@@ -225,10 +138,6 @@ function Invoke-DenoBundle {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-DenoInstalled)) {
-        return
-    }
 
     $allArgs = @('bundle') + $Arguments
     & deno @allArgs
@@ -265,10 +174,6 @@ function Invoke-DenoCompile {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-DenoInstalled)) {
-        return
-    }
-
     $allArgs = @('compile') + $Arguments
     & deno @allArgs
 }
@@ -303,10 +208,6 @@ function Invoke-DenoCache {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-DenoInstalled)) {
-        return
-    }
 
     $allArgs = @('cache') + $Arguments
     & deno @allArgs
@@ -343,10 +244,6 @@ function Invoke-DenoFormat {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-DenoInstalled)) {
-        return
-    }
-
     $allArgs = @('fmt') + $Arguments
     & deno @allArgs
 }
@@ -381,10 +278,6 @@ function Invoke-DenoHelp {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-DenoInstalled)) {
-        return
-    }
 
     $allArgs = @('help') + $Arguments
     & deno @allArgs
@@ -421,10 +314,6 @@ function Invoke-DenoLint {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-DenoInstalled)) {
-        return
-    }
-
     $allArgs = @('lint') + $Arguments
     & deno @allArgs
 }
@@ -459,10 +348,6 @@ function Invoke-DenoRun {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-DenoInstalled)) {
-        return
-    }
 
     $allArgs = @('run') + $Arguments
     & deno @allArgs
@@ -499,10 +384,6 @@ function Invoke-DenoRunAll {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-DenoInstalled)) {
-        return
-    }
-
     $allArgs = @('run', '-A') + $Arguments
     & deno @allArgs
 }
@@ -537,10 +418,6 @@ function Invoke-DenoRunWatch {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-DenoInstalled)) {
-        return
-    }
 
     $allArgs = @('run', '--watch') + $Arguments
     & deno @allArgs
@@ -577,10 +454,6 @@ function Invoke-DenoRunUnstable {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-DenoInstalled)) {
-        return
-    }
-
     $allArgs = @('run', '--unstable') + $Arguments
     & deno @allArgs
 }
@@ -615,10 +488,6 @@ function Invoke-DenoTest {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-DenoInstalled)) {
-        return
-    }
 
     $allArgs = @('test') + $Arguments
     & deno @allArgs
@@ -655,10 +524,6 @@ function Invoke-DenoCheck {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-DenoInstalled)) {
-        return
-    }
-
     $allArgs = @('check') + $Arguments
     & deno @allArgs
 }
@@ -693,10 +558,6 @@ function Invoke-DenoUpgrade {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-DenoInstalled)) {
-        return
-    }
 
     $allArgs = @('upgrade') + $Arguments
     & deno @allArgs
@@ -733,10 +594,6 @@ function Invoke-DenoInstall {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-DenoInstalled)) {
-        return
-    }
-
     $allArgs = @('install') + $Arguments
     & deno @allArgs
 }
@@ -771,10 +628,6 @@ function Invoke-DenoUninstall {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-DenoInstalled)) {
-        return
-    }
 
     $allArgs = @('uninstall') + $Arguments
     & deno @allArgs
@@ -811,10 +664,6 @@ function Invoke-DenoInfo {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-DenoInstalled)) {
-        return
-    }
-
     $allArgs = @('info') + $Arguments
     & deno @allArgs
 }
@@ -849,10 +698,6 @@ function Invoke-DenoEval {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-DenoInstalled)) {
-        return
-    }
 
     $allArgs = @('eval') + $Arguments
     & deno @allArgs
@@ -889,10 +734,6 @@ function Invoke-DenoRepl {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-DenoInstalled)) {
-        return
-    }
-
     $allArgs = @('repl') + $Arguments
     & deno @allArgs
 }
@@ -927,10 +768,6 @@ function Invoke-DenoDoc {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-DenoInstalled)) {
-        return
-    }
 
     $allArgs = @('doc') + $Arguments
     & deno @allArgs
@@ -967,10 +804,6 @@ function Invoke-DenoTypes {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-DenoInstalled)) {
-        return
-    }
-
     $allArgs = @('types') + $Arguments
     & deno @allArgs
 }
@@ -1005,10 +838,6 @@ function Invoke-DenoInit {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-DenoInstalled)) {
-        return
-    }
 
     $allArgs = @('init') + $Arguments
     & deno @allArgs
@@ -1045,10 +874,6 @@ function Invoke-DenoTask {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-DenoInstalled)) {
-        return
-    }
-
     $allArgs = @('task') + $Arguments
     & deno @allArgs
 }
@@ -1084,10 +909,6 @@ function Invoke-DenoServe {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-DenoInstalled)) {
-        return
-    }
-
     $allArgs = @('serve') + $Arguments
     & deno @allArgs
 }
@@ -1122,10 +943,6 @@ function Invoke-DenoPublish {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-DenoInstalled)) {
-        return
-    }
 
     $allArgs = @('publish') + $Arguments
     & deno @allArgs

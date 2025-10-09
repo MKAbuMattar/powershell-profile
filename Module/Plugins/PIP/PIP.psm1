@@ -42,52 +42,6 @@
 # Version: 4.1.0
 #---------------------------------------------------------------------------------------------------
 
-function Test-PipInstalled {
-    <#
-    .SYNOPSIS
-        Tests if pip is installed and accessible.
-
-    .DESCRIPTION
-        Checks if pip command is available in the current environment and validates basic functionality.
-        Prefers pip3 over pip if pip is not available but pip3 is.
-
-    .OUTPUTS
-        System.Boolean
-        Returns $true if pip is available, $false otherwise.
-
-    .EXAMPLE
-        Test-PipInstalled
-        Returns $true if pip is installed and accessible.
-
-    .LINK
-        https://github.com/MKAbuMattar/powershell-profile/blob/main/Module/Plugins/PIP/README.md
-    #>
-    [CmdletBinding()]
-    [OutputType([bool])]
-    param()
-
-    try {
-        $pipCommand = $null
-        if (Get-Command pip3 -ErrorAction SilentlyContinue) {
-            $pipCommand = 'pip3'
-        }
-        elseif (Get-Command pip -ErrorAction SilentlyContinue) {
-            $pipCommand = 'pip'
-        }
-
-        if ($pipCommand) {
-            $null = & $pipCommand --version 2>$null
-            return $true
-        }
-        else {
-            return $false
-        }
-    }
-    catch {
-        return $false
-    }
-}
-
 function Get-PipCommand {
     <#
     .SYNOPSIS
@@ -234,88 +188,6 @@ function Update-PipPackageCache {
     }
 }
 
-function Initialize-PipCompletion {
-    <#
-    .SYNOPSIS
-        Initializes pip completion for PowerShell.
-
-    .DESCRIPTION
-        Sets up pip command completion for PowerShell to provide tab completion for pip commands
-        and packages. This function is automatically called when the module is imported.
-
-    .EXAMPLE
-        Initialize-PipCompletion
-        Sets up pip completion for the current PowerShell session.
-
-    .LINK
-        https://github.com/MKAbuMattar/powershell-profile/blob/main/Module/Plugins/PIP/README.md
-    #>
-    [CmdletBinding()]
-    [OutputType([void])]
-    param()
-
-    if (-not (Test-PipInstalled)) {
-        return
-    }
-
-    try {
-        Update-PipPackageCache
-        
-        Register-ArgumentCompleter -CommandName 'pip', 'pip3', 'Invoke-Pip' -ScriptBlock {
-            param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
-            
-            $cacheFile = Get-PipCacheFile
-            if (Test-Path $cacheFile) {
-                Get-Content $cacheFile | Where-Object { $_ -like "$wordToComplete*" } | ForEach-Object {
-                    [System.Management.Automation.CompletionResult]::new($_, $_, 'ParameterValue', $_)
-                }
-            }
-        }
-    }
-    catch {
-        Write-Verbose "pip completion initialization failed: $($_.Exception.Message)"
-    }
-}
-
-function Invoke-Pip {
-    <#
-    .SYNOPSIS
-        Base pip command wrapper.
-
-    .DESCRIPTION
-        Executes pip commands with all provided arguments. Serves as the base wrapper
-        for all pip operations and ensures pip is available before execution.
-
-    .PARAMETER Arguments
-        All arguments to pass to pip command.
-
-    .EXAMPLE
-        Invoke-Pip --version
-        Shows pip version.
-
-    .EXAMPLE
-        Invoke-Pip install requests
-        Installs the requests package.
-
-    .LINK
-        https://github.com/MKAbuMattar/powershell-profile/blob/main/Module/Plugins/PIP/README.md
-    #>
-    [CmdletBinding()]
-    [Alias("pip")]
-    [OutputType([void])]
-    param(
-        [Parameter(ValueFromRemainingArguments = $true)]
-        [string[]]$Arguments = @()
-    )
-
-    if (-not (Test-PipInstalled)) {
-        return
-    }
-
-    $pipCmd = Get-PipCommand
-    & $pipCmd @Arguments
-}
-
 function Invoke-PipInstall {
     <#
     .SYNOPSIS
@@ -352,10 +224,6 @@ function Invoke-PipInstall {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-PipInstalled)) {
-        return
-    }
 
     $pipCmd = Get-PipCommand
     $allArgs = @('install')
@@ -406,10 +274,6 @@ function Invoke-PipUpgrade {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-PipInstalled)) {
-        return
-    }
-
     $pipCmd = Get-PipCommand
     $allArgs = @('install', '--upgrade')
     if ($PackageName) {
@@ -459,10 +323,6 @@ function Invoke-PipUninstall {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-PipInstalled)) {
-        return
-    }
-
     $pipCmd = Get-PipCommand
     $allArgs = @('uninstall')
     if ($PackageName) {
@@ -506,10 +366,6 @@ function Invoke-PipInstallUser {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-PipInstalled)) {
-        return
-    }
-
     $pipCmd = Get-PipCommand
     $allArgs = @('install', '--user') + $Arguments
     & $pipCmd @allArgs
@@ -546,10 +402,6 @@ function Invoke-PipInstallEditable {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-PipInstalled)) {
-        return
-    }
-
     $pipCmd = Get-PipCommand
     $allArgs = @('install', '-e') + $Arguments
     & $pipCmd @allArgs
@@ -580,10 +432,6 @@ function Invoke-PipFreeze {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-PipInstalled)) {
-        return
-    }
 
     $pipCmd = Get-PipCommand
     $allArgs = @('freeze') + $Arguments
@@ -621,10 +469,6 @@ function Invoke-PipFreezeGrep {
         [string]$Pattern
     )
 
-    if (-not (Test-PipInstalled)) {
-        return
-    }
-
     $pipCmd = Get-PipCommand
     & $pipCmd freeze | Where-Object { $_ -match $Pattern }
 }
@@ -660,10 +504,6 @@ function Invoke-PipListOutdated {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-PipInstalled)) {
-        return
-    }
-
     $pipCmd = Get-PipCommand
     $allArgs = @('list', '--outdated') + $Arguments
     & $pipCmd @allArgs
@@ -698,10 +538,6 @@ function Invoke-PipList {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-PipInstalled)) {
-        return
-    }
 
     $pipCmd = Get-PipCommand
     $allArgs = @('list') + $Arguments
@@ -743,10 +579,6 @@ function Invoke-PipShow {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-PipInstalled)) {
-        return
-    }
 
     $pipCmd = Get-PipCommand
     $allArgs = @('show')
@@ -797,10 +629,6 @@ function Invoke-PipSearch {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-PipInstalled)) {
-        return
-    }
-
     Write-Warning "pip search is deprecated and may not work. Consider using https://pypi.org/ to search for packages."
     
     $pipCmd = Get-PipCommand
@@ -846,10 +674,6 @@ function Invoke-PipRequirements {
         [string]$FilePath = 'requirements.txt'
     )
 
-    if (-not (Test-PipInstalled)) {
-        return
-    }
-
     $pipCmd = Get-PipCommand
     & $pipCmd freeze | Out-File -FilePath $FilePath -Encoding UTF8
     Write-Host "Requirements saved to $FilePath" -ForegroundColor Green
@@ -892,10 +716,6 @@ function Invoke-PipInstallRequirements {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-PipInstalled)) {
-        return
-    }
-
     if (-not (Test-Path $FilePath)) {
         Write-Error "Requirements file '$FilePath' not found."
         return
@@ -929,10 +749,6 @@ function Invoke-PipUpgradeAll {
     [Alias("pipupall")]
     [OutputType([void])]
     param()
-
-    if (-not (Test-PipInstalled)) {
-        return
-    }
 
     $pipCmd = Get-PipCommand
     Write-Host "Getting list of outdated packages..." -ForegroundColor Yellow
@@ -992,10 +808,6 @@ function Invoke-PipUninstallAll {
         [Parameter()]
         [switch]$Force
     )
-
-    if (-not (Test-PipInstalled)) {
-        return
-    }
 
     $pipCmd = Get-PipCommand
     
@@ -1060,10 +872,6 @@ function Invoke-PipInstallGitHub {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-PipInstalled)) {
-        return
-    }
-
     $pipCmd = Get-PipCommand
     $gitUrl = "git+https://github.com/$Repository.git"
     $allArgs = @('install', $gitUrl) + $Arguments
@@ -1111,10 +919,6 @@ function Invoke-PipInstallGitHubBranch {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-PipInstalled)) {
-        return
-    }
 
     $pipCmd = Get-PipCommand
     $gitUrl = "git+https://github.com/$Repository.git@$Branch"
@@ -1164,10 +968,6 @@ function Invoke-PipInstallGitHubPR {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-PipInstalled)) {
-        return
-    }
-
     $pipCmd = Get-PipCommand
     $gitUrl = "git+https://github.com/$Repository.git@refs/pull/$PullRequestNumber/head"
     $allArgs = @('install', $gitUrl) + $Arguments
@@ -1204,10 +1004,6 @@ function Invoke-PipCheck {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-PipInstalled)) {
-        return
-    }
-
     $pipCmd = Get-PipCommand
     $allArgs = @('check') + $Arguments
     & $pipCmd @allArgs
@@ -1242,10 +1038,6 @@ function Invoke-PipWheel {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-PipInstalled)) {
-        return
-    }
 
     $pipCmd = Get-PipCommand
     $allArgs = @('wheel') + $Arguments
@@ -1282,10 +1074,6 @@ function Invoke-PipDownload {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-PipInstalled)) {
-        return
-    }
-
     $pipCmd = Get-PipCommand
     $allArgs = @('download') + $Arguments
     & $pipCmd @allArgs
@@ -1320,10 +1108,6 @@ function Invoke-PipConfig {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-PipInstalled)) {
-        return
-    }
 
     $pipCmd = Get-PipCommand
     $allArgs = @('config') + $Arguments
@@ -1360,10 +1144,6 @@ function Invoke-PipDebug {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-PipInstalled)) {
-        return
-    }
-
     $pipCmd = Get-PipCommand
     $allArgs = @('debug') + $Arguments
     & $pipCmd @allArgs
@@ -1399,10 +1179,6 @@ function Invoke-PipHash {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-PipInstalled)) {
-        return
-    }
-
     $pipCmd = Get-PipCommand
     $allArgs = @('hash') + $Arguments
     & $pipCmd @allArgs
@@ -1436,10 +1212,6 @@ function Invoke-PipHelp {
         [Parameter(Position = 0)]
         [string]$Command
     )
-
-    if (-not (Test-PipInstalled)) {
-        return
-    }
 
     $pipCmd = Get-PipCommand
     if ($Command) {
@@ -1479,10 +1251,6 @@ function Invoke-PipCache {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-PipInstalled)) {
-        return
-    }
 
     $pipCmd = Get-PipCommand
     $allArgs = @('cache') + $Arguments

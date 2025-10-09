@@ -54,8 +54,6 @@
     Description          = 'Helm plugin for MKAbuMattar PowerShell Profile - provides Helm CLI shortcuts and utility functions for Kubernetes package management workflows.'
     PowerShellVersion    = '5.0'
     FunctionsToExport    = @(
-        'Test-HelmInstalled',
-        'Initialize-HelmCompletion',
         'Invoke-Helm',
         'Invoke-HelmInstall',
         'Invoke-HelmUninstall',

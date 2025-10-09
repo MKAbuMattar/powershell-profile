@@ -102,7 +102,7 @@ function g {
         [string[]]$Arguments
     )
 
-    git @Arguments
+    & git @Arguments
 }
 
 function  grt {
@@ -135,11 +135,6 @@ function  grt {
     [CmdletBinding()]
     [OutputType([void])]
     param()
-
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
 
     Set-Location (git rev-parse --show-toplevel)
 }
@@ -184,12 +179,7 @@ function ga {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git add @Arguments
+    & git add @Arguments
 }
 
 function gaa {
@@ -231,12 +221,7 @@ function gaa {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git add --all @Arguments
+    & git add --all @Arguments
 }
 
 function gapa {
@@ -276,12 +261,7 @@ function gapa {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git add --patch @Arguments
+    & git add --patch @Arguments
 }
 
 function gau {
@@ -324,12 +304,7 @@ function gau {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git add --update @Arguments
+    & git add --update @Arguments
 }
 
 function gav {
@@ -372,12 +347,7 @@ function gav {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git add --verbose @Arguments
+    & git add --verbose @Arguments
 }
 
 function gam {
@@ -419,12 +389,7 @@ function gam {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git am @Arguments
+    & git am @Arguments
 }
 
 function gama {
@@ -464,12 +429,7 @@ function gama {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git am --abort @Arguments
+    & git am --abort @Arguments
 }
 
 function gamc {
@@ -508,12 +468,7 @@ function gamc {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git am --continue @Arguments
+    & git am --continue @Arguments
 }
 
 function gamscp {
@@ -552,12 +507,7 @@ function gamscp {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git am --show-current-patch @Arguments
+    & git am --show-current-patch @Arguments
 }
 
 function gams {
@@ -597,12 +547,7 @@ function gams {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git am --skip @Arguments
+    & git am --skip @Arguments
 }
 
 function gap {
@@ -644,12 +589,7 @@ function gap {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git apply @Arguments
+    & git apply @Arguments
 }
 
 function gapt {
@@ -692,12 +632,7 @@ function gapt {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git apply --3way @Arguments
+    & git apply --3way @Arguments
 }
 
 function gbs {
@@ -743,12 +678,7 @@ function gbs {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git bisect @Arguments
+    & git bisect @Arguments
 }
 
 function gbsb {
@@ -787,12 +717,7 @@ function gbsb {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git bisect bad @Arguments
+    & git bisect bad @Arguments
 }
 
 function gbsg {
@@ -831,12 +756,7 @@ function gbsg {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git bisect good @Arguments
+    & git bisect good @Arguments
 }
 
 function gbsn {
@@ -875,12 +795,7 @@ function gbsn {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git bisect new @Arguments
+    & git bisect new @Arguments
 }
 
 function gbso {
@@ -919,12 +834,7 @@ function gbso {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git bisect old @Arguments
+    & git bisect old @Arguments
 }
 
 function gbsr {
@@ -963,12 +873,7 @@ function gbsr {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git bisect reset @Arguments
+    & git bisect reset @Arguments
 }
 
 function gbss {
@@ -1007,12 +912,7 @@ function gbss {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git bisect start @Arguments
+    & git bisect start @Arguments
 }
 
 function gbl {
@@ -1055,12 +955,7 @@ function gbl {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git blame -w @Arguments
+    & git blame -w @Arguments
 }
 
 function gb {
@@ -1106,12 +1001,7 @@ function gb {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git branch @Arguments
+    & git branch @Arguments
 }
 
 function gba {
@@ -1153,12 +1043,7 @@ function gba {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git branch --all @Arguments
+    & git branch --all @Arguments
 }
 
 function gbd {
@@ -1197,12 +1082,7 @@ function gbd {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git branch --delete @Arguments
+    & git branch --delete @Arguments
 }
 
 function gbD {
@@ -1242,12 +1122,7 @@ function gbD {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git branch --delete --force @Arguments
+    & git branch --delete --force @Arguments
 }
 
 function gbm {
@@ -1286,12 +1161,7 @@ function gbm {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git branch --move @Arguments
+    & git branch --move @Arguments
 }
 
 function gbnm {
@@ -1330,12 +1200,7 @@ function gbnm {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git branch --no-merged @Arguments
+    & git branch --no-merged @Arguments
 }
 
 function gbr {
@@ -1377,12 +1242,7 @@ function gbr {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git branch --remote @Arguments
+    & git branch --remote @Arguments
 }
 
 function gco {
@@ -1425,12 +1285,7 @@ function gco {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git checkout @Arguments
+    & git checkout @Arguments
 }
 
 function gcor {
@@ -1475,12 +1330,7 @@ function gcor {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git checkout --recurse-submodules @Arguments
+    & git checkout --recurse-submodules @Arguments
 }
 
 function gcb {
@@ -1520,12 +1370,7 @@ function gcb {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git checkout -b @Arguments
+    & git checkout -b @Arguments
 }
 
 function gcB {
@@ -1565,12 +1410,7 @@ function gcB {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git checkout -B @Arguments
+    & git checkout -B @Arguments
 }
 
 function gcp {
@@ -1596,12 +1436,7 @@ function gcp {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git cherry-pick @Arguments
+    & git cherry-pick @Arguments
 }
 
 function gcpa {
@@ -1627,12 +1462,7 @@ function gcpa {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git cherry-pick --abort @Arguments
+    & git cherry-pick --abort @Arguments
 }
 
 function gcpc {
@@ -1658,12 +1488,7 @@ function gcpc {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git cherry-pick --continue @Arguments
+    & git cherry-pick --continue @Arguments
 }
 
 function gclean {
@@ -1689,7 +1514,7 @@ function gclean {
         [string[]]$Arguments
     )
 
-    git clean --interactive -d @Arguments
+    & git clean --interactive -d @Arguments
 }
 
 function gcl {
@@ -1715,7 +1540,7 @@ function gcl {
         [string[]]$Arguments
     )
 
-    git clone --recurse-submodules @Arguments
+    & git clone --recurse-submodules @Arguments
 }
 
 function gclf {
@@ -1741,7 +1566,7 @@ function gclf {
         [string[]]$Arguments
     )
 
-    git clone --recursive --shallow-submodules --filter=blob:none --also-filter-submodules @Arguments
+    & git clone --recursive --shallow-submodules --filter=blob:none --also-filter-submodules @Arguments
 }
 
 function gcam {
@@ -1767,12 +1592,7 @@ function gcam {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git commit --all --message @Arguments
+    & git commit --all --message @Arguments
 }
 
 function gcas {
@@ -1798,12 +1618,7 @@ function gcas {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git commit --all --signoff @Arguments
+    & git commit --all --signoff @Arguments
 }
 
 function gcasm {
@@ -1829,12 +1644,7 @@ function gcasm {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git commit --all --signoff --message @Arguments
+    & git commit --all --signoff --message @Arguments
 }
 
 function gcs {
@@ -1860,12 +1670,7 @@ function gcs {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git commit --gpg-sign @Arguments
+    & git commit --gpg-sign @Arguments
 }
 
 function gcss {
@@ -1891,12 +1696,7 @@ function gcss {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git commit --gpg-sign --signoff @Arguments
+    & git commit --gpg-sign --signoff @Arguments
 }
 
 function gcssm {
@@ -1922,12 +1722,7 @@ function gcssm {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git commit --gpg-sign --signoff --message @Arguments
+    & git commit --gpg-sign --signoff --message @Arguments
 }
 
 function gcmsg {
@@ -1953,12 +1748,7 @@ function gcmsg {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git commit --message @Arguments
+    & git commit --message @Arguments
 }
 
 function gcsm {
@@ -1984,12 +1774,7 @@ function gcsm {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git commit --signoff --message @Arguments
+    & git commit --signoff --message @Arguments
 }
 
 function gcv {
@@ -2015,12 +1800,7 @@ function gcv {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git commit --verbose @Arguments
+    & git commit --verbose @Arguments
 }
 
 function gca {
@@ -2046,12 +1826,7 @@ function gca {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git commit --verbose --all @Arguments
+    & git commit --verbose --all @Arguments
 }
 
 function gcf {
@@ -2077,12 +1852,7 @@ function gcf {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git config --list @Arguments
+    & git config --list @Arguments
 }
 
 function gcfu {
@@ -2108,12 +1878,7 @@ function gcfu {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git commit --fixup @Arguments
+    & git commit --fixup @Arguments
 }
 
 function gd {
@@ -2139,12 +1904,7 @@ function gd {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git diff @Arguments
+    & git diff @Arguments
 }
 
 function gdca {
@@ -2170,12 +1930,7 @@ function gdca {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git diff --cached @Arguments
+    & git diff --cached @Arguments
 }
 
 function gdcw {
@@ -2201,12 +1956,7 @@ function gdcw {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git diff --cached --word-diff @Arguments
+    & git diff --cached --word-diff @Arguments
 }
 
 function gds {
@@ -2232,12 +1982,7 @@ function gds {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git diff --staged @Arguments
+    & git diff --staged @Arguments
 }
 
 function gdw {
@@ -2263,12 +2008,7 @@ function gdw {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git diff --word-diff @Arguments
+    & git diff --word-diff @Arguments
 }
 
 function gdup {
@@ -2294,12 +2034,7 @@ function gdup {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git diff '@{upstream}' @Arguments
+    & git diff '@{upstream}' @Arguments
 }
 
 function gdt {
@@ -2325,12 +2060,7 @@ function gdt {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git diff-tree --no-commit-id --name-only -r @Arguments
+    & git diff-tree --no-commit-id --name-only -r @Arguments
 }
 
 function  gf {
@@ -2356,12 +2086,7 @@ function  gf {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git fetch @Arguments
+    & git fetch @Arguments
 }
 
 function gfa {
@@ -2387,12 +2112,7 @@ function gfa {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git fetch --all --tags --prune @Arguments
+    & git fetch --all --tags --prune @Arguments
 }
 
 function gfo {
@@ -2418,12 +2138,7 @@ function gfo {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git fetch origin @Arguments
+    & git fetch origin @Arguments
 }
 
 function gg {
@@ -2449,12 +2164,7 @@ function gg {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git gui citool @Arguments
+    & git gui citool @Arguments
 }
 
 function gga {
@@ -2480,12 +2190,7 @@ function gga {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git gui citool --amend @Arguments
+    & git gui citool --amend @Arguments
 }
 
 function ghh {
@@ -2511,7 +2216,7 @@ function ghh {
         [string[]]$Arguments
     )
 
-    git help @Arguments
+    & git help @Arguments
 }
 
 function glgg {
@@ -2537,12 +2242,7 @@ function glgg {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git log --graph @Arguments
+    & git log --graph @Arguments
 }
 
 function glgga {
@@ -2568,12 +2268,7 @@ function glgga {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git log --graph --decorate --all @Arguments
+    & git log --graph --decorate --all @Arguments
 }
 
 function glgm {
@@ -2599,12 +2294,7 @@ function glgm {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git log --graph --max-count=10 @Arguments
+    & git log --graph --max-count=10 @Arguments
 }
 
 function glo {
@@ -2630,12 +2320,7 @@ function glo {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git log --oneline --decorate @Arguments
+    & git log --oneline --decorate @Arguments
 }
 
 function glog {
@@ -2661,12 +2346,7 @@ function glog {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git log --oneline --decorate --graph @Arguments
+    & git log --oneline --decorate --graph @Arguments
 }
 
 function gloga {
@@ -2692,12 +2372,7 @@ function gloga {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git log --oneline --decorate --graph --all @Arguments
+    & git log --oneline --decorate --graph --all @Arguments
 }
 
 function glg {
@@ -2723,12 +2398,7 @@ function glg {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git log --stat @Arguments
+    & git log --stat @Arguments
 }
 
 function glgp {
@@ -2754,12 +2424,7 @@ function glgp {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git log --stat --patch @Arguments
+    & git log --stat --patch @Arguments
 }
 
 function gfg {
@@ -2785,12 +2450,7 @@ function gfg {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git ls-files | grep @Arguments
+    & git ls-files | grep @Arguments
 }
 
 function gm {
@@ -2816,12 +2476,7 @@ function gm {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git merge @Arguments
+    & git merge @Arguments
 }
 
 function gma {
@@ -2847,12 +2502,7 @@ function gma {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git merge --abort @Arguments
+    & git merge --abort @Arguments
 }
 
 function gmc {
@@ -2878,12 +2528,7 @@ function gmc {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git merge --continue @Arguments
+    & git merge --continue @Arguments
 }
 
 function gms {
@@ -2909,12 +2554,7 @@ function gms {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git merge --squash @Arguments
+    & git merge --squash @Arguments
 }
 
 function gmff {
@@ -2940,12 +2580,7 @@ function gmff {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git merge --ff-only @Arguments
+    & git merge --ff-only @Arguments
 }
 
 function gmtl {
@@ -2971,12 +2606,7 @@ function gmtl {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git mergetool --no-prompt @Arguments
+    & git mergetool --no-prompt @Arguments
 }
 
 function gmtlvim {
@@ -3002,12 +2632,7 @@ function gmtlvim {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git mergetool --no-prompt --tool=vimdiff @Arguments
+    & git mergetool --no-prompt --tool=vimdiff @Arguments
 }
 
 function gl {
@@ -3033,12 +2658,7 @@ function gl {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git pull @Arguments
+    & git pull @Arguments
 }
 
 function gpr {
@@ -3064,12 +2684,7 @@ function gpr {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git pull --rebase @Arguments
+    & git pull --rebase @Arguments
 }
 
 function gprv {
@@ -3095,12 +2710,7 @@ function gprv {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git pull --rebase -v @Arguments
+    & git pull --rebase -v @Arguments
 }
 
 function gpra {
@@ -3126,12 +2736,7 @@ function gpra {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git pull --rebase --autostash @Arguments
+    & git pull --rebase --autostash @Arguments
 }
 
 function gprav {
@@ -3157,12 +2762,7 @@ function gprav {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git pull --rebase --autostash -v @Arguments
+    & git pull --rebase --autostash -v @Arguments
 }
 
 function gp {
@@ -3188,12 +2788,7 @@ function gp {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git push @Arguments
+    & git push @Arguments
 }
 
 function gpd {
@@ -3219,12 +2814,7 @@ function gpd {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git push --dry-run @Arguments
+    & git push --dry-run @Arguments
 }
 
 
@@ -3251,16 +2841,11 @@ function gpf {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
     if (Test-GitVersionAtLeast -RequiredVersion "2.30") {
-        git push --force-with-lease --force-if-includes @Arguments
+        & git push --force-with-lease --force-if-includes @Arguments
     }
     else {
-        git push --force-with-lease @Arguments
+        & git push --force-with-lease @Arguments
     }
 }
 
@@ -3287,12 +2872,7 @@ function gpv {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git push --verbose @Arguments
+    & git push --verbose @Arguments
 }
 
 function gpoat {
@@ -3318,12 +2898,7 @@ function gpoat {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git push origin --all; git push origin --tags
+    & git push origin --all; git push origin --tags
 }
 
 function gpod {
@@ -3349,12 +2924,7 @@ function gpod {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git push origin --delete @Arguments
+    & git push origin --delete @Arguments
 }
 
 function gpu {
@@ -3380,12 +2950,7 @@ function gpu {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git push upstream @Arguments
+    & git push upstream @Arguments
 }
 
 function grb {
@@ -3411,12 +2976,7 @@ function grb {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git rebase @Arguments
+    & git rebase @Arguments
 }
 
 function grba {
@@ -3442,12 +3002,7 @@ function grba {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git rebase --abort @Arguments
+    & git rebase --abort @Arguments
 }
 
 function grbc {
@@ -3473,12 +3028,7 @@ function grbc {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git rebase --continue @Arguments
+    & git rebase --continue @Arguments
 }
 
 function grbi {
@@ -3504,12 +3054,7 @@ function grbi {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git rebase --interactive @Arguments
+    & git rebase --interactive @Arguments
 }
 
 function grbo {
@@ -3535,12 +3080,7 @@ function grbo {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git rebase --onto @Arguments
+    & git rebase --onto @Arguments
 }
 
 function grbs {
@@ -3566,12 +3106,7 @@ function grbs {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git rebase --skip @Arguments
+    & git rebase --skip @Arguments
 }
 
 function grf {
@@ -3597,12 +3132,7 @@ function grf {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git reflog @Arguments
+    & git reflog @Arguments
 }
 
 function gr {
@@ -3628,12 +3158,7 @@ function gr {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git remote @Arguments
+    & git remote @Arguments
 }
 
 function grv {
@@ -3659,12 +3184,7 @@ function grv {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git remote --verbose @Arguments
+    & git remote --verbose @Arguments
 }
 
 function gra {
@@ -3690,12 +3210,7 @@ function gra {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git remote add @Arguments
+    & git remote add @Arguments
 }
 
 function grrm {
@@ -3721,12 +3236,7 @@ function grrm {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git remote remove @Arguments
+    & git remote remove @Arguments
 }
 
 function grmv {
@@ -3752,12 +3262,7 @@ function grmv {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git remote rename @Arguments
+    & git remote rename @Arguments
 }
 
 function grset {
@@ -3783,12 +3288,7 @@ function grset {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git remote set-url @Arguments
+    & git remote set-url @Arguments
 }
 
 function grup {
@@ -3814,12 +3314,7 @@ function grup {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git remote update @Arguments
+    & git remote update @Arguments
 }
 
 function grh {
@@ -3845,12 +3340,7 @@ function grh {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git reset @Arguments
+    & git reset @Arguments
 }
 
 function gru {
@@ -3876,12 +3366,7 @@ function gru {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git reset -- @Arguments
+    & git reset -- @Arguments
 }
 
 function grhh {
@@ -3907,12 +3392,7 @@ function grhh {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git reset --hard @Arguments
+    & git reset --hard @Arguments
 }
 
 function grhk {
@@ -3938,12 +3418,7 @@ function grhk {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git reset --keep @Arguments
+    & git reset --keep @Arguments
 }
 
 function grhs {
@@ -3969,12 +3444,7 @@ function grhs {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git reset --soft @Arguments
+    & git reset --soft @Arguments
 }
 
 function grs {
@@ -4000,12 +3470,7 @@ function grs {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git restore @Arguments
+    & git restore @Arguments
 }
 
 function grss {
@@ -4031,12 +3496,7 @@ function grss {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git restore --source @Arguments
+    & git restore --source @Arguments
 }
 
 function grst {
@@ -4062,12 +3522,7 @@ function grst {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git restore --staged @Arguments
+    & git restore --staged @Arguments
 }
 
 function grev {
@@ -4093,12 +3548,7 @@ function grev {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git revert @Arguments
+    & git revert @Arguments
 }
 
 function greva {
@@ -4124,12 +3574,7 @@ function greva {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git revert --abort @Arguments
+    & git revert --abort @Arguments
 }
 
 function grevc {
@@ -4155,12 +3600,7 @@ function grevc {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git revert --continue @Arguments
+    & git revert --continue @Arguments
 }
 
 function grm {
@@ -4186,12 +3626,7 @@ function grm {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git rm @Arguments
+    & git rm @Arguments
 }
 
 function grmc {
@@ -4217,12 +3652,7 @@ function grmc {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git rm --cached @Arguments
+    & git rm --cached @Arguments
 }
 
 function gcount {
@@ -4248,12 +3678,7 @@ function gcount {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git shortlog --summary --numbered @Arguments
+    & git shortlog --summary --numbered @Arguments
 }
 
 function gsh {
@@ -4279,12 +3704,7 @@ function gsh {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git show @Arguments
+    & git show @Arguments
 }
 
 function gsps {
@@ -4310,12 +3730,7 @@ function gsps {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git show --pretty=short --show-signature @Arguments
+    & git show --pretty=short --show-signature @Arguments
 }
 
 function gstall {
@@ -4341,12 +3756,7 @@ function gstall {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git stash --all @Arguments
+    & git stash --all @Arguments
 }
 
 function gstaa {
@@ -4372,12 +3782,7 @@ function gstaa {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git stash apply @Arguments
+    & git stash apply @Arguments
 }
 
 function gstc {
@@ -4403,12 +3808,7 @@ function gstc {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git stash clear @Arguments
+    & git stash clear @Arguments
 }
 
 function gstd {
@@ -4434,12 +3834,7 @@ function gstd {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git stash drop @Arguments
+    & git stash drop @Arguments
 }
 
 function gstl {
@@ -4465,12 +3860,7 @@ function gstl {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git stash list @Arguments
+    & git stash list @Arguments
 }
 
 function gstp {
@@ -4496,12 +3886,7 @@ function gstp {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git stash pop @Arguments
+    & git stash pop @Arguments
 }
 
 function gsta {
@@ -4527,16 +3912,11 @@ function gsta {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
     if (Test-GitVersionAtLeast -RequiredVersion "2.13") {
-        git stash push @Arguments
+        & git stash push @Arguments
     }
     else {
-        git stash save @Arguments
+        & git stash save @Arguments
     }
 }
 
@@ -4563,12 +3943,7 @@ function gsts {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git stash show --patch @Arguments
+    & git stash show --patch @Arguments
 }
 
 function gstu {
@@ -4594,12 +3969,7 @@ function gstu {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git stash --include-untracked @Arguments
+    & git stash --include-untracked @Arguments
 }
 
 function gst {
@@ -4625,12 +3995,7 @@ function gst {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git status @Arguments
+    & git status @Arguments
 }
 
 function gss {
@@ -4656,12 +4021,7 @@ function gss {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git status --short @Arguments
+    & git status --short @Arguments
 }
 
 function gsb {
@@ -4687,12 +4047,7 @@ function gsb {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git status --short --branch @Arguments
+    & git status --short --branch @Arguments
 }
 
 function gsi {
@@ -4718,12 +4073,7 @@ function gsi {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git submodule init @Arguments
+    & git submodule init @Arguments
 }
 
 function gsu {
@@ -4749,12 +4099,7 @@ function gsu {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git submodule update @Arguments
+    & git submodule update @Arguments
 }
 
 function gsd {
@@ -4780,12 +4125,7 @@ function gsd {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git svn dcommit @Arguments
+    & git svn dcommit @Arguments
 }
 
 function gsr {
@@ -4811,12 +4151,7 @@ function gsr {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git svn rebase @Arguments
+    & git svn rebase @Arguments
 }
 
 function gsw {
@@ -4842,12 +4177,7 @@ function gsw {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git switch @Arguments
+    & git switch @Arguments
 }
 
 function gswc {
@@ -4873,12 +4203,7 @@ function gswc {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git switch --create @Arguments
+    & git switch --create @Arguments
 }
 
 function gta {
@@ -4904,12 +4229,7 @@ function gta {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git tag --annotate @Arguments
+    & git tag --annotate @Arguments
 }
 
 function gts {
@@ -4935,12 +4255,7 @@ function gts {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git tag --sign @Arguments
+    & git tag --sign @Arguments
 }
 
 function gtv {
@@ -4966,12 +4281,7 @@ function gtv {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git tag | Sort-Object -V @Arguments
+    & git tag | Sort-Object -V @Arguments
 }
 
 function gignore {
@@ -4997,12 +4307,7 @@ function gignore {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git update-index --assume-unchanged @Arguments
+    & git update-index --assume-unchanged @Arguments
 }
 
 function gunignore {
@@ -5028,12 +4333,7 @@ function gunignore {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git update-index --no-assume-unchanged @Arguments
+    & git update-index --no-assume-unchanged @Arguments
 }
 
 function gwch {
@@ -5059,12 +4359,7 @@ function gwch {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git whatchanged -p --abbrev-commit --pretty=medium @Arguments
+    & git whatchanged -p --abbrev-commit --pretty=medium @Arguments
 }
 
 function gwt {
@@ -5090,12 +4385,7 @@ function gwt {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git worktree @Arguments
+    & git worktree @Arguments
 }
 
 function gwta {
@@ -5121,12 +4411,7 @@ function gwta {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git worktree add @Arguments
+    & git worktree add @Arguments
 }
 
 function gwtls {
@@ -5152,12 +4437,7 @@ function gwtls {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git worktree list @Arguments
+    & git worktree list @Arguments
 }
 
 function gwtmv {
@@ -5183,12 +4463,7 @@ function gwtmv {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git worktree move @Arguments
+    & git worktree move @Arguments
 }
 
 function gwtrm {
@@ -5214,12 +4489,7 @@ function gwtrm {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git worktree remove @Arguments
+    & git worktree remove @Arguments
 }
 
 function gwip {
@@ -5245,14 +4515,9 @@ function gwip {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git add -A
-    git rm (git ls-files --deleted) 2>$null
-    git commit --no-verify --no-gpg-sign --message "--wip-- [skip ci]" @Arguments
+    & git add -A
+    & git rm (git ls-files --deleted) 2>$null
+    & git commit --no-verify --no-gpg-sign --message "--wip-- [skip ci]" @Arguments
 }
 
 function gunwip {
@@ -5278,14 +4543,9 @@ function gunwip {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
     $commitMessage = git rev-list --max-count=1 --format="%s" HEAD
     if ($commitMessage -match "--wip--") {
-        git reset HEAD~1
+        & git reset HEAD~1
     }
 }
 
@@ -5312,12 +4572,7 @@ function gcd {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git checkout (Get-GitDevelopBranch) @Arguments
+    & git checkout (Get-GitDevelopBranch) @Arguments
 }
 
 function gcm {
@@ -5343,12 +4598,7 @@ function gcm {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git checkout (Get-GitMainBranch) @Arguments
+    & git checkout (Get-GitMainBranch) @Arguments
 }
 
 function gswd {
@@ -5374,12 +4624,7 @@ function gswd {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git switch (Get-GitDevelopBranch) @Arguments
+    & git switch (Get-GitDevelopBranch) @Arguments
 }
 
 function gswm {
@@ -5405,12 +4650,7 @@ function gswm {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git switch (Get-GitMainBranch) @Arguments
+    & git switch (Get-GitMainBranch) @Arguments
 }
 
 function grbd {
@@ -5436,12 +4676,7 @@ function grbd {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git rebase (Get-GitDevelopBranch) @Arguments
+    & git rebase (Get-GitDevelopBranch) @Arguments
 }
 
 function grbm {
@@ -5467,12 +4702,7 @@ function grbm {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git rebase (Get-GitMainBranch) @Arguments
+    & git rebase (Get-GitMainBranch) @Arguments
 }
 
 function grbom {
@@ -5498,12 +4728,7 @@ function grbom {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git rebase "origin/$(Get-GitMainBranch)" @Arguments
+    & git rebase "origin/$(Get-GitMainBranch)" @Arguments
 }
 
 function grbum {
@@ -5529,12 +4754,7 @@ function grbum {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git rebase "upstream/$(Get-GitMainBranch)" @Arguments
+    & git rebase "upstream/$(Get-GitMainBranch)" @Arguments
 }
 
 function ggsup {
@@ -5560,12 +4780,7 @@ function ggsup {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git branch --set-upstream-to="origin/$(Get-GitCurrentBranch)" @Arguments
+    & git branch --set-upstream-to="origin/$(Get-GitCurrentBranch)" @Arguments
 }
 
 function gmom {
@@ -5591,12 +4806,7 @@ function gmom {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git merge "origin/$(Get-GitMainBranch)" @Arguments
+    & git merge "origin/$(Get-GitMainBranch)" @Arguments
 }
 
 function gmum {
@@ -5622,12 +4832,7 @@ function gmum {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git merge "upstream/$(Get-GitMainBranch)" @Arguments
+    & git merge "upstream/$(Get-GitMainBranch)" @Arguments
 }
 
 function gprom {
@@ -5653,12 +4858,7 @@ function gprom {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git pull --rebase origin (Get-GitMainBranch) @Arguments
+    & git pull --rebase origin (Get-GitMainBranch) @Arguments
 }
 
 function gpromi {
@@ -5684,12 +4884,7 @@ function gpromi {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git pull --rebase=interactive origin (Get-GitMainBranch) @Arguments
+    & git pull --rebase=interactive origin (Get-GitMainBranch) @Arguments
 }
 
 function gprum {
@@ -5715,12 +4910,7 @@ function gprum {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git pull --rebase upstream (Get-GitMainBranch) @Arguments
+    & git pull --rebase upstream (Get-GitMainBranch) @Arguments
 }
 
 function gprumi {
@@ -5746,12 +4936,7 @@ function gprumi {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git pull --rebase=interactive upstream (Get-GitMainBranch) @Arguments
+    & git pull --rebase=interactive upstream (Get-GitMainBranch) @Arguments
 }
 
 function ggpull {
@@ -5777,12 +4962,7 @@ function ggpull {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git pull origin (Get-GitCurrentBranch) @Arguments
+    & git pull origin (Get-GitCurrentBranch) @Arguments
 }
 
 function ggpush {
@@ -5808,12 +4988,7 @@ function ggpush {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git push origin (Get-GitCurrentBranch) @Arguments
+    & git push origin (Get-GitCurrentBranch) @Arguments
 }
 
 function gpsup {
@@ -5839,12 +5014,7 @@ function gpsup {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git push --set-upstream origin (Get-GitCurrentBranch) @Arguments
+    & git push --set-upstream origin (Get-GitCurrentBranch) @Arguments
 }
 
 function gpsupf {
@@ -5870,16 +5040,11 @@ function gpsupf {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
     if (Test-GitVersionAtLeast -RequiredVersion "2.30") {
-        git push --set-upstream origin (Get-GitCurrentBranch) --force-with-lease --force-if-includes @Arguments
+        & git push --set-upstream origin (Get-GitCurrentBranch) --force-with-lease --force-if-includes @Arguments
     }
     else {
-        git push --set-upstream origin (Get-GitCurrentBranch) --force-with-lease @Arguments
+        & git push --set-upstream origin (Get-GitCurrentBranch) --force-with-lease @Arguments
     }
 }
 
@@ -5906,12 +5071,7 @@ function groh {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git reset "origin/$(Get-GitCurrentBranch)" --hard @Arguments
+    & git reset "origin/$(Get-GitCurrentBranch)" --hard @Arguments
 }
 
 function gluc {
@@ -5937,12 +5097,7 @@ function gluc {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git pull upstream (Get-GitCurrentBranch) @Arguments
+    & git pull upstream (Get-GitCurrentBranch) @Arguments
 }
 
 function  glum {
@@ -5968,12 +5123,7 @@ function  glum {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git pull upstream (Get-GitMainBranch) @Arguments
+    & git pull upstream (Get-GitMainBranch) @Arguments
 }
 
 function gdct {
@@ -5999,12 +5149,7 @@ function gdct {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git describe --tags (git rev-list --tags --max-count=1) @Arguments
+    & git describe --tags (git rev-list --tags --max-count=1) @Arguments
 }
 
 function gdnolock {
@@ -6030,12 +5175,7 @@ function gdnolock {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git diff @Arguments ":(exclude)package-lock.json" ":(exclude)*.lock"
+    & git diff @Arguments ":(exclude)package-lock.json" ":(exclude)*.lock"
 }
 function gdv {
     <#
@@ -6060,12 +5200,7 @@ function gdv {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git diff -w @Arguments | Out-Host
+    & git diff -w @Arguments | Out-Host
 }
 
 function gpristine {
@@ -6091,12 +5226,7 @@ function gpristine {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git reset --hard; git clean --force -dfx
+    & git reset --hard; & git clean --force -dfx
 }
 
 function gwipe {
@@ -6122,12 +5252,7 @@ function gwipe {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git reset --hard; git clean --force -df
+    & git reset --hard; & git clean --force -df
 }
 
 function gignored {
@@ -6153,12 +5278,7 @@ function gignored {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git ls-files -v | Where-Object { $_ -match "^[a-z]" }
+    & git ls-files -v | Where-Object { $_ -match "^[a-z]" }
 }
 
 function gbda {
@@ -6184,18 +5304,13 @@ function gbda {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
     $mainBranch = Get-GitMainBranch
     $developBranch = Get-GitDevelopBranch
-    git branch --no-color --merged | Where-Object {
+    & git branch --no-color --merged | Where-Object {
         $_ -notmatch "^[\*\+]" -and
         $_ -notmatch "^\s*($mainBranch|$developBranch)\s*$"
     } | ForEach-Object {
-        git branch --delete $_.Trim() 2>$null
+        & git branch --delete $_.Trim() 2>$null
     }
 }
 
@@ -6222,15 +5337,10 @@ function gbds {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
     $defaultBranch = Get-GitMainBranch
     if ($LASTEXITCODE -ne 0) { $defaultBranch = Get-GitDevelopBranch }
 
-    git for-each-ref refs/heads/ "--format=%(refname:short)" | ForEach-Object {
+    & git for-each-ref refs/heads/ "--format=%(refname:short)" | ForEach-Object {
         $branch = $_
         $mergeBase = git merge-base $defaultBranch $branch
         $cherry = git cherry $defaultBranch (git commit-tree (git rev-parse "$branch^{tree}") -p $mergeBase -m "_")
@@ -6263,14 +5373,9 @@ function gbgd {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git branch --no-color -vv | Where-Object { $_ -match ": gone\]" } | ForEach-Object {
+    & git branch --no-color -vv | Where-Object { $_ -match ": gone\]" } | ForEach-Object {
         $branchName = ($_ -replace "^.{3}" -split "\s+")[0]
-        git branch -d $branchName
+        & git branch -d $branchName
     }
 }
 
@@ -6297,14 +5402,9 @@ function gbgD {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git branch --no-color -vv | Where-Object { $_ -match ": gone\]" } | ForEach-Object {
+    & git branch --no-color -vv | Where-Object { $_ -match ": gone\]" } | ForEach-Object {
         $branchName = ($_ -replace "^.{3}" -split "\s+")[0]
-        git branch -D $branchName
+        & git branch -D $branchName
     }
 }
 
@@ -6331,12 +5431,7 @@ function gbg {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git branch -vv | Where-Object { $_ -match ": gone\]" }
+    & git branch -vv | Where-Object { $_ -match ": gone\]" }
 }
 
 function gccd {
@@ -6365,7 +5460,7 @@ function gccd {
     $repo = $args | Where-Object { $_ -match "(ssh://|git://|ftp(s)?://|http(s)?://|.*@)" }
     if (!$repo) { $repo = $args[-1] }
 
-    git clone --recurse-submodules @Arguments
+    & git clone --recurse-submodules @Arguments
     if ($LASTEXITCODE -eq 0) {
         if (Test-Path $args[-1]) {
             Set-Location $args[-1]
@@ -6400,17 +5495,11 @@ function ggpnp {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
     if ($Arguments.Count -eq 0) {
-        ggl; ggp
-
+        &  ggl; & ggp
     }
     else {
-        ggl @Arguments; ggp @Arguments
+        & ggl @Arguments; & ggp @Arguments
     }
 }
 
@@ -6437,17 +5526,12 @@ function ggu {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
     if ($Arguments.Count -eq 0) {
         $branch = Get-GitCurrentBranch
-        git pull --rebase origin $branch
+        & git pull --rebase origin $branch
     }
     else {
-        git pull --rebase origin @Arguments
+        & git pull --rebase origin @Arguments
     }
 }
 
@@ -6474,17 +5558,12 @@ function ggl {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
     if ($Arguments.Count -eq 0) {
         $branch = Get-GitCurrentBranch
-        git pull origin $branch
+        & git pull origin $branch
     }
     else {
-        git pull origin @Arguments
+        & git pull origin @Arguments
     }
 }
 
@@ -6511,17 +5590,12 @@ function ggp {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
     if ($Arguments.Count -eq 0) {
         $branch = Get-GitCurrentBranch
-        git push origin $branch
+        & git push origin $branch
     }
     else {
-        git push origin @Arguments
+        & git push origin @Arguments
     }
 }
 
@@ -6548,17 +5622,12 @@ function ggf {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
     if ($Arguments.Count -eq 0) {
         $branch = Get-GitCurrentBranch
-        git push --force origin $branch
+        & git push --force origin $branch
     }
     else {
-        git push --force origin @Arguments
+        & git push --force origin @Arguments
     }
 }
 
@@ -6585,17 +5654,12 @@ function ggfl {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
     if ($Arguments.Count -eq 0) {
         $branch = Get-GitCurrentBranch
-        git push --force-with-lease origin $branch
+        & git push --force-with-lease origin $branch
     }
     else {
-        git push --force-with-lease origin @Arguments
+        & git push --force-with-lease origin @Arguments
     }
 }
 
@@ -6622,12 +5686,7 @@ function glods {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git log --graph --pretty="%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ad) %C(bold blue)<%an>%Creset" --date=short @Arguments
+    & git log --graph --pretty="%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ad) %C(bold blue)<%an>%Creset" --date=short @Arguments
 }
 
 function glod {
@@ -6653,12 +5712,7 @@ function glod {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git log --graph --pretty="%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ad) %C(bold blue)<%an>%Creset" @Arguments
+    & git log --graph --pretty="%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ad) %C(bold blue)<%an>%Creset" @Arguments
 }
 
 function glola {
@@ -6684,12 +5738,7 @@ function glola {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git log --graph --pretty="%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Creset" --all @Arguments
+    & git log --graph --pretty="%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Creset" --all @Arguments
 }
 
 function glols {
@@ -6715,12 +5764,7 @@ function glols {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git log --graph --pretty="%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Creset" --stat @Arguments
+    & git log --graph --pretty="%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Creset" --stat @Arguments
 }
 
 function glol {
@@ -6746,12 +5790,7 @@ function glol {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
-    git log --graph --pretty="%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Creset" @Arguments
+    & git log --graph --pretty="%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Creset" @Arguments
 }
 
 
@@ -6778,16 +5817,11 @@ function glp {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
     if ($Arguments.Count -gt 0) {
-        git log --pretty=$Arguments[0]
+        & git log --pretty=$Arguments[0]
     }
     else {
-        git log
+        & git log
     }
 }
 
@@ -6814,11 +5848,6 @@ function gtl {
         [string[]]$Arguments
     )
 
-    if (-not (Test-IsGitRepository)) {
-        Write-Error "Not a git repository (or any of the parent directories): .git"
-        return
-    }
-
     $pattern = if ($Arguments.Count -gt 0) { "$($Arguments[0])*" } else { "*" }
-    git tag --sort=-v:refname -n --list $pattern
+    & git tag --sort=-v:refname -n --list $pattern
 }

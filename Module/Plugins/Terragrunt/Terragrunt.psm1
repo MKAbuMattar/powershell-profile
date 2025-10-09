@@ -42,87 +42,6 @@
 # Version: 4.1.0
 #---------------------------------------------------------------------------------------------------
 
-function Test-TerragruntInstalled {
-    <#
-    .SYNOPSIS
-        Tests if Terragrunt is installed and accessible.
-
-    .DESCRIPTION
-        Checks if Terragrunt command is available in the current environment and validates basic functionality.
-        Used internally by other Terragrunt functions to ensure Terragrunt is available before executing commands.
-
-    .OUTPUTS
-        System.Boolean
-        Returns $true if Terragrunt is available, $false otherwise.
-
-    .EXAMPLE
-        Test-TerragruntInstalled
-        Returns $true if Terragrunt is installed and accessible.
-
-    .LINK
-        https://github.com/MKAbuMattar/powershell-profile/blob/main/Module/Plugins/Terragrunt/README.md
-    #>
-    [CmdletBinding()]
-    [OutputType([bool])]
-    param()
-
-    try {
-        $null = Get-Command terragrunt -ErrorAction Stop
-        $null = terragrunt --version 2>$null
-        return $true
-    }
-    catch {
-        Write-Warning "Terragrunt is not installed or not accessible. Please install Terragrunt to use Terragrunt functions."
-        return $false
-    }
-}
-
-function Initialize-TerragruntCompletion {
-    <#
-    .SYNOPSIS
-        Initializes Terragrunt completion for PowerShell.
-
-    .DESCRIPTION
-        Sets up Terragrunt command completion for PowerShell to provide tab completion for Terragrunt commands,
-        options, and common operations. This function is automatically called when the module is imported.
-
-    .EXAMPLE
-        Initialize-TerragruntCompletion
-        Sets up Terragrunt completion for the current PowerShell session.
-
-    .LINK
-        https://github.com/MKAbuMattar/powershell-profile/blob/main/Module/Plugins/Terragrunt/README.md
-    #>
-    [CmdletBinding()]
-    [OutputType([void])]
-    param()
-
-    if (-not (Test-TerragruntInstalled)) {
-        return
-    }
-
-    try {
-        Register-ArgumentCompleter -CommandName 'terragrunt' -ScriptBlock {
-            param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
-            
-            $subcommands = @(
-                'apply', 'apply-all', 'destroy', 'destroy-all', 'plan', 'plan-all',
-                'init', 'init-from-module', 'validate', 'validate-all', 'validate-inputs',
-                'output-all', 'output-module-groups', 'show', 'refresh', 'refresh-all',
-                'import', 'state', 'providers', 'get', 'render-json', 'graph-dependencies',
-                'hclfmt', 'run-all', 'terragrunt-info', '--help', '--version'
-            )
-            
-            $subcommands | Where-Object { $_ -like "$wordToComplete*" } | ForEach-Object {
-                [System.Management.Automation.CompletionResult]::new($_, $_, 'ParameterValue', $_)
-            }
-        }
-    }
-    catch {
-        Write-Verbose "Terragrunt completion initialization failed: $($_.Exception.Message)"
-    }
-}
-
 function Invoke-Terragrunt {
     <#
     .SYNOPSIS
@@ -153,10 +72,6 @@ function Invoke-Terragrunt {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-TerragruntInstalled)) {
-        return
-    }
 
     & terragrunt @Arguments
 }
@@ -301,10 +216,6 @@ function Invoke-TerragruntInit {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-TerragruntInstalled)) {
-        return
-    }
-
     $allArgs = @('init') + $Arguments
     & terragrunt @allArgs
 }
@@ -345,10 +256,6 @@ function Invoke-TerragruntInitFromModule {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-TerragruntInstalled)) {
-        return
-    }
 
     $allArgs = @('init-from-module')
     if ($ModuleSource) {
@@ -392,10 +299,6 @@ function Invoke-TerragruntPlan {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-TerragruntInstalled)) {
-        return
-    }
-
     $allArgs = @('plan') + $Arguments
     & terragrunt @allArgs
 }
@@ -430,10 +333,6 @@ function Invoke-TerragruntPlanAll {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-TerragruntInstalled)) {
-        return
-    }
 
     $allArgs = @('plan-all') + $Arguments
     & terragrunt @allArgs
@@ -470,10 +369,6 @@ function Invoke-TerragruntApply {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-TerragruntInstalled)) {
-        return
-    }
-
     $allArgs = @('apply') + $Arguments
     & terragrunt @allArgs
 }
@@ -508,10 +403,6 @@ function Invoke-TerragruntApplyAll {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-TerragruntInstalled)) {
-        return
-    }
 
     $allArgs = @('apply-all') + $Arguments
     & terragrunt @allArgs
@@ -548,10 +439,6 @@ function Invoke-TerragruntRefresh {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-TerragruntInstalled)) {
-        return
-    }
-
     $allArgs = @('refresh') + $Arguments
     & terragrunt @allArgs
 }
@@ -586,10 +473,6 @@ function Invoke-TerragruntRefreshAll {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-TerragruntInstalled)) {
-        return
-    }
 
     $allArgs = @('refresh-all') + $Arguments
     & terragrunt @allArgs
@@ -626,10 +509,6 @@ function Invoke-TerragruntDestroy {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-TerragruntInstalled)) {
-        return
-    }
-
     $allArgs = @('destroy') + $Arguments
     & terragrunt @allArgs
 }
@@ -665,10 +544,6 @@ function Invoke-TerragruntDestroyAll {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-TerragruntInstalled)) {
-        return
-    }
-
     $allArgs = @('destroy-all') + $Arguments
     & terragrunt @allArgs
 }
@@ -703,10 +578,6 @@ function Invoke-TerragruntFormat {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-TerragruntInstalled)) {
-        return
-    }
 
     $allArgs = @('hclfmt') + $Arguments
     & terragrunt @allArgs
@@ -772,10 +643,6 @@ function Invoke-TerragruntValidate {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-TerragruntInstalled)) {
-        return
-    }
-
     $allArgs = @('validate') + $Arguments
     & terragrunt @allArgs
 }
@@ -810,10 +677,6 @@ function Invoke-TerragruntValidateAll {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-TerragruntInstalled)) {
-        return
-    }
 
     $allArgs = @('validate-all') + $Arguments
     & terragrunt @allArgs
@@ -850,10 +713,6 @@ function Invoke-TerragruntValidateInputs {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-TerragruntInstalled)) {
-        return
-    }
-
     $allArgs = @('validate-inputs') + $Arguments
     & terragrunt @allArgs
 }
@@ -888,10 +747,6 @@ function Invoke-TerragruntRenderJSON {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-TerragruntInstalled)) {
-        return
-    }
 
     $allArgs = @('render-json') + $Arguments
     & terragrunt @allArgs
@@ -928,10 +783,6 @@ function Invoke-TerragruntGraphDependencies {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-TerragruntInstalled)) {
-        return
-    }
-
     $allArgs = @('graph-dependencies') + $Arguments
     & terragrunt @allArgs
 }
@@ -966,10 +817,6 @@ function Invoke-TerragruntOutputAll {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-TerragruntInstalled)) {
-        return
-    }
 
     $allArgs = @('output-all') + $Arguments
     & terragrunt @allArgs
@@ -1006,10 +853,6 @@ function Invoke-TerragruntOutputModuleGroups {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-TerragruntInstalled)) {
-        return
-    }
-
     $allArgs = @('output-module-groups') + $Arguments
     & terragrunt @allArgs
 }
@@ -1044,10 +887,6 @@ function Invoke-TerragruntStateList {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-TerragruntInstalled)) {
-        return
-    }
 
     $allArgs = @('state', 'list') + $Arguments
     & terragrunt @allArgs
@@ -1089,10 +928,6 @@ function Invoke-TerragruntStateShow {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-TerragruntInstalled)) {
-        return
-    }
 
     $allArgs = @('state', 'show', $ResourceAddress) + $Arguments
     & terragrunt @allArgs
@@ -1141,10 +976,6 @@ function Invoke-TerragruntStateMv {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-TerragruntInstalled)) {
-        return
-    }
-
     $allArgs = @('state', 'mv', $SourceAddress, $DestinationAddress) + $Arguments
     & terragrunt @allArgs
 }
@@ -1186,10 +1017,6 @@ function Invoke-TerragruntStateRm {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-TerragruntInstalled)) {
-        return
-    }
-
     $allArgs = @('state', 'rm', $ResourceAddress) + $Arguments
     & terragrunt @allArgs
 }
@@ -1224,10 +1051,6 @@ function Invoke-TerragruntShow {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-TerragruntInstalled)) {
-        return
-    }
 
     $allArgs = @('show') + $Arguments
     & terragrunt @allArgs
@@ -1264,10 +1087,6 @@ function Invoke-TerragruntProviders {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-TerragruntInstalled)) {
-        return
-    }
-
     $allArgs = @('providers') + $Arguments
     & terragrunt @allArgs
 }
@@ -1303,10 +1122,6 @@ function Invoke-TerragruntGet {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-TerragruntInstalled)) {
-        return
-    }
-
     $allArgs = @('get') + $Arguments
     & terragrunt @allArgs
 }
@@ -1341,10 +1156,6 @@ function Invoke-TerragruntVersion {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-TerragruntInstalled)) {
-        return
-    }
 
     $allArgs = @('--version') + $Arguments
     & terragrunt @allArgs

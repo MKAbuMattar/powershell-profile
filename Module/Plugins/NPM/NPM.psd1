@@ -58,9 +58,6 @@
     DotNetFrameworkVersion = '4.5'
     CLRVersion             = '4.0'
     FunctionsToExport      = @(
-        'Test-NpmInstalled',
-        'Initialize-NpmCompletion',
-        'Invoke-Npm',
         'Invoke-NpmInstallGlobal',
         'Invoke-NpmInstallSave',
         'Invoke-NpmInstallDev',
@@ -100,7 +97,6 @@
     CmdletsToExport        = @()
     VariablesToExport      = @()
     AliasesToExport        = @(
-        'npm',
         'npmg',
         'npmS',
         'npmD',

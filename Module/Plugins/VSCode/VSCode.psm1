@@ -44,42 +44,6 @@
 
 $script:VSCodeExecutable = $null
 
-function Test-VSCodeInstalled {
-    <#
-    .SYNOPSIS
-        Tests if any VS Code flavour is installed and accessible.
-
-    .DESCRIPTION
-        Checks if VS Code, VS Code Insiders, or VSCodium command is available in the current environment.
-        Used internally by other VS Code functions to ensure a VS Code flavour is available before executing commands.
-
-    .OUTPUTS
-        System.Boolean
-        Returns $true if any VS Code flavour is available, $false otherwise.
-
-    .EXAMPLE
-        Test-VSCodeInstalled
-        Returns $true if any VS Code flavour is installed and accessible.
-
-    .LINK
-        https://github.com/MKAbuMattar/powershell-profile/blob/main/Module/Plugins/VSCode/README.md
-    #>
-    [CmdletBinding()]
-    [OutputType([bool])]
-    param()
-
-    try {
-        $null = Get-VSCodeExecutable
-        if ($null -eq $script:VSCodeExecutable) {
-            return $false
-        }
-        return $true
-    }
-    catch {
-        return $false
-    }
-}
-
 function Get-VSCodeExecutable {
     <#
     .SYNOPSIS
@@ -134,56 +98,6 @@ function Get-VSCodeExecutable {
 
     Write-Warning "No VS Code flavour detected. Please install VS Code, VS Code Insiders, or VSCodium."
     return $null
-}
-
-function Initialize-VSCodeCompletion {
-    <#
-    .SYNOPSIS
-        Initializes VS Code completion for PowerShell.
-
-    .DESCRIPTION
-        Sets up VS Code command completion for PowerShell to provide tab completion for VS Code commands,
-        file paths, and common operations. This function is automatically called when the module is imported.
-
-    .EXAMPLE
-        Initialize-VSCodeCompletion
-        Sets up VS Code completion for the current PowerShell session.
-
-    .LINK
-        https://github.com/MKAbuMattar/powershell-profile/blob/main/Module/Plugins/VSCode/README.md
-    #>
-    [CmdletBinding()]
-    [OutputType([void])]
-    param()
-
-    if (-not (Test-VSCodeInstalled)) {
-        return
-    }
-
-    try {
-        $vscode = Get-VSCodeExecutable
-        if (-not $vscode) { return }
-
-        Register-ArgumentCompleter -CommandName $vscode -ScriptBlock {
-            param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
-            
-            $commonOptions = @(
-                '--help', '--version', '--verbose', '--log', '--status',
-                '--new-window', '--reuse-window', '--wait', '--locale',
-                '--user-data-dir', '--profile', '--extensions-dir',
-                '--install-extension', '--uninstall-extension', '--disable-extensions',
-                '--list-extensions', '--show-versions', '--enable-proposed-api',
-                '--add', '--diff', '--goto', '--folder-uri', '--file-uri'
-            )
-            
-            $commonOptions | Where-Object { $_ -like "$wordToComplete*" } | ForEach-Object {
-                [System.Management.Automation.CompletionResult]::new($_, $_, 'ParameterValue', $_)
-            }
-        }
-    }
-    catch {
-        Write-Verbose "VS Code completion initialization failed: $($_.Exception.Message)"
-    }
 }
 
 function Invoke-VSCode {

@@ -33,8 +33,7 @@
         'Get-GitMainBranch',
         'Rename-GitBranch',
         'Remove-GitWipAll',
-        'Test-GitWorkInProgress',
-        'Test-IsGitRepository'
+        'Test-GitWorkInProgress'
     )
     CmdletsToExport      = @()
     VariablesToExport    = @()

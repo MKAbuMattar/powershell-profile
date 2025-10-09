@@ -20,12 +20,6 @@ Comprehensive Google Cloud Platform CLI integration plugin for PowerShell, provi
 
 The GCP plugin is automatically loaded when the main PowerShell profile is imported, provided that the Google Cloud SDK is installed and available in your system PATH.
 
-To verify gcloud installation:
-
-```powershell
-Test-GCloudInstalled
-```
-
 ## Quick Start
 
 ```powershell
@@ -182,7 +176,6 @@ gcpil                          # gcloud compute instances list
 | ----- | -------------------------------- | ------------------------------- |
 | `gcd` | `Set-GCloudProjectFromDirectory` | Set project from directory name |
 | -     | `Get-GCloudCurrentProject`       | Get current project ID          |
-| -     | `Test-GCloudInstalled`           | Check if gcloud is installed    |
 
 ## Usage Examples
 
@@ -361,9 +354,6 @@ $instances | ForEach-Object { gcpup $_ }
 ### Verification Commands
 
 ```powershell
-# Test gcloud installation
-Test-GCloudInstalled
-
 # Check gcloud info
 gcinf
 

@@ -42,85 +42,6 @@
 # Version: 4.1.0
 #---------------------------------------------------------------------------------------------------
 
-function Test-CondaInstalled {
-    <#
-    .SYNOPSIS
-        Tests if Conda is installed and accessible.
-
-    .DESCRIPTION
-        Checks if Conda command is available in the current environment and validates basic functionality.
-        Used internally by other Conda functions to ensure Conda is available before executing commands.
-
-    .OUTPUTS
-        System.Boolean
-        Returns $true if Conda is available, $false otherwise.
-
-    .EXAMPLE
-        Test-CondaInstalled
-        Returns $true if Conda is installed and accessible.
-
-    .LINK
-        https://github.com/MKAbuMattar/powershell-profile/blob/main/Module/Plugins/Conda/README.md
-    #>
-    [CmdletBinding()]
-    [OutputType([bool])]
-    param()
-
-    try {
-        $null = Get-Command conda -ErrorAction Stop
-        $null = conda --version 2>$null
-        return $true
-    }
-    catch {
-        Write-Warning "Conda is not installed or not accessible. Please install Conda to use Conda functions."
-        return $false
-    }
-}
-
-function Initialize-CondaCompletion {
-    <#
-    .SYNOPSIS
-        Initializes Conda completion for PowerShell.
-
-    .DESCRIPTION
-        Sets up Conda command completion for PowerShell to provide tab completion for Conda commands,
-        environment names, and common operations. This function is automatically called when the module is imported.
-
-    .EXAMPLE
-        Initialize-CondaCompletion
-        Sets up Conda completion for the current PowerShell session.
-
-    .LINK
-        https://github.com/MKAbuMattar/powershell-profile/blob/main/Module/Plugins/Conda/README.md
-    #>
-    [CmdletBinding()]
-    [OutputType([void])]
-    param()
-
-    if (-not (Test-CondaInstalled)) {
-        return
-    }
-
-    try {
-        Register-ArgumentCompleter -CommandName 'conda' -ScriptBlock {
-            param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
-            
-            $commonCommands = @(
-                'activate', 'deactivate', 'create', 'remove', 'install', 'uninstall',
-                'update', 'upgrade', 'list', 'search', 'info', 'help', 'config',
-                'clean', 'env', 'run', 'compare', 'build', 'develop', 'convert'
-            )
-            
-            $commonCommands | Where-Object { $_ -like "$wordToComplete*" } | ForEach-Object {
-                [System.Management.Automation.CompletionResult]::new($_, $_, 'ParameterValue', $_)
-            }
-        }
-    }
-    catch {
-        Write-Verbose "Conda completion initialization failed: $($_.Exception.Message)"
-    }
-}
-
 function Get-CondaVersion {
     <#
     .SYNOPSIS
@@ -143,10 +64,6 @@ function Get-CondaVersion {
     [CmdletBinding()]
     [OutputType([string])]
     param()
-
-    if (-not (Test-CondaInstalled)) {
-        return $null
-    }
 
     try {
         $versionOutput = conda --version 2>$null
@@ -180,10 +97,6 @@ function Get-CondaInfo {
     [OutputType([string])]
     param()
 
-    if (-not (Test-CondaInstalled)) {
-        return $null
-    }
-
     try {
         $infoOutput = conda info 2>$null
         return $infoOutput
@@ -216,10 +129,6 @@ function Get-CondaEnvs {
     [OutputType([string[]])]
     param()
 
-    if (-not (Test-CondaInstalled)) {
-        return $null
-    }
-
     try {
         $envOutput = conda env list --json 2>$null | ConvertFrom-Json
         return $envOutput.envs | ForEach-Object { Split-Path $_ -Leaf }
@@ -251,10 +160,6 @@ function Get-CurrentCondaEnv {
     [CmdletBinding()]
     [OutputType([string])]
     param()
-
-    if (-not (Test-CondaInstalled)) {
-        return $null
-    }
 
     try {
         return $env:CONDA_DEFAULT_ENV
@@ -295,10 +200,6 @@ function Invoke-Conda {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-CondaInstalled)) {
-        return
-    }
-
     & conda @Arguments
 }
 
@@ -336,10 +237,6 @@ function Invoke-CondaActivate {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-CondaInstalled)) {
-        return
-    }
-
     $allArgs = @('activate') + $Arguments
     & conda @allArgs
 }
@@ -374,10 +271,6 @@ function Invoke-CondaActivateBase {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-CondaInstalled)) {
-        return
-    }
 
     $allArgs = @('activate', 'base') + $Arguments
     & conda @allArgs
@@ -414,10 +307,6 @@ function Invoke-CondaDeactivate {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-CondaInstalled)) {
-        return
-    }
-
     $allArgs = @('deactivate') + $Arguments
     & conda @allArgs
 }
@@ -452,10 +341,6 @@ function Invoke-CondaCreate {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-CondaInstalled)) {
-        return
-    }
 
     $allArgs = @('create') + $Arguments
     & conda @allArgs
@@ -492,10 +377,6 @@ function Invoke-CondaCreateFromFile {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-CondaInstalled)) {
-        return
-    }
-
     $allArgs = @('env', 'create', '-f') + $Arguments
     & conda @allArgs
 }
@@ -530,10 +411,6 @@ function Invoke-CondaCreateName {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-CondaInstalled)) {
-        return
-    }
 
     $allArgs = @('create', '-n') + $Arguments
     & conda @allArgs
@@ -570,10 +447,6 @@ function Invoke-CondaCreateNameYes {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-CondaInstalled)) {
-        return
-    }
-
     $allArgs = @('create', '-y', '-n') + $Arguments
     & conda @allArgs
 }
@@ -609,10 +482,6 @@ function Invoke-CondaCreatePath {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-CondaInstalled)) {
-        return
-    }
-
     $allArgs = @('create', '-y', '-p') + $Arguments
     & conda @allArgs
 }
@@ -642,10 +511,6 @@ function Invoke-CondaRemoveEnv {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-CondaInstalled)) {
-        return
-    }
 
     $allArgs = @('remove') + $Arguments
     & conda @allArgs
@@ -682,10 +547,6 @@ function Invoke-CondaRemoveEnvName {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-CondaInstalled)) {
-        return
-    }
-
     $allArgs = @('remove', '-y', '--all', '-n') + $Arguments
     & conda @allArgs
 }
@@ -720,10 +581,6 @@ function Invoke-CondaRemoveEnvPath {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-CondaInstalled)) {
-        return
-    }
 
     $allArgs = @('remove', '-y', '--all', '-p') + $Arguments
     & conda @allArgs
@@ -760,10 +617,6 @@ function Invoke-CondaEnvList {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-CondaInstalled)) {
-        return
-    }
-
     $allArgs = @('env', 'list') + $Arguments
     & conda @allArgs
 }
@@ -798,10 +651,6 @@ function Invoke-CondaEnvExport {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-CondaInstalled)) {
-        return
-    }
 
     $allArgs = @('env', 'export') + $Arguments
     & conda @allArgs
@@ -838,10 +687,6 @@ function Invoke-CondaEnvUpdate {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-CondaInstalled)) {
-        return
-    }
-
     $allArgs = @('env', 'update') + $Arguments
     & conda @allArgs
 }
@@ -876,10 +721,6 @@ function Invoke-CondaInstall {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-CondaInstalled)) {
-        return
-    }
 
     $allArgs = @('install') + $Arguments
     & conda @allArgs
@@ -916,10 +757,6 @@ function Invoke-CondaInstallYes {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-CondaInstalled)) {
-        return
-    }
-
     $allArgs = @('install', '-y') + $Arguments
     & conda @allArgs
 }
@@ -954,10 +791,6 @@ function Invoke-CondaRemove {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-CondaInstalled)) {
-        return
-    }
 
     $allArgs = @('remove') + $Arguments
     & conda @allArgs
@@ -994,10 +827,6 @@ function Invoke-CondaRemoveYes {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-CondaInstalled)) {
-        return
-    }
-
     $allArgs = @('remove', '-y') + $Arguments
     & conda @allArgs
 }
@@ -1032,10 +861,6 @@ function Invoke-CondaUpdate {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-CondaInstalled)) {
-        return
-    }
 
     $allArgs = @('update') + $Arguments
     & conda @allArgs
@@ -1072,10 +897,6 @@ function Invoke-CondaUpdateAll {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-CondaInstalled)) {
-        return
-    }
-
     $allArgs = @('update', '--all') + $Arguments
     & conda @allArgs
 }
@@ -1110,10 +931,6 @@ function Invoke-CondaUpdateConda {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-CondaInstalled)) {
-        return
-    }
 
     $allArgs = @('update', 'conda') + $Arguments
     & conda @allArgs
@@ -1150,10 +967,6 @@ function Invoke-CondaList {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-CondaInstalled)) {
-        return
-    }
-
     $allArgs = @('list') + $Arguments
     & conda @allArgs
 }
@@ -1189,10 +1002,6 @@ function Invoke-CondaListExport {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-CondaInstalled)) {
-        return
-    }
-
     $allArgs = @('list', '--export') + $Arguments
     & conda @allArgs
 }
@@ -1227,10 +1036,6 @@ function Invoke-CondaListExplicit {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-CondaInstalled)) {
-        return
-    }
 
     if ($Arguments.Count -eq 0) {
         conda list --explicit > spec-file.txt
@@ -1272,10 +1077,6 @@ function Invoke-CondaSearch {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-CondaInstalled)) {
-        return
-    }
-
     $allArgs = @('search') + $Arguments
     & conda @allArgs
 }
@@ -1310,10 +1111,6 @@ function Invoke-CondaConfig {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-CondaInstalled)) {
-        return
-    }
 
     $allArgs = @('config') + $Arguments
     & conda @allArgs
@@ -1350,10 +1147,6 @@ function Invoke-CondaConfigShowSources {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-CondaInstalled)) {
-        return
-    }
-
     $allArgs = @('config', '--show-sources') + $Arguments
     & conda @allArgs
 }
@@ -1388,10 +1181,6 @@ function Invoke-CondaConfigGet {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-CondaInstalled)) {
-        return
-    }
 
     $allArgs = @('config', '--get') + $Arguments
     & conda @allArgs
@@ -1428,10 +1217,6 @@ function Invoke-CondaConfigSet {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-CondaInstalled)) {
-        return
-    }
-
     $allArgs = @('config', '--set') + $Arguments
     & conda @allArgs
 }
@@ -1466,10 +1251,6 @@ function Invoke-CondaConfigRemove {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-CondaInstalled)) {
-        return
-    }
 
     $allArgs = @('config', '--remove') + $Arguments
     & conda @allArgs
@@ -1506,10 +1287,6 @@ function Invoke-CondaConfigAdd {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-CondaInstalled)) {
-        return
-    }
-
     $allArgs = @('config', '--add') + $Arguments
     & conda @allArgs
 }
@@ -1545,10 +1322,6 @@ function Invoke-CondaClean {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-CondaInstalled)) {
-        return
-    }
-
     $allArgs = @('clean') + $Arguments
     & conda @allArgs
 }
@@ -1583,10 +1356,6 @@ function Invoke-CondaCleanAll {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-CondaInstalled)) {
-        return
-    }
 
     $allArgs = @('clean', '--all') + $Arguments
     & conda @allArgs

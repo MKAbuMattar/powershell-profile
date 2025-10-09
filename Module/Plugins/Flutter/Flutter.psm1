@@ -42,35 +42,6 @@
 #
 # Version: 4.1.0
 #---------------------------------------------------------------------------------------------------
-
-function Test-FlutterInstalled {
-    <#
-    .SYNOPSIS
-        Tests if Flutter is installed and accessible.
-    
-    .DESCRIPTION
-        Used internally by other flutter functions to ensure Flutter is available.
-    
-    .OUTPUTS
-        Boolean indicating if Flutter is available.
-    
-    .LINK
-        https://github.com/MKAbuMattar/powershell-profile/blob/main/Module/Plugins/Flutter/README.md
-    #>
-    [CmdletBinding()]
-    [OutputType([bool])]
-    param()
-    
-    try {
-        $null = Get-Command flutter -ErrorAction Stop
-        return $true
-    }
-    catch {
-        Write-Warning "Flutter is not installed or not accessible. Please install Flutter to use flutter functions."
-        return $false
-    }
-}
-
 function Invoke-Flutter {
     <#
     .SYNOPSIS
@@ -101,10 +72,6 @@ function Invoke-Flutter {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments
     )
-
-    if (-not (Test-FlutterInstalled)) {
-        return
-    }
 
     & flutter @Arguments
 }
@@ -139,10 +106,6 @@ function Invoke-FlutterAttach {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments
     )
-
-    if (-not (Test-FlutterInstalled)) {
-        return
-    }
 
     & flutter attach @Arguments
 }
@@ -182,10 +145,6 @@ function Invoke-FlutterBuild {
         [string[]]$Arguments
     )
 
-    if (-not (Test-FlutterInstalled)) {
-        return
-    }
-
     & flutter build @Arguments
 }
 
@@ -224,10 +183,6 @@ function Invoke-FlutterChannel {
         [string[]]$Arguments
     )
 
-    if (-not (Test-FlutterInstalled)) {
-        return
-    }
-
     & flutter channel @Arguments
 }
 
@@ -257,10 +212,6 @@ function Invoke-FlutterClean {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments
     )
-
-    if (-not (Test-FlutterInstalled)) {
-        return
-    }
 
     & flutter clean @Arguments
 }
@@ -295,10 +246,6 @@ function Get-FlutterDevices {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments
     )
-
-    if (-not (Test-FlutterInstalled)) {
-        return
-    }
 
     & flutter devices @Arguments
 }
@@ -338,10 +285,6 @@ function Invoke-FlutterDoctor {
         [string[]]$Arguments
     )
 
-    if (-not (Test-FlutterInstalled)) {
-        return
-    }
-
     & flutter doctor @Arguments
 }
 
@@ -380,10 +323,6 @@ function Invoke-FlutterPub {
         [string[]]$Arguments
     )
 
-    if (-not (Test-FlutterInstalled)) {
-        return
-    }
-
     & flutter pub @Arguments
 }
 
@@ -417,10 +356,6 @@ function Get-FlutterPubPackages {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments
     )
-
-    if (-not (Test-FlutterInstalled)) {
-        return
-    }
 
     & flutter pub get @Arguments
 }
@@ -460,10 +395,6 @@ function Start-FlutterApp {
         [string[]]$Arguments
     )
 
-    if (-not (Test-FlutterInstalled)) {
-        return
-    }
-
     & flutter run @Arguments
 }
 
@@ -497,10 +428,6 @@ function Start-FlutterAppDebug {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments
     )
-
-    if (-not (Test-FlutterInstalled)) {
-        return
-    }
 
     $debugArgs = @('run', '--debug') + $Arguments
     & flutter @debugArgs
@@ -537,10 +464,6 @@ function Start-FlutterAppProfile {
         [string[]]$Arguments
     )
 
-    if (-not (Test-FlutterInstalled)) {
-        return
-    }
-
     $profileArgs = @('run', '--profile') + $Arguments
     & flutter @profileArgs
 }
@@ -576,10 +499,6 @@ function Start-FlutterAppRelease {
         [string[]]$Arguments
     )
 
-    if (-not (Test-FlutterInstalled)) {
-        return
-    }
-
     $releaseArgs = @('run', '--release') + $Arguments
     & flutter @releaseArgs
 }
@@ -614,10 +533,6 @@ function Update-Flutter {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments
     )
-
-    if (-not (Test-FlutterInstalled)) {
-        return
-    }
 
     & flutter upgrade @Arguments
 }

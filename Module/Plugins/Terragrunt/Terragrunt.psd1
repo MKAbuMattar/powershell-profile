@@ -56,8 +56,6 @@
     Description          = 'Comprehensive Terragrunt CLI integration for PowerShell with 25+ functions and aliases for DRY Infrastructure as Code management, multi-environment workflows, dependency orchestration, and advanced Terraform operations.'
     PowerShellVersion    = '5.1'
     FunctionsToExport    = @(
-        'Test-TerragruntInstalled',
-        'Initialize-TerragruntCompletion',
         'Invoke-Terragrunt',
         'Get-TerragruntWorkingDir',
         'Get-TerragruntConfigPath',

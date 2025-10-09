@@ -64,8 +64,6 @@
     FormatsToProcess       = @()
     NestedModules          = @()
     FunctionsToExport      = @(
-        'Test-DenoInstalled',
-        'Initialize-DenoCompletion', 
         'Get-DenoVersion',
         'Invoke-Deno',
         'Invoke-DenoBundle',

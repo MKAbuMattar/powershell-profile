@@ -43,80 +43,8 @@
 #---------------------------------------------------------------------------------------------------
 
 #---------------------------------------------------------------------------------------------------
-# Test if gcloud is installed
-#---------------------------------------------------------------------------------------------------
-function Test-GCloudInstalled {
-    <#
-    .SYNOPSIS
-        A PowerShell function that tests if gcloud CLI is installed and available.
-
-    .DESCRIPTION
-        This function checks if the gcloud command is available in the system PATH.
-        It provides a quick way to verify if the Google Cloud SDK is properly installed
-        and accessible from the current PowerShell session.
-
-    .INPUTS
-        None. This function does not accept any input.
-
-    .OUTPUTS
-        System.Boolean. Returns $true if gcloud is available, $false otherwise.
-
-    .EXAMPLE
-        Test-GCloudInstalled
-        Returns $true if gcloud is installed and available in PATH.
-
-        if (Test-GCloudInstalled) { gcloud version }
-        Conditionally runs gcloud command if it's available.
-
-    .NOTES
-        - This function checks the PATH environment variable for gcloud executable.
-        - Returns $false if gcloud is not installed or not in PATH.
-        - Used internally by other functions to validate gcloud availability.
-    #>
-    [CmdletBinding()]
-    param()
-    return (Get-Command gcloud -ErrorAction SilentlyContinue) -ne $null
-}
-
-#---------------------------------------------------------------------------------------------------
 # Core gcloud Functions
 #---------------------------------------------------------------------------------------------------
-    
-function Invoke-GCloud {
-    <#
-    .SYNOPSIS
-        A PowerShell function that provides a wrapper for gcloud commands.
-
-    .DESCRIPTION
-        This function serves as a base wrapper for all gcloud CLI commands. It accepts
-        arguments and passes them directly to the gcloud command line tool. This allows
-        for seamless integration of gcloud operations within PowerShell scripts.
-
-    .PARAMETER Arguments
-        Array of arguments to pass to the gcloud command.
-
-    .INPUTS
-        System.String[]. Array of command arguments.
-
-    .OUTPUTS
-        The output of the gcloud command.
-
-    .EXAMPLE
-        gcloud version
-        Displays the gcloud version using the alias.
-
-        Invoke-GCloud @('version')
-        Displays the gcloud version using the full function name.
-
-    .NOTES
-        - This function requires gcloud CLI to be installed and in PATH.
-        - All gcloud functionality is available through this wrapper.
-    #>
-    [CmdletBinding()]
-    [Alias("gcloud")]
-    param([string[]]$Arguments)
-    & gcloud @Arguments
-}
     
 function Initialize-GCloudTool {
     <#
@@ -147,7 +75,8 @@ function Initialize-GCloudTool {
     [CmdletBinding()]
     [Alias("gcin")]
     param()
-    gcloud init
+    
+    & gcloud init
 }
     
 function Get-GCloudInfo {
@@ -179,7 +108,8 @@ function Get-GCloudInfo {
     [CmdletBinding()]
     [Alias("gcinf")]
     param()
-    gcloud info
+    
+    & gcloud info
 }
     
 function Get-GCloudVersion {
@@ -211,7 +141,8 @@ function Get-GCloudVersion {
     [CmdletBinding()]
     [Alias("gcv")]
     param()
-    gcloud version
+    
+    & gcloud version
 }
     
 function Update-GCloudComponents {
@@ -243,7 +174,8 @@ function Update-GCloudComponents {
     [CmdletBinding()]
     [Alias("gccu")]
     param()
-    gcloud components update
+    
+    & gcloud components update
 }
 
 function Install-GCloudComponent {
@@ -278,7 +210,8 @@ function Install-GCloudComponent {
     [CmdletBinding()]
     [Alias("gcci")]
     param([string[]]$Components)
-    gcloud components install @Components
+    
+    & gcloud components install @Components
 }
     
 #---------------------------------------------------------------------------------------------------
@@ -318,7 +251,8 @@ function Set-GCloudProject {
     [CmdletBinding()]
     [Alias("gccsp")]
     param([string]$ProjectId)
-    gcloud config set project $ProjectId
+    
+    & gcloud config set project $ProjectId
 }
     
 function Get-GCloudCurrentProject {
@@ -349,7 +283,8 @@ function Get-GCloudCurrentProject {
     #>
     [CmdletBinding()]
     param()
-    gcloud config get-value project
+    
+    & gcloud config get-value project
 }
 
 #---------------------------------------------------------------------------------------------------
@@ -385,7 +320,8 @@ function Invoke-GCloudAuthLogin {
     [CmdletBinding()]
     [Alias("gcal")]
     param()
-    gcloud auth login
+    
+    & gcloud auth login
 }
 
 #---------------------------------------------------------------------------------------------------
@@ -421,7 +357,8 @@ function Get-GComputeInstances {
     [CmdletBinding()]
     [Alias("gcpil")]
     param()
-    gcloud compute instances list
+    
+    & gcloud compute instances list
 }
 
 function New-GComputeInstance {
@@ -475,7 +412,8 @@ function New-GComputeInstance {
     if ($MachineType) { $cmdArgs += "--machine-type=$MachineType" }
     if ($Zone) { $cmdArgs += "--zone=$Zone" }
     if ($AdditionalArgs) { $cmdArgs += $AdditionalArgs }
-    gcloud @cmdArgs
+    
+    & gcloud @cmdArgs
 }
 
 function Connect-GComputeSSH {
@@ -524,7 +462,8 @@ function Connect-GComputeSSH {
     $cmdArgs = @('compute', 'ssh', $InstanceName)
     if ($Zone) { $cmdArgs += "--zone=$Zone" }
     if ($AdditionalArgs) { $cmdArgs += $AdditionalArgs }
-    gcloud @cmdArgs
+    
+    & gcloud @cmdArgs
 }
 
 #---------------------------------------------------------------------------------------------------
@@ -560,7 +499,8 @@ function Invoke-GCloudAuth {
     [CmdletBinding()]
     [Alias("gca")]
     param()
-    gcloud auth @args
+    
+    & gcloud auth @args
 }
 
 function Invoke-GCloudCompute {
@@ -592,7 +532,8 @@ function Invoke-GCloudCompute {
     [CmdletBinding()]
     [Alias("gccm")]
     param()
-    gcloud compute @args
+    
+    & gcloud compute @args
 }
 
 function Invoke-GCloudContainer {
@@ -624,7 +565,8 @@ function Invoke-GCloudContainer {
     [CmdletBinding()]
     [Alias("gccnt")]
     param()
-    gcloud container @args
+    
+    & gcloud container @args
 }
 
 function Invoke-GCloudApp {
@@ -656,7 +598,8 @@ function Invoke-GCloudApp {
     [CmdletBinding()]
     [Alias("gcapp")]
     param()
-    gcloud app @args
+    
+    & gcloud app @args
 }
 
 function Invoke-GCloudStorage {
@@ -688,7 +631,8 @@ function Invoke-GCloudStorage {
     [CmdletBinding()]
     [Alias("gcst")]
     param()
-    gcloud storage @args
+    
+    & gcloud storage @args
 }
 
 function Invoke-GCloudSQL {
@@ -720,7 +664,8 @@ function Invoke-GCloudSQL {
     [CmdletBinding()]
     [Alias("gcsql")]
     param()
-    gcloud sql @args
+    
+    & gcloud sql @args
 }
 
 function Invoke-GCloudFunctions {
@@ -752,7 +697,8 @@ function Invoke-GCloudFunctions {
     [CmdletBinding()]
     [Alias("gcfn")]
     param()
-    gcloud functions @args
+    
+    & gcloud functions @args
 }
 
 function Invoke-GCloudRun {
@@ -784,7 +730,8 @@ function Invoke-GCloudRun {
     [CmdletBinding()]
     [Alias("gcrun")]
     param()
-    gcloud run @args
+    
+    & gcloud run @args
 }
 
 function Invoke-GCloudIAM {
@@ -816,7 +763,8 @@ function Invoke-GCloudIAM {
     [CmdletBinding()]
     [Alias("gciam")]
     param()
-    gcloud iam @args
+    
+    & gcloud iam @args
 }
 
 function Invoke-GCloudKMS {
@@ -848,7 +796,8 @@ function Invoke-GCloudKMS {
     [CmdletBinding()]
     [Alias("gckms")]
     param()
-    gcloud kms @args
+    
+    & gcloud kms @args
 }
 
 function Invoke-GCloudPubSub {
@@ -880,7 +829,8 @@ function Invoke-GCloudPubSub {
     [CmdletBinding()]
     [Alias("gcpub")]
     param()
-    gcloud pubsub @args
+    
+    & gcloud pubsub @args
 }
 
 #---------------------------------------------------------------------------------------------------
@@ -928,11 +878,3 @@ function Set-GCloudProjectFromDirectory {
         Write-Warning "No project found matching directory name: $dirName"
     }
 }
-
-
-#---------------------------------------------------------------------------------------------------
-# Export Module Members
-#---------------------------------------------------------------------------------------------------
-
-# Export all functions and aliases
-Export-ModuleMember -Function * -Alias *

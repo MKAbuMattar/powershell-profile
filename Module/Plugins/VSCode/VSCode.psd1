@@ -64,7 +64,6 @@
     FormatsToProcess       = @()
     NestedModules          = @()
     FunctionsToExport      = @(
-        'Test-VSCodeInstalled',
         'Get-VSCodeExecutable',
         'Initialize-VSCodeCompletion',
         'Invoke-VSCode',

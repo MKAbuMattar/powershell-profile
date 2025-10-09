@@ -67,8 +67,6 @@
     FormatsToProcess       = @()
     NestedModules          = @()
     FunctionsToExport      = @(
-        'Test-YarnInstalled',
-        'Initialize-YarnCompletion',
         'Get-YarnVersion',
         'Test-YarnBerry',
         'Get-YarnGlobalPath',
