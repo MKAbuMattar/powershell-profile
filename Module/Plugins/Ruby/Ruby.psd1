@@ -64,9 +64,6 @@
     FormatsToProcess       = @()
     NestedModules          = @()
     FunctionsToExport      = @(
-        'Test-RubyInstalled',
-        'Test-GemInstalled',
-        'Initialize-RubyCompletion',
         'Get-RubyVersion',
         'Get-GemVersion',
         'Invoke-Ruby',

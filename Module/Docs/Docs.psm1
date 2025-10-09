@@ -48,10 +48,10 @@ function Show-ProfileHelp {
         The PowerShell Profile Helper module provides a set of utility functions to help manage the PowerShell profile and perform common tasks in the console. The module includes functions for finding files, creating and updating files, extracting files, compressing files, searching for content in files, replacing content in files, moving up directory levels, updating the module directory, updating the profile, updating PowerShell, checking for command existence, reloading the profile, getting system uptime, getting command definitions, setting environment variables, getting environment variables, getting all processes, finding processes by name, finding processes by port, stopping processes by name, stopping processes by port, getting random quotes, getting weather forecasts, starting countdown timers, starting stopwatches, displaying the wall clock, displaying a matrix rain animation, and more. The `Show-ProfileHelp` function displays detailed help documentation for each section of the module.
 
     .PARAMETER Section
-        Specifies the section of the documentation to display. Valid values are 'All', 'AWS', 'Base64', 'Conda', 'Directory', 'Docker', 'DockerCompose', 'Docs', 'Environment', 'Flutter', 'GCP', 'Git', 'GitIgnore', 'Helm', 'Kubectl', 'Logging', 'Network', 'NPM', 'PIP', 'Pipenv', 'PNPM', 'Poetry', 'Plugins', 'Process', 'Productivity', 'QRCode', 'Ruby', 'Rust', 'Starship', 'SystemAdmin', 'Terraform', 'Terragrunt', 'UV', 'Update', 'Utility', 'VSCode', 'WebSearch', and 'Yarn'. The default value is 'All'.
+        Specifies the section of the documentation to display. Valid values are 'All', 'ASCIIQuarium', 'AWS', 'Base64', 'Conda', 'Directory', 'Docker', 'DockerCompose', 'Docs', 'Environment', 'Flutter', 'GCP', 'Git', 'GitIgnore', 'Helm', 'Kubectl', 'Logging', 'Network', 'NPM', 'PIP', 'Pipenv', 'PNPM', 'Poetry', 'Plugins', 'Process', 'Productivity', 'QRCode', 'Ruby', 'Rust', 'Starship', 'SystemAdmin', 'Terraform', 'Terragrunt', 'UV', 'Update', 'Utility', 'VSCode', 'WebSearch', and 'Yarn'. The default value is 'All'.
 
     .INPUTS
-        Section: (Optional) Specifies the section of the documentation to display. Valid values are 'All', 'AWS', 'Base64', 'Conda', 'Directory', 'Docker', 'DockerCompose', 'Docs', 'Environment', 'Flutter', 'GCP', 'Git', 'GitIgnore', 'Helm', 'Kubectl', 'Logging', 'Network', 'NPM', 'PIP', 'Pipenv', 'PNPM', 'Poetry', 'Plugins', 'Process', 'Productivity', 'QRCode', 'Ruby', 'Rust', 'Starship', 'SystemAdmin', 'Terraform', 'Terragrunt', 'UV', 'Update', 'Utility', 'VSCode', 'WebSearch', and 'Yarn'. The default value is 'All'.
+        Section: (Optional) Specifies the section of the documentation to display. Valid values are 'All', 'ASCIIQuarium', 'AWS', 'Base64', 'Conda', 'Directory', 'Docker', 'DockerCompose', 'Docs', 'Environment', 'Flutter', 'GCP', 'Git', 'GitIgnore', 'Helm', 'Kubectl', 'Logging', 'Network', 'NPM', 'PIP', 'Pipenv', 'PNPM', 'Poetry', 'Plugins', 'Process', 'Productivity', 'QRCode', 'Ruby', 'Rust', 'Starship', 'SystemAdmin', 'Terraform', 'Terragrunt', 'UV', 'Update', 'Utility', 'VSCode', 'WebSearch', and 'Yarn'. The default value is 'All'.
 
     .OUTPUTS
         This module does not return any output.
@@ -148,6 +148,10 @@ function Show-ProfileHelp {
         Displays the help documentation for the Rust plugin with all available Cargo and Rustup aliases and commands.
 
     .EXAMPLE
+        Show-ProfileHelp -Section 'ASCIIQuarium'
+        Displays the help documentation for the ASCIIQuarium utility with ASCII aquarium animation commands.
+
+    .EXAMPLE
         Show-ProfileHelp -Section 'Plugins'
         Displays an overview of all available plugins.
 
@@ -167,6 +171,7 @@ function Show-ProfileHelp {
         )]
         [ValidateSet(
             'All',
+            'ASCIIQuarium',
             'AWS',
             'Conda',
             'Deno',
@@ -1657,9 +1662,7 @@ $($PSStyle.Foreground.Yellow)Plugins Module - Deno Plugin$($PSStyle.Reset)
         $($PSStyle.Foreground.Magenta)dpub$($PSStyle.Reset) [args]           - deno publish [args]
 
     $($PSStyle.Foreground.Green)Utility Functions:$($PSStyle.Reset)
-        Test-DenoInstalled        # Check if Deno is available
         Get-DenoVersion          # Get installed Deno version
-        Initialize-DenoCompletion # Setup tab completion
 
     $($PSStyle.Foreground.Green)Example Workflows:$($PSStyle.Reset)
         # Initialize and develop new project
@@ -1876,7 +1879,6 @@ $($PSStyle.Foreground.Yellow)Plugins Module - GCP Plugin$($PSStyle.Reset)
         $($PSStyle.Foreground.Cyan)# Helpful utility commands
         gcd                                 # Set project from directory name
         Get-GCloudCurrentProject            # Get current project ID
-        Test-GCloudInstalled                # Check if gcloud is available
         gcpzl                               # List compute zones
         gcca                                # List IP addresses$($PSStyle.Reset)
 
@@ -1891,7 +1893,7 @@ $($PSStyle.Foreground.Yellow)Plugins Module - GCP Plugin$($PSStyle.Reset)
 
     $($PSStyle.Foreground.Green)Complete GCP Workflow:$($PSStyle.Reset)
         $($PSStyle.Foreground.Cyan)# End-to-end development workflow
-        gci                                 # Initialize gcloud
+        gcin                                # Initialize gcloud
         gcal                                # Authenticate
         gccsp my-project                    # Set project
         gccs compute/zone us-central1-a     # Set default zone

@@ -58,13 +58,10 @@
     DotNetFrameworkVersion = '4.5'
     CLRVersion             = '4.0'
     FunctionsToExport      = @(
-        'Test-PipenvInstalled',
-        'Initialize-PipenvCompletion',
         'Enable-PipenvAutoShell',
         'Disable-PipenvAutoShell',
         'Test-PipenvAutoShell',
         'Invoke-PipenvShellToggle',
-        'Invoke-Pipenv',
         'Invoke-PipenvCheck',
         'Invoke-PipenvClean',
         'Invoke-PipenvGraph',
@@ -86,7 +83,6 @@
     CmdletsToExport        = @()
     VariablesToExport      = @()
     AliasesToExport        = @(
-        'pipenv',
         'pch',
         'pcl',
         'pgr',

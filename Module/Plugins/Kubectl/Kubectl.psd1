@@ -54,8 +54,6 @@
     Description          = 'Kubectl plugin for MKAbuMattar PowerShell Profile - provides kubectl CLI shortcuts and utility functions for Kubernetes cluster management workflows.'
     PowerShellVersion    = '5.0'
     FunctionsToExport    = @(
-        'Test-KubectlInstalled',
-        'Initialize-KubectlCompletion',
         'Invoke-Kubectl',
         'Invoke-KubectlAllNamespaces',
         'Invoke-KubectlApplyFile',

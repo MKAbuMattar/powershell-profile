@@ -48,85 +48,6 @@ $script:PipenvAutoShell = $true
 # Global variable to track current Pipfile directory
 $script:PipfileDirectory = $null
 
-function Test-PipenvInstalled {
-    <#
-    .SYNOPSIS
-        Tests if pipenv is installed and accessible.
-
-    .DESCRIPTION
-        Checks if pipenv command is available in the current environment and validates basic functionality.
-        Used internally by other pipenv functions to ensure pipenv is available before executing commands.
-
-    .OUTPUTS
-        System.Boolean
-        Returns $true if pipenv is available, $false otherwise.
-
-    .EXAMPLE
-        Test-PipenvInstalled
-        Returns $true if pipenv is installed and accessible.
-
-    .LINK
-        https://github.com/MKAbuMattar/powershell-profile/blob/main/Module/Plugins/Pipenv/README.md
-    #>
-    [CmdletBinding()]
-    [OutputType([bool])]
-    param()
-
-    try {
-        $null = Get-Command pipenv -ErrorAction Stop
-        $null = pipenv --version 2>$null
-        return $true
-    }
-    catch {
-        Write-Warning "pipenv is not installed or not accessible. Please install pipenv to use pipenv functions."
-        return $false
-    }
-}
-
-function Initialize-PipenvCompletion {
-    <#
-    .SYNOPSIS
-        Initializes pipenv completion for PowerShell.
-
-    .DESCRIPTION
-        Sets up pipenv command completion for PowerShell to provide tab completion for pipenv commands,
-        packages, and options. This function is automatically called when the module is imported.
-
-    .EXAMPLE
-        Initialize-PipenvCompletion
-        Sets up pipenv completion for the current PowerShell session.
-
-    .LINK
-        https://github.com/MKAbuMattar/powershell-profile/blob/main/Module/Plugins/Pipenv/README.md
-    #>
-    [CmdletBinding()]
-    [OutputType([void])]
-    param()
-
-    if (-not (Test-PipenvInstalled)) {
-        return
-    }
-
-    try {
-        Register-ArgumentCompleter -CommandName 'pipenv' -ScriptBlock {
-            param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
-            
-            $subcommands = @(
-                'install', 'uninstall', 'lock', 'sync', 'update', 'run', 'shell',
-                'check', 'clean', 'graph', 'open', 'requirements', 'script',
-                '--venv', '--where', '--py', '--version', '--help'
-            )
-            
-            $subcommands | Where-Object { $_ -like "$wordToComplete*" } | ForEach-Object {
-                [System.Management.Automation.CompletionResult]::new($_, $_, 'ParameterValue', $_)
-            }
-        }
-    }
-    catch {
-        Write-Verbose "pipenv completion initialization failed: $($_.Exception.Message)"
-    }
-}
-
 function Enable-PipenvAutoShell {
     <#
     .SYNOPSIS
@@ -222,10 +143,6 @@ function Invoke-PipenvShellToggle {
     [OutputType([void])]
     param()
 
-    if (-not (Test-PipenvInstalled) -or -not (Test-PipenvAutoShell)) {
-        return
-    }
-
     try {
         $currentDir = $PWD.Path
         $pipfilePath = $null
@@ -292,44 +209,6 @@ function Invoke-PipenvShellToggle {
     }
 }
 
-function Invoke-Pipenv {
-    <#
-    .SYNOPSIS
-        Base pipenv command wrapper.
-
-    .DESCRIPTION
-        Executes pipenv commands with all provided arguments. Serves as the base wrapper
-        for all pipenv operations and ensures pipenv is available before execution.
-
-    .PARAMETER Arguments
-        All arguments to pass to pipenv command.
-
-    .EXAMPLE
-        Invoke-Pipenv --version
-        Shows pipenv version.
-
-    .EXAMPLE
-        Invoke-Pipenv install requests
-        Installs the requests package.
-
-    .LINK
-        https://github.com/MKAbuMattar/powershell-profile/blob/main/Module/Plugins/Pipenv/README.md
-    #>
-    [CmdletBinding()]
-    [Alias("pipenv")]
-    [OutputType([void])]
-    param(
-        [Parameter(ValueFromRemainingArguments = $true)]
-        [string[]]$Arguments = @()
-    )
-
-    if (-not (Test-PipenvInstalled)) {
-        return
-    }
-
-    & pipenv @Arguments
-}
-
 function Invoke-PipenvInstall {
     <#
     .SYNOPSIS
@@ -366,10 +245,6 @@ function Invoke-PipenvInstall {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-PipenvInstalled)) {
-        return
-    }
 
     $allArgs = @('install')
     if ($PackageName) {
@@ -419,10 +294,6 @@ function Invoke-PipenvInstallDev {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-PipenvInstalled)) {
-        return
-    }
-
     $allArgs = @('install', '--dev')
     if ($PackageName) {
         $allArgs += $PackageName
@@ -470,10 +341,6 @@ function Invoke-PipenvUninstall {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-PipenvInstalled)) {
-        return
-    }
 
     $allArgs = @('uninstall')
     if ($PackageName) {
@@ -523,10 +390,6 @@ function Invoke-PipenvUpdate {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-PipenvInstalled)) {
-        return
-    }
-
     $allArgs = @('update')
     if ($PackageName) {
         $allArgs += $PackageName
@@ -569,10 +432,6 @@ function Invoke-PipenvShell {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-PipenvInstalled)) {
-        return
-    }
-
     $allArgs = @('shell') + $Arguments
     & pipenv @allArgs
 }
@@ -613,10 +472,6 @@ function Invoke-PipenvRun {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-PipenvInstalled)) {
-        return
-    }
 
     $allArgs = @('run')
     if ($Command) {
@@ -660,10 +515,6 @@ function Invoke-PipenvWhere {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-PipenvInstalled)) {
-        return
-    }
-
     $allArgs = @('--where') + $Arguments
     & pipenv @allArgs
 }
@@ -698,10 +549,6 @@ function Invoke-PipenvVenv {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-PipenvInstalled)) {
-        return
-    }
 
     $allArgs = @('--venv') + $Arguments
     & pipenv @allArgs
@@ -738,10 +585,6 @@ function Invoke-PipenvPython {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-PipenvInstalled)) {
-        return
-    }
-
     $allArgs = @('--py') + $Arguments
     & pipenv @allArgs
 }
@@ -776,10 +619,6 @@ function Invoke-PipenvLock {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-PipenvInstalled)) {
-        return
-    }
 
     $allArgs = @('lock') + $Arguments
     & pipenv @allArgs
@@ -816,10 +655,6 @@ function Invoke-PipenvSync {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-PipenvInstalled)) {
-        return
-    }
-
     $allArgs = @('sync') + $Arguments
     & pipenv @allArgs
 }
@@ -854,10 +689,6 @@ function Invoke-PipenvRequirements {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-PipenvInstalled)) {
-        return
-    }
 
     $allArgs = @('requirements') + $Arguments
     & pipenv @allArgs
@@ -894,10 +725,6 @@ function Invoke-PipenvCheck {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-PipenvInstalled)) {
-        return
-    }
-
     $allArgs = @('check') + $Arguments
     & pipenv @allArgs
 }
@@ -933,10 +760,6 @@ function Invoke-PipenvClean {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-PipenvInstalled)) {
-        return
-    }
-
     $allArgs = @('clean') + $Arguments
     & pipenv @allArgs
 }
@@ -971,10 +794,6 @@ function Invoke-PipenvGraph {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-PipenvInstalled)) {
-        return
-    }
 
     $allArgs = @('graph') + $Arguments
     & pipenv @allArgs
@@ -1017,10 +836,6 @@ function Invoke-PipenvOpen {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-PipenvInstalled)) {
-        return
-    }
-
     $allArgs = @('open', $PackageName) + $Arguments
     & pipenv @allArgs
 }
@@ -1061,10 +876,6 @@ function Invoke-PipenvScript {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-PipenvInstalled)) {
-        return
-    }
 
     $allArgs = @('run', $ScriptName) + $Arguments
     & pipenv @allArgs

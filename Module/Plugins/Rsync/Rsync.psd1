@@ -59,7 +59,6 @@
         'Invoke-RsyncMove',
         'Invoke-RsyncUpdate',
         'Sync-RsyncDirectories',
-        'Test-RsyncInstalled',
         'Get-RsyncVersion',
         'Test-RsyncPath',
         'Show-RsyncHelp'

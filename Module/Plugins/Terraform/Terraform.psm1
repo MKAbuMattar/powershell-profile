@@ -41,86 +41,6 @@
 # Version: 4.1.0
 #---------------------------------------------------------------------------------------------------
 
-function Test-TerraformInstalled {
-    <#
-    .SYNOPSIS
-        Tests if Terraform is installed and accessible.
-
-    .DESCRIPTION
-        Checks if Terraform command is available in the current environment and validates basic functionality.
-        Used internally by other Terraform functions to ensure Terraform is available before executing commands.
-
-    .OUTPUTS
-        System.Boolean
-        Returns $true if Terraform is available, $false otherwise.
-
-    .EXAMPLE
-        Test-TerraformInstalled
-        Returns $true if Terraform is installed and accessible.
-
-    .LINK
-        https://github.com/MKAbuMattar/powershell-profile/blob/main/Module/Plugins/Terraform/README.md
-    #>
-    [CmdletBinding()]
-    [OutputType([bool])]
-    param()
-
-    try {
-        $null = Get-Command terraform -ErrorAction Stop
-        $null = terraform version 2>$null
-        return $true
-    }
-    catch {
-        Write-Warning "Terraform is not installed or not accessible. Please install Terraform to use Terraform functions."
-        return $false
-    }
-}
-
-function Initialize-TerraformCompletion {
-    <#
-    .SYNOPSIS
-        Initializes Terraform completion for PowerShell.
-
-    .DESCRIPTION
-        Sets up Terraform command completion for PowerShell to provide tab completion for Terraform commands,
-        resources, and options. This function is automatically called when the module is imported.
-
-    .EXAMPLE
-        Initialize-TerraformCompletion
-        Sets up Terraform completion for the current PowerShell session.
-
-    .LINK
-        https://github.com/MKAbuMattar/powershell-profile/blob/main/Module/Plugins/Terraform/README.md
-    #>
-    [CmdletBinding()]
-    [OutputType([void])]
-    param()
-
-    if (-not (Test-TerraformInstalled)) {
-        return
-    }
-
-    try {
-        Register-ArgumentCompleter -CommandName 'terraform' -ScriptBlock {
-            param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
-            
-            $subcommands = @(
-                'apply', 'console', 'destroy', 'env', 'fmt', 'get', 'graph', 'import',
-                'init', 'login', 'logout', 'output', 'plan', 'providers', 'push',
-                'refresh', 'show', 'state', 'taint', 'test', 'untaint', 'validate',
-                'version', 'workspace', '--help', '--version'
-            )
-            
-            $subcommands | Where-Object { $_ -like "$wordToComplete*" } | ForEach-Object {
-                [System.Management.Automation.CompletionResult]::new($_, $_, 'ParameterValue', $_)
-            }
-        }
-    }
-    catch {
-        Write-Verbose "Terraform completion initialization failed: $($_.Exception.Message)"
-    }
-}
-
 function Invoke-Terraform {
     <#
     .SYNOPSIS
@@ -151,10 +71,6 @@ function Invoke-Terraform {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-TerraformInstalled)) {
-        return
-    }
 
     & terraform @Arguments
 }
@@ -223,10 +139,6 @@ function Get-TerraformVersion {
     [CmdletBinding()]
     [OutputType([string])]
     param()
-
-    if (-not (Test-TerraformInstalled)) {
-        return $null
-    }
 
     try {
         $versionOutput = terraform version 2>$null | Select-Object -First 1
@@ -369,10 +281,6 @@ function Invoke-TerraformInit {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-TerraformInstalled)) {
-        return
-    }
-
     $allArgs = @('init') + $Arguments
     & terraform @allArgs
 }
@@ -407,10 +315,6 @@ function Invoke-TerraformInitReconfigure {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-TerraformInstalled)) {
-        return
-    }
 
     $allArgs = @('init', '-reconfigure') + $Arguments
     & terraform @allArgs
@@ -447,10 +351,6 @@ function Invoke-TerraformInitUpgrade {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-TerraformInstalled)) {
-        return
-    }
-
     $allArgs = @('init', '-upgrade') + $Arguments
     & terraform @allArgs
 }
@@ -485,10 +385,6 @@ function Invoke-TerraformInitUpgradeReconfigure {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-TerraformInstalled)) {
-        return
-    }
 
     $allArgs = @('init', '-upgrade', '-reconfigure') + $Arguments
     & terraform @allArgs
@@ -525,10 +421,6 @@ function Invoke-TerraformPlan {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-TerraformInstalled)) {
-        return
-    }
-
     $allArgs = @('plan') + $Arguments
     & terraform @allArgs
 }
@@ -563,10 +455,6 @@ function Invoke-TerraformApply {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-TerraformInstalled)) {
-        return
-    }
 
     $allArgs = @('apply') + $Arguments
     & terraform @allArgs
@@ -603,10 +491,6 @@ function Invoke-TerraformApplyAutoApprove {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-TerraformInstalled)) {
-        return
-    }
-
     $allArgs = @('apply', '-auto-approve') + $Arguments
     & terraform @allArgs
 }
@@ -641,10 +525,6 @@ function Invoke-TerraformDestroy {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-TerraformInstalled)) {
-        return
-    }
 
     $allArgs = @('destroy') + $Arguments
     & terraform @allArgs
@@ -681,10 +561,6 @@ function Invoke-TerraformDestroyAutoApprove {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-TerraformInstalled)) {
-        return
-    }
-
     $allArgs = @('destroy', '-auto-approve') + $Arguments
     & terraform @allArgs
 }
@@ -719,10 +595,6 @@ function Invoke-TerraformFormat {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-TerraformInstalled)) {
-        return
-    }
 
     $allArgs = @('fmt') + $Arguments
     & terraform @allArgs
@@ -759,10 +631,6 @@ function Invoke-TerraformFormatRecursive {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-TerraformInstalled)) {
-        return
-    }
-
     $allArgs = @('fmt', '-recursive') + $Arguments
     & terraform @allArgs
 }
@@ -797,10 +665,6 @@ function Invoke-TerraformValidate {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-TerraformInstalled)) {
-        return
-    }
 
     $allArgs = @('validate') + $Arguments
     & terraform @allArgs
@@ -837,10 +701,6 @@ function Invoke-TerraformTest {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-TerraformInstalled)) {
-        return
-    }
-
     $allArgs = @('test') + $Arguments
     & terraform @allArgs
 }
@@ -875,10 +735,6 @@ function Invoke-TerraformState {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-TerraformInstalled)) {
-        return
-    }
 
     $allArgs = @('state') + $Arguments
     & terraform @allArgs
@@ -915,10 +771,6 @@ function Invoke-TerraformOutput {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-TerraformInstalled)) {
-        return
-    }
-
     $allArgs = @('output') + $Arguments
     & terraform @allArgs
 }
@@ -954,10 +806,6 @@ function Invoke-TerraformShow {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-TerraformInstalled)) {
-        return
-    }
-
     $allArgs = @('show') + $Arguments
     & terraform @allArgs
 }
@@ -992,10 +840,6 @@ function Invoke-TerraformConsole {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-TerraformInstalled)) {
-        return
-    }
 
     $allArgs = @('console') + $Arguments
     & terraform @allArgs

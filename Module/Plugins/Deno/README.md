@@ -26,11 +26,10 @@ This plugin is automatically loaded as part of MKAbuMattar's PowerShell Profile.
 
 ### Core Functions
 
-| Function             | Alias | Description                | Example              |
-| -------------------- | ----- | -------------------------- | -------------------- |
-| `Invoke-Deno`        | `d`   | Base Deno command wrapper  | `d --version`        |
-| `Get-DenoVersion`    | -     | Get installed Deno version | `Get-DenoVersion`    |
-| `Test-DenoInstalled` | -     | Check if Deno is available | `Test-DenoInstalled` |
+| Function          | Alias | Description                | Example           |
+| ----------------- | ----- | -------------------------- | ----------------- |
+| `Invoke-Deno`     | `d`   | Base Deno command wrapper  | `d --version`     |
+| `Get-DenoVersion` | -     | Get installed Deno version | `Get-DenoVersion` |
 
 ### Bundle and Compile
 

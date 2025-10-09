@@ -42,75 +42,6 @@
 # Version: 4.1.0
 #---------------------------------------------------------------------------------------------------
 
-function Test-PNPMInstalled {
-    <#
-    .SYNOPSIS
-        Tests if pnpm is installed and accessible.
-
-    .DESCRIPTION
-        Checks if pnpm command is available in the current environment and validates basic functionality.
-        Used internally by other pnpm functions to ensure pnpm is available before executing commands.
-
-    .OUTPUTS
-        System.Boolean
-        Returns $true if pnpm is available, $false otherwise.
-
-    .EXAMPLE
-        Test-PNPMInstalled
-        Returns $true if pnpm is installed and accessible.
-
-    .LINK
-        https://github.com/MKAbuMattar/powershell-profile/blob/main/Module/Plugins/PNPM/README.md
-    #>
-    [CmdletBinding()]
-    [OutputType([bool])]
-    param()
-
-    try {
-        $null = Get-Command pnpm -ErrorAction Stop
-        $null = pnpm --version 2>$null
-        return $true
-    }
-    catch {
-        return $false
-    }
-}
-
-function Initialize-PNPMCompletion {
-    <#
-    .SYNOPSIS
-        Initializes pnpm completion for PowerShell.
-
-    .DESCRIPTION
-        Sets up pnpm command completion for PowerShell to provide tab completion for pnpm commands,
-        packages, and options. This function is automatically called when the module is imported.
-
-    .EXAMPLE
-        Initialize-PNPMCompletion
-        Sets up pnpm completion for the current PowerShell session.
-
-    .LINK
-        https://github.com/MKAbuMattar/powershell-profile/blob/main/Module/Plugins/PNPM/README.md
-    #>
-    [CmdletBinding()]
-    [OutputType([void])]
-    param()
-
-    if (-not (Test-PNPMInstalled)) {
-        return
-    }
-
-    try {
-        $completionScript = pnpm completion powershell 2>$null
-        if ($completionScript) {
-            Invoke-Expression $completionScript
-        }
-    }
-    catch {
-        Write-Verbose "pnpm completion initialization failed: $($_.Exception.Message)"
-    }
-}
-
 function Get-PNPMVersion {
     <#
     .SYNOPSIS
@@ -133,10 +64,6 @@ function Get-PNPMVersion {
     [CmdletBinding()]
     [OutputType([string])]
     param()
-
-    if (-not (Test-PNPMInstalled)) {
-        return
-    }
 
     & pnpm --version
 }
@@ -163,10 +90,6 @@ function Get-PNPMStorePath {
     [CmdletBinding()]
     [OutputType([string])]
     param()
-
-    if (-not (Test-PNPMInstalled)) {
-        return
-    }
 
     & pnpm store path
 }
@@ -201,10 +124,6 @@ function Invoke-PNPM {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-PNPMInstalled)) {
-        return
-    }
 
     & pnpm @Arguments
 }
@@ -245,10 +164,6 @@ function Invoke-PNPMAdd {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-PNPMInstalled)) {
-        return
-    }
 
     $allArgs = @('add')
     if ($PackageName) {
@@ -297,10 +212,6 @@ function Invoke-PNPMAddDev {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-PNPMInstalled)) {
-        return
-    }
-
     $allArgs = @('add', '-D')
     if ($PackageName) {
         $allArgs += $PackageName
@@ -347,10 +258,6 @@ function Invoke-PNPMAddOptional {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-PNPMInstalled)) {
-        return
-    }
 
     $allArgs = @('add', '-O')
     if ($PackageName) {
@@ -399,10 +306,6 @@ function Invoke-PNPMAddPeer {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-PNPMInstalled)) {
-        return
-    }
-
     $allArgs = @('add', '-P')
     if ($PackageName) {
         $allArgs += $PackageName
@@ -449,10 +352,6 @@ function Invoke-PNPMRemove {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-PNPMInstalled)) {
-        return
-    }
 
     $allArgs = @('remove')
     if ($PackageName) {
@@ -501,10 +400,6 @@ function Invoke-PNPMUpdate {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-PNPMInstalled)) {
-        return
-    }
-
     $allArgs = @('update')
     if ($PackageName) {
         $allArgs += $PackageName
@@ -547,10 +442,6 @@ function Invoke-PNPMUpdateInteractive {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-PNPMInstalled)) {
-        return
-    }
-
     $allArgs = @('update', '-i')
     if ($Arguments) {
         $allArgs += $Arguments
@@ -588,10 +479,6 @@ function Invoke-PNPMInstall {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-PNPMInstalled)) {
-        return
-    }
 
     $allArgs = @('install')
     if ($Arguments) {
@@ -632,10 +519,6 @@ function Invoke-PNPMInstallFrozen {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-PNPMInstalled)) {
-        return
-    }
-
     $allArgs = @('install', '--frozen-lockfile')
     if ($Arguments) {
         $allArgs += $Arguments
@@ -673,10 +556,6 @@ function Invoke-PNPMInit {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-PNPMInstalled)) {
-        return
-    }
 
     $allArgs = @('init')
     if ($Arguments) {
@@ -722,10 +601,6 @@ function Invoke-PNPMRun {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-PNPMInstalled)) {
-        return
-    }
-
     $allArgs = @('run')
     if ($ScriptName) {
         $allArgs += $ScriptName
@@ -767,10 +642,6 @@ function Invoke-PNPMStart {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-PNPMInstalled)) {
-        return
-    }
-
     $allArgs = @('start')
     if ($Arguments) {
         $allArgs += $Arguments
@@ -810,10 +681,6 @@ function Invoke-PNPMDev {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-PNPMInstalled)) {
-        return
-    }
-
     $allArgs = @('dev')
     if ($Arguments) {
         $allArgs += $Arguments
@@ -851,10 +718,6 @@ function Invoke-PNPMBuild {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-PNPMInstalled)) {
-        return
-    }
 
     $allArgs = @('build')
     if ($Arguments) {
@@ -895,10 +758,6 @@ function Invoke-PNPMServe {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-PNPMInstalled)) {
-        return
-    }
-
     $allArgs = @('serve')
     if ($Arguments) {
         $allArgs += $Arguments
@@ -936,10 +795,6 @@ function Invoke-PNPMTest {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-PNPMInstalled)) {
-        return
-    }
 
     $allArgs = @('test')
     if ($Arguments) {
@@ -979,10 +834,6 @@ function Invoke-PNPMTestCoverage {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-PNPMInstalled)) {
-        return
-    }
-
     $allArgs = @('test', '--coverage')
     if ($Arguments) {
         $allArgs += $Arguments
@@ -1020,10 +871,6 @@ function Invoke-PNPMLint {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-PNPMInstalled)) {
-        return
-    }
 
     $allArgs = @('lint')
     if ($Arguments) {
@@ -1063,10 +910,6 @@ function Invoke-PNPMLintFix {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-PNPMInstalled)) {
-        return
-    }
-
     $allArgs = @('lint', '--fix')
     if ($Arguments) {
         $allArgs += $Arguments
@@ -1104,10 +947,6 @@ function Invoke-PNPMFormat {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-PNPMInstalled)) {
-        return
-    }
 
     $allArgs = @('format')
     if ($Arguments) {
@@ -1152,10 +991,6 @@ function Invoke-PNPMExec {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-PNPMInstalled)) {
-        return
-    }
 
     $allArgs = @('exec')
     if ($Command) {
@@ -1205,10 +1040,6 @@ function Invoke-PNPMDlx {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-PNPMInstalled)) {
-        return
-    }
-
     $allArgs = @('dlx')
     if ($PackageName) {
         $allArgs += $PackageName
@@ -1256,10 +1087,6 @@ function Invoke-PNPMCreate {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-PNPMInstalled)) {
-        return
-    }
-
     $allArgs = @('create')
     if ($Template) {
         $allArgs += $Template
@@ -1301,10 +1128,6 @@ function Invoke-PNPMList {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-PNPMInstalled)) {
-        return
-    }
-
     $allArgs = @('list')
     if ($Arguments) {
         $allArgs += $Arguments
@@ -1342,10 +1165,6 @@ function Invoke-PNPMOutdated {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-PNPMInstalled)) {
-        return
-    }
 
     $allArgs = @('outdated')
     if ($Arguments) {
@@ -1385,10 +1204,6 @@ function Invoke-PNPMAudit {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-PNPMInstalled)) {
-        return
-    }
-
     $allArgs = @('audit')
     if ($Arguments) {
         $allArgs += $Arguments
@@ -1426,10 +1241,6 @@ function Invoke-PNPMAuditFix {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-PNPMInstalled)) {
-        return
-    }
 
     $allArgs = @('audit', '--fix')
     if ($Arguments) {
@@ -1475,10 +1286,6 @@ function Invoke-PNPMWhy {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-PNPMInstalled)) {
-        return
-    }
-
     $allArgs = @('why')
     if ($PackageName) {
         $allArgs += $PackageName
@@ -1520,10 +1327,6 @@ function Invoke-PNPMPublish {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-PNPMInstalled)) {
-        return
-    }
-
     $allArgs = @('publish')
     if ($Arguments) {
         $allArgs += $Arguments
@@ -1561,10 +1364,6 @@ function Invoke-PNPMPack {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-PNPMInstalled)) {
-        return
-    }
 
     $allArgs = @('pack')
     if ($Arguments) {
@@ -1604,10 +1403,6 @@ function Invoke-PNPMPrune {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-PNPMInstalled)) {
-        return
-    }
-
     $allArgs = @('prune')
     if ($Arguments) {
         $allArgs += $Arguments
@@ -1645,10 +1440,6 @@ function Invoke-PNPMRebuild {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-PNPMInstalled)) {
-        return
-    }
 
     $allArgs = @('rebuild')
     if ($Arguments) {
@@ -1694,10 +1485,6 @@ function Invoke-PNPMStore {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-PNPMInstalled)) {
-        return
-    }
-
     $allArgs = @('store')
     if ($SubCommand) {
         $allArgs += $SubCommand
@@ -1733,10 +1520,6 @@ function Invoke-PNPMStorePath {
     [OutputType([void])]
     param()
 
-    if (-not (Test-PNPMInstalled)) {
-        return
-    }
-
     & pnpm store path
 }
 
@@ -1764,10 +1547,6 @@ function Invoke-PNPMStoreStatus {
     [OutputType([void])]
     param()
 
-    if (-not (Test-PNPMInstalled)) {
-        return
-    }
-
     & pnpm store status
 }
 
@@ -1794,10 +1573,6 @@ function Invoke-PNPMStorePrune {
     [Alias("pspr")]
     [OutputType([void])]
     param()
-
-    if (-not (Test-PNPMInstalled)) {
-        return
-    }
 
     & pnpm store prune
 }
@@ -1837,10 +1612,6 @@ function Invoke-PNPMEnv {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-PNPMInstalled)) {
-        return
-    }
 
     $allArgs = @('env')
     if ($SubCommand) {
@@ -1882,10 +1653,6 @@ function Invoke-PNPMSetup {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-PNPMInstalled)) {
-        return
-    }
 
     $allArgs = @('setup')
     if ($Arguments) {
@@ -1931,10 +1698,6 @@ function Invoke-PNPMConfig {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-PNPMInstalled)) {
-        return
-    }
-
     $allArgs = @('config')
     if ($SubCommand) {
         $allArgs += $SubCommand
@@ -1975,10 +1738,6 @@ function Invoke-PNPMConfigGet {
         [Parameter(Position = 0)]
         [string]$Key
     )
-
-    if (-not (Test-PNPMInstalled)) {
-        return
-    }
 
     $allArgs = @('config', 'get')
     if ($Key) {
@@ -2030,10 +1789,6 @@ function Invoke-PNPMConfigSet {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-PNPMInstalled)) {
-        return
-    }
-
     $allArgs = @('config', 'set')
     if ($Key) {
         $allArgs += $Key
@@ -2078,10 +1833,6 @@ function Invoke-PNPMConfigDelete {
         [string]$Key
     )
 
-    if (-not (Test-PNPMInstalled)) {
-        return
-    }
-
     $allArgs = @('config', 'delete')
     if ($Key) {
         $allArgs += $Key
@@ -2113,10 +1864,6 @@ function Invoke-PNPMConfigList {
     [Alias("pcfgl")]
     [OutputType([void])]
     param()
-
-    if (-not (Test-PNPMInstalled)) {
-        return
-    }
 
     & pnpm config list
 }
@@ -2156,10 +1903,6 @@ function Invoke-PNPMPatch {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-PNPMInstalled)) {
-        return
-    }
 
     $allArgs = @('patch')
     if ($PackageName) {
@@ -2208,10 +1951,6 @@ function Invoke-PNPMPatchCommit {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-PNPMInstalled)) {
-        return
-    }
-
     $allArgs = @('patch-commit')
     if ($PatchDir) {
         $allArgs += $PatchDir
@@ -2252,10 +1991,6 @@ function Invoke-PNPMFetch {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-PNPMInstalled)) {
-        return
-    }
 
     $allArgs = @('fetch')
     if ($Arguments) {
@@ -2300,10 +2035,6 @@ function Invoke-PNPMLink {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-PNPMInstalled)) {
-        return
-    }
 
     $allArgs = @('link')
     if ($PackagePath) {
@@ -2352,10 +2083,6 @@ function Invoke-PNPMUnlink {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-PNPMInstalled)) {
-        return
-    }
-
     $allArgs = @('unlink')
     if ($PackageName) {
         $allArgs += $PackageName
@@ -2396,10 +2123,6 @@ function Invoke-PNPMImport {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-PNPMInstalled)) {
-        return
-    }
 
     $allArgs = @('import')
     if ($Arguments) {
@@ -2445,10 +2168,6 @@ function Invoke-PNPMDeploy {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-PNPMInstalled)) {
-        return
-    }
-
     $allArgs = @('deploy')
     if ($Directory) {
         $allArgs += $Directory
@@ -2489,10 +2208,6 @@ function Invoke-PNPMCatalog {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-PNPMInstalled)) {
-        return
-    }
 
     $allArgs = @('catalog')
     if ($Arguments) {

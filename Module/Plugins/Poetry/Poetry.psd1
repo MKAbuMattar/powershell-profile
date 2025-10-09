@@ -56,9 +56,6 @@
     Description          = 'Comprehensive Poetry CLI integration for PowerShell with 30+ functions and aliases for modern Python dependency management, virtual environment handling, package building, and project lifecycle management.'
     PowerShellVersion    = '5.1'
     FunctionsToExport    = @(
-        'Test-PoetryInstalled',
-        'Initialize-PoetryCompletion',
-        'Invoke-Poetry',
         'Invoke-PoetryInit',
         'Invoke-PoetryNew',
         'Invoke-PoetryCheck',
@@ -90,7 +87,6 @@
     CmdletsToExport      = @()
     VariablesToExport    = @()
     AliasesToExport      = @(
-        'poetry',
         'pin',         
         'pnew',        
         'pch',         

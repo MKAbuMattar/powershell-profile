@@ -58,12 +58,9 @@
     DotNetFrameworkVersion = '4.5'
     CLRVersion             = '4.0'
     FunctionsToExport      = @(
-        'Test-PipInstalled',
-        'Initialize-PipCompletion',
         'Clear-PipCache',
         'Get-PipCacheFile',
         'Update-PipPackageCache',
-        'Invoke-Pip',
         'Invoke-PipInstall',
         'Invoke-PipUpgrade',
         'Invoke-PipUninstall',
@@ -94,7 +91,7 @@
     CmdletsToExport        = @()
     VariablesToExport      = @()
     AliasesToExport        = @(
-        'pip',
+        'pipp',
         'pipi',
         'pipu',
         'pipun',

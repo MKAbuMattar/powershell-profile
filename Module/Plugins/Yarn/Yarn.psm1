@@ -42,95 +42,6 @@
 # Version: 4.1.0
 #---------------------------------------------------------------------------------------------------
 
-function Test-YarnInstalled {
-    <#
-    .SYNOPSIS
-        Tests if Yarn is installed and accessible.
-
-    .DESCRIPTION
-        Checks if Yarn command is available in the current environment and validates basic functionality.
-        Used internally by other Yarn functions to ensure Yarn is available before executing commands.
-
-    .OUTPUTS
-        System.Boolean
-        Returns $true if Yarn is available, $false otherwise.
-
-    .EXAMPLE
-        Test-YarnInstalled
-        Returns $true if Yarn is installed and accessible.
-
-    .LINK
-        https://github.com/MKAbuMattar/powershell-profile/blob/main/Module/Plugins/Yarn/README.md
-    #>
-    [CmdletBinding()]
-    [OutputType([bool])]
-    param()
-
-    try {
-        $null = Get-Command yarn -ErrorAction Stop
-        $null = yarn --version 2>$null
-        return $true
-    }
-    catch {
-        Write-Warning "Yarn is not installed or not accessible. Please install Yarn to use Yarn functions."
-        return $false
-    }
-}
-
-function Initialize-YarnCompletion {
-    <#
-    .SYNOPSIS
-        Initializes Yarn completion for PowerShell.
-
-    .DESCRIPTION
-        Sets up Yarn command completion for PowerShell to provide tab completion for Yarn commands,
-        scripts, and common operations. This function is automatically called when the module is imported.
-
-    .EXAMPLE
-        Initialize-YarnCompletion
-        Sets up Yarn completion for the current PowerShell session.
-
-    .LINK
-        https://github.com/MKAbuMattar/powershell-profile/blob/main/Module/Plugins/Yarn/README.md
-    #>
-    [CmdletBinding()]
-    [OutputType([void])]
-    param()
-
-    if (-not (Test-YarnInstalled)) {
-        return
-    }
-
-    try {
-        Register-ArgumentCompleter -CommandName 'yarn' -ScriptBlock {
-            param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
-            
-            $commonCommands = @(
-                'add', 'remove', 'install', 'upgrade', 'upgrade-interactive',
-                'build', 'start', 'test', 'dev', 'serve', 'lint',
-                'init', 'pack', 'run', 'version', 'help',
-                'workspace', 'workspaces', 'why', 'cache', 'global'
-            )
-
-            if (Test-YarnBerry) {
-                $berryCommands = @('dlx', 'node', 'set', 'config', 'plugin')
-                $commonCommands += $berryCommands
-            }
-            else {
-                $classicCommands = @('list', 'outdated', 'info', 'owner', 'team')
-                $commonCommands += $classicCommands
-            }
-            
-            $commonCommands | Where-Object { $_ -like "$wordToComplete*" } | ForEach-Object {
-                [System.Management.Automation.CompletionResult]::new($_, $_, 'ParameterValue', $_)
-            }
-        }
-    }
-    catch {
-        Write-Verbose "Yarn completion initialization failed: $($_.Exception.Message)"
-    }
-}
-
 function Get-YarnVersion {
     <#
     .SYNOPSIS
@@ -153,10 +64,6 @@ function Get-YarnVersion {
     [CmdletBinding()]
     [OutputType([string])]
     param()
-
-    if (-not (Test-YarnInstalled)) {
-        return $null
-    }
 
     try {
         $versionOutput = yarn --version 2>$null
@@ -228,10 +135,6 @@ function Get-YarnGlobalPath {
     [CmdletBinding()]
     [OutputType([string])]
     param()
-
-    if (-not (Test-YarnInstalled)) {
-        return $null
-    }
 
     try {
         $defaultPath = Join-Path $HOME ".yarn\bin"
@@ -321,10 +224,6 @@ function Invoke-Yarn {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-YarnInstalled)) {
-        return
-    }
-
     & yarn @Arguments
 }
 
@@ -361,10 +260,6 @@ function Invoke-YarnAdd {
         [Parameter(Position = 0, ValueFromRemainingArguments = $true)]
         [string[]]$Packages = @()
     )
-
-    if (-not (Test-YarnInstalled)) {
-        return
-    }
 
     $allArgs = @('add') + $Packages
     & yarn @allArgs
@@ -404,10 +299,6 @@ function Invoke-YarnAddDev {
         [string[]]$Packages = @()
     )
 
-    if (-not (Test-YarnInstalled)) {
-        return
-    }
-
     $allArgs = @('add', '--dev') + $Packages
     & yarn @allArgs
 }
@@ -445,10 +336,6 @@ function Invoke-YarnAddPeer {
         [Parameter(Position = 0, ValueFromRemainingArguments = $true)]
         [string[]]$Packages = @()
     )
-
-    if (-not (Test-YarnInstalled)) {
-        return
-    }
 
     $allArgs = @('add', '--peer') + $Packages
     & yarn @allArgs
@@ -488,10 +375,6 @@ function Invoke-YarnRemove {
         [string[]]$Packages = @()
     )
 
-    if (-not (Test-YarnInstalled)) {
-        return
-    }
-
     $allArgs = @('remove') + $Packages
     & yarn @allArgs
 }
@@ -526,10 +409,6 @@ function Invoke-YarnUpgrade {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-YarnInstalled)) {
-        return
-    }
 
     $allArgs = @('upgrade') + $Arguments
     & yarn @allArgs
@@ -566,10 +445,6 @@ function Invoke-YarnUpgradeInteractive {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-YarnInstalled)) {
-        return
-    }
-
     $allArgs = @('upgrade-interactive') + $Arguments
     & yarn @allArgs
 }
@@ -605,10 +480,6 @@ function Invoke-YarnUpgradeInteractiveLatest {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-YarnInstalled)) {
-        return
-    }
 
     if (Test-YarnBerry) {
         $allArgs = @('upgrade-interactive') + $Arguments
@@ -651,10 +522,6 @@ function Invoke-YarnInstall {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-YarnInstalled)) {
-        return
-    }
-
     $allArgs = @('install') + $Arguments
     & yarn @allArgs
 }
@@ -689,10 +556,6 @@ function Invoke-YarnInstallImmutable {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-YarnInstalled)) {
-        return
-    }
 
     if (Test-YarnBerry) {
         $allArgs = @('install', '--immutable') + $Arguments
@@ -769,10 +632,6 @@ function Invoke-YarnInit {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-YarnInstalled)) {
-        return
-    }
-
     $allArgs = @('init') + $Arguments
     & yarn @allArgs
 }
@@ -811,10 +670,6 @@ function Invoke-YarnRun {
         [string[]]$Script = @()
     )
 
-    if (-not (Test-YarnInstalled)) {
-        return
-    }
-
     $allArgs = @('run') + $Script
     & yarn @allArgs
 }
@@ -849,10 +704,6 @@ function Invoke-YarnStart {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-YarnInstalled)) {
-        return
-    }
 
     $allArgs = @('start') + $Arguments
     & yarn @allArgs
@@ -889,10 +740,6 @@ function Invoke-YarnDev {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-YarnInstalled)) {
-        return
-    }
-
     $allArgs = @('dev') + $Arguments
     & yarn @allArgs
 }
@@ -927,10 +774,6 @@ function Invoke-YarnBuild {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-YarnInstalled)) {
-        return
-    }
 
     $allArgs = @('build') + $Arguments
     & yarn @allArgs
@@ -967,10 +810,6 @@ function Invoke-YarnServe {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-YarnInstalled)) {
-        return
-    }
-
     $allArgs = @('serve') + $Arguments
     & yarn @allArgs
 }
@@ -1005,10 +844,6 @@ function Invoke-YarnTest {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-YarnInstalled)) {
-        return
-    }
 
     $allArgs = @('test') + $Arguments
     & yarn @allArgs
@@ -1045,10 +880,6 @@ function Invoke-YarnTestCoverage {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-YarnInstalled)) {
-        return
-    }
-
     $allArgs = @('test', '--coverage') + $Arguments
     & yarn @allArgs
 }
@@ -1083,10 +914,6 @@ function Invoke-YarnLint {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-YarnInstalled)) {
-        return
-    }
 
     $allArgs = @('lint') + $Arguments
     & yarn @allArgs
@@ -1123,10 +950,6 @@ function Invoke-YarnLintFix {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-YarnInstalled)) {
-        return
-    }
-
     $allArgs = @('lint', '--fix') + $Arguments
     & yarn @allArgs
 }
@@ -1161,10 +984,6 @@ function Invoke-YarnFormat {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-YarnInstalled)) {
-        return
-    }
 
     $allArgs = @('format') + $Arguments
     & yarn @allArgs
@@ -1204,10 +1023,6 @@ function Invoke-YarnWorkspace {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-YarnInstalled)) {
-        return
-    }
-
     $allArgs = @('workspace') + $Arguments
     & yarn @allArgs
 }
@@ -1242,10 +1057,6 @@ function Invoke-YarnWorkspaces {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-YarnInstalled)) {
-        return
-    }
 
     $allArgs = @('workspaces') + $Arguments
     & yarn @allArgs
@@ -1285,10 +1096,6 @@ function Invoke-YarnWhy {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-YarnInstalled)) {
-        return
-    }
-
     $allArgs = @('why') + $Arguments
     & yarn @allArgs
 }
@@ -1323,10 +1130,6 @@ function Invoke-YarnVersion {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-YarnInstalled)) {
-        return
-    }
 
     $allArgs = @('version') + $Arguments
     & yarn @allArgs
@@ -1363,10 +1166,6 @@ function Invoke-YarnHelp {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-YarnInstalled)) {
-        return
-    }
-
     $allArgs = @('help') + $Arguments
     & yarn @allArgs
 }
@@ -1402,10 +1201,6 @@ function Invoke-YarnPack {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-YarnInstalled)) {
-        return
-    }
-
     $allArgs = @('pack') + $Arguments
     & yarn @allArgs
 }
@@ -1440,10 +1235,6 @@ function Invoke-YarnCacheClean {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-YarnInstalled)) {
-        return
-    }
 
     $allArgs = @('cache', 'clean') + $Arguments
     & yarn @allArgs
@@ -1482,10 +1273,6 @@ function Invoke-YarnDlx {
         [Parameter(Position = 0, ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-YarnInstalled)) {
-        return
-    }
 
     if (-not (Test-YarnBerry)) {
         Write-Warning "yarn dlx is only available in Yarn Berry (v2+). Current version is Classic."
@@ -1526,10 +1313,6 @@ function Invoke-YarnNode {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-YarnInstalled)) {
-        return
-    }
 
     if (-not (Test-YarnBerry)) {
         Write-Warning "yarn node is only available in Yarn Berry (v2+). Current version is Classic."
@@ -1574,10 +1357,6 @@ function Invoke-YarnGlobalAdd {
         [string[]]$Packages = @()
     )
 
-    if (-not (Test-YarnInstalled)) {
-        return
-    }
-
     if (Test-YarnBerry) {
         Write-Warning "yarn global is not available in Yarn Berry (v2+). Use 'yarn dlx' for temporary installs."
         return
@@ -1617,10 +1396,6 @@ function Invoke-YarnGlobalList {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-YarnInstalled)) {
-        return
-    }
 
     if (Test-YarnBerry) {
         Write-Warning "yarn global is not available in Yarn Berry (v2+)."
@@ -1665,10 +1440,6 @@ function Invoke-YarnGlobalRemove {
         [string[]]$Packages = @()
     )
 
-    if (-not (Test-YarnInstalled)) {
-        return
-    }
-
     if (Test-YarnBerry) {
         Write-Warning "yarn global is not available in Yarn Berry (v2+)."
         return
@@ -1708,10 +1479,6 @@ function Invoke-YarnGlobalUpgrade {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-YarnInstalled)) {
-        return
-    }
 
     if (Test-YarnBerry) {
         Write-Warning "yarn global is not available in Yarn Berry (v2+)."
@@ -1753,10 +1520,6 @@ function Invoke-YarnList {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-YarnInstalled)) {
-        return
-    }
-
     if (Test-YarnBerry) {
         Write-Warning "yarn list is not available in Yarn Berry (v2+). Use 'yarn info' instead."
         return
@@ -1797,10 +1560,6 @@ function Invoke-YarnOutdated {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-YarnInstalled)) {
-        return
-    }
-
     if (Test-YarnBerry) {
         Write-Warning "yarn outdated is not available in Yarn Berry (v2+). Use 'yarn upgrade-interactive' instead."
         return
@@ -1840,10 +1599,6 @@ function Invoke-YarnGlobalUpgradeAndClean {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-YarnInstalled)) {
-        return
-    }
 
     if (Test-YarnBerry) {
         Write-Warning "yarn global is not available in Yarn Berry (v2+)."

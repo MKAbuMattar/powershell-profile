@@ -42,176 +42,6 @@
 # Version: 4.1.0
 #---------------------------------------------------------------------------------------------------
 
-function Test-UVInstalled {
-    <#
-    .SYNOPSIS
-        Tests if UV is installed and accessible.
-
-    .DESCRIPTION
-        Checks if UV command is available in the current environment and validates basic functionality.
-        Used internally by other UV functions to ensure UV is available before executing commands.
-
-    .OUTPUTS
-        System.Boolean
-        Returns $true if UV is available, $false otherwise.
-
-    .EXAMPLE
-        Test-UVInstalled
-        Returns $true if UV is installed and accessible.
-
-    .LINK
-        https://github.com/MKAbuMattar/powershell-profile/blob/main/Module/Plugins/UV/README.md
-    #>
-    [CmdletBinding()]
-    [OutputType([bool])]
-    param()
-
-    try {
-        $null = Get-Command uv -ErrorAction Stop
-        $null = uv --version 2>$null
-        return $true
-    }
-    catch {
-        Write-Warning "UV is not installed or not accessible. Please install UV to use UV functions."
-        return $false
-    }
-}
-
-function Initialize-UVCompletion {
-    <#
-    .SYNOPSIS
-        Initializes UV completion for PowerShell.
-
-    .DESCRIPTION
-        Sets up UV command completion for PowerShell to provide tab completion for UV commands,
-        subcommands, and common operations. This function is automatically called when the module is imported.
-
-    .EXAMPLE
-        Initialize-UVCompletion
-        Sets up UV completion for the current PowerShell session.
-
-    .LINK
-        https://github.com/MKAbuMattar/powershell-profile/blob/main/Module/Plugins/UV/README.md
-    #>
-    [CmdletBinding()]
-    [OutputType([void])]
-    param()
-
-    if (-not (Test-UVInstalled)) {
-        return
-    }
-
-    try {
-        Register-ArgumentCompleter -CommandName 'uv' -ScriptBlock {
-            param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
-            
-            $subcommands = @(
-                'add', 'remove', 'sync', 'lock', 'export', 'tree', 'run', 'init', 'build', 'publish',
-                'pip', 'python', 'venv', 'tool', 'self', 'cache', 'version', '--help', '--version',
-                'install', 'uninstall', 'list', 'show', 'freeze', 'check', 'compile', 'upgrade',
-                'update', 'refresh', 'clean', 'prune'
-            )
-            
-            $subcommands | Where-Object { $_ -like "$wordToComplete*" } | ForEach-Object {
-                [System.Management.Automation.CompletionResult]::new($_, $_, 'ParameterValue', $_)
-            }
-        }
-
-        Register-ArgumentCompleter -CommandName 'uvx' -ScriptBlock {
-            param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
-            
-            $tools = @(
-                'black', 'flake8', 'mypy', 'pytest', 'isort', 'pylint', 'bandit',
-                'pre-commit', 'cookiecutter', 'httpie', 'pipx', 'poetry',
-                'mkdocs', 'sphinx-build', 'jupyter', 'ipython'
-            )
-            
-            $tools | Where-Object { $_ -like "$wordToComplete*" } | ForEach-Object {
-                [System.Management.Automation.CompletionResult]::new($_, $_, 'ParameterValue', $_)
-            }
-        }
-    }
-    catch {
-        Write-Verbose "UV completion initialization failed: $($_.Exception.Message)"
-    }
-}
-
-function Invoke-UV {
-    <#
-    .SYNOPSIS
-        Base UV command wrapper.
-
-    .DESCRIPTION
-        Executes UV commands with all provided arguments. Serves as the base wrapper
-        for all UV operations and ensures UV is available before execution.
-
-    .PARAMETER Arguments
-        All arguments to pass to UV command.
-
-    .EXAMPLE
-        Invoke-UV --version
-        Shows UV version.
-
-    .EXAMPLE
-        Invoke-UV add requests
-        Adds requests package to current project.
-
-    .LINK
-        https://github.com/MKAbuMattar/powershell-profile/blob/main/Module/Plugins/UV/README.md
-    #>
-    [CmdletBinding()]
-    [Alias("uv")]
-    [OutputType([void])]
-    param(
-        [Parameter(ValueFromRemainingArguments = $true)]
-        [string[]]$Arguments = @()
-    )
-
-    if (-not (Test-UVInstalled)) {
-        return
-    }
-
-    & uv @Arguments
-}
-
-function Test-UVProject {
-    <#
-    .SYNOPSIS
-        Tests if current directory is a UV project.
-
-    .DESCRIPTION
-        Checks if the current directory contains a pyproject.toml file with UV configuration,
-        indicating it's a UV-managed Python project.
-
-    .OUTPUTS
-        System.Boolean
-        Returns $true if current directory is a UV project, $false otherwise.
-
-    .EXAMPLE
-        Test-UVProject
-        Returns $true if in a UV project directory.
-
-    .LINK
-        https://github.com/MKAbuMattar/powershell-profile/blob/main/Module/Plugins/UV/README.md
-    #>
-    [CmdletBinding()]
-    [OutputType([bool])]
-    param()
-
-    try {
-        $pyprojectFile = Join-Path $PWD.Path "pyproject.toml"
-        if (-not (Test-Path $pyprojectFile -PathType Leaf)) {
-            return $false
-        }
-
-        $content = Get-Content $pyprojectFile -Raw
-        return $content -match '\[tool\.uv\]|\[project\]'
-    }
-    catch {
-        return $false
-    }
-}
-
 function Get-UVProjectInfo {
     <#
     .SYNOPSIS
@@ -235,10 +65,6 @@ function Get-UVProjectInfo {
     [CmdletBinding()]
     [OutputType([PSCustomObject])]
     param()
-
-    if (-not (Test-UVProject)) {
-        return $null
-    }
 
     try {
         $projectInfo = [PSCustomObject]@{
@@ -341,10 +167,6 @@ function Invoke-UVAdd {
         [string[]]$Packages = @()
     )
 
-    if (-not (Test-UVInstalled)) {
-        return
-    }
-
     $allArgs = @('add') + $Packages
     & uv @allArgs
 }
@@ -383,10 +205,6 @@ function Invoke-UVRemove {
         [string[]]$Packages = @()
     )
 
-    if (-not (Test-UVInstalled)) {
-        return
-    }
-
     $allArgs = @('remove') + $Packages
     & uv @allArgs
 }
@@ -421,10 +239,6 @@ function Invoke-UVSync {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-UVInstalled)) {
-        return
-    }
 
     $allArgs = @('sync') + $Arguments
     & uv @allArgs
@@ -461,10 +275,6 @@ function Invoke-UVSyncRefresh {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-UVInstalled)) {
-        return
-    }
-
     $allArgs = @('sync', '--refresh') + $Arguments
     & uv @allArgs
 }
@@ -499,10 +309,6 @@ function Invoke-UVSyncUpgrade {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-UVInstalled)) {
-        return
-    }
 
     $allArgs = @('sync', '--upgrade') + $Arguments
     & uv @allArgs
@@ -539,10 +345,6 @@ function Invoke-UVLock {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-UVInstalled)) {
-        return
-    }
-
     $allArgs = @('lock') + $Arguments
     & uv @allArgs
 }
@@ -578,10 +380,6 @@ function Invoke-UVLockRefresh {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-UVInstalled)) {
-        return
-    }
-
     $allArgs = @('lock', '--refresh') + $Arguments
     & uv @allArgs
 }
@@ -616,10 +414,6 @@ function Invoke-UVLockUpgrade {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-UVInstalled)) {
-        return
-    }
 
     $allArgs = @('lock', '--upgrade') + $Arguments
     & uv @allArgs
@@ -662,10 +456,6 @@ function Invoke-UVExport {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-UVInstalled)) {
-        return
-    }
-
     $allArgs = @('export', '--format', 'requirements-txt', '--no-hashes', '--output-file', $OutputFile, '--quiet') + $Arguments
     & uv @allArgs
 }
@@ -704,10 +494,6 @@ function Invoke-UVRun {
         [string[]]$Command = @()
     )
 
-    if (-not (Test-UVInstalled)) {
-        return
-    }
-
     $allArgs = @('run') + $Command
     & uv @allArgs
 }
@@ -743,10 +529,6 @@ function Invoke-UVPython {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-UVInstalled)) {
-        return
-    }
-
     $allArgs = @('python') + $Arguments
     & uv @allArgs
 }
@@ -781,10 +563,6 @@ function Invoke-UVPip {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-UVInstalled)) {
-        return
-    }
 
     $allArgs = @('pip') + $Arguments
     & uv @allArgs
@@ -826,10 +604,6 @@ function Invoke-UVVenv {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-UVInstalled)) {
-        return
-    }
 
     $allArgs = @('venv')
     if ($Name) {
@@ -879,10 +653,6 @@ function Invoke-UVInit {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-UVInstalled)) {
-        return
-    }
-
     $allArgs = @('init')
     if ($ProjectName) {
         $allArgs += $ProjectName
@@ -925,10 +695,6 @@ function Invoke-UVBuild {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-UVInstalled)) {
-        return
-    }
-
     $allArgs = @('build') + $Arguments
     & uv @allArgs
 }
@@ -964,10 +730,6 @@ function Invoke-UVPublish {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-UVInstalled)) {
-        return
-    }
-
     $allArgs = @('publish') + $Arguments
     & uv @allArgs
 }
@@ -1002,10 +764,6 @@ function Invoke-UVTool {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-UVInstalled)) {
-        return
-    }
 
     $allArgs = @('tool') + $Arguments
     & uv @allArgs
@@ -1045,10 +803,6 @@ function Invoke-UVToolRun {
         [string[]]$Tool = @()
     )
 
-    if (-not (Test-UVInstalled)) {
-        return
-    }
-
     $allArgs = @('tool', 'run') + $Tool
     & uv @allArgs
 }
@@ -1086,10 +840,6 @@ function Invoke-UVToolInstall {
         [Parameter(Position = 0, ValueFromRemainingArguments = $true)]
         [string[]]$Tools = @()
     )
-
-    if (-not (Test-UVInstalled)) {
-        return
-    }
 
     $allArgs = @('tool', 'install') + $Tools
     & uv @allArgs
@@ -1129,10 +879,6 @@ function Invoke-UVToolUninstall {
         [string[]]$Tools = @()
     )
 
-    if (-not (Test-UVInstalled)) {
-        return
-    }
-
     $allArgs = @('tool', 'uninstall') + $Tools
     & uv @allArgs
 }
@@ -1167,10 +913,6 @@ function Invoke-UVToolList {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-UVInstalled)) {
-        return
-    }
 
     $allArgs = @('tool', 'list') + $Arguments
     & uv @allArgs
@@ -1209,10 +951,6 @@ function Invoke-UVToolUpgrade {
         [Parameter(Position = 0, ValueFromRemainingArguments = $true)]
         [string[]]$Tools = @()
     )
-
-    if (-not (Test-UVInstalled)) {
-        return
-    }
 
     $allArgs = @('tool', 'upgrade')
     if ($Tools.Count -gt 0) {
@@ -1256,10 +994,6 @@ function Invoke-UVSelfUpdate {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-UVInstalled)) {
-        return
-    }
-
     $allArgs = @('self', 'update') + $Arguments
     & uv @allArgs
 }
@@ -1294,10 +1028,6 @@ function Invoke-UVVersion {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-UVInstalled)) {
-        return
-    }
 
     $allArgs = @('--version') + $Arguments
     & uv @allArgs

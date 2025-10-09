@@ -42,113 +42,6 @@
 # Version: 4.1.0
 #---------------------------------------------------------------------------------------------------
 
-function Test-NpmInstalled {
-    <#
-    .SYNOPSIS
-        Tests if npm is installed and accessible.
-
-    .DESCRIPTION
-        Checks if npm command is available in the current environment and validates basic functionality.
-        Used internally by other npm functions to ensure npm is available before executing commands.
-
-    .OUTPUTS
-        System.Boolean
-        Returns $true if npm is available, $false otherwise.
-
-    .EXAMPLE
-        Test-NpmInstalled
-        Returns $true if npm is installed and accessible.
-
-    .LINK
-        https://github.com/MKAbuMattar/powershell-profile/blob/main/Module/Plugins/NPM/README.md
-    #>
-    [CmdletBinding()]
-    [OutputType([bool])]
-    param()
-
-    try {
-        $null = Get-Command npm -ErrorAction Stop
-        $null = npm --version 2>$null
-        return $true
-    }
-    catch {
-        return $false
-    }
-}
-
-function Initialize-NpmCompletion {
-    <#
-    .SYNOPSIS
-        Initializes npm completion for PowerShell.
-
-    .DESCRIPTION
-        Sets up npm command completion for PowerShell to provide tab completion for npm commands,
-        packages, and options. This function is automatically called when the module is imported.
-
-    .EXAMPLE
-        Initialize-NpmCompletion
-        Sets up npm completion for the current PowerShell session.
-
-    .LINK
-        https://github.com/MKAbuMattar/powershell-profile/blob/main/Module/Plugins/NPM/README.md
-    #>
-    [CmdletBinding()]
-    [OutputType([void])]
-    param()
-
-    if (-not (Test-NpmInstalled)) {
-        return
-    }
-
-    try {
-        $completionScript = npm completion powershell 2>$null
-        if ($completionScript) {
-            Invoke-Expression $completionScript
-        }
-    }
-    catch {
-        Write-Verbose "npm completion initialization failed: $($_.Exception.Message)"
-    }
-}
-
-function Invoke-Npm {
-    <#
-    .SYNOPSIS
-        Base npm command wrapper.
-
-    .DESCRIPTION
-        Executes npm commands with all provided arguments. Serves as the base wrapper
-        for all npm operations and ensures npm is available before execution.
-
-    .PARAMETER Arguments
-        All arguments to pass to npm command.
-
-    .EXAMPLE
-        Invoke-Npm --version
-        Shows npm version.
-
-    .EXAMPLE
-        Invoke-Npm install express
-        Installs the express package.
-
-    .LINK
-        https://github.com/MKAbuMattar/powershell-profile/blob/main/Module/Plugins/NPM/README.md
-    #>
-    [CmdletBinding()]
-    [Alias("npm")]
-    [OutputType([void])]
-    param(
-        [Parameter(ValueFromRemainingArguments = $true)]
-        [string[]]$Arguments = @()
-    )
-
-    if (-not (Test-NpmInstalled)) {
-        return
-    }
-
-    & npm @Arguments
-}
-
 function Invoke-NpmInstallGlobal {
     <#
     .SYNOPSIS
@@ -185,10 +78,6 @@ function Invoke-NpmInstallGlobal {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-NpmInstalled)) {
-        return
-    }
 
     $allArgs = @('install', '-g')
     if ($PackageName) {
@@ -238,10 +127,6 @@ function Invoke-NpmInstallSave {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-NpmInstalled)) {
-        return
-    }
-
     $allArgs = @('install', '-S')
     if ($PackageName) {
         $allArgs += $PackageName
@@ -290,10 +175,6 @@ function Invoke-NpmInstallDev {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-NpmInstalled)) {
-        return
-    }
-
     $allArgs = @('install', '-D')
     if ($PackageName) {
         $allArgs += $PackageName
@@ -336,10 +217,6 @@ function Invoke-NpmInstallForce {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-NpmInstalled)) {
-        return
-    }
-
     $allArgs = @('install', '-f') + $Arguments
     & npm @allArgs
 }
@@ -374,10 +251,6 @@ function Invoke-NpmInstall {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-NpmInstalled)) {
-        return
-    }
-
     $allArgs = @('install') + $Arguments
     & npm @allArgs
 }
@@ -411,10 +284,6 @@ function Invoke-NpmUninstall {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-NpmInstalled)) {
-        return
-    }
 
     $allArgs = @('uninstall') + $Arguments
     & npm @allArgs
@@ -456,10 +325,6 @@ function Invoke-NpmExecute {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-NpmInstalled)) {
-        return
-    }
 
     $npmBinPath = npm bin 2>$null
     if ($npmBinPath) {
@@ -508,10 +373,6 @@ function Invoke-NpmStart {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-NpmInstalled)) {
-        return
-    }
-
     $allArgs = @('start') + $Arguments
     & npm @allArgs
 }
@@ -546,10 +407,6 @@ function Invoke-NpmTest {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-NpmInstalled)) {
-        return
-    }
 
     $allArgs = @('test') + $Arguments
     & npm @allArgs
@@ -591,10 +448,6 @@ function Invoke-NpmRun {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-NpmInstalled)) {
-        return
-    }
 
     $allArgs = @('run')
     if ($ScriptName) {
@@ -638,10 +491,6 @@ function Invoke-NpmRunDev {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-NpmInstalled)) {
-        return
-    }
-
     $allArgs = @('run', 'dev') + $Arguments
     & npm @allArgs
 }
@@ -676,10 +525,6 @@ function Invoke-NpmRunBuild {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-NpmInstalled)) {
-        return
-    }
 
     $allArgs = @('run', 'build') + $Arguments
     & npm @allArgs
@@ -716,10 +561,6 @@ function Invoke-NpmRunScript {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-NpmInstalled)) {
-        return
-    }
-
     $allArgs = @('run') + $Arguments
     & npm @allArgs
 }
@@ -754,10 +595,6 @@ function Invoke-NpmOutdated {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-NpmInstalled)) {
-        return
-    }
 
     $allArgs = @('outdated') + $Arguments
     & npm @allArgs
@@ -794,10 +631,6 @@ function Invoke-NpmUpdate {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-NpmInstalled)) {
-        return
-    }
-
     $allArgs = @('update') + $Arguments
     & npm @allArgs
 }
@@ -832,10 +665,6 @@ function Invoke-NpmVersion {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-NpmInstalled)) {
-        return
-    }
 
     if ($Arguments) {
         $allArgs = @('version') + $Arguments
@@ -877,10 +706,6 @@ function Invoke-NpmList {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-NpmInstalled)) {
-        return
-    }
-
     $allArgs = @('list') + $Arguments
     & npm @allArgs
 }
@@ -915,10 +740,6 @@ function Invoke-NpmListTopLevel {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-NpmInstalled)) {
-        return
-    }
 
     $allArgs = @('ls', '--depth=0') + $Arguments
     & npm @allArgs
@@ -960,10 +781,6 @@ function Invoke-NpmInfo {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-NpmInstalled)) {
-        return
-    }
 
     $allArgs = @('info')
     if ($PackageName) {
@@ -1013,10 +830,6 @@ function Invoke-NpmSearch {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-NpmInstalled)) {
-        return
-    }
-
     $allArgs = @('search')
     if ($Query) {
         $allArgs += $Query
@@ -1059,10 +872,6 @@ function Invoke-NpmPublish {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-NpmInstalled)) {
-        return
-    }
-
     $allArgs = @('publish') + $Arguments
     & npm @allArgs
 }
@@ -1097,10 +906,6 @@ function Invoke-NpmInit {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-NpmInstalled)) {
-        return
-    }
 
     $allArgs = @('init') + $Arguments
     & npm @allArgs
@@ -1137,10 +942,6 @@ function Invoke-NpmAudit {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-NpmInstalled)) {
-        return
-    }
-
     $allArgs = @('audit') + $Arguments
     & npm @allArgs
 }
@@ -1175,10 +976,6 @@ function Invoke-NpmAuditFix {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-NpmInstalled)) {
-        return
-    }
 
     $allArgs = @('audit', 'fix') + $Arguments
     & npm @allArgs
@@ -1215,10 +1012,6 @@ function Invoke-NpmCache {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-NpmInstalled)) {
-        return
-    }
-
     $allArgs = @('cache') + $Arguments
     & npm @allArgs
 }
@@ -1253,10 +1046,6 @@ function Invoke-NpmDoctor {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-NpmInstalled)) {
-        return
-    }
 
     $allArgs = @('doctor') + $Arguments
     & npm @allArgs
@@ -1293,10 +1082,6 @@ function Invoke-NpmWhoami {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-NpmInstalled)) {
-        return
-    }
-
     $allArgs = @('whoami') + $Arguments
     & npm @allArgs
 }
@@ -1331,10 +1116,6 @@ function Invoke-NpmLogin {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-NpmInstalled)) {
-        return
-    }
 
     $allArgs = @('login') + $Arguments
     & npm @allArgs
@@ -1371,10 +1152,6 @@ function Invoke-NpmLogout {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-NpmInstalled)) {
-        return
-    }
-
     $allArgs = @('logout') + $Arguments
     & npm @allArgs
 }
@@ -1410,10 +1187,6 @@ function Invoke-NpmPing {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-NpmInstalled)) {
-        return
-    }
-
     $allArgs = @('ping') + $Arguments
     & npm @allArgs
 }
@@ -1448,10 +1221,6 @@ function Invoke-NpmConfigList {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-NpmInstalled)) {
-        return
-    }
 
     $allArgs = @('config', 'list') + $Arguments
     & npm @allArgs
@@ -1493,10 +1262,6 @@ function Invoke-NpmConfigGet {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-NpmInstalled)) {
-        return
-    }
 
     $allArgs = @('config', 'get')
     if ($ConfigName) {
@@ -1540,10 +1305,6 @@ function Invoke-NpmConfigSet {
         [string[]]$Arguments = @()
     )
 
-    if (-not (Test-NpmInstalled)) {
-        return
-    }
-
     $allArgs = @('config', 'set') + $Arguments
     & npm @allArgs
 }
@@ -1584,10 +1345,6 @@ function Invoke-NpmLink {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-NpmInstalled)) {
-        return
-    }
 
     $allArgs = @('link')
     if ($PackageName) {
@@ -1636,10 +1393,6 @@ function Invoke-NpmUnlink {
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments = @()
     )
-
-    if (-not (Test-NpmInstalled)) {
-        return
-    }
 
     $allArgs = @('unlink')
     if ($PackageName) {

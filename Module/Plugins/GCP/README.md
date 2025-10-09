@@ -20,17 +20,11 @@ Comprehensive Google Cloud Platform CLI integration plugin for PowerShell, provi
 
 The GCP plugin is automatically loaded when the main PowerShell profile is imported, provided that the Google Cloud SDK is installed and available in your system PATH.
 
-To verify gcloud installation:
-
-```powershell
-Test-GCloudInstalled
-```
-
 ## Quick Start
 
 ```powershell
 # Initialize gcloud (first time setup)
-gci                             # gcloud init
+gcin                             # gcloud init
 
 # Set default project
 gccsp my-project-id            # gcloud config set project
@@ -55,7 +49,7 @@ gcpil                          # gcloud compute instances list
 | Alias          | Function                  | Description                        |
 | -------------- | ------------------------- | ---------------------------------- |
 | `gcloud`, `gc` | `Invoke-GCloud`           | Base gcloud command wrapper        |
-| `gci`          | `Initialize-GCloudTool`   | Initialize and configure gcloud    |
+| `gcin`         | `Initialize-GCloudTool`   | Initialize and configure gcloud    |
 | `gcinf`        | `Get-GCloudInfo`          | Display gcloud environment details |
 | `gcv`          | `Get-GCloudVersion`       | Show version and components        |
 | `gccu`         | `Update-GCloudComponents` | Update Cloud SDK                   |
@@ -182,7 +176,6 @@ gcpil                          # gcloud compute instances list
 | ----- | -------------------------------- | ------------------------------- |
 | `gcd` | `Set-GCloudProjectFromDirectory` | Set project from directory name |
 | -     | `Get-GCloudCurrentProject`       | Get current project ID          |
-| -     | `Test-GCloudInstalled`           | Check if gcloud is installed    |
 
 ## Usage Examples
 
@@ -190,7 +183,7 @@ gcpil                          # gcloud compute instances list
 
 ```powershell
 # Initialize gcloud for first time
-gci
+gcin
 
 # Set up authentication
 gcal
@@ -361,9 +354,6 @@ $instances | ForEach-Object { gcpup $_ }
 ### Verification Commands
 
 ```powershell
-# Test gcloud installation
-Test-GCloudInstalled
-
 # Check gcloud info
 gcinf
 

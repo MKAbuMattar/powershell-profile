@@ -9,7 +9,6 @@
     PowerShellVersion = '5.1'
     RequiredModules   = @()
     FunctionsToExport = @(
-        'Invoke-GCloud',
         'Initialize-GCloudTool',
         'Get-GCloudInfo',
         'Get-GCloudVersion',
@@ -94,9 +93,8 @@
     )
     
     AliasesToExport   = @(
-        'gcloud', 
         'gc',
-        'gci', 
+        'gcin', 
         'gcinf', 
         'gcv', 
         'gccu',
@@ -161,7 +159,7 @@
         'gce', 
         'gcem', 
         'gcf', 
-        'gci', 
+        'gcin', 
         'gcic', 
         'gcir', 
         'gcki', 
