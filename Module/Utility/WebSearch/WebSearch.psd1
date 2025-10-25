@@ -1,3 +1,44 @@
+#---------------------------------------------------------------------------------------------------
+# MKAbuMattar's PowerShell Profile - WebSearch Plugin
+#
+#
+#                             .
+#         ..                .''
+#         .,'..,.         ..,;,'
+#          ,;;;;,,       .,,;;;
+#           ,;;;;;'    .',;;;
+#            ,;;;;,'...,;;;,
+#             ,;;;;;,,;;;;.
+#              ,;;;;;;;;;
+#              .,;;;;;;;
+#              .,;;;;;;;'
+#              .,;;;;;;;,'
+#            .',;;;;;;;;;;,.
+#          ..,;;;;;;;;;;;;;,.
+#         .';;;;;.   ';;;;;;,'
+#        .,;;;;.      ,; .;; .,
+#        ',;;;.        .
+#        .,;;.
+#        ,;
+#        .
+#
+#      "The only way to do great work is to love what you do."
+#                           - Steve Jobs
+#
+#
+# Author: Mohammad Abu Mattar
+#
+# Description:
+#       This module provides web search functionality for various search engines.
+#       Supports URL encoding and multiple search engine options.
+#
+# Created: 2025-10-25
+# Updated: 2025-10-25
+#
+# GitHub: https://github.com/MKAbuMattar/powershell-profile
+#
+# Version: 4.1.0
+#---------------------------------------------------------------------------------------------------
 @{
     RootModule        = 'WebSearch.psm1'
     ModuleVersion     = '4.1.0'
@@ -37,6 +78,7 @@
         'Search-Perplexity',
         'Search-RustCrates',
         'Search-RustDocs',
+        'Search-PyPI',
         'Start-WebSearch'
     )
     AliasesToExport   = @(
@@ -69,6 +111,7 @@
         'wsperplexity',
         'wsrscrate',
         'wsrsdoc',
+        'wspypi',
         'web-search',
         'ws'
     )
