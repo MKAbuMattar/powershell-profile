@@ -33,12 +33,34 @@
 #       common tasks in PowerShell.
 #
 # Created: 2021-09-01
-# Updated: 2025-09-24
+# Updated: 2025-10-25
 #
 # GitHub: https://github.com/MKAbuMattar/powershell-profile
 #
 # Version: 4.2.0
 #---------------------------------------------------------------------------------------------------
+
+#---------------------------------------------------------------------------------------------------
+# Helper Functions
+#---------------------------------------------------------------------------------------------------
+
+function Get-PythonExecutable {
+    <#
+    .SYNOPSIS
+        Gets the path to the Python executable.
+
+    .DESCRIPTION
+        This function attempts to find the Python executable in the system PATH.
+
+    .OUTPUTS
+        The path to the Python executable, or $null if not found.
+    #>
+    $pythonCmd = Get-Command python -ErrorAction SilentlyContinue
+    if ($pythonCmd) {
+        return $pythonCmd.Source
+    }
+    return $null
+}
 
 #---------------------------------------------------------------------------------------------------
 # Import the custom misc modules
@@ -50,7 +72,7 @@ function Test-Administrator {
         Test if the current user has administrator privileges.
 
     .DESCRIPTION
-        This function checks if the current user has administrator privileges. It returns a boolean value indicating whether the user is an administrator.
+        This function checks if the current user has administrator privileges using Python backend.
 
     .PARAMETER None
         This function does not accept any parameters.
@@ -79,8 +101,15 @@ function Test-Administrator {
         # This function does not accept any parameters
     )
 
-    $user = [Security.Principal.WindowsIdentity]::GetCurrent()
-    (New-Object Security.Principal.WindowsPrincipal $user).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)
+    $python = Get-PythonExecutable
+    if (-not $python) {
+        Write-Error "Python is not installed or not in PATH"
+        return $false
+    }
+
+    $scriptPath = Join-Path $PSScriptRoot "misc.py"
+    $result = & $python $scriptPath is-admin 2>&1
+    return $LASTEXITCODE -eq 0
 }
 
 function Test-CommandExists {
@@ -89,7 +118,7 @@ function Test-CommandExists {
         Checks if a command exists in the current environment.
 
     .DESCRIPTION
-        This function checks whether a specified command exists in the current PowerShell environment. It returns a boolean value indicating whether the command is available.
+        This function checks whether a specified command exists using Python backend.
 
     .PARAMETER Command
         Specifies the command to check for existence.
@@ -125,8 +154,15 @@ function Test-CommandExists {
         [string]$Command
     )
 
-    $exists = $null -ne (Get-Command $Command -ErrorAction SilentlyContinue)
-    return $exists
+    $python = Get-PythonExecutable
+    if (-not $python) {
+        Write-Error "Python is not installed or not in PATH"
+        return $false
+    }
+
+    $scriptPath = Join-Path $PSScriptRoot "misc.py"
+    $result = & $python $scriptPath command-exists $Command 2>&1
+    return $LASTEXITCODE -eq 0
 }
 
 function Invoke-ReloadProfile {
@@ -178,7 +214,7 @@ function Get-Uptime {
         Retrieves the system uptime in a human-readable format.
 
     .DESCRIPTION
-        This function retrieves the system uptime in a human-readable format. It provides information about how long the system has been running since the last boot.
+        This function retrieves the system uptime using Python backend for cross-platform support.
 
     .PARAMETER None
         This function does not accept any parameters.
@@ -206,55 +242,14 @@ function Get-Uptime {
         # This function does not accept any parameters
     )
 
-    try {
-        if ($PSVersionTable.PSVersion.Major -eq 5) {
-            $lastBoot = (Get-WmiObject win32_operatingsystem).LastBootUpTime
-            $bootTime = [System.Management.ManagementDateTimeConverter]::ToDateTime($lastBoot)
-        }
-        else {
-            $lastBootStr = net statistics workstation | Select-String "since" | ForEach-Object { $_.ToString().Replace('Statistics since ', '') }
-            if ($lastBootStr -match '^\d{2}/\d{2}/\d{4}') {
-                $dateFormat = 'dd/MM/yyyy'
-            }
-            elseif ($lastBootStr -match '^\d{2}-\d{2}-\d{4}') {
-                $dateFormat = 'dd-MM-yyyy'
-            }
-            elseif ($lastBootStr -match '^\d{4}/\d{2}/\d{2}') {
-                $dateFormat = 'yyyy/MM/dd'
-            }
-            elseif ($lastBootStr -match '^\d{4}-\d{2}-\d{2}') {
-                $dateFormat = 'yyyy-MM-dd'
-            }
-            elseif ($lastBootStr -match '^\d{2}\.\d{2}\.\d{4}') {
-                $dateFormat = 'dd.MM.yyyy'
-            }
-
-            if ($lastBootStr -match '\bAM\b' -or $lastBootStr -match '\bPM\b') {
-                $timeFormat = 'h:mm:ss tt'
-            }
-            else {
-                $timeFormat = 'HH:mm:ss'
-            }
-
-            $bootTime = [System.DateTime]::ParseExact($lastBootStr, "$dateFormat $timeFormat", [System.Globalization.CultureInfo]::InvariantCulture)
-        }
-
-
-        $formattedBootTime = $bootTime.ToString("dddd, MMMM dd, yyyy HH:mm:ss", [System.Globalization.CultureInfo]::InvariantCulture) + " [$lastBootStr]"
-        Write-Host ("System started on: {0}" -f $formattedBootTime) -ForegroundColor DarkGray
-
-        $uptime = (Get-Date) - $bootTime
-
-        $days = $uptime.Days
-        $hours = $uptime.Hours
-        $minutes = $uptime.Minutes
-        $seconds = $uptime.Seconds
-
-        Write-Host ("Uptime: {0} days, {1} hours, {2} minutes, {3} seconds" -f $days, $hours, $minutes, $seconds) -ForegroundColor Blue
+    $python = Get-PythonExecutable
+    if (-not $python) {
+        Write-Error "Python is not installed or not in PATH"
+        return
     }
-    catch {
-        Write-Error "An error occurred while retrieving system uptime."
-    }
+
+    $scriptPath = Join-Path $PSScriptRoot "misc.py"
+    & $python $scriptPath uptime
 }
 
 function Get-CommandDefinition {
@@ -319,7 +314,7 @@ function Get-DiskUsage {
         Gets the disk usage for specified paths.
 
     .DESCRIPTION
-        This function retrieves the disk usage for specified paths, displaying the size of each item in a human-readable format. It can also sort the results by name or size.
+        This function retrieves the disk usage for specified paths using Python backend for better performance.
 
     .PARAMETER Path
         Specifies the paths to get the disk usage for. If not specified, the current directory is used.
@@ -418,219 +413,27 @@ function Get-DiskUsage {
     )
 
     process {
-        if ($PSBoundParameters.ContainsKey('HumanReadable') -eq $false) {
-            $HumanReadable = $true
+        $python = Get-PythonExecutable
+        if (-not $python) {
+            Write-Error "Python is not installed or not in PATH"
+            return
         }
 
-        foreach ($p in $Path) {
-            $resolvedPath = Resolve-Path -Path $p -ErrorAction SilentlyContinue
-            if (-not $resolvedPath) {
-                Write-Host "-----------------------------------------------------" -ForegroundColor Cyan
-                Write-Host "Path: $p" -ForegroundColor White
-                Write-Host "-----------------------------------------------------" -ForegroundColor Cyan
-                Write-Host "Error: " -NoNewline -ForegroundColor Yellow
-                Write-Host "Path not found" -ForegroundColor Red
-                Write-Host "-----------------------------------------------------" -ForegroundColor Cyan
-                continue
-            }
-
-            if (-not (Test-Path -Path $resolvedPath -PathType Container)) {
-                $fileItem = Get-Item -Path $resolvedPath -Force -ErrorAction SilentlyContinue
-                if ($fileItem) {
-                    $fileSize = $fileItem.Length
-                    $hrSizeStr = if ($HumanReadable) {
-                        Format-ConvertSize -Value $fileSize -DecimalPlaces 2
-                    }
-                    else {
-                        "N/A"
-                    }
-
-                    Write-Host "-----------------------------------------------------" -ForegroundColor Cyan
-                    Write-Host "File: $($fileItem.FullName)" -ForegroundColor White
-                    Write-Host "-----------------------------------------------------" -ForegroundColor Cyan
-
-                    Write-Host "Size: " -NoNewline -ForegroundColor Yellow
-
-                    $sizeColor = "White"
-                    if ($fileSize -gt 1GB) {
-                        $sizeColor = "Red"
-                    }
-                    elseif ($fileSize -gt 100MB) {
-                        $sizeColor = "Yellow"
-                    }
-                    elseif ($fileSize -gt 10MB) {
-                        $sizeColor = "Green"
-                    }
-
-                    Write-Host "$hrSizeStr" -ForegroundColor $sizeColor
-                    Write-Host "Type: " -NoNewline -ForegroundColor Yellow
-                    Write-Host "File" -ForegroundColor White
-                    Write-Host "Last Modified: " -NoNewline -ForegroundColor Yellow
-                    Write-Host "$($fileItem.LastWriteTime)" -ForegroundColor White
-                    Write-Host "-----------------------------------------------------" -ForegroundColor Cyan
-                }
-                else {
-                    Write-Host "-----------------------------------------------------" -ForegroundColor Cyan
-                    Write-Host "File: $resolvedPath" -ForegroundColor White
-                    Write-Host "-----------------------------------------------------" -ForegroundColor Cyan
-                    Write-Host "Error: " -NoNewline -ForegroundColor Yellow
-                    Write-Host "Cannot access file (Permission Denied)" -ForegroundColor Red
-                    Write-Host "-----------------------------------------------------" -ForegroundColor Cyan
-                }
-                continue
-            }
-
-            Write-Host "-----------------------------------------------------" -ForegroundColor Cyan
-            Write-Host "Disk usage for: $resolvedPath" -ForegroundColor White
-            Write-Host "-----------------------------------------------------" -ForegroundColor Cyan
-
-            $childItems = $null
-            $accessError = $null
-            try {
-                $childItems = Get-ChildItem -Path $resolvedPath -Depth 0 -Force -ErrorAction Stop
-            }
-            catch [System.UnauthorizedAccessException] {
-                $accessError = $_.Exception
-            }
-            catch {
-                $errorMsg = $_.Exception.Message
-                Write-Host "Error: " -NoNewline -ForegroundColor Yellow
-                Write-Host "Error listing contents of $resolvedPath`: $errorMsg" -ForegroundColor Red
-                Write-Host "-----------------------------------------------------" -ForegroundColor Cyan
-                continue
-            }
-
-            if ($accessError) {
-                Write-Host "Error: " -NoNewline -ForegroundColor Yellow
-                Write-Host "Cannot list contents - Permission Denied" -ForegroundColor Red
-                Write-Host "-----------------------------------------------------" -ForegroundColor Cyan
-                continue
-            }
-            if ($null -eq $childItems -and $Error.Count -gt 0 -and $Error[0].Exception -is [System.UnauthorizedAccessException]) {
-                Write-Host "Error: " -NoNewline -ForegroundColor Yellow
-                Write-Host "Cannot list contents - Permission Denied" -ForegroundColor Red
-                Write-Host "-----------------------------------------------------" -ForegroundColor Cyan
-                $Error.Clear()
-                continue
-            }
-            $Error.Clear()
-
-            $itemsData = @()
-            $totalSize = 0
-            $folderCount = 0
-            $fileCount = 0
-
-            foreach ($item in $childItems) {
-                $itemPath = $item.FullName
-                $itemName = $item.Name
-                [long]$itemSize = -1
-                $errorMessage = ""
-                $isFolder = $item.PSIsContainer
-
-                try {
-                    if ($isFolder) {
-                        $folderCount++
-                        $subItems = Get-ChildItem -Path $itemPath -Recurse -Force -ErrorAction SilentlyContinue
-                        if ($null -eq $subItems -and $Error.Count -gt 0 -and $Error[0].Exception -is [System.UnauthorizedAccessException] -and $Error[0].TargetObject -eq $itemPath) {
-                            throw $Error[0].Exception
-                        }
-                        $Error.Clear()
-
-                        $itemSize = ($subItems | Where-Object { -not $_.PSIsContainer } | Measure-Object -Property Length -Sum -ErrorAction SilentlyContinue).Sum
-                        if ($null -eq $itemSize) { $itemSize = 0 }
-                    }
-                    else {
-                        $fileCount++
-                        $itemSize = $item.Length
-                    }
-
-                    if ($itemSize -ge 0) {
-                        $totalSize += $itemSize
-                    }
-                }
-                catch [System.UnauthorizedAccessException] {
-                    $errorMessage = "(Permission Denied)"
-                    $itemSize = -1
-                }
-                catch {
-                    $errorMessage = "(Error: $($_.Exception.Message.Split([Environment]::NewLine)[0]))"
-                    $itemSize = -1
-                }
-                finally {
-                    $Error.Clear()
-                }
-
-                $hrSizeStr = if ($HumanReadable -and $itemSize -ge 0) {
-                    Format-ConvertSize -Value $itemSize -DecimalPlaces 2
-                }
-                else {
-                    "N/A"
-                }
-
-                $itemsData += [PSCustomObject]@{
-                    Name         = $itemName
-                    Size         = $hrSizeStr
-                    RawSize      = $itemSize
-                    IsFolder     = $isFolder
-                    ErrorMessage = $errorMessage
-                }
-            }
-
-            $totalHumanSize = if ($HumanReadable) {
-                Format-ConvertSize -Value $totalSize -DecimalPlaces 2
-            }
-            else {
-                "N/A"
-            }
-
-            $sortedItems = if ($Sort) {
-                if ($SortBy -eq 'Size') {
-                    $itemsData | Sort-Object -Property @{Expression = "IsFolder"; Descending = $true }, @{Expression = { $_.RawSize }; Descending = $true }
-                }
-                else {
-                    $itemsData | Sort-Object -Property @{Expression = "IsFolder"; Descending = $true }, @{Expression = "Name"; Descending = $false }
-                }
-            }
-            else {
-                $itemsData
-            }
-
-            Write-Host "Total Size: " -NoNewline -ForegroundColor Yellow
-            Write-Host "$totalHumanSize" -ForegroundColor White
-            Write-Host "Items: " -NoNewline -ForegroundColor Yellow
-            Write-Host "$($sortedItems.Count) ($folderCount directories, $fileCount files)" -ForegroundColor White
-            Write-Host "-----------------------------------------------------" -ForegroundColor Cyan
-
-            Write-Host ("{0,-15} {1,-15} {2,-50}" -f "Size", "Type", "Name") -ForegroundColor Yellow
-            Write-Host "-----------------------------------------------------" -ForegroundColor Cyan
-
-            foreach ($item in $sortedItems) {
-                $itemTypeColor = if ($item.IsFolder) { "Blue" } else { "White" }
-                $itemType = if ($item.IsFolder) { "Directory" } else { "File" }
-
-                $sizeColor = "White"
-                if ($item.RawSize -ne -1) {
-                    $sizeValue = $item.RawSize
-                    if ($sizeValue -gt 1GB) {
-                        $sizeColor = "Red"
-                    }
-                    elseif ($sizeValue -gt 100MB) {
-                        $sizeColor = "Yellow"
-                    }
-                    elseif ($sizeValue -gt 10MB) {
-                        $sizeColor = "Green"
-                    }
-                }
-
-                Write-Host ("{0,-15} " -f $item.Size) -NoNewline -ForegroundColor $sizeColor
-                Write-Host ("{0,-15} " -f $itemType) -NoNewline -ForegroundColor $itemTypeColor
-                Write-Host ("{0,-50}" -f $item.Name) -ForegroundColor $itemTypeColor
-
-                if ($item.ErrorMessage) {
-                    Write-Host "    $($item.ErrorMessage)" -ForegroundColor Red
-                }
-            }
-            Write-Host "-----------------------------------------------------" -ForegroundColor Cyan
+        $scriptPath = Join-Path $PSScriptRoot "misc.py"
+        
+        $args = @('du', '--path')
+        $args += $Path
+        
+        if ($PSBoundParameters.ContainsKey('HumanReadable') -and -not $HumanReadable) {
+            $args += '--no-human-readable'
         }
+        
+        if ($Sort) {
+            $args += '--sort'
+            $args += '--sort-by'
+            $args += $SortBy.ToLower()
+        }
+        
+        & $python $scriptPath @args
     }
 }
