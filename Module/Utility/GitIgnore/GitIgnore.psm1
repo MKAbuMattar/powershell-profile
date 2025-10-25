@@ -106,10 +106,10 @@ function Get-GitIgnore {
     )
 
     $scriptDir = Split-Path -Parent $PSCommandPath
-    $pythonScript = Join-Path $scriptDir "gitignore_util.py"
+    $pythonScript = Join-Path $scriptDir "gitignore.py"
 
     if (-not (Test-Path $pythonScript)) {
-        Write-Error "gitignore_util.py not found at: $pythonScript"
+        Write-Error "gitignore.py not found at: $pythonScript"
         return
     }
 
@@ -212,10 +212,10 @@ function Get-GitIgnoreList {
     )
 
     $scriptDir = Split-Path -Parent $PSCommandPath
-    $pythonScript = Join-Path $scriptDir "gitignore_util.py"
+    $pythonScript = Join-Path $scriptDir "gitignore.py"
 
     if (-not (Test-Path $pythonScript)) {
-        Write-Error "gitignore_util.py not found at: $pythonScript"
+        Write-Error "gitignore.py not found at: $pythonScript"
         return
     }
 
@@ -450,10 +450,10 @@ function Test-GitIgnoreService {
     param()
 
     $scriptDir = Split-Path -Parent $PSCommandPath
-    $pythonScript = Join-Path $scriptDir "gitignore_util.py"
+    $pythonScript = Join-Path $scriptDir "gitignore.py"
 
     if (-not (Test-Path $pythonScript)) {
-        Write-Error "gitignore_util.py not found at: $pythonScript"
+        Write-Error "gitignore.py not found at: $pythonScript"
         return
     }
 
@@ -526,10 +526,10 @@ function Get-GitIgnoreTypes {
     )
 
     $scriptDir = Split-Path -Parent $PSCommandPath
-    $pythonScript = Join-Path $scriptDir "gitignore_util.py"
+    $pythonScript = Join-Path $scriptDir "gitignore.py"
 
     if (-not (Test-Path $pythonScript)) {
-        Write-Error "gitignore_util.py not found at: $pythonScript"
+        Write-Error "gitignore.py not found at: $pythonScript"
         return
     }
 
