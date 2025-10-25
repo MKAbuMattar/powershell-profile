@@ -48,10 +48,10 @@ Base64 Encoding/Decoding CLI
 Encode and decode Base64 text and files using standard library only.
 
 Usage:
-    python3 base64_util.py --encode "Hello World"
-    python3 base64_util.py --decode "SGVsbG8gV29ybGQ="
-    python3 base64_util.py --encode-file myfile.txt
-    python3 base64_util.py --decode-file encoded.txt
+    python3 base64.py --encode "Hello World"
+    python3 base64.py --decode "SGVsbG8gV29ybGQ="
+    python3 base64.py --encode-file myfile.txt
+    python3 base64.py --decode-file encoded.txt
 """
 
 import sys
@@ -244,7 +244,7 @@ def main():
     """Main entry point for Base64 utility."""
     parser = argparse.ArgumentParser(
         description="Base64 encoding and decoding utility",
-        prog="base64_util.py",
+        prog="base64.py",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:

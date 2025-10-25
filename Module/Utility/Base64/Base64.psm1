@@ -85,10 +85,10 @@ function ConvertTo-Base64 {
 
     begin {
         $scriptDir = Split-Path -Parent $PSCommandPath
-        $pythonScript = Join-Path $scriptDir "base64_util.py"
+        $pythonScript = Join-Path $scriptDir "base64.py"
 
         if (-not (Test-Path $pythonScript)) {
-            Write-Error "base64_util.py not found at: $pythonScript"
+            Write-Error "base64.py not found at: $pythonScript"
             return
         }
 
@@ -188,10 +188,10 @@ function ConvertTo-Base64File {
 
     begin {
         $scriptDir = Split-Path -Parent $PSCommandPath
-        $pythonScript = Join-Path $scriptDir "base64_util.py"
+        $pythonScript = Join-Path $scriptDir "base64.py"
 
         if (-not (Test-Path $pythonScript)) {
-            Write-Error "base64_util.py not found at: $pythonScript"
+            Write-Error "base64.py not found at: $pythonScript"
             return
         }
 
@@ -274,10 +274,10 @@ function ConvertFrom-Base64 {
 
     begin {
         $scriptDir = Split-Path -Parent $PSCommandPath
-        $pythonScript = Join-Path $scriptDir "base64_util.py"
+        $pythonScript = Join-Path $scriptDir "base64.py"
 
         if (-not (Test-Path $pythonScript)) {
-            Write-Error "base64_util.py not found at: $pythonScript"
+            Write-Error "base64.py not found at: $pythonScript"
             return
         }
 
@@ -378,10 +378,10 @@ function ConvertFrom-Base64File {
 
     begin {
         $scriptDir = Split-Path -Parent $PSCommandPath
-        $pythonScript = Join-Path $scriptDir "base64_util.py"
+        $pythonScript = Join-Path $scriptDir "base64.py"
 
         if (-not (Test-Path $pythonScript)) {
-            Write-Error "base64_util.py not found at: $pythonScript"
+            Write-Error "base64.py not found at: $pythonScript"
             return
         }
 
