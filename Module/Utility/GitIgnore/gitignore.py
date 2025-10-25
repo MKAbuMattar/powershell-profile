@@ -50,9 +50,9 @@ Supports listing available templates, generating content, and managing gitignore
 
 Usage:
 ```bash
-python gitignore_util.py --get TECHNOLOGY [TECHNOLOGY ...]
-python gitignore_util.py --list [--filter PATTERN]
-python gitignore_util.py --test
+python gitignore.py --get TECHNOLOGY [TECHNOLOGY ...]
+python gitignore.py --list [--filter PATTERN]
+python gitignore.py --test
 ```
 """
 
@@ -247,10 +247,10 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  python gitignore_util.py --get node python
-  python gitignore_util.py --list
-  python gitignore_util.py --list --filter python
-  python gitignore_util.py --test
+  python gitignore.py --get node python
+  python gitignore.py --list
+  python gitignore.py --list --filter python
+  python gitignore.py --test
         """,
     )
 
