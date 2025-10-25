@@ -56,7 +56,6 @@ $ModuleList = @(
     @{ Name = 'Utility-PrayerTimes'; Path = 'PrayerTimes/PrayerTimes.psd1' }
     @{ Name = 'Utility-QRCode'; Path = 'QRCode/QRCode.psd1' }
     @{ Name = 'Utility-RandomQuote'; Path = 'RandomQuote/RandomQuote.psd1' }
-    @{ Name = 'Utility-Utility'; Path = 'Utility/Utility.psd1' }
     @{ Name = 'Utility-WeatherForecast'; Path = 'WeatherForecast/WeatherForecast.psd1' }
     @{ Name = 'Utility-WebSearch'; Path = 'WebSearch/WebSearch.psd1' }
 )
