@@ -1,3 +1,45 @@
+#---------------------------------------------------------------------------------------------------
+# MKAbuMattar's PowerShell Profile - PrayerTimes Plugin
+#
+#
+#                             .
+#         ..                .''
+#         .,'..,.         ..,;,'
+#          ,;;;;,,       .,,;;;
+#           ,;;;;;'    .',;;;
+#            ,;;;;,'...,;;;,
+#             ,;;;;;,,;;;;.
+#              ,;;;;;;;;;
+#              .,;;;;;;;
+#              .,;;;;;;;'
+#              .,;;;;;;;,'
+#            .',;;;;;;;;;;,.
+#          ..,;;;;;;;;;;;;;,.
+#         .';;;;;.   ';;;;;;,'
+#        .,;;;;.      ,; .;; .,
+#        ',;;;.        .
+#        .,;;.
+#        ,;
+#        .
+#
+#      "The only way to do great work is to love what you do."
+#                           - Steve Jobs
+#
+#
+# Author: Mohammad Abu Mattar
+#
+# Description:
+#       This module provides functions to retrieve and display Islamic prayer times
+#       for a specified city and country using a Python backend.
+#
+# Created: 2025-09-27
+# Updated: 2025-10-25
+#
+# GitHub: https://github.com/MKAbuMattar/powershell-profile
+#
+# Version: 4.1.0
+#---------------------------------------------------------------------------------------------------
+
 function Get-PrayerTimes {
     <#
     .SYNOPSIS
@@ -29,6 +71,7 @@ function Get-PrayerTimes {
 
     .NOTES
         This function is useful for retrieving and displaying the current prayer times in the PowerShell console.
+        Implemented using a Python backend for cross-platform compatibility.
 
     .EXAMPLE
         Get-PrayerTimes -City "Amman" -Country "Jordan"
@@ -86,79 +129,37 @@ function Get-PrayerTimes {
         [switch]$Use24HourFormat = $false
     )
 
-    $City = ($City.Substring(0, 1).ToUpper() + $City.Substring(1).ToLower())
-    $Country = ($Country.Substring(0, 1).ToUpper() + $Country.Substring(1).ToLower())
+    $scriptDir = Split-Path -Parent $PSCommandPath
+    $pythonScript = Join-Path -Path $scriptDir -ChildPath "prayer_times.py"
 
-    $url = "http://api.aladhan.com/v1/timingsByCity?city=$City&country=$Country&method=$Method"
-    $response = Invoke-RestMethod -Uri $url -Method Get
-
-    if ($response.code -eq 200) {
-        $timings = $response.data.timings
-        $date = $response.data.date.readable
-        $hijriDate = $response.data.date.hijri.date
-
-        $timeFormat = if ($Use24HourFormat) { "HH:mm" } else { "hh:mm tt" }
-
-        $prayerTimes = @{
-            "Fajr"    = [datetime]::ParseExact($timings.Fajr, "HH:mm", $null).ToString($timeFormat)
-            "Dhuhr"   = [datetime]::ParseExact($timings.Dhuhr, "HH:mm", $null).ToString($timeFormat)
-            "Asr"     = [datetime]::ParseExact($timings.Asr, "HH:mm", $null).ToString($timeFormat)
-            "Maghrib" = [datetime]::ParseExact($timings.Maghrib, "HH:mm", $null).ToString($timeFormat)
-            "Isha"    = [datetime]::ParseExact($timings.Isha, "HH:mm", $null).ToString($timeFormat)
-        }
-
-        $prayerTimes24 = @{}
-        foreach ($key in $prayerTimes.Keys) {
-            $prayerTimes24[$key] = (Get-Date "01/01/2000 $($prayerTimes[$key])").ToString("HH:mm")
-        }
-
-        $currentTime = (Get-Date).ToString("HH:mm")
-
-        $currentPrayer = $null
-        $nextPrayer = $null
-        $nextPrayerTime = $null
-        $sortedPrayers = $prayerTimes24.GetEnumerator() | Sort-Object Value
-
-        foreach ($prayer in $sortedPrayers) {
-            if ($currentTime -ge $prayer.Value) {
-                $currentPrayer = $prayer.Key
-            }
-            elseif (-not $nextPrayer) {
-                $nextPrayer = $prayer.Key
-                $nextPrayerTime = $prayerTimes[$prayer.Key]
-            }
-        }
-
-        if ($currentPrayer -eq "Isha") {
-            $nextPrayer = "Fajr"
-            $nextPrayerTime = $prayerTimes["Fajr"]
-        }
-
-        $now = Get-Date
-        $nextPrayerTimeObj = Get-Date "01/01/2000 $nextPrayerTime"
-        if ($nextPrayer -eq "Fajr") {
-            $nextPrayerTimeObj = $nextPrayerTimeObj.AddDays(1)
-        }
-        $countdown = $nextPrayerTimeObj - $now
-
-        if ($countdown.TotalSeconds -lt 0) {
-            $countdown = New-TimeSpan -Hours 0 -Minutes 0
-        }
-
-        Write-Host "-----------------------------------------------------" -ForegroundColor Cyan
-        Write-Host "$City, $Country" -ForegroundColor White
-        Write-Host "$currentPrayer" -ForegroundColor Blue
-        Write-Host "-----------------------------------------------------"
-        Write-Host ("{0,-10} {1,-10} {2,-10} {3,-10} {4,-10}" -f "Fajr", "Dhuhr", "Asr", "Maghrib", "Isha") -ForegroundColor Cyan
-        Write-Host ("{0,-10} {1,-10} {2,-10} {3,-10} {4,-10}" -f $prayerTimes["Fajr"], $prayerTimes["Dhuhr"], $prayerTimes["Asr"], $prayerTimes["Maghrib"], $prayerTimes["Isha"]) -ForegroundColor White
-        Write-Host "-----------------------------------------------------"
-        Write-Host "Current  -> $currentPrayer" -ForegroundColor Yellow
-        Write-Host "Next     -> $nextPrayer at $nextPrayerTime" -ForegroundColor Green
-        Write-Host "-----------------------------------------------------"
-        Write-Host "$date | $hijriDate" -ForegroundColor Magenta
-        Write-Host "-----------------------------------------------------"
+    if (-not (Test-Path -Path $pythonScript)) {
+        Write-Host "Error: prayer_times.py not found at $pythonScript" -ForegroundColor Red
+        return
     }
-    else {
-        Write-Host "Error fetching prayer times. Please check your city and country name." -ForegroundColor Red
+
+    try {
+        $pythonVersion = python --version 2>&1
+    }
+    catch {
+        Write-Host "Error: Python is not installed or not available in PATH." -ForegroundColor Red
+        return
+    }
+
+    $arguments = @(
+        $pythonScript,
+        "--city", $City,
+        "--country", $Country,
+        "--method", $Method
+    )
+    
+    if ($Use24HourFormat) {
+        $arguments += @("--format", "24")
+    }
+
+    try {
+        & python @arguments
+    }
+    catch {
+        Write-Host "Error executing prayer_times.py: $_" -ForegroundColor Red
     }
 }
