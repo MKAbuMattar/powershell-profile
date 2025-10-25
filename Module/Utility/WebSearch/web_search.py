@@ -39,7 +39,7 @@
 #
 # GitHub: https://github.com/MKAbuMattar/powershell-profile
 #
-# Version: 4.1.0
+# Version: 4.2.0
 #---------------------------------------------------------------------------------------------------
 
 """
@@ -316,7 +316,7 @@ def test_search_service():
         try:
             request = urllib.request.Request(
                 engine["url"],
-                headers={'User-Agent': 'PowerShell-Profile/4.1.0'}
+                headers={'User-Agent': 'PowerShell-Profile/4.2.0'}
             )
             with urllib.request.urlopen(request, timeout=5) as response:
                 if response.status == 200:

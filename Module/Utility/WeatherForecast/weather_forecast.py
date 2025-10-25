@@ -40,7 +40,7 @@
 #
 # GitHub: https://github.com/MKAbuMattar/powershell-profile
 #
-# Version: 4.1.0
+# Version: 4.2.0
 #---------------------------------------------------------------------------------------------------
 
 """
@@ -185,7 +185,7 @@ def get_weather(location=None, glyphs=True, moon=False, format_code=None, lang="
 
         # Add user agent
         headers = {
-            'User-Agent': 'PowerShell-Profile/4.1.0'
+            'User-Agent': 'PowerShell-Profile/4.2.0'
         }
 
         request = urllib.request.Request(url, headers=headers)

@@ -39,12 +39,12 @@
 #
 # GitHub: https://github.com/MKAbuMattar/powershell-profile
 #
-# Version: 4.1.0
+# Version: 4.2.0
 #---------------------------------------------------------------------------------------------------
 
 @{  
     RootModule             = 'Deno.psm1'
-    ModuleVersion          = '4.1.0'
+    ModuleVersion          = '4.2.0'
     CompatiblePSEditions   = @()
     GUID                   = '12b8e8d3-4c9a-4b8e-9f2a-8c7b6d5e4f3a'
     Author                 = 'Mohammad Abu Mattar'

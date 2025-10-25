@@ -39,12 +39,12 @@
 #
 # GitHub: https://github.com/MKAbuMattar/powershell-profile
 #
-# Version: 4.1.0
+# Version: 4.2.0
 #---------------------------------------------------------------------------------------------------
 
 @{
     RootModule             = 'Conda.psm1'
-    ModuleVersion          = '4.1.0'
+    ModuleVersion          = '4.2.0'
     CompatiblePSEditions   = @()
     GUID                   = '34d0a0f5-6e1c-4d0f-1f4c-0e9f8g7h6i5j'
     Author                 = 'Mohammad Abu Mattar'

@@ -39,12 +39,12 @@
 #
 # GitHub: https://github.com/MKAbuMattar/powershell-profile
 #
-# Version: 4.1.0
+# Version: 4.2.0
 #---------------------------------------------------------------------------------------------------
 
 @{
     RootModule             = 'PNPM.psm1'
-    ModuleVersion          = '4.1.0'
+    ModuleVersion          = '4.2.0'
     CompatiblePSEditions   = @()
     GUID                   = '23c9f9e4-5d0b-4c9f-0f3b-9d8e7f6a5b4c'
     Author                 = 'Mohammad Abu Mattar'

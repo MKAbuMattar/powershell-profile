@@ -1,6 +1,6 @@
 @{
     RootModule        = 'GitIgnore.psm1'
-    ModuleVersion     = '4.1.0'
+    ModuleVersion     = '4.2.0'
     GUID              = 'de13ca13-6abe-4ac3-8755-b66cd6852922'
     Author            = 'Mohammad Abu Mattar'
     CompanyName       = 'MKAbuMattar'

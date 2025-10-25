@@ -37,11 +37,11 @@
 #
 # GitHub: https://github.com/MKAbuMattar/powershell-profile
 #
-# Version: 4.1.0
+# Version: 4.2.0
 #---------------------------------------------------------------------------------------------------
 @{
     RootModule        = 'WebSearch.psm1'
-    ModuleVersion     = '4.1.0'
+    ModuleVersion     = '4.2.0'
     GUID              = 'a8e5d9c2-4f7b-4c8e-9a5d-8e7f6c9b4a3e'
     Author            = 'Mohammad Abu Mattar'
     CompanyName       = 'MKAbuMattar'
