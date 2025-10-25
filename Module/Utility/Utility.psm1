@@ -49,6 +49,7 @@ $BaseModuleDir = Join-Path -Path $PSScriptRoot -ChildPath '/'
 
 $ModuleList = @(
     @{ Name = 'Utility-Base64'; Path = 'Base64/Base64.psd1' }
+    @{ Name = 'Utility-Clock'; Path = 'Clock/Clock.psd1' }
     @{ Name = 'Utility-GitIgnore'; Path = 'GitIgnore/GitIgnore.psd1' }
     @{ Name = 'Utility-Matrix'; Path = 'Matrix/Matrix.psd1' }
     @{ Name = 'Utility-Misc'; Path = 'Misc/Misc.psd1' }

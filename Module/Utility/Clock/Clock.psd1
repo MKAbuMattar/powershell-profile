@@ -1,5 +1,5 @@
 #---------------------------------------------------------------------------------------------------
-# MKAbuMattar's PowerShell Profile - Misc Manifest
+# MKAbuMattar's PowerShell Profile - Clock Manifest
 #
 #
 #                             .
@@ -29,7 +29,7 @@
 # Author: Mohammad Abu Mattar
 #
 # Description:
-#       This Module provides a set of miscellaneous utility functions for various 
+#       This Module provides a set of clock-related utility functions for various
 #       common tasks in PowerShell.
 #
 # Created: 2021-09-01
@@ -41,7 +41,7 @@
 #---------------------------------------------------------------------------------------------------
 
 @{
-    RootModule           = 'Misc.psm1'
+    RootModule           = 'Clock.psm1'
     ModuleVersion        = '4.2.0'
     CompatiblePSEditions = @(
         'Desktop',
@@ -54,30 +54,26 @@
     Description          = 'A collection of utility functions for system and process management.'
     PowerShellVersion    = '5.0'
     FunctionsToExport    = @(
-        'Test-Administrator',
-        'Test-CommandExists',
-        'Invoke-ReloadProfile',
-        'Get-Uptime',
-        'Get-CommandDefinition',
-        'Get-DiskUsage'
+        'Start-Countdown',
+        'Start-StopWatch',
+        'Get-WallClock'
     )
     CmdletsToExport      = @()
     VariablesToExport    = @()
     AliasesToExport      = @(
-        'is-admin',
-        'command-exists',
-        'reload-profile',
-        'uptime',
-        'def',
-        'du'
+        'countdown',
+        'stopwatch',
+        'wallclock'
     )
     PrivateData          = @{
         PSData = @{
             Tags                       = @(
                 'Utility',
-                'System',
-                'Process',
-                'Management'
+                'Clock',
+                'Time',
+                'Countdown',
+                'Stopwatch',
+                'WallClock'
             )
             LicenseUri                 = 'https://raw.githubusercontent.com/MKAbuMattar/powershell-profile/main/LICENSE'
             ProjectUri                 = 'https://github.com/MKAbuMattar/powershell-profile'
