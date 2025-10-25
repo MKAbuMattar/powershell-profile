@@ -1,3 +1,46 @@
+#---------------------------------------------------------------------------------------------------
+# MKAbuMattar's PowerShell Profile - GitIgnore Utility Module
+#
+#
+#                             .
+#         ..                .''
+#         .,'..,.         ..,;,'
+#          ,;;;;,,       .,,;;;
+#           ,;;;;;'    .',;;;
+#            ,;;;;,'...,;;;,
+#             ,;;;;;,,;;;;.
+#              ,;;;;;;;;;
+#              .,;;;;;;;
+#              .,;;;;;;;'
+#              .,;;;;;;;,'
+#            .',;;;;;;;;;;,.
+#          ..,;;;;;;;;;;;;;,.
+#         .';;;;;.   ';;;;;;,'
+#        .,;;;;.      ,; .;; .,
+#        ',;;;.        .
+#        .,;;.
+#        ,;
+#        .
+#
+#      "The only way to do great work is to love what you do."
+#                           - Steve Jobs
+#
+#
+# Author: Mohammad Abu Mattar
+#
+# Description:
+#       This module provides utilities for generating .gitignore files using the gitignore.io API.
+#       It includes functions for generating gitignore content for various technologies and platforms,
+#       as well as listing available templates and providing tab completion support.
+#       Uses Python backend for API interactions.
+#
+# Created: 2025-09-27
+# Updated: 2025-10-25
+#
+# GitHub: https://github.com/MKAbuMattar/powershell-profile
+#
+# Version: 4.2.0
+#---------------------------------------------------------------------------------------------------
 @{
     RootModule        = 'GitIgnore.psm1'
     ModuleVersion     = '4.2.0'
