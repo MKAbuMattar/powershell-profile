@@ -1,13 +1,62 @@
+#---------------------------------------------------------------------------------------------------
+# MKAbuMattar's PowerShell Profile - WeatherForecast Plugin
+#
+#
+#                             .
+#         ..                .''
+#         .,'..,.         ..,;,'
+#          ,;;;;,,       .,,;;;
+#           ,;;;;;'    .',;;;
+#            ,;;;;,'...,;;;,
+#             ,;;;;;,,;;;;.
+#              ,;;;;;;;;;
+#              .,;;;;;;;
+#              .,;;;;;;;'
+#              .,;;;;;;;,'
+#            .',;;;;;;;;;;,.
+#          ..,;;;;;;;;;;;;;,.
+#         .';;;;;.   ';;;;;;,'
+#        .,;;;;.      ,; .;; .,
+#        ',;;;.        .
+#        .,;;.
+#        ,;
+#        .
+#
+#      "The only way to do great work is to love what you do."
+#                           - Steve Jobs
+#
+#
+# Author: Mohammad Abu Mattar
+#
+# Description:
+#       This module provides functions to retrieve and display weather forecasts
+#       from the wttr.in service. Features ASCII art display with customizable options
+#       including glyphs, moon phases, and multiple languages.
+#
+# Created: 2025-10-25
+# Updated: 2025-10-25
+#
+# GitHub: https://github.com/MKAbuMattar/powershell-profile
+#
+# Version: 4.2.0
+#---------------------------------------------------------------------------------------------------
+
 function Get-WeatherForecast {
     <#
     .SYNOPSIS
         Gets the weather forecast for a specified location.
 
     .DESCRIPTION
-        This function retrieves the weather forecast for a specified location using the wttr.in service. It returns the weather forecast in ASCII art format. The forecast can include weather glyphs, moon phases, and be customized with additional options.
+        This function retrieves the weather forecast for a specified location using the wttr.in service. 
+        It returns the weather forecast in ASCII art format. The forecast can include weather glyphs, 
+        moon phases, and be customized with additional options.
+
+        This function wraps the weather_forecast.py Python script which handles API communication
+        and data retrieval. Python 3.6+ is required.
 
     .PARAMETER Location
-        Specifies the location to retrieve the weather forecast for. If not provided, the default location is used.
+        Specifies the location to retrieve the weather forecast for. If not provided, the current 
+        location is used based on IP geolocation.
 
     .PARAMETER Glyphs
         Indicates whether to display weather glyphs in the forecast. The default value is $true.
@@ -16,43 +65,47 @@ function Get-WeatherForecast {
         Indicates whether to display moon phases in the forecast. The default value is $false.
 
     .PARAMETER Format
-        Specifies a custom format for the weather forecast. The default format is used if not provided.
+        Specifies a custom format code (0-6) for the weather forecast. Optional.
 
     .PARAMETER Lang
         Specifies the language for the weather forecast. The default language is "en".
+        Supported languages: en, ar, de, es, fr, it, nl, pl, pt, ro, ru, tr
 
     .INPUTS
-        Location: (Optional) The location to retrieve the weather forecast for. If not provided, the default location is used.
-        Glyphs: (Optional) Indicates whether to display weather glyphs in the forecast. The default value is $true.
-        Moon: (Optional) Indicates whether to display moon phases in the forecast. The default value is $false.
-        Format: (Optional) A custom format for the weather forecast. The default format is used if not provided.
-        Lang: (Optional) The language for the weather forecast. The default language is "en".
+        None. You cannot pipe objects to this function.
 
     .OUTPUTS
-        The weather forecast in ASCII art format.
-
-    .NOTES
-        This function is useful for retrieving the weather forecast in ASCII art format for a specified location.
+        System.String. The weather forecast in ASCII art format.
 
     .EXAMPLE
-        Get-WeatherForecast -Location "Amman"
-        Retrieves the weather forecast for Amman.
+        Get-WeatherForecast
+        Retrieves the weather forecast for the current location.
 
     .EXAMPLE
-        Get-WeatherForecast -Location "New York" -Glyphs $false
-        Retrieves the weather forecast for New York without weather glyphs.
+        Get-WeatherForecast -Location "London"
+        Retrieves the weather forecast for London.
+
+    .EXAMPLE
+        Get-WeatherForecast -Location "Paris" -Lang fr
+        Retrieves the weather forecast for Paris in French.
 
     .EXAMPLE
         Get-WeatherForecast -Moon
         Retrieves the moon phase forecast.
 
     .EXAMPLE
-        Get-WeatherForecast -Location "Paris" -Format "3"
-        Retrieves the weather forecast for Paris with a custom format.
+        Get-WeatherForecast -Location "Tokyo" -Glyphs:$false
+        Retrieves the weather forecast for Tokyo without weather glyphs.
+
+    .NOTES
+        Requires Python 3.6+ and internet connectivity to wttr.in service.
+        The weather_forecast.py script must be in the same directory as this module.
 
     .LINK
-        https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
+        https://wttr.in/
+        https://github.com/MKAbuMattar/powershell-profile
     #>
+
     [CmdletBinding()]
     [Alias("weather")]
     [OutputType([string])]
@@ -62,88 +115,185 @@ function Get-WeatherForecast {
             Position = 0,
             ValueFromPipeline = $true,
             ValueFromPipelineByPropertyName = $true,
-            HelpMessage = "The location to retrieve the weather forecast for."
+            HelpMessage = "The location to retrieve the weather forecast for"
         )]
         [Alias("l")]
-        [string]$Location = $null,
+        [string]$Location,
 
         [Parameter(
             Mandatory = $false,
-            Position = 1,
-            ValueFromPipeline = $true,
-            ValueFromPipelineByPropertyName = $true,
-            HelpMessage = "Indicates whether to display weather glyphs in the forecast."
+            HelpMessage = "Display weather glyphs"
         )]
         [Alias("g")]
         [switch]$Glyphs = $true,
 
         [Parameter(
             Mandatory = $false,
-            Position = 2,
-            ValueFromPipeline = $true,
-            ValueFromPipelineByPropertyName = $true,
-            HelpMessage = "Indicates whether to display moon phases in the forecast."
+            HelpMessage = "Show moon phases instead of weather"
         )]
         [Alias("m")]
-        [switch]$Moon = $false,
+        [switch]$Moon,
 
         [Parameter(
             Mandatory = $false,
-            Position = 3,
-            ValueFromPipeline = $true,
-            ValueFromPipelineByPropertyName = $true,
-            HelpMessage = "A custom format for the weather forecast."
+            HelpMessage = "Custom format code (0-6)"
         )]
         [Alias("f")]
-        [string]$Format = $null,
+        [string]$Format,
 
         [Parameter(
             Mandatory = $false,
-            Position = 4,
-            ValueFromPipeline = $true,
-            ValueFromPipelineByPropertyName = $true,
-            HelpMessage = "The language for the weather forecast."
+            HelpMessage = "Language for output"
         )]
+        [Alias("lang")]
         [ValidateSet(
-            "en",
-            "ar",
-            "de",
-            "es",
-            "fr",
-            "it",
-            "nl",
-            "pl",
-            "pt",
-            "ro",
-            "ru",
-            "tr"
+            "en", "ar", "de", "es", "fr", "it", "nl",
+            "pl", "pt", "ro", "ru", "tr", "uk", "ja",
+            "zh", "vi", "th", "fa"
         )]
         [string]$Lang = "en"
     )
 
-    $url = "https://wttr.in/"
+    begin {
+        # Get the script directory
+        $scriptDir = Split-Path -Parent $PSCommandPath
 
-    try {
-        switch ($true) {
-            { $Moon -eq $false && $Location } { $url += $Location }
-            { $Moon -eq $true } { $url += "Moon" }
-            { $Glyphs -eq $true } { $url += "?d" }
-            { $Glyphs -eq $false } { $url += "?T" }
-            { $Format } { $url += "&&format=$Format" }
-            { $Lang } { $url += "&&lang=$Lang" }
-            default { $url += "" }
+        # Build path to Python script
+        $pythonScript = Join-Path $scriptDir "weather_forecast.py"
+
+        # Check if Python script exists
+        if (-not (Test-Path $pythonScript)) {
+            Write-Error "weather_forecast.py not found at: $pythonScript"
+            return
         }
 
-        $response = Invoke-RestMethod -Uri $url -Method Get -SkipCertificateCheck
+        # Check if Python is available
+        $pythonCmd = Get-Command python3, python -ErrorAction SilentlyContinue | Select-Object -First 1
 
-        if ($response) {
-            Write-Output $response
+        if (-not $pythonCmd) {
+            Write-Error "Python 3 is not installed or not available in PATH"
+            Write-Error "Please install Python 3.6 or later from https://www.python.org"
+            return
         }
-        else {
-            Write-LogMessage -Message "Failed to retrieve the weather forecast." -Level "ERROR"
+
+        $pythonPath = $pythonCmd.Source
+    }
+
+    process {
+        try {
+            # Build arguments
+            $arguments = @($pythonScript)
+
+            # Add location if provided
+            if ($Location) {
+                $arguments += $Location
+            }
+
+            # Add glyphs option
+            if (-not $Glyphs) {
+                $arguments += "--no-glyphs"
+            }
+
+            # Add moon option
+            if ($Moon) {
+                $arguments += "--moon"
+            }
+
+            # Add format if provided
+            if ($Format) {
+                $arguments += "--format"
+                $arguments += $Format
+            }
+
+            # Add language
+            if ($Lang -ne "en") {
+                $arguments += "--lang"
+                $arguments += $Lang
+            }
+
+            # Invoke Python script
+            & $pythonPath $arguments 2>&1
+
+        }
+        catch {
+            Write-Error "Failed to retrieve weather forecast: $_"
         }
     }
-    catch {
-        Write-LogMessage -Message "Failed to retrieve the weather forecast." -Level "ERROR"
+}
+
+function Test-WeatherService {
+    <#
+    .SYNOPSIS
+        Tests connectivity to the wttr.in weather service.
+
+    .DESCRIPTION
+        This function tests whether the wttr.in service is accessible and responding.
+        Useful for troubleshooting connectivity issues.
+
+    .INPUTS
+        None. You cannot pipe objects to this function.
+
+    .OUTPUTS
+        System.Boolean. Returns $true if service is accessible, $false otherwise.
+
+    .EXAMPLE
+        Test-WeatherService
+        Tests the weather service and displays the result.
+
+    .NOTES
+        Requires internet connectivity.
+
+    .LINK
+        https://wttr.in/
+        https://github.com/MKAbuMattar/powershell-profile
+    #>
+
+    [CmdletBinding()]
+    [OutputType([bool])]
+    param ()
+
+    begin {
+        # Get the script directory
+        $scriptDir = Split-Path -Parent $PSCommandPath
+
+        # Build path to Python script
+        $pythonScript = Join-Path $scriptDir "weather_forecast.py"
+
+        # Check if Python script exists
+        if (-not (Test-Path $pythonScript)) {
+            Write-Error "weather_forecast.py not found at: $pythonScript"
+            return $false
+        }
+
+        # Check if Python is available
+        $pythonCmd = Get-Command python3, python -ErrorAction SilentlyContinue | Select-Object -First 1
+
+        if (-not $pythonCmd) {
+            Write-Error "Python 3 is not installed or not available in PATH"
+            return $false
+        }
+
+        $pythonPath = $pythonCmd.Source
+    }
+
+    process {
+        try {
+            # Call Python script with --test flag
+            $output = & $pythonPath $pythonScript --test 2>&1
+
+            # Check for success indicator
+            if ($output -match "\[+\]") {
+                Write-Output $true
+                return $true
+            }
+            else {
+                Write-Output $false
+                return $false
+            }
+        }
+        catch {
+            Write-Error "Error testing weather service: $_"
+            return $false
+        }
     }
 }

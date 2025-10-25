@@ -39,12 +39,12 @@
 #
 # GitHub: https://github.com/MKAbuMattar/powershell-profile
 #
-# Version: 4.1.0
+# Version: 4.2.0
 #---------------------------------------------------------------------------------------------------
 
 @{
     RootModule             = 'VSCode.psm1'
-    ModuleVersion          = '4.1.0'
+    ModuleVersion          = '4.2.0'
     CompatiblePSEditions   = @()
     GUID                   = '5e2d1f8a-7b3c-4d0e-2f5a-6b9c8d1e2f3a'
     Author                 = 'Mohammad Abu Mattar'

@@ -1,5 +1,5 @@
 #---------------------------------------------------------------------------------------------------
-# MKAbuMattar's PowerShell Profile - WebSearch Utility Module
+# MKAbuMattar's PowerShell Profile - WebSearch Plugin
 #
 #
 #                             .
@@ -29,48 +29,16 @@
 # Author: Mohammad Abu Mattar
 #
 # Description:
-#       This module provides web search functionality for various search engines with
-#       cross-platform browser launching capabilities.
+#       This module provides web search functionality for various search engines.
+#       Supports URL encoding and multiple search engine options.
 #
-# Created: 2025-09-28
-# Updated: 2025-09-28
+# Created: 2025-10-25
+# Updated: 2025-10-25
 #
 # GitHub: https://github.com/MKAbuMattar/powershell-profile
 #
-# Version: 4.1.0
+# Version: 4.2.0
 #---------------------------------------------------------------------------------------------------
-
-function ConvertTo-UrlEncoded {
-    <#
-    .SYNOPSIS
-        URL encodes a string for safe use in URLs.
-        
-    .DESCRIPTION
-        This function URL encodes a string by converting special characters to their
-        percent-encoded equivalents, making it safe for use in URLs.
-        
-    .PARAMETER InputString
-        The string to be URL encoded.
-        
-    .EXAMPLE
-        ConvertTo-UrlEncoded "hello world"
-        Returns "hello%20world"
-        
-    .EXAMPLE
-        ConvertTo-UrlEncoded "C++ programming"
-        Returns "C%2B%2B%20programming"
-    #>
-    [CmdletBinding()]
-    param(
-        [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
-        [string]$InputString
-    )
-    
-    process {
-        Add-Type -AssemblyName System.Web
-        return [System.Web.HttpUtility]::UrlEncode($InputString)
-    }
-}
 
 function Start-WebBrowser {
     <#
@@ -79,7 +47,8 @@ function Start-WebBrowser {
         
     .DESCRIPTION
         This function determines the operating system and launches the provided URL
-        using the most appropriate method or browser available.
+        using the most appropriate method or browser available. Supports Windows,
+        macOS, and Linux with automatic browser detection.
         
     .PARAMETER Url
         The URL to open in the browser.
@@ -87,6 +56,10 @@ function Start-WebBrowser {
     .EXAMPLE
         Start-WebBrowser "https://www.google.com"
         Opens Google in the default browser.
+        
+    .EXAMPLE
+        Start-WebBrowser "https://github.com"
+        Opens GitHub in the default browser.
     #>
     [CmdletBinding()]
     param(
@@ -95,27 +68,25 @@ function Start-WebBrowser {
     )
     
     try {
+        Write-Host "Opening: $Url" -ForegroundColor Green
+        
         if ($IsWindows -or $PSVersionTable.PSEdition -eq 'Desktop') {
             Start-Process $Url
-            Write-Host "Launching $Url in default browser..." -ForegroundColor Green
         }
         elseif ($IsMacOS) {
             Start-Process "open" -ArgumentList $Url
-            Write-Host "Launching $Url in default browser..." -ForegroundColor Green
         }
         elseif ($IsLinux) {
-            $browsers = @('xdg-open', 'lynx', 'browsh', 'links2', 'links')
+            $browsers = @('xdg-open', 'firefox', 'chromium', 'google-chrome', 'lynx', 'links')
             $launched = $false
             
             foreach ($browser in $browsers) {
                 if (Get-Command $browser -ErrorAction SilentlyContinue) {
                     if ($browser -eq 'xdg-open') {
                         Start-Process $browser -ArgumentList $Url
-                        Write-Host "Launching $Url" -ForegroundColor Green
-                        Write-Host "Press [Enter] to continue..." -ForegroundColor Gray
                     }
                     else {
-                        & $browser $Url
+                        & $browser $Url &
                     }
                     $launched = $true
                     break
@@ -123,643 +94,1015 @@ function Start-WebBrowser {
             }
             
             if (-not $launched) {
-                Write-Host "Unable to launch browser, please open manually:" -ForegroundColor Yellow
-                Write-Host "URL: $Url" -ForegroundColor Cyan
+                Write-Host "Unable to launch browser. Please open manually:" -ForegroundColor Yellow
+                Write-Host "$Url" -ForegroundColor Cyan
             }
         }
         else {
             Start-Process $Url
-            Write-Host "Launching $Url..." -ForegroundColor Green
         }
     }
     catch {
-        Write-Host "Unable to launch browser automatically. Please open manually:" -ForegroundColor Yellow
-        Write-Host "URL: $Url" -ForegroundColor Cyan
+        Write-Host "Unable to launch browser. Please open manually:" -ForegroundColor Yellow
+        Write-Host "$Url" -ForegroundColor Cyan
     }
 }
 
-function Invoke-WebSearch {
+function Invoke-SearchEngine {
     <#
     .SYNOPSIS
-        Performs a web search using the specified search engine and query.
+        Internal function to perform a web search using Python backend.
         
     .DESCRIPTION
-        This function constructs a search URL using the provided search engine base URL
-        and search terms, then launches it in the browser.
+        This function uses the web_search.py Python backend to construct
+        a search URL and then opens it in the browser. Handles all URL encoding
+        and engine-specific parameter construction.
         
-    .PARAMETER SearchEngineUrl
-        The base URL for the search engine (e.g., 'https://www.google.com/search?q=').
+    .PARAMETER Engine
+        The search engine to use (e.g., 'google', 'duckduckgo', 'github', 'pypi').
         
-    .PARAMETER SearchTerms
-        The search terms to encode and append to the URL.
+    .PARAMETER Query
+        The search query string. If not provided, prompts interactively.
         
     .EXAMPLE
-        Invoke-WebSearch 'https://www.google.com/search?q=' 'PowerShell tutorial'
-        Searches Google for 'PowerShell tutorial'.
+        Invoke-SearchEngine -Engine "google" -Query "PowerShell tutorial"
+        Searches Google for PowerShell tutorial.
+        
+    .EXAMPLE
+        Invoke-SearchEngine -Engine "github" -Query "powershell modules"
+        Searches GitHub for PowerShell modules.
     #>
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true)]
-        [string]$SearchEngineUrl,
+        [string]$Engine,
         
-        [Parameter(Mandatory = $false, ValueFromRemainingArguments = $true)]
-        [string[]]$SearchTerms
+        [Parameter(Mandatory = $false)]
+        [string]$Query
     )
     
-    if (-not $SearchEngineUrl) {
-        Write-Error "No search engine URL provided"
-        return
+    begin {
+        $scriptDir = Split-Path -Parent $PSCommandPath
+        $pythonScript = Join-Path $scriptDir "web_search.py"
+
+        if (-not (Test-Path $pythonScript)) {
+            Write-Error "web_search.py not found at: $pythonScript"
+            return
+        }
+
+        $pythonCmd = $null
+        
+        try {
+            $pythonCmd = Get-Command python -ErrorAction Stop
+        }
+        catch {
+            try {
+                $pythonCmd = Get-Command python3 -ErrorAction Stop
+            }
+            catch {
+                Write-Error "Python is not installed or not available in PATH"
+                Write-Error "Please install Python 3.6 or later from https://www.python.org"
+                return
+            }
+        }
+
+        $pythonPath = $pythonCmd.Source
     }
-    
-    if (-not $SearchTerms) {
-        $SearchTerms = Read-Host "Enter Search Term"
+
+    process {
+        try {
+            if (-not $Query) {
+                $Query = Read-Host "Enter search query"
+            }
+
+            $arguments = @($pythonScript, "--engine", $Engine, "--query", $Query)
+            $output = & $pythonPath $arguments 2>&1
+            $url = $null
+
+            foreach ($line in $output) {
+                if ($line -match "(https?://[^\s]+)") {
+                    $url = $matches[1].Trim()
+                    break
+                }
+            }
+
+            if ($url) {
+                Start-WebBrowser $url
+            }
+            else {
+                Write-Error "Failed to generate search URL"
+                Write-Host "Python output:" -ForegroundColor Yellow
+                $output | ForEach-Object { Write-Host "  $_" }
+            }
+        }
+        catch {
+            Write-Error "Failed to perform web search: $_"
+        }
     }
-    
-    $searchQuery = ($SearchTerms -join ' ')
-    $encodedQuery = ConvertTo-UrlEncoded $searchQuery
-    $webAddress = "$SearchEngineUrl$encodedQuery"
-    
-    Start-WebBrowser $webAddress
+}
+
+#---------------------------------------------------------------------------------------------------
+# Search Engine Functions
+#---------------------------------------------------------------------------------------------------
+
+function Search-Google {
+    <#
+    .SYNOPSIS
+        Searches Google for the specified terms.
+        
+    .DESCRIPTION
+        Constructs a Google search URL with the provided search terms and opens
+        it in the default browser.
+        
+    .PARAMETER SearchTerms
+        The terms to search for. Multiple terms can be provided.
+        
+    .EXAMPLE
+        Search-Google "PowerShell tutorial"
+        Searches Google for PowerShell tutorial.
+        
+    .EXAMPLE
+        Search-Google "cloud computing" "AWS"
+        Searches Google for cloud computing AWS.
+        
+    .EXAMPLE
+        google "web development"
+        Using the alias to search Google.
+    #>
+    [CmdletBinding()]
+    [Alias('wsggl', 'google')]
+    param([Parameter(ValueFromRemainingArguments = $true)][string[]]$SearchTerms)
+    Invoke-SearchEngine -Engine "google" -Query ($SearchTerms -join ' ')
 }
 
 function Search-DuckDuckGo {
     <#
     .SYNOPSIS
-        Search DuckDuckGo for the specified terms.
+        Searches DuckDuckGo for the specified terms.
+        
+    .DESCRIPTION
+        Constructs a DuckDuckGo search URL with the provided search terms and opens
+        it in the default browser. DuckDuckGo provides privacy-focused search.
         
     .PARAMETER SearchTerms
         The terms to search for.
         
     .EXAMPLE
-        Search-DuckDuckGo "PowerShell tutorial"
-    #>
-    [CmdletBinding()]
-    [Alias('wsddg')]
-    param(
-        [Parameter(ValueFromRemainingArguments = $true)]
-        [string[]]$SearchTerms
-    )
-    
-    Invoke-WebSearch 'https://duckduckgo.com/?q=' $SearchTerms
-}
-
-function Search-Wikipedia {
-    <#
-    .SYNOPSIS
-        Search Wikipedia for the specified terms.
-        
-    .PARAMETER SearchTerms
-        The terms to search for.
+        Search-DuckDuckGo "PowerShell scripting"
+        Searches DuckDuckGo for PowerShell scripting.
         
     .EXAMPLE
-        Search-Wikipedia "PowerShell"
+        ddg "privacy search"
+        Using the alias to search DuckDuckGo.
     #>
     [CmdletBinding()]
-    [Alias('wswiki')]
-    param(
-        [Parameter(ValueFromRemainingArguments = $true)]
-        [string[]]$SearchTerms
-    )
-    
-    Invoke-WebSearch 'https://en.wikipedia.org/w/index.php?search=' $SearchTerms
+    [Alias('wsddg', 'ddg')]
+    param([Parameter(ValueFromRemainingArguments = $true)][string[]]$SearchTerms)
+    Invoke-SearchEngine -Engine "duckduckgo" -Query ($SearchTerms -join ' ')
 }
-
-function Search-Google {
-    <#
-    .SYNOPSIS
-        Search Google for the specified terms.
-        
-    .PARAMETER SearchTerms
-        The terms to search for.
-        
-    .EXAMPLE
-        Search-Google "PowerShell tutorial"
-    #>
-    [CmdletBinding()]
-    [Alias('wsggl')]
-    param(
-        [Parameter(ValueFromRemainingArguments = $true)]
-        [string[]]$SearchTerms
-    )
-    
-    Invoke-WebSearch 'https://www.google.com/search?q=' $SearchTerms
-}
-
-function Search-GitHub {
-    <#
-    .SYNOPSIS
-        Search GitHub for the specified terms.
-        
-    .PARAMETER SearchTerms
-        The terms to search for.
-        
-    .EXAMPLE
-        Search-GitHub "PowerShell modules"
-    #>
-    [CmdletBinding()]
-    [Alias('wsgh')]
-    param(
-        [Parameter(ValueFromRemainingArguments = $true)]
-        [string[]]$SearchTerms
-    )
-    
-    Invoke-WebSearch 'https://github.com/search?q=' $SearchTerms
-}
-
-function Search-StackOverflow {
-    <#
-    .SYNOPSIS
-        Search Stack Overflow for the specified terms.
-        
-    .PARAMETER SearchTerms
-        The terms to search for.
-        
-    .EXAMPLE
-        Search-StackOverflow "PowerShell array"
-    #>
-    [CmdletBinding()]
-    [Alias('wsso')]
-    param(
-        [Parameter(ValueFromRemainingArguments = $true)]
-        [string[]]$SearchTerms
-    )
-    
-    Invoke-WebSearch 'https://stackoverflow.com/search?q=' $SearchTerms
-}
-
-
-
-function Search-Reddit {
-    <#
-    .SYNOPSIS
-        Search Reddit for the specified terms.
-        
-    .PARAMETER SearchTerms
-        The terms to search for.
-        
-    .EXAMPLE
-        Search-Reddit "PowerShell tips"
-    #>
-    [CmdletBinding()]
-    [Alias('wsrdt')]
-    param(
-        [Parameter(ValueFromRemainingArguments = $true)]
-        [string[]]$SearchTerms
-    )
-    
-    Invoke-WebSearch 'https://www.reddit.com/search/?q=' $SearchTerms
-}
-
-
-
-
 
 function Search-Bing {
-    <#
-    .SYNOPSIS
-        Searches using Bing.
-    #>
     [CmdletBinding()]
-    [Alias('wsbing')]
-    param([string[]]$SearchTerms)
-    
-    if (-not $SearchTerms) {
-        $SearchTerms = Read-Host "Enter search terms for Bing"
-    }
-    Invoke-WebSearch 'https://www.bing.com/search?q=' $SearchTerms
+    [Alias('wsbing', 'bing')]
+    param([Parameter(ValueFromRemainingArguments = $true)][string[]]$SearchTerms)
+    Invoke-SearchEngine -Engine "bing" -Query ($SearchTerms -join ' ')
 }
 
 function Search-Brave {
     <#
     .SYNOPSIS
-        Searches using Brave.
+        Searches Brave Search for the specified terms.
+
+    .DESCRIPTION
+        Constructs a Brave Search URL with the provided search terms and opens
+        it in the default browser.
+
+    .PARAMETER SearchTerms
+        The terms to search for.
+
+    .EXAMPLE
+        Search-Brave "decentralized web"
+        Searches Brave Search for decentralized web.
+
+    .EXAMPLE
+        brave "blockchain technology"
+        Using the alias to search Brave Search.
     #>
     [CmdletBinding()]
-    [Alias('wsbrave', 'wsbrs')]
-    param([string[]]$SearchTerms)
-    
-    if (-not $SearchTerms) {
-        $SearchTerms = Read-Host "Enter search terms for Brave"
-    }
-    Invoke-WebSearch 'https://search.brave.com/search?q=' $SearchTerms
+    [Alias('wsbrave', 'wsbrs', 'brave')]
+    param([Parameter(ValueFromRemainingArguments = $true)][string[]]$SearchTerms)
+    Invoke-SearchEngine -Engine "brave" -Query ($SearchTerms -join ' ')
 }
 
 function Search-Yahoo {
     <#
     .SYNOPSIS
-        Searches using Yahoo.
+        Searches Yahoo for the specified terms.
+
+    .DESCRIPTION
+        Constructs a Yahoo search URL with the provided search terms and opens
+        it in the default browser.
+
+    .PARAMETER SearchTerms
+        The terms to search for.
+
+    .EXAMPLE
+        Search-Yahoo "latest news"
+        Searches Yahoo for the latest news.
+
+    .EXAMPLE
+        yahoo "sports updates"
+        Using the alias to search Yahoo.
     #>
     [CmdletBinding()]
-    [Alias('wsyahoo')]
-    param([string[]]$SearchTerms)
-    
-    if (-not $SearchTerms) {
-        $SearchTerms = Read-Host "Enter search terms for Yahoo"
-    }
-    Invoke-WebSearch 'https://search.yahoo.com/search?p=' $SearchTerms
+    [Alias('wsyahoo', 'yahoo')]
+    param([Parameter(ValueFromRemainingArguments = $true)][string[]]$SearchTerms)
+    Invoke-SearchEngine -Engine "yahoo" -Query ($SearchTerms -join ' ')
 }
 
 function Search-Startpage {
     <#
     .SYNOPSIS
-        Searches using Startpage.
+        Searches Startpage for the specified terms.
+
+    .DESCRIPTION
+        Constructs a Startpage search URL with the provided search terms and opens
+        it in the default browser.
+
+    .PARAMETER SearchTerms
+        The terms to search for.
+
+    .EXAMPLE
+        Search-Startpage "private browsing"
+        Searches Startpage for private browsing.
+
+    .EXAMPLE
+        startpage "anonymous search"
+        Using the alias to search Startpage.
     #>
     [CmdletBinding()]
-    [Alias('wssp')]
-    param([string[]]$SearchTerms)
-    
-    if (-not $SearchTerms) {
-        $SearchTerms = Read-Host "Enter search terms for Startpage"
-    }
-    Invoke-WebSearch 'https://www.startpage.com/do/search?q=' $SearchTerms
+    [Alias('wssp', 'startpage')]
+    param([Parameter(ValueFromRemainingArguments = $true)][string[]]$SearchTerms)
+    Invoke-SearchEngine -Engine "startpage" -Query ($SearchTerms -join ' ')
 }
 
 function Search-Yandex {
     <#
     .SYNOPSIS
-        Searches using Yandex.
+        Searches Yandex for the specified terms.
+    
+    .DESCRIPTION
+        Constructs a Yandex search URL with the provided search terms and opens
+        it in the default browser.
+
+    .PARAMETER SearchTerms
+        The terms to search for.
+
+    .EXAMPLE
+        Search-Yandex "technology news"
+        Searches Yandex for technology news.
+
+    .EXAMPLE
+        yandex "latest gadgets"
+        Using the alias to search Yandex.
     #>
     [CmdletBinding()]
-    [Alias('wsyandex')]
-    param([string[]]$SearchTerms)
-    
-    if (-not $SearchTerms) {
-        $SearchTerms = Read-Host "Enter search terms for Yandex"
-    }
-    Invoke-WebSearch 'https://yandex.ru/yandsearch?text=' $SearchTerms
+    [Alias('wsyandex', 'yandex')]
+    param([Parameter(ValueFromRemainingArguments = $true)][string[]]$SearchTerms)
+    Invoke-SearchEngine -Engine "yandex" -Query ($SearchTerms -join ' ')
 }
 
 function Search-Baidu {
     <#
     .SYNOPSIS
-        Searches using Baidu.
+        Searches Baidu for the specified terms.
+
+    .DESCRIPTION
+        Constructs a Baidu search URL with the provided search terms and opens
+        it in the default browser.
+
+    .PARAMETER SearchTerms
+        The terms to search for.
+
+    .EXAMPLE
+        Search-Baidu "最新科技"
+        Searches Baidu for the latest technology.
+
+    .EXAMPLE
+        baidu "人工智能"
+        Using the alias to search Baidu.
     #>
     [CmdletBinding()]
-    [Alias('wsbaidu')]
-    param([string[]]$SearchTerms)
-    
-    if (-not $SearchTerms) {
-        $SearchTerms = Read-Host "Enter search terms for Baidu"
-    }
-    Invoke-WebSearch 'https://www.baidu.com/s?wd=' $SearchTerms
+    [Alias('wsbaidu', 'baidu')]
+    param([Parameter(ValueFromRemainingArguments = $true)][string[]]$SearchTerms)
+    Invoke-SearchEngine -Engine "baidu" -Query ($SearchTerms -join ' ')
 }
 
 function Search-Ecosia {
     <#
     .SYNOPSIS
-        Searches using Ecosia.
+        Searches Ecosia for the specified terms.
+
+    .DESCRIPTION
+        Constructs an Ecosia search URL with the provided search terms and opens
+        it in the default browser.
+
+    .PARAMETER SearchTerms
+        The terms to search for.
+
+    .EXAMPLE
+        Search-Ecosia "plant trees"
+        Searches Ecosia for planting trees.
+
+    .EXAMPLE
+        ecosia "environmental conservation"
+        Using the alias to search Ecosia.
     #>
     [CmdletBinding()]
-    [Alias('wsecosia')]
-    param([string[]]$SearchTerms)
-    
-    if (-not $SearchTerms) {
-        $SearchTerms = Read-Host "Enter search terms for Ecosia"
-    }
-    Invoke-WebSearch 'https://www.ecosia.org/search?q=' $SearchTerms
+    [Alias('wsecosia', 'ecosia')]
+    param([Parameter(ValueFromRemainingArguments = $true)][string[]]$SearchTerms)
+    Invoke-SearchEngine -Engine "ecosia" -Query ($SearchTerms -join ' ')
 }
 
 function Search-Qwant {
     <#
     .SYNOPSIS
-        Searches using Qwant.
-    #>
-    [CmdletBinding()]
-    [Alias('wsqwant')]
-    param([string[]]$SearchTerms)
-    
-    if (-not $SearchTerms) {
-        $SearchTerms = Read-Host "Enter search terms for Qwant"
-    }
-    Invoke-WebSearch 'https://www.qwant.com/?q=' $SearchTerms
-}
+        Searches Qwant for the specified terms.
 
-function Search-Scholar {
-    <#
-    .SYNOPSIS
-        Searches using Google Scholar.
+    .DESCRIPTION
+        Constructs a Qwant search URL with the provided search terms and opens
+        it in the default browser.
+
+    .PARAMETER SearchTerms
+        The terms to search for.
+
+    .EXAMPLE
+        Search-Qwant "privacy focused search"
+        Searches Qwant for privacy focused search.
+
+    .EXAMPLE
+        qwant "data protection"
+        Using the alias to search Qwant.
     #>
     [CmdletBinding()]
-    [Alias('wsscholar')]
-    param([string[]]$SearchTerms)
-    
-    if (-not $SearchTerms) {
-        $SearchTerms = Read-Host "Enter search terms for Google Scholar"
-    }
-    Invoke-WebSearch 'https://scholar.google.com/scholar?q=' $SearchTerms
+    [Alias('wsqwant', 'qwant')]
+    param([Parameter(ValueFromRemainingArguments = $true)][string[]]$SearchTerms)
+    Invoke-SearchEngine -Engine "qwant" -Query ($SearchTerms -join ' ')
 }
 
 function Search-Ask {
     <#
     .SYNOPSIS
-        Searches using Ask.com.
+        Searches Ask.com for the specified terms.
+    
+    .DESCRIPTION
+        Constructs an Ask.com search URL with the provided search terms and opens
+        it in the default browser.
+
+    .PARAMETER SearchTerms
+        The terms to search for.
+
+    .EXAMPLE
+        Search-Ask "general knowledge"
+        Searches Ask.com for general knowledge.
+
+    .EXAMPLE
+        ask "trivia questions"
+        Using the alias to search Ask.com.
     #>
     [CmdletBinding()]
-    [Alias('wsask')]
-    param([string[]]$SearchTerms)
+    [Alias('wsask', 'ask')]
+    param([Parameter(ValueFromRemainingArguments = $true)][string[]]$SearchTerms)
+    Invoke-SearchEngine -Engine "ask" -Query ($SearchTerms -join ' ')
+}
+
+#---------------------------------------------------------------------------------------------------
+# Development & Technical
+#---------------------------------------------------------------------------------------------------
+
+function Search-GitHub {
+    <#
+    .SYNOPSIS
+        Searches GitHub for the specified terms.
+        
+    .DESCRIPTION
+        Constructs a GitHub search URL with the provided search terms and opens
+        it in the default browser. Useful for finding repositories, code, and issues.
+        
+    .PARAMETER SearchTerms
+        The terms to search for (e.g., repository names, topics, code snippets).
+        
+    .EXAMPLE
+        Search-GitHub "powershell modules"
+        Searches GitHub for PowerShell modules.
+        
+    .EXAMPLE
+        github "aws sdk"
+        Using the alias to search GitHub for AWS SDK repositories.
+    #>
+    [CmdletBinding()]
+    [Alias('wsgh')]
+    param([Parameter(ValueFromRemainingArguments = $true)][string[]]$SearchTerms)
+    Invoke-SearchEngine -Engine "github" -Query ($SearchTerms -join ' ')
+}
+
+function Search-StackOverflow {
+    <#
+    .SYNOPSIS
+        Searches Stack Overflow for the specified terms.
+        
+    .DESCRIPTION
+        Constructs a Stack Overflow search URL with the provided search terms and opens
+        it in the default browser. Great for finding solutions to programming problems.
+        
+    .PARAMETER SearchTerms
+        The terms to search for (e.g., programming questions, error messages, topics).
+        
+    .EXAMPLE
+        Search-StackOverflow "PowerShell array manipulation"
+        Searches Stack Overflow for array manipulation in PowerShell.
+        
+    .EXAMPLE
+        stackoverflow "null reference exception"
+        Using the alias to search for null reference exceptions.
+    #>
+    [CmdletBinding()]
+    [Alias('wsso', 'stackoverflow')]
+    param([Parameter(ValueFromRemainingArguments = $true)][string[]]$SearchTerms)
+    Invoke-SearchEngine -Engine "stackoverflow" -Query ($SearchTerms -join ' ')
+}
+
+function Search-Wikipedia {
+    <#
+    .SYNOPSIS
+        Searches Wikipedia for the specified terms.
+
+    .DESCRIPTION
+        Constructs a Wikipedia search URL with the provided search terms and opens
+        it in the default browser.
+
+    .PARAMETER SearchTerms
+        The terms to search for.
+
+    .EXAMPLE
+        Search-Wikipedia "PowerShell scripting"
+        Searches Wikipedia for PowerShell scripting.
+
+    .EXAMPLE
+        wikipedia "artificial intelligence"
+        Using the alias to search Wikipedia.
+    #>
+    [CmdletBinding()]
+    [Alias('wswiki', 'wikipedia')]
+    param([Parameter(ValueFromRemainingArguments = $true)][string[]]$SearchTerms)
+    Invoke-SearchEngine -Engine "wikipedia" -Query ($SearchTerms -join ' ')
+}
+
+function Search-Scholar {
+    <#
+    .SYNOPSIS
+        Searches Google Scholar for the specified terms.
     
-    if (-not $SearchTerms) {
-        $SearchTerms = Read-Host "Enter search terms for Ask.com"
-    }
-    Invoke-WebSearch 'https://www.ask.com/web?q=' $SearchTerms
+    .DESCRIPTION
+        Constructs a Google Scholar search URL with the provided search terms and opens
+        it in the default browser. Useful for finding academic papers and articles.
+
+    .PARAMETER SearchTerms
+        The terms to search for.
+
+    .EXAMPLE
+        Search-Scholar "machine learning algorithms"
+        Searches Google Scholar for machine learning algorithms.
+
+    .EXAMPLE
+        scholar "data science"
+        Using the alias to search Google Scholar.
+    #>\
+    [CmdletBinding()]
+    [Alias('wsscholar', 'scholar')]
+    param([Parameter(ValueFromRemainingArguments = $true)][string[]]$SearchTerms)
+    Invoke-SearchEngine -Engine "scholar" -Query ($SearchTerms -join ' ')
+}
+
+function Search-Reddit {
+    <#
+    .SYNOPSIS
+        Searches Reddit for the specified terms.
+
+    .DESCRIPTION
+        Constructs a Reddit search URL with the provided search terms and opens
+        it in the default browser.
+
+    .PARAMETER SearchTerms
+        The terms to search for.
+
+    .EXAMPLE
+        Search-Reddit "PowerShell tips"
+        Searches Reddit for PowerShell tips.
+
+    .EXAMPLE
+        reddit "programming help"
+        Using the alias to search Reddit.
+    #>
+    [CmdletBinding()]
+    [Alias('wsrdt', 'reddit')]
+    param([Parameter(ValueFromRemainingArguments = $true)][string[]]$SearchTerms)
+    Invoke-SearchEngine -Engine "reddit" -Query ($SearchTerms -join ' ')
 }
 
 function Search-YouTube {
     <#
     .SYNOPSIS
-        Searches using YouTube.
+        Searches YouTube for the specified terms.
+        
+    .DESCRIPTION
+        Constructs a YouTube search URL with the provided search terms and opens
+        it in the default browser. Find videos, tutorials, and content.
+        
+    .PARAMETER SearchTerms
+        The terms to search for (video titles, topics, keywords).
+        
+    .EXAMPLE
+        Search-YouTube "PowerShell tutorial"
+        Searches YouTube for PowerShell tutorials.
+        
+    .EXAMPLE
+        youtube "python beginners"
+        Using the alias to search for Python beginner videos.
     #>
     [CmdletBinding()]
-    [Alias('wsyt', 'wsyoutube')]
-    param([string[]]$SearchTerms)
-    
-    if (-not $SearchTerms) {
-        $SearchTerms = Read-Host "Enter search terms for YouTube"
-    }
-    Invoke-WebSearch 'https://www.youtube.com/results?search_query=' $SearchTerms
+    [Alias('wsyt', 'wsyoutube', 'youtube')]
+    param([Parameter(ValueFromRemainingArguments = $true)][string[]]$SearchTerms)
+    Invoke-SearchEngine -Engine "youtube" -Query ($SearchTerms -join ' ')
 }
 
 function Search-DockerHub {
-    <#
-    .SYNOPSIS
-        Searches using Docker Hub.
-    #>
     [CmdletBinding()]
-    [Alias('wsdocker')]
-    param([string[]]$SearchTerms)
-    
-    if (-not $SearchTerms) {
-        $SearchTerms = Read-Host "Enter search terms for Docker Hub"
-    }
-    Invoke-WebSearch 'https://hub.docker.com/search?q=' $SearchTerms
+    [Alias('wsdocker', 'docker', 'dockerhub')]
+    param([Parameter(ValueFromRemainingArguments = $true)][string[]]$SearchTerms)
+    Invoke-SearchEngine -Engine "dockerhub" -Query ($SearchTerms -join ' ')
 }
 
 function Search-NPM {
     <#
     .SYNOPSIS
-        Searches using NPM packages.
+        Searches NPM (Node Package Manager) for the specified terms.
+        
+    .DESCRIPTION
+        Constructs an NPM search URL with the provided search terms and opens
+        it in the default browser. Search for Node.js packages and modules.
+        
+    .PARAMETER SearchTerms
+        The terms to search for (package names, keywords, or topics).
+        
+    .EXAMPLE
+        Search-NPM "express"
+        Searches NPM for the Express.js package.
+        
+    .EXAMPLE
+        npm "rest api"
+        Using the alias to search for REST API packages.
     #>
     [CmdletBinding()]
     [Alias('wsnpm')]
-    param([string[]]$SearchTerms)
-    
-    if (-not $SearchTerms) {
-        $SearchTerms = Read-Host "Enter search terms for NPM"
-    }
-    Invoke-WebSearch 'https://www.npmjs.com/search?q=' $SearchTerms
+    param([Parameter(ValueFromRemainingArguments = $true)][string[]]$SearchTerms)
+    Invoke-SearchEngine -Engine "npm" -Query ($SearchTerms -join ' ')
 }
 
 function Search-Packagist {
     <#
     .SYNOPSIS
-        Searches using Packagist (PHP packages).
+        Searches Packagist for the specified terms.
+
+    .DESCRIPTION
+        Constructs a Packagist search URL with the provided search terms and opens
+        it in the default browser. Search for PHP packages and libraries.
+
+    .PARAMETER SearchTerms
+        The terms to search for (package names, keywords, or topics).
+
+    .EXAMPLE
+        Search-Packagist "laravel"
+        Searches Packagist for the Laravel package.
+
+    .EXAMPLE
+        packagist "authentication"
+        Using the alias to search for authentication packages.
     #>
     [CmdletBinding()]
     [Alias('wspackagist')]
-    param([string[]]$SearchTerms)
-    
-    if (-not $SearchTerms) {
-        $SearchTerms = Read-Host "Enter search terms for Packagist"
-    }
-    Invoke-WebSearch 'https://packagist.org/?query=' $SearchTerms
+    param([Parameter(ValueFromRemainingArguments = $true)][string[]]$SearchTerms)
+    Invoke-SearchEngine -Engine "packagist" -Query ($SearchTerms -join ' ')
 }
 
 function Search-GoPackages {
     <#
     .SYNOPSIS
-        Searches using Go packages.
-    #>
-    [CmdletBinding()]
-    [Alias('wsgopkg')]
-    param([string[]]$SearchTerms)
-    
-    if (-not $SearchTerms) {
-        $SearchTerms = Read-Host "Enter search terms for Go packages"
-    }
-    Invoke-WebSearch 'https://pkg.go.dev/search?m=package&q=' $SearchTerms
-}
+        Searches Go Packages for the specified terms.
 
-function Search-ChatGPT {
-    <#
-    .SYNOPSIS
-        Opens ChatGPT with search query.
-    #>
-    [CmdletBinding()]
-    [Alias('wschatgpt')]
-    param([string[]]$SearchTerms)
-    
-    if (-not $SearchTerms) {
-        $SearchTerms = Read-Host "Enter search terms for ChatGPT"
-    }
-    Invoke-WebSearch 'https://chatgpt.com/?q=' $SearchTerms
-}
+    .DESCRIPTION
+        Constructs a Go Packages search URL with the provided search terms and opens
+        it in the default browser. Search for Go libraries and modules.
 
-function Search-Claude {
-    <#
-    .SYNOPSIS
-        Opens Claude AI with search query.
-    #>
-    [CmdletBinding()]
-    [Alias('wschaude')]
-    param([string[]]$SearchTerms)
-    
-    if (-not $SearchTerms) {
-        $SearchTerms = Read-Host "Enter search terms for Claude AI"
-    }
-    Invoke-WebSearch 'https://claude.ai/new?q=' $SearchTerms
-}
+    .PARAMETER SearchTerms
+        The terms to search for (package names, keywords, or topics).
 
-function Search-Perplexity {
-    <#
-    .SYNOPSIS
-        Searches using Perplexity AI.
+    .EXAMPLE
+        Search-GoPackages "gin"
+        Searches Go Packages for the Gin web framework.
+
+    .EXAMPLE
+        gopkg "http server"
+        Using the alias to search for HTTP server packages.
     #>
     [CmdletBinding()]
-    [Alias('wsppai', 'wsperplexity')]
-    param([string[]]$SearchTerms)
-    
-    if (-not $SearchTerms) {
-        $SearchTerms = Read-Host "Enter search terms for Perplexity AI"
-    }
-    Invoke-WebSearch 'https://www.perplexity.ai/search/new?q=' $SearchTerms
+    [Alias('wsgopkg', 'gopkg')]
+    param([Parameter(ValueFromRemainingArguments = $true)][string[]]$SearchTerms)
+    Invoke-SearchEngine -Engine "gopkg" -Query ($SearchTerms -join ' ')
 }
 
 function Search-RustCrates {
     <#
     .SYNOPSIS
-        Searches Rust crates.
+        Searches Rust Crates for the specified terms.
+
+    .DESCRIPTION
+        Constructs a Rust Crates search URL with the provided search terms and opens
+        it in the default browser. Search for Rust libraries and packages.
+
+    .PARAMETER SearchTerms
+        The terms to search for (package names, keywords, or topics).
+
+    .EXAMPLE
+        Search-RustCrates "serde"
+        Searches Rust Crates for the Serde library.
+
+    .EXAMPLE
+        rscrate "json parsing"
+        Using the alias to search for JSON parsing crates.
     #>
     [CmdletBinding()]
-    [Alias('wsrscrate')]
-    param([string[]]$SearchTerms)
-    
-    if (-not $SearchTerms) {
-        $SearchTerms = Read-Host "Enter search terms for Rust crates"
-    }
-    Invoke-WebSearch 'https://crates.io/search?q=' $SearchTerms
+    [Alias('wsrscrate', 'rscrate')]
+    param([Parameter(ValueFromRemainingArguments = $true)][string[]]$SearchTerms)
+    Invoke-SearchEngine -Engine "rscrate" -Query ($SearchTerms -join ' ')
 }
 
 function Search-RustDocs {
     <#
     .SYNOPSIS
-        Searches Rust documentation.
+        Searches Rust Docs for the specified terms.
+
+    .DESCRIPTION
+        Constructs a Rust Docs search URL with the provided search terms and opens
+        it in the default browser. Search for Rust documentation and references.
+
+    .PARAMETER SearchTerms
+        The terms to search for (documentation topics, functions, or keywords).
+
+    .EXAMPLE
+        Search-RustDocs "Vec"
+        Searches Rust Docs for the Vec documentation.
+
+    .EXAMPLE
+        rsdoc "error handling"
+        Using the alias to search for error handling documentation.
     #>
     [CmdletBinding()]
-    [Alias('wsrsdoc')]
-    param([string[]]$SearchTerms)
-    
-    if (-not $SearchTerms) {
-        $SearchTerms = Read-Host "Enter search terms for Rust docs"
-    }
-    Invoke-WebSearch 'https://docs.rs/releases/search?query=' $SearchTerms
+    [Alias('wsrsdoc', 'rsdoc')]
+    param([Parameter(ValueFromRemainingArguments = $true)][string[]]$SearchTerms)
+    Invoke-SearchEngine -Engine "rsdoc" -Query ($SearchTerms -join ' ')
 }
+
+function Search-PyPI {
+    <#
+    .SYNOPSIS
+        Searches PyPI (Python Package Index) for the specified terms.
+        
+    .DESCRIPTION
+        Constructs a PyPI search URL with the provided search terms and opens
+        it in the default browser. Search for Python packages and libraries.
+        
+    .PARAMETER SearchTerms
+        The terms to search for (package names, keywords, or topics).
+        
+    .EXAMPLE
+        Search-PyPI "requests"
+        Searches PyPI for the Requests library.
+        
+    .EXAMPLE
+        pypi "machine learning"
+        Using the alias to search for machine learning packages.
+    #>
+    [CmdletBinding()]
+    [Alias('wspypi', 'pypi')]
+    param([Parameter(ValueFromRemainingArguments = $true)][string[]]$SearchTerms)
+    Invoke-SearchEngine -Engine "pypi" -Query ($SearchTerms -join ' ')
+}
+
+#---------------------------------------------------------------------------------------------------
+# AI Assistants
+#---------------------------------------------------------------------------------------------------
+
+function Search-ChatGPT {
+    <#
+    .SYNOPSIS
+        Opens ChatGPT with search query context.
+        
+    .DESCRIPTION
+        Constructs a ChatGPT URL with the provided query and opens
+        it in the default browser. Great for AI-powered assistance and conversations.
+        
+    .PARAMETER SearchTerms
+        The terms or question to provide to ChatGPT.
+        
+    .EXAMPLE
+        Search-ChatGPT "how to write PowerShell functions"
+        Opens ChatGPT with a question about PowerShell.
+        
+    .EXAMPLE
+        chatgpt "explain REST APIs"
+        Using the alias to ask ChatGPT about REST APIs.
+    #>
+    [CmdletBinding()]
+    [Alias('wschatgpt', 'chatgpt')]
+    param([Parameter(ValueFromRemainingArguments = $true)][string[]]$SearchTerms)
+    Invoke-SearchEngine -Engine "chatgpt" -Query ($SearchTerms -join ' ')
+}
+
+function Search-Claude {
+    <#
+    .SYNOPSIS
+        Opens Claude AI with search query context.
+
+    .DESCRIPTION
+        Constructs a Claude AI URL with the provided query and opens
+        it in the default browser. Useful for AI-driven conversations and assistance.
+
+    .PARAMETER SearchTerms
+        The terms or question to provide to Claude.
+
+    .EXAMPLE
+        Search-Claude "What is the capital of France?"
+        Opens Claude AI with a question about the capital of France.
+
+    .EXAMPLE
+        claude "Explain quantum computing"
+        Using the alias to ask Claude about quantum computing.
+    #>
+    [CmdletBinding()]
+    [Alias('wschaude', 'claude')]
+    param([Parameter(ValueFromRemainingArguments = $true)][string[]]$SearchTerms)
+    Invoke-SearchEngine -Engine "claude" -Query ($SearchTerms -join ' ')
+}
+
+function Search-Perplexity {
+    <#
+    .SYNOPSIS
+        Opens Perplexity AI with search query context.
+
+    .DESCRIPTION
+        Constructs a Perplexity AI URL with the provided query and opens
+        it in the default browser. Useful for AI-driven information retrieval.
+
+    .PARAMETER SearchTerms
+        The terms or question to provide to Perplexity.
+
+    .EXAMPLE
+        Search-Perplexity "Explain machine learning"
+        Opens Perplexity AI with a question about machine learning.
+
+    .EXAMPLE
+        perplexity "What is the meaning of life?"
+        Using the alias to ask Perplexity about the meaning of life.
+    #>
+    [CmdletBinding()]
+    [Alias('wsppai', 'wsperplexity', 'perplexity')]
+    param([Parameter(ValueFromRemainingArguments = $true)][string[]]$SearchTerms)
+    Invoke-SearchEngine -Engine "perplexity" -Query ($SearchTerms -join ' ')
+}
+
+#---------------------------------------------------------------------------------------------------
+# Testing & Utilities
+#---------------------------------------------------------------------------------------------------
+
+function Test-SearchService {
+    <#
+    .SYNOPSIS
+        Test connectivity to web search services.
+
+    .DESCRIPTION
+        This function tests the connectivity to various web search services
+        by invoking the Python backend with a test flag. It returns $true if
+        all services are reachable, otherwise $false.
+
+    .EXAMPLE
+        Test-SearchService
+        Tests connectivity to web search services.
+
+    .OUTPUTS
+        Boolean. Returns $true if all services are reachable, $false otherwise.
+    #>
+    [CmdletBinding()]
+    [OutputType([bool])]
+    param()
+
+    begin {
+        $scriptDir = Split-Path -Parent $PSCommandPath
+        $pythonScript = Join-Path $scriptDir "web_search.py"
+
+        if (-not (Test-Path $pythonScript)) {
+            Write-Error "web_search.py not found at: $pythonScript"
+            return $false
+        }
+
+        $pythonCmd = $null
+        try {
+            $pythonCmd = Get-Command python -ErrorAction Stop
+        }
+        catch {
+            try {
+                $pythonCmd = Get-Command python3 -ErrorAction Stop
+            }
+            catch {
+                Write-Error "Python is not installed or not available in PATH"
+                return $false
+            }
+        }
+
+        $pythonPath = $pythonCmd.Source
+    }
+
+    process {
+        try {
+            & $pythonPath $pythonScript --test 2>&1
+            if ($LASTEXITCODE -eq 0) {
+                return $true
+            }
+            else {
+                return $false
+            }
+        }
+        catch {
+            Write-Error "Error testing search services: $_"
+            return $false
+        }
+    }
+}
+
+function Get-SearchEngines {
+    <#
+    .SYNOPSIS
+        Lists all available search engines.
+
+    .DESCRIPTION
+        This function retrieves and displays a list of all supported search engines
+        from the Python backend.
+
+    .EXAMPLE
+        Get-SearchEngines
+        Lists all available search engines.
+    #>
+    [CmdletBinding()]
+    param()
+
+    begin {
+        $scriptDir = Split-Path -Parent $PSCommandPath
+        $pythonScript = Join-Path $scriptDir "web_search.py"
+
+        if (-not (Test-Path $pythonScript)) {
+            Write-Error "web_search.py not found at: $pythonScript"
+            return
+        }
+
+        $pythonCmd = $null
+        try {
+            $pythonCmd = Get-Command python -ErrorAction Stop
+        }
+        catch {
+            try {
+                $pythonCmd = Get-Command python3 -ErrorAction Stop
+            }
+            catch {
+                Write-Error "Python is not installed or not available in PATH"
+                return
+            }
+        }
+
+        $pythonPath = $pythonCmd.Source
+    }
+
+    process {
+        try {
+            & $pythonPath $pythonScript --list-engines
+        }
+        catch {
+            Write-Error "Error retrieving search engines: $_"
+        }
+    }
+}
+
+#---------------------------------------------------------------------------------------------------
+# Main Search Function
+#---------------------------------------------------------------------------------------------------
 
 function Start-WebSearch {
     <#
     .SYNOPSIS
-        Interactive web search with multiple search engine options.
+        Performs a web search with optional engine selection.
         
     .DESCRIPTION
-        This function provides an interactive menu for selecting search engines
-        or allows direct invocation with search engine names and terms.
+        This function provides an easy way to search using various search engines.
+        If an engine is specified, it performs a direct search. Otherwise, it prompts
+        for engine and search terms.
         
-    .PARAMETER SearchEngine
-        Optional search engine name (duckduckgo, google, github, etc.).
+    .PARAMETER Engine
+        Optional search engine name (google, duckduckgo, github, etc.).
         
-    .PARAMETER SearchTerms
-        The terms to search for.
+    .PARAMETER Query
+        The search query string.
         
     .EXAMPLE
         Start-WebSearch
-        Shows interactive menu.
+        Prompts for search engine and query.
         
     .EXAMPLE
-        Start-WebSearch google "PowerShell tutorial"
+        Start-WebSearch -Engine google -Query "PowerShell tutorial"
         Directly searches Google.
         
     .EXAMPLE
-        Start-WebSearch duckduckgo
-        Opens DuckDuckGo search, prompts for terms.
+        Start-WebSearch -Engine github -Query "powershell modules"
+        Searches GitHub for PowerShell modules.
     #>
     [CmdletBinding()]
     [Alias('web-search', 'ws')]
     param(
         [Parameter(Position = 0)]
-        [string]$SearchEngine,
+        [string]$Engine,
         
-        [Parameter(ValueFromRemainingArguments = $true)]
-        [string[]]$SearchTerms
+        [Parameter(Position = 1, ValueFromRemainingArguments = $true)]
+        [string[]]$Query
     )
-    
 
-    
-    if ($SearchEngine) {
-        switch ($SearchEngine.ToLower()) {
-            'duckduckgo' { Search-DuckDuckGo $SearchTerms; return }
-            'ddg' { Search-DuckDuckGo $SearchTerms; return }
-            'wikipedia' { Search-Wikipedia $SearchTerms; return }
-            'google' { Search-Google $SearchTerms; return }
-            'github' { Search-GitHub $SearchTerms; return }
-            'stackoverflow' { Search-StackOverflow $SearchTerms; return }
-            'reddit' { Search-Reddit $SearchTerms; return }
-            'bing' { Search-Bing $SearchTerms; return }
-            'brave' { Search-Brave $SearchTerms; return }
-            'yahoo' { Search-Yahoo $SearchTerms; return }
-            'startpage' { Search-Startpage $SearchTerms; return }
-            'sp' { Search-Startpage $SearchTerms; return }
-            'yandex' { Search-Yandex $SearchTerms; return }
-            'baidu' { Search-Baidu $SearchTerms; return }
-            'ecosia' { Search-Ecosia $SearchTerms; return }
-            'qwant' { Search-Qwant $SearchTerms; return }
-            'scholar' { Search-Scholar $SearchTerms; return }
-            'ask' { Search-Ask $SearchTerms; return }
-            'youtube' { Search-YouTube $SearchTerms; return }
-            'dockerhub' { Search-DockerHub $SearchTerms; return }
-            'npm' { Search-NPM $SearchTerms; return }
-            'packagist' { Search-Packagist $SearchTerms; return }
-            'gopkg' { Search-GoPackages $SearchTerms; return }
-            'chatgpt' { Search-ChatGPT $SearchTerms; return }
-            'claude' { Search-Claude $SearchTerms; return }
-            'perplexity' { Search-Perplexity $SearchTerms; return }
-            'ppai' { Search-Perplexity $SearchTerms; return }
-            'rscrate' { Search-RustCrates $SearchTerms; return }
-            'rsdoc' { Search-RustDocs $SearchTerms; return }
-            default {
-                Write-Host "Unknown search engine: $SearchEngine" -ForegroundColor Red
-                Write-Host "Available engines: google, bing, brave, yahoo, duckduckgo, startpage, yandex, baidu, ecosia, qwant, github, stackoverflow, scholar, ask, youtube, wikipedia, reddit, dockerhub, npm, packagist, gopkg, chatgpt, claude, perplexity, rscrate, rsdoc" -ForegroundColor Yellow
-                return
-            }
+    if ($Engine) {
+        $queryString = ($Query -join ' ')
+        if (-not $queryString) {
+            Write-Host "Enter search query: " -NoNewline -ForegroundColor Cyan
+            $queryString = Read-Host
         }
+        Invoke-SearchEngine -Engine $Engine -Query $queryString
     }
-    
-    $choices = @(
-        'Google', 'Bing', 'Brave', 'DuckDuckGo', 'Startpage',
-        'GitHub', 'StackOverflow', 'Wikipedia', 'Scholar', 'YouTube',
-        'Reddit', 'ChatGPT', 'Claude AI', 'Perplexity', 'More Options', 'Quit'
-    )
-    
-    Write-Host "Select a Search Option" -ForegroundColor Magenta
-    for ($i = 0; $i -lt $choices.Count; $i++) {
-        Write-Host "$($i + 1). $($choices[$i])" -ForegroundColor Cyan
-    }
-    
-    do {
-        $selection = Read-Host "Enter your choice (1-$($choices.Count))"
+    else {
+        Write-Host ""
+        Write-Host "Select a Search Engine:" -ForegroundColor Magenta
+        Write-Host ""
         
-        switch ($selection) {
-            '1' { Search-Google $SearchTerms; return }
-            '2' { Search-Bing $SearchTerms; return }
-            '3' { Search-Brave $SearchTerms; return }
-            '4' { Search-DuckDuckGo $SearchTerms; return }
-            '5' { Search-Startpage $SearchTerms; return }
-            '6' { Search-GitHub $SearchTerms; return }
-            '7' { Search-StackOverflow $SearchTerms; return }
-            '8' { Search-Wikipedia $SearchTerms; return }
-            '9' { Search-Scholar $SearchTerms; return }
-            '10' { Search-YouTube $SearchTerms; return }
-            '11' { Search-Reddit $SearchTerms; return }
-            '12' { Search-ChatGPT $SearchTerms; return }
-            '13' { Search-Claude $SearchTerms; return }
-            '14' { Search-Perplexity $SearchTerms; return }
-            '15' { 
-                $moreChoices = @(
-                    'Yahoo', 'Yandex', 'Baidu', 'Ecosia', 'Qwant', 'Ask.com',
-                    'Docker Hub', 'NPM', 'Packagist', 'Go Packages', 'Rust Crates', 'Rust Docs', 'Back'
-                )
-                
-                Write-Host "\nMore Search Options" -ForegroundColor Magenta
-                for ($i = 0; $i -lt $moreChoices.Count; $i++) {
-                    Write-Host "$($i + 1). $($moreChoices[$i])" -ForegroundColor Cyan
-                }
-                
-                $moreSelection = Read-Host "Enter your choice (1-$($moreChoices.Count))"
-                switch ($moreSelection) {
-                    '1' { Search-Yahoo $SearchTerms; return }
-                    '2' { Search-Yandex $SearchTerms; return }
-                    '3' { Search-Baidu $SearchTerms; return }
-                    '4' { Search-Ecosia $SearchTerms; return }
-                    '5' { Search-Qwant $SearchTerms; return }
-                    '6' { Search-Ask $SearchTerms; return }
-                    '7' { Search-DockerHub $SearchTerms; return }
-                    '8' { Search-NPM $SearchTerms; return }
-                    '9' { Search-Packagist $SearchTerms; return }
-                    '10' { Search-GoPackages $SearchTerms; return }
-                    '11' { Search-RustCrates $SearchTerms; return }
-                    '12' { Search-RustDocs $SearchTerms; return }
-                    '13' { continue }
-                    default {
-                        Write-Host "Invalid option: '$moreSelection'" -ForegroundColor Red
-                        continue
-                    }
-                }
-            }
-            '16' { Write-Host "Bye! 👋" -ForegroundColor Yellow; return }
-            default {
-                Write-Host "Invalid option: '$selection'" -ForegroundColor Red
-                Write-Host "Enter a number between 1 and $($choices.Count)" -ForegroundColor Yellow
-            }
+        $engines = @(
+            @{ name = "Google"; key = "google" },
+            @{ name = "DuckDuckGo"; key = "duckduckgo" },
+            @{ name = "Bing"; key = "bing" },
+            @{ name = "Brave"; key = "brave" },
+            @{ name = "GitHub"; key = "github" },
+            @{ name = "Stack Overflow"; key = "stackoverflow" },
+            @{ name = "Wikipedia"; key = "wikipedia" },
+            @{ name = "YouTube"; key = "youtube" },
+            @{ name = "Reddit"; key = "reddit" },
+            @{ name = "ChatGPT"; key = "chatgpt" },
+            @{ name = "Claude"; key = "claude" },
+            @{ name = "Perplexity"; key = "perplexity" },
+            @{ name = "List All Engines"; key = "list" },
+            @{ name = "Quit"; key = "quit" }
+        )
+        
+        for ($i = 0; $i -lt $engines.Count; $i++) {
+            Write-Host "$($i + 1). $($engines[$i].name)" -ForegroundColor Cyan
         }
-    } while ($selection -ne '16')
+        
+        Write-Host ""
+        $selection = Read-Host "Enter your choice (1-$($engines.Count))"
+        
+        if ($selection -eq $engines.Count) {
+            return
+        }
+        
+        $selectedIndex = [int]$selection - 1
+        
+        if ($selectedIndex -lt 0 -or $selectedIndex -ge $engines.Count) {
+            Write-Host "Invalid selection" -ForegroundColor Red
+            return
+        }
+        
+        $selectedEngine = $engines[$selectedIndex].key
+        
+        if ($selectedEngine -eq "list") {
+            Get-SearchEngines
+            return
+        }
+        
+        if ($selectedEngine -eq "quit") {
+            Write-Host "Goodbye! 👋" -ForegroundColor Yellow
+            return
+        }
+        
+        Invoke-SearchEngine -Engine $selectedEngine
+    }
 }
-
-

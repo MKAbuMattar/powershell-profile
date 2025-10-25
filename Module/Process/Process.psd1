@@ -36,12 +36,12 @@
 #
 # GitHub: https://github.com/MKAbuMattar/powershell-profile
 #
-# Version: 4.1.0
+# Version: 4.2.0
 #---------------------------------------------------------------------------------------------------
 
 @{
     RootModule           = 'Process.psm1'
-    ModuleVersion        = '4.1.0'
+    ModuleVersion        = '4.2.0'
     CompatiblePSEditions = @(
         'Desktop',
         'Core'

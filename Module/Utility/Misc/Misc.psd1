@@ -37,12 +37,12 @@
 #
 # GitHub: https://github.com/MKAbuMattar/powershell-profile
 #
-# Version: 4.1.0
+# Version: 4.2.0
 #---------------------------------------------------------------------------------------------------
 
 @{
     RootModule           = 'Misc.psm1'
-    ModuleVersion        = '4.1.0'
+    ModuleVersion        = '4.2.0'
     CompatiblePSEditions = @(
         'Desktop',
         'Core'
@@ -59,9 +59,6 @@
         'Invoke-ReloadProfile',
         'Get-Uptime',
         'Get-CommandDefinition',
-        'Start-Countdown',
-        'Start-StopWatch',
-        'Get-WallClock',
         'Get-DiskUsage'
     )
     CmdletsToExport      = @()
@@ -72,9 +69,6 @@
         'reload-profile',
         'uptime',
         'def',
-        'countdown',
-        'stopwatch',
-        'wallclock',
         'du'
     )
     PrivateData          = @{

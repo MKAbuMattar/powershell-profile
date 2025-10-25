@@ -38,7 +38,7 @@
 #
 # GitHub: https://github.com/MKAbuMattar/powershell-profile
 #
-# Version: 4.1.0
+# Version: 4.2.0
 #---------------------------------------------------------------------------------------------------
 
 function Write-LogMessage {
@@ -248,7 +248,7 @@ function Copy-ModuleDirectory {
             $files = @()
 
             foreach ($item in $response) {
-                if ($item.type -eq "file" -and ($item.name -match "\.(psd1|psm1)$")) {
+                if ($item.type -eq "file" -and ($item.name -match "\.(psd1|psm1|py)$")) {
                     Write-LogMessage -Message "Found PowerShell module file: $($item.path)"
                     if ($item.download_url -and $item.download_url.Trim() -ne "" -and $item.path -and $item.path.Trim() -ne "") {
                         $files += @{

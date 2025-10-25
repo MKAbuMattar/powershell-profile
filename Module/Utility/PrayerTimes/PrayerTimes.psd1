@@ -1,6 +1,47 @@
+#---------------------------------------------------------------------------------------------------
+# MKAbuMattar's PowerShell Profile - PrayerTimes Plugin
+#
+#
+#                             .
+#         ..                .''
+#         .,'..,.         ..,;,'
+#          ,;;;;,,       .,,;;;
+#           ,;;;;;'    .',;;;
+#            ,;;;;,'...,;;;,
+#             ,;;;;;,,;;;;.
+#              ,;;;;;;;;;
+#              .,;;;;;;;
+#              .,;;;;;;;'
+#              .,;;;;;;;,'
+#            .',;;;;;;;;;;,.
+#          ..,;;;;;;;;;;;;;,.
+#         .';;;;;.   ';;;;;;,'
+#        .,;;;;.      ,; .;; .,
+#        ',;;;.        .
+#        .,;;.
+#        ,;
+#        .
+#
+#      "The only way to do great work is to love what you do."
+#                           - Steve Jobs
+#
+#
+# Author: Mohammad Abu Mattar
+#
+# Description:
+#       This module provides functions to retrieve and display Islamic prayer times
+#       for a specified city and country using a Python backend.
+#
+# Created: 2025-09-27
+# Updated: 2025-10-25
+#
+# GitHub: https://github.com/MKAbuMattar/powershell-profile
+#
+# Version: 4.2.0
+#---------------------------------------------------------------------------------------------------
 @{
     RootModule           = 'PrayerTimes.psm1'
-    ModuleVersion        = '4.1.0'
+    ModuleVersion        = '4.2.0'
     CompatiblePSEditions = @(
         'Desktop',
         'Core'

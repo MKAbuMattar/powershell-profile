@@ -1,6 +1,6 @@
 @{
     RootModule           = 'Utility.psm1'
-    ModuleVersion        = '4.1.0'
+    ModuleVersion        = '4.2.0'
     CompatiblePSEditions = @(
         'Desktop',
         'Core'
@@ -12,9 +12,6 @@
     Description          = ''
     PowerShellVersion    = '5.0'
     FunctionsToExport    = @(
-        'Read-FigletFont',
-        'Convert-TextToAscii',
-        'Get-ParseTime',
         'Format-ConvertSize'
     )
     CmdletsToExport      = @()

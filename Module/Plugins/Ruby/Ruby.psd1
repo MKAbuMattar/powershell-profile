@@ -39,12 +39,12 @@
 #
 # GitHub: https://github.com/MKAbuMattar/powershell-profile
 #
-# Version: 4.1.0
+# Version: 4.2.0
 #---------------------------------------------------------------------------------------------------
 
 @{
     RootModule             = 'Ruby.psm1'
-    ModuleVersion          = '4.1.0'
+    ModuleVersion          = '4.2.0'
     CompatiblePSEditions   = @()
     GUID                   = '6f3e2a9b-8c4d-5e1f-3a6b-9c2d5e8f1a4b'
     Author                 = 'Mohammad Abu Mattar'

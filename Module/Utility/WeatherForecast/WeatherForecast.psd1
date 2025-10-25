@@ -1,6 +1,48 @@
+#---------------------------------------------------------------------------------------------------
+# MKAbuMattar's PowerShell Profile - WeatherForecast Plugin
+#
+#
+#                             .
+#         ..                .''
+#         .,'..,.         ..,;,'
+#          ,;;;;,,       .,,;;;
+#           ,;;;;;'    .',;;;
+#            ,;;;;,'...,;;;,
+#             ,;;;;;,,;;;;.
+#              ,;;;;;;;;;
+#              .,;;;;;;;
+#              .,;;;;;;;'
+#              .,;;;;;;;,'
+#            .',;;;;;;;;;;,.
+#          ..,;;;;;;;;;;;;;,.
+#         .';;;;;.   ';;;;;;,'
+#        .,;;;;.      ,; .;; .,
+#        ',;;;.        .
+#        .,;;.
+#        ,;
+#        .
+#
+#      "The only way to do great work is to love what you do."
+#                           - Steve Jobs
+#
+#
+# Author: Mohammad Abu Mattar
+#
+# Description:
+#       This module provides functions to retrieve and display weather forecasts
+#       from the wttr.in service. Features ASCII art display with customizable options
+#       including glyphs, moon phases, and multiple languages.
+#
+# Created: 2025-10-25
+# Updated: 2025-10-25
+#
+# GitHub: https://github.com/MKAbuMattar/powershell-profile
+#
+# Version: 4.2.0
+#---------------------------------------------------------------------------------------------------
 @{
     RootModule           = 'WeatherForecast.psm1'
-    ModuleVersion        = '4.1.0'
+    ModuleVersion        = '4.2.0'
     CompatiblePSEditions = @(
         'Desktop',
         'Core'
