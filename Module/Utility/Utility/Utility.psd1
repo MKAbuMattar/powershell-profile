@@ -12,9 +12,6 @@
     Description          = ''
     PowerShellVersion    = '5.0'
     FunctionsToExport    = @(
-        'Read-FigletFont',
-        'Convert-TextToAscii',
-        'Get-ParseTime',
         'Format-ConvertSize'
     )
     CmdletsToExport      = @()

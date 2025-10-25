@@ -30,10 +30,10 @@
 #
 # Description:
 #       This Module provides a set of clock-related utility functions for various
-#       common tasks in PowerShell.
+#       common tasks in PowerShell. Now uses Python backend for enhanced performance.
 #
 # Created: 2021-09-01
-# Updated: 2025-09-24
+# Updated: 2025-10-25
 #
 # GitHub: https://github.com/MKAbuMattar/powershell-profile
 #

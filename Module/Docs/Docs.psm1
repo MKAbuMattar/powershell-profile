@@ -2287,15 +2287,19 @@ $($PSStyle.Foreground.Yellow)Utility Module - Productivity & Convenience$($PSSty
     $($PSStyle.Foreground.Green)Timing Utilities:$($PSStyle.Reset)
     $($PSStyle.Foreground.Green)Start-Countdown$($PSStyle.Reset) -Duration <Duration> [-CountUp] [-Title <Title>]
     $($PSStyle.Foreground.Magenta)countdown$($PSStyle.Reset) -Duration <Duration> [-CountUp] [-Title <Title>]
-        Starts a countdown timer.
+        Starts a countdown timer with ASCII art display (Python backend with pyfiglet).
+        Duration formats: 30s, 5m, 1h, 02:15PM
+        Press 'Q' to quit.
 
     $($PSStyle.Foreground.Green)Start-Stopwatch$($PSStyle.Reset) [-Title <Title>]
     $($PSStyle.Foreground.Magenta)stopwatch$($PSStyle.Reset) [-Title <Title>]
-        Starts a stopwatch.
+        Starts a stopwatch with ASCII art display (Python backend with pyfiglet).
+        Press 'P' to pause/resume, 'Q' to quit.
 
-    $($PSStyle.Foreground.Green)Get-WallClock$($PSStyle.Reset) [-Title <Title>] [-TimeZone <TimeZone>]
-    $($PSStyle.Foreground.Magenta)wallclock$($PSStyle.Reset) [-Title <Title>] [-TimeZone <TimeZone>]
-        Displays the current time in a large font using the FIGlet utility.
+    $($PSStyle.Foreground.Green)Get-WallClock$($PSStyle.Reset) [-Title <Title>] [-TimeZone <TimeZone>] [-Use24Hour]
+    $($PSStyle.Foreground.Magenta)wallclock$($PSStyle.Reset) [-Title <Title>] [-TimeZone <TimeZone>] [-Use24Hour]
+        Displays live clock with ASCII art (Python backend with pyfiglet).
+        Press 'Q' to quit.
 
     $($PSStyle.Foreground.Green)Matrix Animation:$($PSStyle.Reset)
     $($PSStyle.Foreground.Green)Start-Matrix$($PSStyle.Reset) [-SleepTime <SleepTime>]
@@ -2308,10 +2312,13 @@ $($PSStyle.Foreground.Yellow)Utility Module - Productivity & Convenience$($PSSty
         weather "New York"             # Check weather forecast
         prayer -City "London" -Country "UK" -Use24HourFormat  # Prayer times
         
-        # Timing and focus tools
-        countdown "00:25:00" -Title "Pomodoro Session"  # 25min focus timer
-        stopwatch -Title "Code Review" # Track time spent
-        wallclock -TimeZone "UTC"      # Display world clock
+        # Timing and focus tools (Python backend with pyfiglet required)
+        countdown "25m" -Title "Pomodoro"  # 25min focus timer with ASCII title
+        countdown "30s" -Title "Break"     # 30 second countdown
+        countdown "02:15PM" -Title "Meeting"  # Countdown to specific time
+        stopwatch -Title "Workout"         # Track elapsed time (P=pause, Q=quit)
+        wallclock -Title "Time" -Use24Hour # Display 24-hour clock
+        wallclock -TimeZone "UTC" -Title "UTC"  # Display UTC time
         
         # Weather with options
         weather -Glyphs -Moon          # Weather with symbols and moon
@@ -2320,7 +2327,10 @@ $($PSStyle.Foreground.Yellow)Utility Module - Productivity & Convenience$($PSSty
         
         # Entertainment and breaks
         matrix                         # Matrix animation (Ctrl+C to exit)
-        matrix -SleepTime 50          # Slower animation$($PSStyle.Reset)
+        matrix -SleepTime 50          # Slower animation
+        
+        # Note: Clock functions require Python 3.6+ and pyfiglet package
+        # Install: pip install pyfiglet$($PSStyle.Reset)
 "@
 
     $PluginsRust = @"
