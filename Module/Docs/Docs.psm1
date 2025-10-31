@@ -2062,10 +2062,6 @@ $($PSStyle.Foreground.Yellow)Utility Module - System Administration$($PSStyle.Re
     $($PSStyle.Foreground.Magenta)du$($PSStyle.Reset) [-Path <Path>] [-Unit <Unit>]
         Retrieves the disk usage for a specified path.
 
-    $($PSStyle.Foreground.Green)Format-ConvertSize$($PSStyle.Reset) -Value <Value> [-Units <Units>] [-Scale <Scale>] [-DecimalPlaces <DecimalPlaces>]
-    $($PSStyle.Foreground.Magenta)convert-size$($PSStyle.Reset) -Value <Value> [-Units <Units>] [-Scale <Scale>] [-DecimalPlaces <DecimalPlaces>]
-        Converts a size value to a specified unit and formats it.
-
     $($PSStyle.Foreground.Green)Examples:$($PSStyle.Reset)
         $($PSStyle.Foreground.Cyan)# System administration workflow
         is-admin                         # Check admin privileges

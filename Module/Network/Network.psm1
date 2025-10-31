@@ -30,14 +30,36 @@
 #
 # Description:
 #       This Module provides network-related functions for PowerShell scripts and modules.
+#       Now uses Python backend for enhanced cross-platform compatibility.
 #
 # Created: 2021-09-01
-# Updated: 2025-09-24
+# Updated: 2025-10-25
 #
 # GitHub: https://github.com/MKAbuMattar/powershell-profile
 #
 # Version: 4.2.0
 #---------------------------------------------------------------------------------------------------
+
+# Helper function to find Python executable
+function Get-PythonExecutable {
+    $pythonCmd = $null
+    
+    # Try 'python' first
+    if (Get-Command python -ErrorAction SilentlyContinue) {
+        $pythonCmd = "python"
+    }
+    # Fall back to 'python3'
+    elseif (Get-Command python3 -ErrorAction SilentlyContinue) {
+        $pythonCmd = "python3"
+    }
+    
+    if (-not $pythonCmd) {
+        Write-Error "Python is not installed or not in PATH. Please install Python 3.6 or later."
+        return $null
+    }
+    
+    return $pythonCmd
+}
 
 function Get-MyIPAddress {
     <#
@@ -45,13 +67,13 @@ function Get-MyIPAddress {
         Retrieves the IP address of the local machine, and public IPv4 and IPv6 addresses.
 
     .DESCRIPTION
-        This function retrieves the IP address of the local machine, and public IPv4 and IPv6 addresses.
+        This function retrieves the IP address of the local machine, and public IPv4 and IPv6 addresses using Python backend.
 
     .PARAMETER Local
         This switch retrieves the local IP address. Default is $true.
 
     .PARAMETER IPv4
-        This switch retrieves the public IPv4 address. Default is $true.
+        This switch retrieves the public IPv4 address. Default is $false.
 
     .PARAMETER IPv6
         This switch retrieves the public IPv6 address. Default is $false.
@@ -69,7 +91,7 @@ function Get-MyIPAddress {
         The IP address of the local machine, and public IPv4 and IPv6 addresses.
 
     .NOTES
-        This function is used to retrieve the IP address of the local machine, and public IPv4 and IPv6 addresses.
+        Uses Python backend for cross-platform compatibility.
 
     .EXAMPLE
         Get-MyIPAddress -Local -IPv4 -IPv6
@@ -88,7 +110,7 @@ function Get-MyIPAddress {
         Retrieves the public IPv6 address.
 
     .LINK
-        https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
+        https://github.com/MKAbuMattar/powershell-profile
     #>
     [CmdletBinding()]
     [Alias("my-ip")]
@@ -135,24 +157,44 @@ function Get-MyIPAddress {
         [string]$ComputerName = $env:COMPUTERNAME
     )
 
-    try {
-        if ($Local) {
-            $LocalAddress = [System.Net.Dns]::GetHostAddresses($ComputerName) | Where-Object { $_.AddressFamily -eq 'InterNetwork' } | Select-Object -ExpandProperty IPAddressToString
-            Write-Output "Local: $LocalAddress"
-        }
+    $pythonCmd = Get-PythonExecutable
+    if (-not $pythonCmd) {
+        return
+    }
 
-        if ($IPv4) {
-            $IPv4Address = (Invoke-RestMethod -Uri "http://ipv4.icanhazip.com").Trim()
-            Write-Output "IPv4: $IPv4Address"
-        }
+    $scriptPath = Join-Path $PSScriptRoot "network.py"
+    
+    if (-not (Test-Path $scriptPath)) {
+        Write-Error "Network utility Python script not found at: $scriptPath"
+        return
+    }
 
-        if ($IPv6) {
-            $IPv6Address = (Invoke-RestMethod -Uri "http://ipv6.icanhazip.com").Trim()
-            Write-Output "IPv6: $IPv6Address"
+    $arguments = @(
+        $scriptPath,
+        "ip"
+    )
+
+    if ($Local) {
+        $arguments += "--local"
+        if ($ComputerName -ne $env:COMPUTERNAME) {
+            $arguments += "--hostname"
+            $arguments += $ComputerName
         }
     }
+
+    if ($IPv4) {
+        $arguments += "--ipv4"
+    }
+
+    if ($IPv6) {
+        $arguments += "--ipv6"
+    }
+
+    try {
+        & $pythonCmd $arguments
+    }
     catch {
-        Write-LogMessage -Message "Failed to retrieve IP address: $_" -Level "ERROR"
+        Write-Error "Failed to retrieve IP address: $_"
     }
 }
 
@@ -162,7 +204,8 @@ function Clear-FlushDNS {
         Flushes the DNS cache.
 
     .DESCRIPTION
-        This function flushes the DNS cache.
+        This function flushes the DNS cache using Python backend for cross-platform support.
+        Supports Windows, macOS, and Linux.
 
     .PARAMETER None
         This function does not accept any parameters.
@@ -171,17 +214,18 @@ function Clear-FlushDNS {
         This function does not accept any inputs.
 
     .OUTPUTS
-        The DNS cache has been flushed.
+        Success or error message.
 
     .NOTES
-        This function is used to flush the DNS cache.
+        Uses Python backend for cross-platform DNS cache flushing.
+        May require administrator/root privileges.
 
     .EXAMPLE
         Clear-FlushDNS
         Flushes the DNS cache.
 
     .LINK
-        https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
+        https://github.com/MKAbuMattar/powershell-profile
     #>
     [CmdletBinding()]
     [Alias("flush-dns")]
@@ -190,12 +234,28 @@ function Clear-FlushDNS {
         # This function does not accept any parameters
     )
 
+    $pythonCmd = Get-PythonExecutable
+    if (-not $pythonCmd) {
+        return
+    }
+
+    $scriptPath = Join-Path $PSScriptRoot "network.py"
+    
+    if (-not (Test-Path $scriptPath)) {
+        Write-Error "Network utility Python script not found at: $scriptPath"
+        return
+    }
+
+    $arguments = @(
+        $scriptPath,
+        "flush-dns"
+    )
+
     try {
-        Clear-DnsClientCache
-        Write-LogMessage -Message "DNS cache has been flushed"
+        & $pythonCmd $arguments
     }
     catch {
-        Write-LogMessage -Message "Failed to flush DNS: $_" -Level "ERROR"
+        Write-Error "Failed to flush DNS cache: $_"
     }
 }
 

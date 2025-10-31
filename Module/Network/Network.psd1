@@ -1,5 +1,5 @@
 #---------------------------------------------------------------------------------------------------
-# MKAbuMattar's PowerShell Profile - Network Manifest
+# MKAbuMattar's PowerShell Profile - Network Module
 #
 #
 #                             .
@@ -30,9 +30,10 @@
 #
 # Description:
 #       This Module provides network-related functions for PowerShell scripts and modules.
+#       Now uses Python backend for enhanced cross-platform compatibility.
 #
 # Created: 2021-09-01
-# Updated: 2025-09-24
+# Updated: 2025-10-25
 #
 # GitHub: https://github.com/MKAbuMattar/powershell-profile
 #

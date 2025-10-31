@@ -2,7 +2,7 @@
 
 ## Overview
 
-The GitIgnore utility module provides comprehensive integration with the [gitignore.io](https://gitignore.io) API service, allowing you to generate, manage, and update `.gitignore` files directly from PowerShell. It offers a set of user-friendly functions and aliases to streamline your Git workflow by creating `.gitignore` files tailored to your project's technologies and environments.
+The GitIgnore utility module provides comprehensive integration with the [gitignore.io](https://gitignore.io) API service, allowing you to generate, manage, and update `.gitignore` files directly from PowerShell. It offers both command-line and TUI (Text User Interface) modes for an optimal user experience.
 
 ## Features
 
@@ -14,10 +14,96 @@ The GitIgnore utility module provides comprehensive integration with the [gitign
 -   **⚡ Tab Completion**: PowerShell tab completion for technology names
 -   **🌐 Cross-Platform**: Works on Windows, macOS, and Linux
 -   **💾 Caching**: Smart caching of available templates for performance
+-   **🖥️ TUI Mode**: Interactive Text User Interface for visual template selection
 
 ## Installation
 
 This module is part of the MKAbuMattar PowerShell Profile and is automatically loaded with the Utility module.
+
+## TUI (Text User Interface) Mode
+
+### Quick Start
+
+```bash
+python gitignore.py --tui
+```
+
+### TUI Features
+
+-   **Three-Panel Layout**:
+    -   **Left Panel**: Browse available .gitignore templates
+    -   **Bottom Panel**: View selected templates
+    -   **Right Panel**: Live preview of generated .gitignore content
+
+### TUI Controls
+
+| Key           | Action                         |
+| ------------- | ------------------------------ |
+| `↑/↓`         | Navigate template list         |
+| `Space/Enter` | Select/deselect template       |
+| `Tab`         | Switch between panels          |
+| `/`           | Filter templates               |
+| `s`           | Save generated .gitignore file |
+| `r`           | Refresh templates list         |
+| `c`           | Clear all selections           |
+| `q/Esc`       | Quit application               |
+
+### TUI Screenshot Concept
+
+```
+┌─── Available Templates ───┐┌──── Generated .gitignore ────┐
+│ ✓ node                    ││ # Node.js                     │
+│ ✓ python                  ││ node_modules/                 │
+│   visual-studio           ││ npm-debug.log*                │
+│   visual-studio-code      ││ # Python                      │
+│   webpack                 ││ __pycache__/                  │
+│   windows                 ││ *.py[cod]                     │
+└───────────────────────────┘└───────────────────────────────┘
+┌─────────── Selected Templates ──────────────────────────────┐
+│ • node                                                       │
+│ • python                                                     │
+└──────────────────────────────────────────────────────────────┘
+Controls: ↑↓ Navigate | Space Select | s Save | q Quit
+```
+
+## Python CLI Mode
+
+For users who prefer command-line interfaces, the Python script also provides a traditional CLI mode:
+
+### CLI Commands
+
+```bash
+# Generate .gitignore for specific technologies
+python gitignore.py --get node python react
+
+# List all available templates
+python gitignore.py --list
+
+# Filter templates by pattern
+python gitignore.py --list --filter python
+
+# Test API connectivity
+python gitignore.py --test
+
+# Launch TUI mode
+python gitignore.py --tui
+```
+
+### CLI Examples
+
+```bash
+# Create .gitignore for a Node.js project
+python gitignore.py --get node > .gitignore
+
+# Find all Python-related templates
+python gitignore.py --list --filter python
+
+# Generate for multiple technologies
+python gitignore.py --get python django react node > .gitignore
+
+# Test if gitignore.io is accessible
+python gitignore.py --test
+```
 
 ## Functions and Aliases
 

@@ -1,5 +1,5 @@
 #---------------------------------------------------------------------------------------------------
-# MKAbuMattar's PowerShell Profile - Misc Manifest
+# MKAbuMattar's PowerShell Profile - Misc Module
 #
 #
 #                             .
@@ -33,7 +33,7 @@
 #       common tasks in PowerShell.
 #
 # Created: 2021-09-01
-# Updated: 2025-09-24
+# Updated: 2025-10-25
 #
 # GitHub: https://github.com/MKAbuMattar/powershell-profile
 #
