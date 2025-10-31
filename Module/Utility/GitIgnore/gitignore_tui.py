@@ -39,14 +39,14 @@
 #
 # GitHub: https://github.com/MKAbuMattar/powershell-profile
 #
-# Version: 4.2.0
+# Version: 4.1.0
 #---------------------------------------------------------------------------------------------------
 
 """
 GitIgnore Template Generator TUI
 
 A Terminal User Interface for generating .gitignore templates using the gitignore.io API.
-Features a three-panel layout: templates list, selected items, and generated content.
+Features a four-panel layout: search, templates list, selected items, and generated content.
 
 Usage:
 ```bash
@@ -55,92 +55,113 @@ python gitignore_tui.py
 
 Controls:
 - Arrow keys: Navigate template list and selected items
-- Space/Enter: Select/deselect template (Templates panel)
-              Remove template (Selected panel)
+- Space/Enter: Select/deselect template (Templates panel), Remove template (Selected panel)
 - Tab: Switch between panels
 - s: Save generated .gitignore file
-- /: Filter templates
-- i: Show app information
 - r: Refresh templates list
 - c: Clear all selections
+- i: Show app information
 - q/Esc: Quit application
 """
 
 import curses
+import json
 import sys
 import threading
 import time
-from typing import List, Optional, Set
-import urllib.request
-import urllib.error
 from pathlib import Path
+from typing import List, Optional, Set, Tuple
+import urllib.error
+import urllib.request
+
+
+def fuzzy_search(query: str, text: str) -> Tuple[bool, int]:
+    """
+    Fuzzy search algorithm that finds if query characters appear in order in text.
+    Returns (match_found, score) where higher score is better match.
+    """
+    if not query:
+        return True, 0
+
+    query = query.lower()
+    text = text.lower()
+
+    if query in text:
+        return True, 1000 - text.index(query)
+
+    query_idx = 0
+    score = 0
+
+    for i, char in enumerate(text):
+        if query_idx < len(query) and char == query[query_idx]:
+            score += 100 - i
+            query_idx += 1
+
+    if query_idx == len(query):
+        return True, score
+
+    return False, 0
 
 
 class GitIgnoreAPI:
-    """Client for gitignore.io API"""
+    """Client for gitignore.io API with robust error handling"""
 
     BASE_URL = "https://www.toptal.com/developers/gitignore/api"
     TIMEOUT = 10
+    USER_AGENT = "GitIgnore-TUI/4.1.0"
 
-    @staticmethod
-    def fetch_url(url: str) -> str:
-        """Fetch content from URL"""
+    @classmethod
+    def _fetch_url(cls, url: str) -> str:
+        """Fetch content from URL with proper error handling"""
         try:
-            req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
-            with urllib.request.urlopen(req, timeout=GitIgnoreAPI.TIMEOUT) as response:
+            req = urllib.request.Request(url, headers={"User-Agent": cls.USER_AGENT})
+            with urllib.request.urlopen(req, timeout=cls.TIMEOUT) as response:
                 return response.read().decode("utf-8")
         except urllib.error.URLError as e:
-            raise RuntimeError(f"Failed to fetch {url}: {e}")
+            raise RuntimeError(f"Network error: {e}")
+        except Exception as e:
+            raise RuntimeError(f"Unexpected error: {e}")
 
-    @staticmethod
-    def get_templates(technologies: List[str]) -> str:
+    @classmethod
+    def get_templates(cls, technologies: List[str]) -> str:
         """Get gitignore content for specified technologies"""
         if not technologies:
-            return ""
+            return "# No templates selected\n# Select templates from the Available Templates panel"
 
-        # Ensure clean technology names
         clean_techs = []
         for tech in technologies:
-            clean_tech = str(tech).strip().replace('\n', '').replace('\r', '').replace('\t', '')
-            if clean_tech:  # Only add non-empty strings
+            clean_tech = str(tech).strip()
+            clean_tech = ''.join(c for c in clean_tech if c.isalnum() or c in '-_.')
+            if clean_tech:
                 clean_techs.append(clean_tech)
 
         if not clean_techs:
             return "# No valid templates provided"
 
         tech_string = ",".join(clean_techs).lower()
-        url = f"{GitIgnoreAPI.BASE_URL}/{tech_string}"
+        url = f"{cls.BASE_URL}/{tech_string}"
 
-        # Debug: Print the URL being used
-        print(f"API URL: {url}", file=sys.stderr)
+        return cls._fetch_url(url)
 
-        return GitIgnoreAPI.fetch_url(url)
-
-    @staticmethod
-    def list_templates() -> List[str]:
+    @classmethod
+    def list_templates(cls) -> List[str]:
         """Get list of available templates"""
-        url = f"{GitIgnoreAPI.BASE_URL}/list"
-        response = GitIgnoreAPI.fetch_url(url)
+        url = f"{cls.BASE_URL}/list"
+        response = cls._fetch_url(url)
 
-        # Split by both commas and newlines, then clean each template
         all_templates = []
-
-        # First split by newlines, then by commas
-        lines = response.strip().split('\n')
-        for line in lines:
-            templates_in_line = line.split(',')
-            for template in templates_in_line:
+        for line in response.strip().split('\n'):
+            for template in line.split(','):
                 clean_template = template.strip()
-                if clean_template:  # Only add non-empty templates
+                if clean_template and clean_template.replace('-', '').replace('_', '').isalnum():
                     all_templates.append(clean_template)
 
-        return sorted(all_templates)
+        return sorted(set(all_templates))
 
 
 class Theme:
-    """Color theme for the TUI"""
+    """Color theme configuration for the TUI"""
 
-    # Color pairs
     NORMAL = 1
     SELECTED = 2
     BORDER = 3
@@ -150,29 +171,34 @@ class Theme:
     SUCCESS = 7
     HIGHLIGHT = 8
 
-    @staticmethod
-    def init_colors():
-        """Initialize color pairs"""
+    @classmethod
+    def init_colors(cls):
+        """Initialize color pairs for the terminal"""
         if not curses.has_colors():
             return
 
         curses.start_color()
         curses.use_default_colors()
 
-        # Define color pairs
-        curses.init_pair(Theme.NORMAL, curses.COLOR_WHITE, -1)
-        curses.init_pair(Theme.SELECTED, curses.COLOR_BLACK, curses.COLOR_CYAN)
-        curses.init_pair(Theme.BORDER, curses.COLOR_BLUE, -1)
-        curses.init_pair(Theme.TITLE, curses.COLOR_YELLOW, -1)
-        curses.init_pair(Theme.STATUS, curses.COLOR_GREEN, -1)
-        curses.init_pair(Theme.ERROR, curses.COLOR_RED, -1)
-        curses.init_pair(Theme.SUCCESS, curses.COLOR_GREEN, -1)
-        curses.init_pair(Theme.HIGHLIGHT, curses.COLOR_MAGENTA, -1)
+        try:
+            curses.init_pair(cls.NORMAL, curses.COLOR_WHITE, -1)
+            curses.init_pair(cls.SELECTED, curses.COLOR_BLACK, curses.COLOR_CYAN)
+            curses.init_pair(cls.BORDER, curses.COLOR_BLUE, -1)
+            curses.init_pair(cls.TITLE, curses.COLOR_YELLOW, -1)
+            curses.init_pair(cls.STATUS, curses.COLOR_GREEN, -1)
+            curses.init_pair(cls.ERROR, curses.COLOR_RED, -1)
+            curses.init_pair(cls.SUCCESS, curses.COLOR_GREEN, -1)
+            curses.init_pair(cls.HIGHLIGHT, curses.COLOR_MAGENTA, -1)
+        except curses.error:
+            pass
 
-    @staticmethod
-    def get_color(color_id):
-        """Get color pair"""
-        return curses.color_pair(color_id)
+    @classmethod
+    def get_color(cls, color_pair: int) -> int:
+        """Get color pair with fallback to normal if not available"""
+        try:
+            return curses.color_pair(color_pair)
+        except curses.error:
+            return curses.color_pair(cls.NORMAL) if cls.NORMAL != color_pair else curses.A_NORMAL
 
 
 class GitIgnoreTUI:
@@ -193,13 +219,21 @@ class GitIgnoreTUI:
         self.filter_text = ""
         self.filtered_templates: List[str] = []
 
+        # Usage tracking
+        self.template_usage: dict = {}
+        self.recently_used: List[str] = []
+        self._load_usage_data()
+
         # UI state
-        self.current_panel = 0  # 0: templates, 1: selected, 2: content
+        self.current_panel = 1
         self.template_scroll = 0
         self.template_selected = 0
-        self.selected_scroll = 0  # Scroll position for selected templates panel
-        self.selected_index = 0   # Currently highlighted item in selected panel
+        self.selected_scroll = 0
+        self.selected_index = 0
         self.content_scroll = 0
+
+        # Search panel state
+        self.search_active = False
 
         # Threading
         self.loading = True
@@ -208,12 +242,11 @@ class GitIgnoreTUI:
         # Initialize
         Theme.init_colors()
         curses.curs_set(0)
-        self.stdscr.timeout(100)  # Non-blocking input with 100ms timeout
+        self.stdscr.timeout(100)
 
-        # Start loading templates in background
         threading.Thread(target=self._load_templates, daemon=True).start()
 
-    def _set_status_message(self, message, is_error=False):
+    def _set_status_message(self, message: str, is_error: bool = False) -> None:
         """Set status message with timestamp"""
         if is_error:
             self.error_message = message
@@ -223,64 +256,112 @@ class GitIgnoreTUI:
             self.error_message = ""
         self.message_timestamp = time.time()
 
-    def _load_templates(self):
+    def _load_usage_data(self) -> None:
+        """Load usage statistics from file with error handling"""
+        try:
+            usage_file = Path.home() / '.gitignore_tui_usage.json'
+            if usage_file.exists():
+                with open(usage_file, 'r', encoding='utf-8') as f:
+                    data = json.load(f)
+                    self.template_usage = data.get('usage', {})
+                    self.recently_used = data.get('recently_used', [])
+                    if not isinstance(self.template_usage, dict):
+                        self.template_usage = {}
+                    if not isinstance(self.recently_used, list):
+                        self.recently_used = []
+        except (FileNotFoundError, json.JSONDecodeError, PermissionError):
+            self.template_usage = {}
+            self.recently_used = []
+
+    def _save_usage_data(self) -> None:
+        """Save usage statistics to file with error handling"""
+        try:
+            usage_file = Path.home() / '.gitignore_tui_usage.json'
+            data = {
+                'usage': self.template_usage,
+                'recently_used': self.recently_used
+            }
+            with open(usage_file, 'w', encoding='utf-8') as f:
+                json.dump(data, f, indent=2)
+        except (PermissionError, OSError) as e:
+            self._set_status_message(f"Warning: Could not save usage data: {e}", is_error=True)
+
+    def _track_template_usage(self, template: str) -> None:
+        """Track when a template is used"""
+        self.template_usage[template] = self.template_usage.get(template, 0) + 1
+
+        if template in self.recently_used:
+            self.recently_used.remove(template)
+        self.recently_used.insert(0, template)
+
+        self.recently_used = self.recently_used[:10]
+
+        self._save_usage_data()
+
+    def _load_templates(self) -> None:
         """Load templates from API in background thread"""
         try:
             self.templates = GitIgnoreAPI.list_templates()
-            self.filtered_templates = self.templates[:]
+            self.templates.sort(key=str.lower)
+            self._filter_templates()
             self._set_status_message(f"✓ Loaded {len(self.templates)} templates")
             self.loading = False
         except Exception as e:
             self._set_status_message(f"Failed to load templates: {e}", is_error=True)
             self.loading = False
 
-    def _generate_content(self):
+    def _generate_content(self) -> None:
         """Generate gitignore content in background thread"""
         if not self.selected_templates:
-            self.generated_content = "# No templates selected\n# Select templates from the left panel"
+            self.generated_content = "# No templates selected\n# Select templates from the Available Templates panel"
             return
 
         self.generation_in_progress = True
         try:
-            # Templates are already clean from API parsing
-            selected_list = list(self.selected_templates)
-
-            # Debug: Add status message to show what we're sending
-            tech_string = ",".join(selected_list).lower()
-            self._set_status_message(f"Generating for: {tech_string}")
+            selected_list = sorted(list(self.selected_templates))
+            self._set_status_message(f"Generating content for {len(selected_list)} templates...")
 
             self.generated_content = GitIgnoreAPI.get_templates(selected_list)
-            self._set_status_message(f"✓ Generated for {len(selected_list)} templates")
+            self._set_status_message(f"✓ Generated content for {len(selected_list)} templates")
         except Exception as e:
-            # Show more detailed error information
             error_msg = str(e)
-            self.generated_content = f"# Error generating content: {error_msg}\n# Selected templates: {list(self.selected_templates)}"
+            self.generated_content = f"# Error generating content: {error_msg}\n# Selected templates: {selected_list}"
             self._set_status_message(f"Generation failed: {error_msg}", is_error=True)
         finally:
             self.generation_in_progress = False
 
-    def _filter_templates(self):
-        """Filter templates based on filter text"""
+    def _filter_templates(self) -> None:
+        """Filter templates based on filter text using fuzzy search"""
         if not self.filter_text:
             self.filtered_templates = self.templates[:]
         else:
-            self.filtered_templates = [
-                t for t in self.templates
-                if self.filter_text.lower() in t.lower()
-            ]
+            self.filtered_templates = self._filter_templates_by_text(self.templates)
 
-        # Reset selection if out of bounds
         if self.template_selected >= len(self.filtered_templates):
             self.template_selected = max(0, len(self.filtered_templates) - 1)
+
+    def _filter_templates_by_text(self, templates_list: List[str]) -> List[str]:
+        """Filter templates using fuzzy search with alphabetical secondary sort"""
+        if not self.filter_text:
+            return sorted(templates_list, key=str.lower)
+
+        matches = []
+        for template in templates_list:
+            is_match, score = fuzzy_search(self.filter_text, template)
+            if is_match:
+                usage_boost = self.template_usage.get(template, 0) * 10
+                total_score = score + usage_boost
+                matches.append((template, total_score))
+
+        matches.sort(key=lambda x: (-x[1], x[0].lower()))
+        return [match[0] for match in matches]
 
     def _draw_border(self, y, x, height, width, title="", is_active=False):
         """Draw a border with optional title and active highlighting"""
         try:
-            # Choose border color based on active state
             border_color = Theme.get_color(Theme.HIGHLIGHT) if is_active else Theme.get_color(Theme.BORDER)
             border_attr = border_color | curses.A_BOLD if is_active else border_color
 
-            # Draw corners and lines
             self.stdscr.addch(y, x, "┌", border_attr)
             self.stdscr.addch(y, x + width - 1, "┐", border_attr)
             self.stdscr.addch(y + height - 1, x, "└", border_attr)
@@ -294,7 +375,6 @@ class GitIgnoreTUI:
                 self.stdscr.addch(y + i, x, "│", border_attr)
                 self.stdscr.addch(y + i, x + width - 1, "│", border_attr)
 
-            # Draw title with special styling for active panels
             if title:
                 title_text = f" {title} "
                 title_x = x + (width - len(title_text)) // 2
@@ -305,81 +385,148 @@ class GitIgnoreTUI:
         except curses.error:
             pass
 
-    def _draw_templates_panel(self, y, x, height, width):
-        """Draw the templates list panel"""
+    def _draw_search_panel(self, y, x, height, width):
+        """Draw the search panel"""
         is_active = self.current_panel == 0
-        self._draw_border(y, x, height, width, "Available Templates", is_active)
+        self._draw_border(y, x, height, width, "Search", is_active)
 
-        # Calculate visible area
+        inner_y, inner_x = y + 1, x + 1
+        inner_width = width - 2
+
+        search_text = self.filter_text
+        prompt = "> "
+        display_text = prompt + search_text
+
+        if is_active:
+            display_text += "_"
+
+        try:
+            if is_active:
+                attr = Theme.get_color(Theme.SELECTED) | curses.A_BOLD
+            else:
+                attr = Theme.get_color(Theme.NORMAL)
+
+            self.stdscr.addstr(inner_y, inner_x, " " * (inner_width - 1), attr)
+            self.stdscr.addstr(inner_y, inner_x, display_text[:inner_width-1], attr)
+        except curses.error:
+            pass
+
+    def _draw_templates_panel(self, y, x, height, width):
+        """Draw the templates list panel with scroll information"""
+        is_active = self.current_panel == 1
+
+        title = "Available Templates"
+
+        scroll_info = ""
+        if self.filtered_templates:
+            visible_count = height - 4
+            if len(self.filtered_templates) > visible_count:
+                first_visible = self.template_scroll + 1
+                last_visible = min(self.template_scroll + visible_count, len(self.filtered_templates))
+                scroll_info = f" ({first_visible}-{last_visible}/{len(self.filtered_templates)})"
+                if len(title) + len(scroll_info) > width - 6:
+                    scroll_info = f" ({first_visible}-{last_visible})"
+                    if len(title) + len(scroll_info) > width - 6:
+                        scroll_info = ""
+
+        full_title = title + scroll_info
+        self._draw_border(y, x, height, width, full_title, is_active)
         inner_y, inner_x = y + 1, x + 1
         inner_height, inner_width = height - 2, width - 2
 
         if self.loading:
             try:
                 self.stdscr.addstr(inner_y + inner_height // 2, inner_x + 2,
-                                 "Loading templates...", Theme.get_color(Theme.STATUS))
+                                    "Loading templates...", Theme.get_color(Theme.STATUS))
             except curses.error:
                 pass
             return
+
+        self._draw_list_view(inner_y, inner_x, inner_height, inner_width)
+
+    def _draw_list_view(self, y, x, height, width):
+        """Draw regular list view of templates with scroll bar"""
+        count_text = f"[{len(self.filtered_templates)} templates]"
+        try:
+            self.stdscr.addstr(y, x + 1, count_text, Theme.get_color(Theme.BORDER))
+            y += 1
+            height -= 1
+        except curses.error:
+            pass
 
         if not self.filtered_templates:
             try:
-                self.stdscr.addstr(inner_y + inner_height // 2, inner_x + 2,
-                                 "No templates found", Theme.get_color(Theme.ERROR))
+                if self.filter_text:
+                    no_match_text = f"No matches for '{self.filter_text}'"
+                else:
+                    no_match_text = "No templates found"
+                self.stdscr.addstr(y + height // 2, x + 2,
+                                    no_match_text, Theme.get_color(Theme.ERROR))
             except curses.error:
                 pass
             return
 
-        # Show filter if active
-        filter_y = inner_y
-        if self.filter_text:
-            try:
-                filter_display = f"Filter: {self.filter_text}"
-                self.stdscr.addstr(filter_y, inner_x + 1, filter_display[:inner_width-2],
-                                 Theme.get_color(Theme.HIGHLIGHT))
-                filter_y += 1
-                inner_height -= 1
-            except curses.error:
-                pass
+        visible_count = height
+        show_scrollbar = len(self.filtered_templates) > visible_count
+        content_width = width - 2
+        if show_scrollbar:
+            content_width -= 2
 
-        # Adjust scroll
-        visible_count = inner_height
         if self.template_selected < self.template_scroll:
             self.template_scroll = self.template_selected
         elif self.template_selected >= self.template_scroll + visible_count:
             self.template_scroll = self.template_selected - visible_count + 1
 
-        # Draw templates
         for i in range(visible_count):
             template_idx = self.template_scroll + i
             if template_idx >= len(self.filtered_templates):
                 break
 
             template = self.filtered_templates[template_idx]
-            display_y = filter_y + i
+            display_y = y + i
 
-            # Determine style
-            is_selected = template_idx == self.template_selected and self.current_panel == 0
+            is_selected = template_idx == self.template_selected and self.current_panel == 1
             is_checked = template in self.selected_templates
 
             attr = Theme.get_color(Theme.NORMAL)
             if is_selected:
                 attr = Theme.get_color(Theme.SELECTED)
 
-            # Prepare text
             prefix = "✓ " if is_checked else "  "
             display_text = prefix + template
 
             try:
-                self.stdscr.addstr(display_y, inner_x + 1,
-                                 display_text[:inner_width-2].ljust(inner_width-2), attr)
+                display_line = display_text[:content_width].ljust(content_width)
+                self.stdscr.addstr(display_y, x + 1, display_line, attr)
             except curses.error:
                 pass
 
+        if show_scrollbar:
+            scrollbar_x = x + width - 1
+
+            self._draw_scrollbar(y, scrollbar_x, height,
+                                len(self.filtered_templates), visible_count, self.template_scroll)
+
     def _draw_selected_panel(self, y, x, height, width):
-        """Draw the selected templates panel"""
-        is_active = self.current_panel == 1
-        self._draw_border(y, x, height, width, "Selected Templates", is_active)
+        """Draw the selected templates panel with scroll information"""
+        is_active = self.current_panel == 2
+        title = "Selected Templates"
+
+        selected_list = sorted(list(self.selected_templates))
+        scroll_info = ""
+        if selected_list:
+            visible_count = height - 2
+            if len(selected_list) > visible_count:
+                first_visible = self.selected_scroll + 1
+                last_visible = min(self.selected_scroll + visible_count, len(selected_list))
+                scroll_info = f" ({first_visible}-{last_visible}/{len(selected_list)})"
+                if len(title) + len(scroll_info) > width - 6:
+                    scroll_info = f" ({first_visible}-{last_visible})"
+                    if len(title) + len(scroll_info) > width - 6:
+                        scroll_info = ""
+
+        full_title = title + scroll_info
+        self._draw_border(y, x, height, width, full_title, is_active)
 
         inner_y, inner_x = y + 1, x + 1
         inner_height, inner_width = height - 2, width - 2
@@ -389,36 +536,37 @@ class GitIgnoreTUI:
         if not selected_list:
             try:
                 self.stdscr.addstr(inner_y + 1, inner_x + 2,
-                                 "No templates selected", Theme.get_color(Theme.STATUS))
+                                    "No templates selected", Theme.get_color(Theme.STATUS))
             except curses.error:
                 pass
             return
 
-        # Draw selected items with navigation support
         selected_list = sorted(list(self.selected_templates))
 
         if not selected_list:
             try:
                 self.stdscr.addstr(inner_y + 1, inner_x + 2,
-                                 "No templates selected", Theme.get_color(Theme.STATUS))
+                                    "No templates selected", Theme.get_color(Theme.STATUS))
                 self.stdscr.addstr(inner_y + 2, inner_x + 2,
-                                 "Select templates from the left panel", Theme.get_color(Theme.STATUS))
+                                    "Select templates from the left panel", Theme.get_color(Theme.STATUS))
             except curses.error:
                 pass
             return
 
-        # Adjust scroll for selected panel
         visible_count = inner_height
+        show_scrollbar = len(selected_list) > visible_count
+        content_width = inner_width - 2
+        if show_scrollbar:
+            content_width -= 2
+
         if self.selected_index < self.selected_scroll:
             self.selected_scroll = self.selected_index
         elif self.selected_index >= self.selected_scroll + visible_count:
             self.selected_scroll = self.selected_index - visible_count + 1
 
-        # Ensure selected_index is within bounds
         if self.selected_index >= len(selected_list):
             self.selected_index = max(0, len(selected_list) - 1)
 
-        # Draw selected items with highlighting
         for i in range(visible_count):
             item_idx = self.selected_scroll + i
             if item_idx >= len(selected_list):
@@ -427,10 +575,8 @@ class GitIgnoreTUI:
             template = selected_list[item_idx]
             display_y = inner_y + i
 
-            # Determine if this item is highlighted
-            is_highlighted = (item_idx == self.selected_index and self.current_panel == 1)
+            is_highlighted = (item_idx == self.selected_index and self.current_panel == 2)
 
-            # Choose appropriate color
             if is_highlighted:
                 attr = Theme.get_color(Theme.SELECTED)
                 prefix = "► "
@@ -440,19 +586,42 @@ class GitIgnoreTUI:
 
             try:
                 display_text = prefix + template
-                # Fill the entire width for better highlighting
-                display_line = display_text.ljust(inner_width - 2)
-                self.stdscr.addstr(display_y, inner_x + 1, display_line[:inner_width-2], attr)
+                display_line = display_text[:content_width].ljust(content_width)
+                self.stdscr.addstr(display_y, inner_x + 1, display_line, attr)
+            except curses.error:
+                pass
+
+        if show_scrollbar:
+            scrollbar_x = inner_x + inner_width - 1
+            self._draw_scrollbar(inner_y, scrollbar_x, inner_height,
+                                len(selected_list), visible_count, self.selected_scroll)
+
+    def _draw_scrollbar(self, y, x, height, total_items, visible_items, scroll_position):
+        """Draw a vertical scroll bar"""
+        if total_items <= visible_items:
+            return
+
+        bar_height = height
+        thumb_height = max(1, int((visible_items / total_items) * bar_height))
+        thumb_position = int((scroll_position / max(1, total_items - visible_items)) * (bar_height - thumb_height))
+
+        for i in range(bar_height):
+            track_y = y + i
+            try:
+                if i >= thumb_position and i < thumb_position + thumb_height:
+                    self.stdscr.addch(track_y, x, "█", Theme.get_color(Theme.HIGHLIGHT))
+                else:
+                    self.stdscr.addch(track_y, x, "░", Theme.get_color(Theme.BORDER))
             except curses.error:
                 pass
 
     def _draw_content_panel(self, y, x, height, width):
-        """Draw the generated content panel"""
+        """Draw the generated content panel with scroll bar"""
         title = "Generated .gitignore"
         if self.generation_in_progress:
             title += " (Generating...)"
 
-        is_active = self.current_panel == 2
+        is_active = self.current_panel == 3
         self._draw_border(y, x, height, width, title, is_active)
 
         inner_y, inner_x = y + 1, x + 1
@@ -461,16 +630,18 @@ class GitIgnoreTUI:
         if not self.generated_content:
             try:
                 self.stdscr.addstr(inner_y + inner_height // 2, inner_x + 2,
-                                 "Select templates to generate content",
-                                 Theme.get_color(Theme.STATUS))
+                                    "Select templates to generate content",
+                                    Theme.get_color(Theme.STATUS))
             except curses.error:
                 pass
             return
 
-        # Split content into lines
         lines = self.generated_content.split('\n')
+        content_width = inner_width - 2
+        show_scrollbar = len(lines) > inner_height
+        if show_scrollbar:
+            content_width -= 2
 
-        # Draw content with scrolling
         for i in range(inner_height):
             line_idx = self.content_scroll + i
             if line_idx >= len(lines):
@@ -479,62 +650,26 @@ class GitIgnoreTUI:
             line = lines[line_idx]
             try:
                 self.stdscr.addstr(inner_y + i, inner_x + 1,
-                                 line[:inner_width-2], Theme.get_color(Theme.NORMAL))
+                                    line[:content_width], Theme.get_color(Theme.NORMAL))
             except curses.error:
                 pass
 
-    def _draw_status_bar(self):
-        """Draw the status bar at the bottom"""
-        max_y, max_x = self.stdscr.getmaxyx()
-        status_y = max_y - 1
+        if show_scrollbar:
+            scrollbar_x = inner_x + inner_width - 1
+            self._draw_scrollbar(inner_y, scrollbar_x, inner_height,
+                                len(lines), inner_height, self.content_scroll)
 
-        # Clear status line
-        try:
-            self.stdscr.addstr(status_y, 0, " " * (max_x - 1), Theme.get_color(Theme.STATUS))
-        except curses.error:
-            pass
-
-        # Show controls on left side with panel indicator and context-specific help
-        panel_names = ["Templates", "Selected", "Content"]
-        active_panel = panel_names[self.current_panel]
-
-        if self.current_panel == 0:
-            controls = f"[{active_panel}] ↑↓ Nav | Space Select | Tab Switch | s Save | i Info | q Quit"
-        elif self.current_panel == 1:
-            controls = f"[{active_panel}] ↑↓ Nav | Space Remove | Tab Switch | s Save | i Info | q Quit"
-        else:  # content panel
-            controls = f"[{active_panel}] ↑↓ Scroll | Tab Switch | s Save | i Info | q Quit"
-
-        # Show status message or error on right side
-        message = self.error_message if self.error_message else self.status_message
-
-        try:
-            # Draw controls on left
-            self.stdscr.addstr(status_y, 1, controls[:max_x//2-2], Theme.get_color(Theme.STATUS))
-
-            # Draw message on right with more prominence
-            if message:
-                # Truncate message if too long
-                max_msg_len = max_x//2 - 5
-                display_msg = message[:max_msg_len] if len(message) > max_msg_len else message
-                msg_x = max_x - len(display_msg) - 2
-
-                # Use different colors for different message types
-                if self.error_message:
-                    attr = Theme.get_color(Theme.ERROR) | curses.A_BOLD
-                elif "✓" in message or "Saved" in message:
-                    attr = Theme.get_color(Theme.SUCCESS) | curses.A_BOLD
-                else:
-                    attr = Theme.get_color(Theme.HIGHLIGHT)
-
-                self.stdscr.addstr(status_y, msg_x, display_msg, attr)
-        except curses.error:
-            pass
+            scroll_info = f" ({self.content_scroll + 1}-{min(self.content_scroll + inner_height, len(lines))}/{len(lines)})"
+            try:
+                info_x = x + len(title) + 2
+                if info_x + len(scroll_info) < x + width - 1:
+                    self.stdscr.addstr(y, info_x, scroll_info, Theme.get_color(Theme.BORDER))
+            except curses.error:
+                pass
 
     def _generate_header(self):
         """Generate header comment for .gitignore file"""
         timestamp = time.strftime('%Y-%m-%d %H:%M:%S')
-        # Templates are already clean from API parsing
         selected_list = sorted(list(self.selected_templates))
         templates_str = ", ".join(selected_list)
 
@@ -559,12 +694,9 @@ class GitIgnoreTUI:
         try:
             gitignore_path = Path(".gitignore")
 
-            # Check if file exists and ask for confirmation
             if gitignore_path.exists():
-                # Show confirmation dialog
                 self._show_save_confirmation(gitignore_path)
             else:
-                # Direct save for new files
                 content_with_header = self._generate_header() + self.generated_content
                 gitignore_path.write_text(content_with_header, encoding='utf-8')
                 self._set_status_message(f"✓ Saved to {gitignore_path.name} ({len(content_with_header)} chars)")
@@ -575,44 +707,81 @@ class GitIgnoreTUI:
     def _show_save_confirmation(self, gitignore_path):
         """Show save confirmation dialog"""
         max_y, max_x = self.stdscr.getmaxyx()
-
-        # Create confirmation dialog
         dialog_width = 60
-        dialog_height = 8
+        dialog_height = 12
         dialog_y = (max_y - dialog_height) // 2
         dialog_x = (max_x - dialog_width) // 2
 
-        # Draw dialog background
+        if dialog_y < 0 or dialog_x < 0:
+            dialog_width = min(dialog_width, max_x - 4)
+            dialog_height = min(dialog_height, max_y - 4)
+            dialog_y = (max_y - dialog_height) // 2
+            dialog_x = (max_x - dialog_width) // 2
+
         for y in range(dialog_y, dialog_y + dialog_height):
             for x in range(dialog_x, dialog_x + dialog_width):
                 try:
-                    self.stdscr.addch(y, x, ' ', Theme.get_color(Theme.SELECTED))
+                    self.stdscr.addch(y, x, ' ', Theme.get_color(Theme.SUCCESS))
                 except curses.error:
                     pass
 
-        # Draw dialog border
         self._draw_border(dialog_y, dialog_x, dialog_height, dialog_width, "Save Confirmation", False)
 
-        # Dialog content
         try:
-            self.stdscr.addstr(dialog_y + 2, dialog_x + 2,
-                             ".gitignore already exists!",
-                             Theme.get_color(Theme.ERROR) | curses.A_BOLD)
-            self.stdscr.addstr(dialog_y + 3, dialog_x + 2,
-                             "Do you want to overwrite it?")
-            self.stdscr.addstr(dialog_y + 5, dialog_x + 2,
-                             "[Y]es  [N]o  [A]ppend",
-                             Theme.get_color(Theme.HIGHLIGHT))
+            for y in range(dialog_y + 1, dialog_y + dialog_height + 1):
+                if y < max_y and dialog_x + dialog_width < max_x:
+                    self.stdscr.addch(y, dialog_x + dialog_width, '▓', Theme.get_color(Theme.BORDER))
+            for x in range(dialog_x + 1, dialog_x + dialog_width + 1):
+                if dialog_y + dialog_height < max_y and x < max_x:
+                    self.stdscr.addch(dialog_y + dialog_height, x, '▓', Theme.get_color(Theme.BORDER))
         except curses.error:
             pass
 
+        content_lines = [
+            "",
+            ".gitignore file already exists!",
+            "",
+            "What would you like to do?",
+            "",
+            "Options:",
+            "  [Y]es     - Overwrite the existing file",
+            "  [N]o      - Cancel the save operation",
+            "  [A]ppend  - Add content to existing file",
+            "",
+            "Press Y, N, or A to choose..."
+        ]
+
+        for i, line in enumerate(content_lines):
+            if i >= dialog_height - 2:
+                break
+
+            content_y = dialog_y + 1 + i
+            content_x = dialog_x + 2
+
+            try:
+                if line.startswith(".gitignore file already exists!"):
+                    attr = Theme.get_color(Theme.ERROR) | curses.A_BOLD
+                elif line.startswith("What would you like to do?"):
+                    attr = Theme.get_color(Theme.TITLE) | curses.A_BOLD
+                elif line.startswith("Options:"):
+                    attr = Theme.get_color(Theme.HIGHLIGHT) | curses.A_BOLD
+                elif line.startswith("  ["):
+                    attr = Theme.get_color(Theme.NORMAL) | curses.A_BOLD
+                elif line.startswith("Press Y, N, or A"):
+                    attr = Theme.get_color(Theme.BORDER) | curses.A_BOLD
+                else:
+                    attr = Theme.get_color(Theme.NORMAL)
+
+                display_line = line[:dialog_width-4]
+                self.stdscr.addstr(content_y, content_x, display_line, attr)
+            except curses.error:
+                pass
+
         self.stdscr.refresh()
 
-        # Wait for user input
         while True:
             key = self.stdscr.getch()
             if key in (ord('y'), ord('Y')):
-                # Overwrite
                 try:
                     content_with_header = self._generate_header() + self.generated_content
                     gitignore_path.write_text(content_with_header, encoding='utf-8')
@@ -620,11 +789,10 @@ class GitIgnoreTUI:
                 except Exception as e:
                     self._set_status_message(f"Failed to save: {e}", is_error=True)
                 break
-            elif key in (ord('n'), ord('N'), 27):  # No or Esc
+            elif key in (ord('n'), ord('N'), 27):
                 self._set_status_message("Save cancelled")
                 break
             elif key in (ord('a'), ord('A')):
-                # Append
                 try:
                     with open(gitignore_path, 'a', encoding='utf-8') as f:
                         f.write(f"\n\n# Added by MKAbuMattar.com on {time.strftime('%Y-%m-%d %H:%M:%S')}\n")
@@ -638,132 +806,182 @@ class GitIgnoreTUI:
                 break
 
     def _handle_input(self, key):
-        """Handle keyboard input"""
-        if key in (ord('q'), ord('Q'), 27):  # q or Esc
-            self.running = False
+        """Handle keyboard input with fzf-like search behavior"""
 
-        elif key == ord('\t'):  # Tab - switch panels
-            self.current_panel = (self.current_panel + 1) % 3
+        if key in (ord('q'), ord('Q'), 27):
+            if self.current_panel != 0:
+                self.running = False
+            else:
+                char = chr(key)
+                self.filter_text += char
+                self._filter_templates()
+                self.template_selected = 0
+                self.template_scroll = 0
+            return
 
-        elif key == curses.KEY_UP:
-            if self.current_panel == 0 and self.filtered_templates:
-                self.template_selected = max(0, self.template_selected - 1)
-            elif self.current_panel == 1 and self.selected_templates:
-                self.selected_index = max(0, self.selected_index - 1)
-            elif self.current_panel == 2:
-                self.content_scroll = max(0, self.content_scroll - 1)
+        elif key == ord('\t'):
+            self.current_panel = (self.current_panel + 1) % 4
+            return
 
-        elif key == curses.KEY_DOWN:
-            if self.current_panel == 0 and self.filtered_templates:
-                self.template_selected = min(len(self.filtered_templates) - 1,
-                                           self.template_selected + 1)
-            elif self.current_panel == 1 and self.selected_templates:
-                selected_count = len(self.selected_templates)
-                self.selected_index = min(selected_count - 1, self.selected_index + 1)
-            elif self.current_panel == 2:
-                content_lines = len(self.generated_content.split('\n')) if self.generated_content else 0
-                max_y, max_x = self.stdscr.getmaxyx()
-                content_height = max_y - 6  # Approximate content panel height
-                max_scroll = max(0, content_lines - content_height)
-                self.content_scroll = min(max_scroll, self.content_scroll + 1)
+        elif self.current_panel == 0:
+            if key in (8, 127):
+                if self.filter_text:
+                    self.filter_text = self.filter_text[:-1]
+                    self._filter_templates()
+                    self.template_selected = 0
+                    self.template_scroll = 0
+                return
+            elif 32 <= key <= 126:
+                char = chr(key)
+                self.filter_text += char
+                self._filter_templates()
+                self.template_selected = 0
+                self.template_scroll = 0
+                return
+            return
 
-        elif key in (ord(' '), ord('\n'), ord('\r')):  # Space or Enter
-            if self.current_panel == 0 and self.filtered_templates:
-                # Add/remove from templates panel
-                template = self.filtered_templates[self.template_selected]
+        elif key == ord('i'):
+            self._show_info_dialog()
+            return
 
-                # Templates are already clean from the API parsing
-                if template in self.selected_templates:
-                    self.selected_templates.remove(template)
-                else:
-                    self.selected_templates.add(template)
-
-                # Generate content in background
-                threading.Thread(target=self._generate_content, daemon=True).start()
-
-            elif self.current_panel == 1 and self.selected_templates:
-                # Remove from selected panel
-                selected_list = sorted(list(self.selected_templates))
-                if self.selected_index < len(selected_list):
-                    template_to_remove = selected_list[self.selected_index]
-                    self.selected_templates.remove(template_to_remove)
-
-                    # Adjust selected_index if needed
-                    if self.selected_index >= len(self.selected_templates):
-                        self.selected_index = max(0, len(self.selected_templates) - 1)
-
-                    # Generate content in background
-                    threading.Thread(target=self._generate_content, daemon=True).start()
-
-        elif key == ord('s'):  # Save
+        elif key == ord('s'):
             self._save_gitignore()
+            return
 
-        elif key == ord('r'):  # Refresh
+        elif key == ord('r'):
             self.loading = True
             self._set_status_message("Refreshing templates...")
             threading.Thread(target=self._load_templates, daemon=True).start()
+            return
 
-        elif key == ord('c'):  # Clear selections
+        elif key == ord('c'):
             self.selected_templates.clear()
             self.generated_content = ""
-            self.selected_index = 0  # Reset selected panel navigation
+            self.selected_index = 0
             self.selected_scroll = 0
             self._set_status_message("Cleared all selections")
+            return
 
-        elif key == ord('/'):  # Start filter
-            self._handle_filter_input()
+        elif key == ord('/'):
+            self.current_panel = 0
+            self._set_status_message("Search mode - Type to filter templates")
+            return
 
-        elif key == ord('i'):  # Show info dialog
-            self._show_info_dialog()
+        elif key == curses.KEY_UP:
+            if self.current_panel == 1:
+                if self.filtered_templates:
+                    self.template_selected = max(0, self.template_selected - 1)
+            elif self.current_panel == 2:
+                if self.selected_templates:
+                    self.selected_index = max(0, self.selected_index - 1)
+            elif self.current_panel == 3:
+                self.content_scroll = max(0, self.content_scroll - 1)
+            return
 
-        # Clear error message after 5 seconds, but not success messages
+        elif key == curses.KEY_DOWN:
+            if self.current_panel == 1:
+                if self.filtered_templates:
+                    self.template_selected = min(len(self.filtered_templates) - 1,
+                                                self.template_selected + 1)
+            elif self.current_panel == 2:
+                if self.selected_templates:
+                    selected_count = len(self.selected_templates)
+                    self.selected_index = min(selected_count - 1, self.selected_index + 1)
+            elif self.current_panel == 3:
+                content_lines = len(self.generated_content.split('\n')) if self.generated_content else 0
+                max_y, max_x = self.stdscr.getmaxyx()
+                content_height = max_y - 6
+                max_scroll = max(0, content_lines - content_height)
+                self.content_scroll = min(max_scroll, self.content_scroll + 1)
+            return
+
+        elif key in (ord(' '), ord('\n'), ord('\r')):
+            if self.current_panel == 1:
+                if self.filtered_templates:
+                    template = self.filtered_templates[self.template_selected]
+                    if template in self.selected_templates:
+                        self.selected_templates.remove(template)
+                    else:
+                        self.selected_templates.add(template)
+                        self._track_template_usage(template)
+                    threading.Thread(target=self._generate_content, daemon=True).start()
+
+            elif self.current_panel == 2:
+                if self.selected_templates:
+                    selected_list = sorted(list(self.selected_templates))
+                    if self.selected_index < len(selected_list):
+                        template_to_remove = selected_list[self.selected_index]
+                        self.selected_templates.remove(template_to_remove)
+                        if self.selected_index >= len(self.selected_templates):
+                            self.selected_index = max(0, len(self.selected_templates) - 1)
+                        threading.Thread(target=self._generate_content, daemon=True).start()
+            return
+
         current_time = time.time()
         if self.error_message and current_time - self.message_timestamp > 5:
             self.error_message = ""
         elif self.status_message and not ("✓" in self.status_message or "Saved" in self.status_message) and current_time - self.message_timestamp > 3:
-            # Clear non-success status messages after 3 seconds
-            if key != -1:  # Only clear when user presses a key
-                pass  # Keep message visible until user interaction
+            if key != -1:
+                pass
 
-    def _handle_filter_input(self):
-        """Handle filter input mode"""
-        curses.echo()
-        curses.curs_set(1)
-
+    def _draw_status_bar(self):
+        """Draw the status bar at the bottom"""
         max_y, max_x = self.stdscr.getmaxyx()
+        status_y = max_y - 1
+
         try:
-            self.stdscr.addstr(max_y - 1, 0, "Filter: ", Theme.get_color(Theme.HIGHLIGHT))
-            self.stdscr.refresh()
-
-            # Get filter input
-            filter_input = self.stdscr.getstr(max_y - 1, 8, 50).decode('utf-8')
-            self.filter_text = filter_input
-            self._filter_templates()
-
-        except (curses.error, KeyboardInterrupt):
+            self.stdscr.addstr(status_y, 0, " " * (max_x - 1), Theme.get_color(Theme.STATUS))
+        except curses.error:
             pass
-        finally:
-            curses.noecho()
-            curses.curs_set(0)
+
+        panel_names = ["Search", "Templates", "Selected", "Content"]
+        active_panel = panel_names[self.current_panel]
+
+        if self.current_panel == 0:
+            controls = f"[{active_panel}] Type to Search | Tab Switch | Backspace Clear"
+        elif self.current_panel == 1:
+            controls = f"[{active_panel}] ↑↓ Nav | Space Select | i Info | q Quit"
+        elif self.current_panel == 2:
+            controls = f"[{active_panel}] ↑↓ Nav | Space Remove | s Save | i Info | q Quit"
+        else:
+            controls = f"[{active_panel}] ↑↓ Scroll | s Save | i Info | q Quit"
+
+        message = self.error_message if self.error_message else self.status_message
+
+        try:
+            self.stdscr.addstr(status_y, 1, controls[:max_x//2-2], Theme.get_color(Theme.STATUS))
+
+            if message:
+                max_msg_len = max_x//2 - 5
+                display_msg = message[:max_msg_len] if len(message) > max_msg_len else message
+                msg_x = max_x - len(display_msg) - 2
+
+                if self.error_message:
+                    msg_attr = Theme.get_color(Theme.ERROR) | curses.A_BOLD
+                elif "✓" in message or "Saved" in message:
+                    msg_attr = Theme.get_color(Theme.SUCCESS) | curses.A_BOLD
+                else:
+                    msg_attr = Theme.get_color(Theme.HIGHLIGHT)
+
+                self.stdscr.addstr(status_y, msg_x, display_msg, msg_attr)
+        except curses.error:
+            pass
 
     def _show_info_dialog(self):
         """Show application information dialog"""
         max_y, max_x = self.stdscr.getmaxyx()
 
-        # Create info dialog
         dialog_width = 70
-        dialog_height = 20
+        dialog_height = 26
         dialog_y = (max_y - dialog_height) // 2
         dialog_x = (max_x - dialog_width) // 2
 
-        # Ensure dialog fits on screen
         if dialog_y < 0 or dialog_x < 0:
             dialog_width = min(dialog_width, max_x - 4)
             dialog_height = min(dialog_height, max_y - 4)
             dialog_y = (max_y - dialog_height) // 2
             dialog_x = (max_x - dialog_width) // 2
 
-        # Draw dialog background with a different color
         for y in range(dialog_y, dialog_y + dialog_height):
             for x in range(dialog_x, dialog_x + dialog_width):
                 try:
@@ -771,10 +989,8 @@ class GitIgnoreTUI:
                 except curses.error:
                     pass
 
-        # Draw dialog border
         self._draw_border(dialog_y, dialog_x, dialog_height, dialog_width, "GitIgnore TUI - Information", False)
 
-        # Add a subtle shadow effect by drawing darker characters around the border
         try:
             for y in range(dialog_y + 1, dialog_y + dialog_height + 1):
                 if y < max_y and dialog_x + dialog_width < max_x:
@@ -785,10 +1001,9 @@ class GitIgnoreTUI:
         except curses.error:
             pass
 
-        # Dialog content
         info_lines = [
             "",
-            "GitIgnore TUI v4.2.0",
+            "GitIgnore TUI v4.1.0",
             "Text User Interface for GitIgnore Template Generator",
             "",
             "Author: Mohammad Abu Mattar",
@@ -807,58 +1022,59 @@ class GitIgnoreTUI:
             "  s         Save .gitignore file",
             "  r         Refresh templates",
             "  c         Clear all selections",
-            "  /         Filter templates",
+            "  /         Filter templates (fuzzy search)",
             "  i         Show this info",
             "  q/Esc     Quit application",
+            "",
+            "Features:",
+            "  ✓ Fuzzy search with usage-based ranking",
+            "  ✓ Usage tracking and recently used templates",
+            "  ✓ Alphabetical sorting for easy browsing",
             "",
             "═══════════════════════════════════════════════════════",
             "Press ANY key to close this dialog..."
         ]
 
-        # Draw content
+        available_content_height = dialog_height - 2
         for i, line in enumerate(info_lines):
-            if i >= dialog_height - 2:  # Leave space for border
+            if i >= available_content_height:
                 break
 
             content_y = dialog_y + 1 + i
             content_x = dialog_x + 2
 
+            if content_y >= dialog_y + dialog_height - 1:
+                break
+
             try:
-                # Color certain lines differently with better contrast
                 if line.startswith("GitIgnore TUI"):
                     attr = Theme.get_color(Theme.TITLE) | curses.A_BOLD
                 elif line.startswith("Author:") or line.startswith("Website:") or line.startswith("GitHub:"):
                     attr = Theme.get_color(Theme.HIGHLIGHT) | curses.A_BOLD
-                elif line.startswith("Description:") or line.startswith("Controls:"):
+                elif line.startswith("Description:") or line.startswith("Controls:") or line.startswith("Features:"):
                     attr = Theme.get_color(Theme.SUCCESS) | curses.A_BOLD
-                elif line.startswith("  ") and any(ctrl in line for ctrl in ["↑/↓", "Space", "Tab", "s", "r", "c", "/", "i", "q/Esc"]):
+                elif line.startswith("  ") and any(ctrl in line for ctrl in ["↑/↓", "Space", "Tab", "s", "r", "c", "/", "i", "q/Esc", "✓"]):
                     attr = Theme.get_color(Theme.BORDER)
                 elif line.startswith("Press ANY key") or "═══" in line:
                     attr = Theme.get_color(Theme.ERROR) | curses.A_BOLD
                 else:
                     attr = Theme.get_color(Theme.NORMAL)
 
-                display_line = line[:dialog_width-4]  # Leave margin
+                display_line = line[:dialog_width-4]
                 self.stdscr.addstr(content_y, content_x, display_line, attr)
             except curses.error:
                 pass
 
         self.stdscr.refresh()
+        self.stdscr.timeout(-1)
+        curses.flushinp()
 
-        # Wait for any key press - temporarily disable timeout for this dialog
-        self.stdscr.timeout(-1)  # Blocking mode
-
-        # Clear any pending input
-        curses.flushinp()  # Use curses.flushinp() not self.stdscr.flushinp()
-
-        # Wait for user input
         while True:
             key = self.stdscr.getch()
             if key != -1 and key != curses.ERR:
                 break
 
-        # Restore original timeout
-        self.stdscr.timeout(100)  # Restore to 100ms timeout
+        self.stdscr.timeout(100)
 
     def render(self):
         """Main render loop"""
@@ -866,16 +1082,16 @@ class GitIgnoreTUI:
             self.stdscr.clear()
             max_y, max_x = self.stdscr.getmaxyx()
 
-            # Calculate panel dimensions
             left_width = max_x // 3
             right_width = max_x - left_width
             bottom_height = 6
-            top_height = max_y - bottom_height - 1  # -1 for status bar
+            search_height = 3
+            templates_height = max_y - bottom_height - search_height - 1
 
-            # Draw panels
-            self._draw_templates_panel(0, 0, top_height, left_width)
-            self._draw_content_panel(0, left_width, top_height, right_width)
-            self._draw_selected_panel(top_height, 0, bottom_height, max_x)
+            self._draw_search_panel(0, 0, search_height, left_width)
+            self._draw_templates_panel(search_height, 0, templates_height, left_width)
+            self._draw_content_panel(0, left_width, max_y - bottom_height - 1, right_width)
+            self._draw_selected_panel(max_y - bottom_height - 1, 0, bottom_height, max_x)
             self._draw_status_bar()
 
             self.stdscr.refresh()
@@ -883,7 +1099,7 @@ class GitIgnoreTUI:
         except curses.error:
             pass
 
-    def run(self):
+    def run(self) -> None:
         """Main application loop"""
         while self.running:
             self.render()
@@ -895,17 +1111,18 @@ class GitIgnoreTUI:
             except curses.error:
                 pass
 
-            time.sleep(0.01)  # Small delay to prevent excessive CPU usage
+            time.sleep(0.01)
 
 
-def main():
-    """Main entry point"""
+def main() -> None:
+    """Main entry point with proper error handling"""
     try:
         curses.wrapper(lambda stdscr: GitIgnoreTUI(stdscr).run())
     except KeyboardInterrupt:
-        print("\nExiting GitIgnore TUI...")
+        print("\n✓ GitIgnore TUI closed by user")
+        sys.exit(0)
     except Exception as e:
-        print(f"Error: {e}")
+        print(f"✗ Error running GitIgnore TUI: {e}")
         sys.exit(1)
 
 
