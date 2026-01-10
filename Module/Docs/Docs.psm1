@@ -1992,7 +1992,7 @@ $($PSStyle.Foreground.Yellow)Utility Module$($PSStyle.Reset)
     Available Utilities:
         $($PSStyle.Foreground.Cyan)System Administration$($PSStyle.Reset) - Administrator privileges, system info, disk usage analysis (7 commands)
         $($PSStyle.Foreground.Cyan)Base64 Utilities$($PSStyle.Reset) - Complete Base64 encoding/decoding with file and text support (3 commands)
-        $($PSStyle.Foreground.Cyan)GitIgnore Management$($PSStyle.Reset) - Comprehensive .gitignore file management using gitignore.io API (5 commands)
+        $($PSStyle.Foreground.Cyan)GitIgnore Management$($PSStyle.Reset) - Interactive .gitignore file generation using igntui TUI (1 command)
         $($PSStyle.Foreground.Cyan)QRCode Generation$($PSStyle.Reset) - Generate QR codes directly from PowerShell using qrcode.show API (4 commands)
         $($PSStyle.Foreground.Cyan)WebSearch Integration$($PSStyle.Reset) - Comprehensive web search with 30+ search engines (30+ commands)
         $($PSStyle.Foreground.Cyan)Random Quote Generator$($PSStyle.Reset) - Fetch inspirational quotes from online APIs (1 command)
@@ -2005,7 +2005,7 @@ $($PSStyle.Foreground.Yellow)Utility Module$($PSStyle.Reset)
 
     $($PSStyle.Foreground.Green)Common Utility Workflows:$($PSStyle.Reset)
         $($PSStyle.Foreground.Cyan)# Development setup
-        ginew node react typescript     # Create comprehensive .gitignore
+        gitui                           # Launch interactive TUI
         ef64 config.json                # Encode sensitive config
         qrcode "https://localhost:3000" # QR for local development
         
@@ -2111,44 +2111,37 @@ $($PSStyle.Foreground.Yellow)Utility Module - Base64 Utilities$($PSStyle.Reset)
 
     $UtilityGitIgnore = @"
 $($PSStyle.Foreground.Yellow)Utility Module - GitIgnore Management$($PSStyle.Reset)
-    Comprehensive .gitignore file management using the gitignore.io API service.
+    Interactive .gitignore file generation using the igntui TUI application.
 
-    $($PSStyle.Foreground.Green)Get-GitIgnore$($PSStyle.Reset) <technologies...> [-OutputPath <Path>] [-Append]
-    $($PSStyle.Foreground.Magenta)gitignore$($PSStyle.Reset) <technologies...> [-OutputPath <Path>] [-Append]
-        Generates .gitignore content for specified technologies using gitignore.io API.
-
-    $($PSStyle.Foreground.Green)Get-GitIgnoreList$($PSStyle.Reset) [-Filter <Filter>] [-GridView]
-    $($PSStyle.Foreground.Magenta)gilist$($PSStyle.Reset) [-Filter <Filter>] [-GridView]
-        Lists all available gitignore templates with optional filtering.
-
-    $($PSStyle.Foreground.Green)New-GitIgnoreFile$($PSStyle.Reset) <technologies...> [-Path <Path>] [-Backup] [-Force]
-    $($PSStyle.Foreground.Magenta)ginew$($PSStyle.Reset) <technologies...> [-Path <Path>] [-Backup] [-Force]
-        Creates a new .gitignore file with specified technology templates.
-
-    $($PSStyle.Foreground.Green)Add-GitIgnoreContent$($PSStyle.Reset) <technologies...> [-Path <Path>]
-    $($PSStyle.Foreground.Magenta)giadd$($PSStyle.Reset) <technologies...> [-Path <Path>]
-        Adds additional technology templates to an existing .gitignore file.
-
-    $($PSStyle.Foreground.Green)Test-GitIgnoreService$($PSStyle.Reset)
-    $($PSStyle.Foreground.Magenta)gitest$($PSStyle.Reset)
-        Tests connectivity to the gitignore.io API service.
+    $($PSStyle.Foreground.Green)Start-GitIgnoreTUI$($PSStyle.Reset)
+    $($PSStyle.Foreground.Magenta)gitui$($PSStyle.Reset)
+        Launches the igntui interactive TUI for browsing and generating .gitignore files.
+        Automatically installs igntui from PyPI using pipx if not found.
+        
+        Features:
+        - Browse 450+ gitignore templates interactively
+        - Search and filter templates with /
+        - Multi-select templates with Space
+        - Live preview of generated .gitignore
+        - Save files directly from the TUI with s
+        - Cross-platform support (Windows, macOS, Linux)
 
     $($PSStyle.Foreground.Green)Examples:$($PSStyle.Reset)
-        $($PSStyle.Foreground.Cyan)# Project initialization workflow
-        gilist -Filter node             # Find Node.js templates
-        ginew node visualstudiocode     # Create .gitignore for Node + VSCode
-        giadd macos windows linux       # Add OS-specific ignores
+        $($PSStyle.Foreground.Cyan)# Launch the interactive TUI
+        gitui
         
-        # Technology-specific projects
-        ginew python django             # Python web project
-        ginew dotnetcore visualstudio   # .NET project
-        ginew react node yarn           # React project
+        # TUI Controls:
+        # ↑/↓         Navigate template list
+        # Space/Enter Select/deselect template
+        # /           Search/filter templates
+        # s           Save .gitignore file
+        # c           Clear selections
+        # q/Esc       Quit application
         
-        # Advanced usage
-        gitignore python --OutputPath custom.gitignore  # Custom output
-        gitignore node -Append          # Append to existing file
-        gilist -GridView               # Interactive selection
-        gitest                         # Verify service availability$($PSStyle.Reset)
+        # The TUI provides three panels:
+        # - Left: Available templates
+        # - Right: Generated .gitignore preview
+        # - Bottom: Selected templates$($PSStyle.Reset)
 "@
 
     $UtilityQRCode = @"

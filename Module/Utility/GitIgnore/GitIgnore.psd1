@@ -29,40 +29,31 @@
 # Author: Mohammad Abu Mattar
 #
 # Description:
-#       This module provides utilities for generating .gitignore files using the gitignore.io API.
-#       It includes functions for generating gitignore content for various technologies and platforms,
-#       as well as listing available templates and providing tab completion support.
-#       Uses Python backend for API interactions.
+#       This module provides a simple wrapper for the igntui CLI tool.
+#       igntui is an interactive TUI for generating .gitignore files.
+#       Automatically installs igntui from PyPI if not found.
 #
 # Created: 2025-09-27
-# Updated: 2025-10-25
+# Updated: 2026-01-10
 #
 # GitHub: https://github.com/MKAbuMattar/powershell-profile
 #
-# Version: 4.2.0
+# Version: 5.0.0
 #---------------------------------------------------------------------------------------------------
 @{
     RootModule        = 'GitIgnore.psm1'
-    ModuleVersion     = '4.2.0'
+    ModuleVersion     = '5.0.0'
     GUID              = 'de13ca13-6abe-4ac3-8755-b66cd6852922'
     Author            = 'Mohammad Abu Mattar'
     CompanyName       = 'MKAbuMattar'
     Copyright         = '(c) 2025 Mohammad Abu Mattar. All rights reserved.'
-    Description       = 'GitIgnore utility module for generating .gitignore files using gitignore.io API. Provides functions for creating, updating, and managing .gitignore files with support for various technologies and platforms.'
+    Description       = 'Simple wrapper for igntui - an interactive TUI for generating .gitignore files. Automatically installs from PyPI using pipx if not found.'
     PowerShellVersion = '5.1'
     FunctionsToExport = @(
-        'Get-GitIgnore',
-        'Get-GitIgnoreList', 
-        'New-GitIgnoreFile',
-        'Add-GitIgnoreContent',
-        'Test-GitIgnoreService'
+        'Start-GitIgnore'
     )
     AliasesToExport   = @(
         'gitignore',
-        'gilist',
-        'ginew', 
-        'giadd',
-        'gitest'
     )
     CmdletsToExport   = @()
     VariablesToExport = @()

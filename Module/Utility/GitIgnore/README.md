@@ -2,53 +2,51 @@
 
 ## Overview
 
-The GitIgnore utility module provides comprehensive integration with the [gitignore.io](https://gitignore.io) API service, allowing you to generate, manage, and update `.gitignore` files directly from PowerShell. It offers both command-line and TUI (Text User Interface) modes for an optimal user experience.
+The GitIgnore utility module provides a simple PowerShell wrapper for **igntui**, an interactive Terminal User Interface (TUI) for generating `.gitignore` files. This module automatically handles installation and provides easy access to the powerful igntui tool directly from PowerShell.
 
 ## Features
 
--   **🎯 Generate GitIgnore Content**: Create .gitignore content for any combination of technologies
--   **📋 List Available Templates**: Browse and filter available gitignore templates
--   **📝 File Management**: Create new .gitignore files with backup support
--   **➕ Content Addition**: Add templates to existing .gitignore files
--   **🔍 Service Testing**: Test connectivity to gitignore.io API
--   **⚡ Tab Completion**: PowerShell tab completion for technology names
+-   **🎨 Interactive TUI**: Beautiful terminal interface for browsing and selecting gitignore templates
+-   **🔍 Smart Search**: Filter through 450+ available gitignore templates
+-   **📋 Multi-Select**: Select multiple technologies at once
+-   **👁️ Live Preview**: See generated .gitignore content in real-time
+-   **💾 Direct Save**: Save generated .gitignore files directly from the TUI
+-   **📦 Auto-Install**: Automatically prompts to install igntui from PyPI if not found
 -   **🌐 Cross-Platform**: Works on Windows, macOS, and Linux
--   **💾 Caching**: Smart caching of available templates for performance
--   **🖥️ TUI Mode**: Interactive Text User Interface for visual template selection
 
 ## Installation
 
 This module is part of the MKAbuMattar PowerShell Profile and is automatically loaded with the Utility module.
 
-## TUI (Text User Interface) Mode
+### Requirements
 
-### Quick Start
+-   PowerShell 5.1 or later
+-   Python 3.9+ (for igntui)
+-   pipx or pip (for installing igntui)
 
-```bash
-python gitignore.py --tui
+The igntui package will be automatically installed from PyPI when you first run the command.
+
+## Quick Start
+
+Simply run:
+
+```powershell
+gitui
 ```
 
-### TUI Features
+Or use the full function name:
 
--   **Three-Panel Layout**:
-    -   **Left Panel**: Browse available .gitignore templates
-    -   **Bottom Panel**: View selected templates
-    -   **Right Panel**: Live preview of generated .gitignore content
+```powershell
+Start-GitIgnoreTUI
+```
 
-### TUI Controls
+If igntui is not installed, you'll be prompted to install it automatically using pipx.
 
-| Key           | Action                         |
-| ------------- | ------------------------------ |
-| `↑/↓`         | Navigate template list         |
-| `Space/Enter` | Select/deselect template       |
-| `Tab`         | Switch between panels          |
-| `/`           | Filter templates               |
-| `s`           | Save generated .gitignore file |
-| `r`           | Refresh templates list         |
-| `c`           | Clear all selections           |
-| `q/Esc`       | Quit application               |
+## TUI Interface
 
-### TUI Screenshot Concept
+The igntui TUI provides a modern, interactive interface with the following features:
+
+### Three-Panel Layout
 
 ```
 ┌─── Available Templates ───┐┌──── Generated .gitignore ────┐
@@ -63,362 +61,149 @@ python gitignore.py --tui
 │ • node                                                       │
 │ • python                                                     │
 └──────────────────────────────────────────────────────────────┘
-Controls: ↑↓ Navigate | Space Select | s Save | q Quit
 ```
 
-## Python CLI Mode
+### Navigation Controls
 
-For users who prefer command-line interfaces, the Python script also provides a traditional CLI mode:
+| Key           | Action                         |
+| ------------- | ------------------------------ |
+| `↑/↓`         | Navigate template list         |
+| `Space/Enter` | Select/deselect template       |
+| `Tab`         | Switch between panels          |
+| `/`           | Filter/search templates        |
+| `s`           | Save generated .gitignore file |
+| `r`           | Refresh templates list         |
+| `c`           | Clear all selections           |
+| `q/Esc`       | Quit application               |
 
-### CLI Commands
+## Available Functions
 
-```bash
-# Generate .gitignore for specific technologies
-python gitignore.py --get node python react
+### Start-GitIgnoreTUI (Alias: gitui)
 
-# List all available templates
-python gitignore.py --list
+Launches the igntui TUI application. If not installed, prompts to install from PyPI.
 
-# Filter templates by pattern
-python gitignore.py --list --filter python
+```powershell
+# Launch the TUI
+gitui
 
-# Test API connectivity
-python gitignore.py --test
-
-# Launch TUI mode
-python gitignore.py --tui
+# Or use the full function name
+Start-GitIgnoreTUI
 ```
 
-### CLI Examples
+### Auto-Installation
 
-```bash
-# Create .gitignore for a Node.js project
-python gitignore.py --get node > .gitignore
+If igntui is not installed, the module will display:
 
-# Find all Python-related templates
-python gitignore.py --list --filter python
+```
+❌ igntui is not installed.
 
-# Generate for multiple technologies
-python gitignore.py --get python django react node > .gitignore
+💡 igntui is an interactive TUI for generating .gitignore files.
+   It can be installed from PyPI using pipx or pip:
 
-# Test if gitignore.io is accessible
-python gitignore.py --test
+   pipx install igntui
+   pip install igntui
+
+Would you like to install it now using pipx? (Y/n)
 ```
 
-## Functions and Aliases
+Select `Y` to automatically install igntui, or install it manually later.
 
-### Core Functions
-
-| Function                | Alias    | Description                                           |
-| ----------------------- | -------- | ----------------------------------------------------- |
-| `Get-GitIgnore`         | `gi`     | Generate gitignore content for specified technologies |
-| `Get-GitIgnoreList`     | `gilist` | List all available gitignore templates                |
-| `New-GitIgnoreFile`     | `ginew`  | Create new .gitignore file                            |
-| `Add-GitIgnoreContent`  | `giadd`  | Add content to existing .gitignore file               |
-| `Test-GitIgnoreService` | `gitest` | Test API connectivity                                 |
-
-## Quick Start
+## Usage Examples
 
 ### Basic Usage
 
 ```powershell
-# Generate gitignore for Node.js and Python (equivalent to original gi() function)
-gi node python
+# Launch the interactive TUI
+gitui
 
-# List available templates
-gilist
-
-# Search for specific templates
-gilist -Filter python
-
-# Create a new .gitignore file
-ginew visualstudio windows
-
-# Add templates to existing .gitignore
-giadd docker kubernetes
-
-# Test service connectivity
-gitest
+# The TUI will open and you can:
+# 1. Browse through 450+ templates
+# 2. Use / to search for specific technologies
+# 3. Press Space to select/deselect templates
+# 4. Press s to save the generated .gitignore file
+# 5. Press q to quit
 ```
 
-### Advanced Usage
+### Typical Workflow
+
+1. **Launch TUI**: `gitui`
+2. **Search for templates**: Press `/` and type (e.g., "python", "node")
+3. **Select technologies**: Navigate with `↑/↓` and press `Space` to select
+4. **Preview content**: View the generated .gitignore in the right panel
+5. **Save file**: Press `s` to save .gitignore to the current directory
+6. **Exit**: Press `q` or `Esc` when done
+
+### Manual Installation (Optional)
+
+If you prefer to install igntui manually:
 
 ```powershell
-# Save gitignore content to file
-gi node python react -OutputPath .\.gitignore
+# Using pipx (recommended)
+pipx install igntui
 
-# Create .gitignore with backup of existing file
-ginew python django flask -Backup
-
-# Filter templates and view in grid (Windows only)
-gilist -Filter java -GridView
-
-# Force overwrite existing .gitignore
-ginew macos xcode -Force
-
-# Append to existing file
-gi linux vim -OutputPath .\.gitignore -Append
+# Or using pip
+pip install igntui
 ```
 
-## Detailed Examples
+## About igntui
 
-### 1. Web Development Workflow
+igntui is a Python package that provides an interactive TUI for generating .gitignore files using the gitignore.io API. It offers a modern, user-friendly alternative to command-line tools.
 
-```powershell
-# Start new web project
-mkdir my-web-app
-cd my-web-app
+**Features:**
 
-# Create comprehensive .gitignore
-ginew node react visualstudio windows macos
+-   Browse 450+ gitignore templates
+-   Multi-select capability
+-   Real-time preview
+-   Search/filter functionality
+-   Direct file saving
 
-# Later add Docker support
-giadd docker docker-compose
-
-# View the generated file
-Get-Content .gitignore
-```
-
-### 2. Python Development
-
-```powershell
-# Python project with virtual environment
-ginew python django pycharm windows
-
-# Add Jupyter notebooks later
-giadd jupyternotebooks
-
-# Check what Python-related templates are available
-gilist -Filter python
-```
-
-### 3. Multi-Platform Development
-
-```powershell
-# Cross-platform mobile development
-ginew android ios react-native gradle maven
-
-# Add platform-specific ignores
-giadd windows macos linux
-```
-
-### 4. Exploring Available Templates
-
-```powershell
-# See all available templates
-gilist
-
-# Find all Java-related templates
-gilist -Filter java
-
-# Find IDE templates
-gilist -Filter "studio"
-
-# View in interactive grid (Windows)
-gilist -GridView
-```
-
-## Function Reference
-
-### Get-GitIgnore (gi)
-
-Generate .gitignore content for specified technologies.
-
-```powershell
-Get-GitIgnore [-Technologies] <string[]> [-OutputPath <string>] [-Append]
-
-# Examples
-gi node python                           # Output to console
-gi visualstudio -OutputPath .\.gitignore # Save to file
-gi macos -OutputPath .\.gitignore -Append # Append to file
-```
-
-**Parameters:**
-
--   `Technologies`: Array of technology names (supports multiple values)
--   `OutputPath`: Optional file path to save content
--   `Append`: Append to file instead of overwriting
-
-### Get-GitIgnoreList (gilist)
-
-List available gitignore templates with optional filtering.
-
-```powershell
-Get-GitIgnoreList [-Filter <string>] [-GridView]
-
-# Examples
-gilist                      # List all templates
-gilist -Filter python       # Filter by name
-gilist -GridView            # Interactive grid (Windows)
-```
-
-**Parameters:**
-
--   `Filter`: Optional filter string for technology names
--   `GridView`: Display in interactive grid view (Windows only)
-
-### New-GitIgnoreFile (ginew)
-
-Create a new .gitignore file with specified technologies.
-
-```powershell
-New-GitIgnoreFile [-Technologies] <string[]> [-Path <string>] [-Backup] [-Force]
-
-# Examples
-ginew node python                    # Create in current directory
-ginew visualstudio -Path ./project   # Create in specific directory
-ginew python -Backup                # Backup existing file
-ginew django -Force                 # Force overwrite
-```
-
-**Parameters:**
-
--   `Technologies`: Array of technology names
--   `Path`: Directory path (defaults to current directory)
--   `Backup`: Create backup of existing .gitignore
--   `Force`: Overwrite without prompting
-
-### Add-GitIgnoreContent (giadd)
-
-Add additional technologies to existing .gitignore file.
-
-```powershell
-Add-GitIgnoreContent [-Technologies] <string[]> [-Path <string>]
-
-# Examples
-giadd docker kubernetes             # Add to existing file
-giadd macos -Path ./project        # Add to specific directory
-```
-
-**Parameters:**
-
--   `Technologies`: Array of technology names to add
--   `Path`: Directory path (defaults to current directory)
-
-### Test-GitIgnoreService (gitest)
-
-Test connectivity to the gitignore.io API.
-
-```powershell
-Test-GitIgnoreService
-
-# Examples
-gitest                              # Test API connectivity
-```
-
-## Tab Completion
-
-The module provides intelligent tab completion for technology names:
-
-```powershell
-gi node<TAB>           # Completes to available node-related templates
-ginew python<TAB>      # Shows Python-related options
-giadd visual<TAB>      # Shows Visual Studio related templates
-```
-
-The completion system:
-
--   Caches available templates for 30 minutes for performance
--   Falls back to common technologies if API is unavailable
--   Provides real-time filtering as you type
-
-## Error Handling
-
-The module includes comprehensive error handling:
-
--   **Network Issues**: Graceful handling of connectivity problems
--   **Invalid Technologies**: Clear error messages for unknown templates
--   **File Conflicts**: Safe handling of existing .gitignore files
--   **API Limitations**: Fallback behavior when service is unavailable
-
-## Performance Features
-
--   **Template Caching**: Available templates are cached for 30 minutes
--   **Efficient API Calls**: Minimal requests to gitignore.io service
--   **Background Loading**: Tab completion works even with slow connections
--   **Fallback Support**: Works offline with cached/common templates
-
-## Integration with Git Workflow
-
-```powershell
-# Complete project setup workflow
-mkdir my-project
-cd my-project
-
-git init                           # Initialize git repository
-ginew node python windows         # Create .gitignore
-git add .gitignore                # Stage .gitignore
-git commit -m "Add .gitignore"    # Commit
-
-# Later add more templates
-giadd docker
-git add .gitignore
-git commit -m "Add Docker to .gitignore"
-```
+**PyPI Package**: [https://pypi.org/project/igntui/](https://pypi.org/project/igntui/)
 
 ## Troubleshooting
 
-### Common Issues
+### igntui not found after installation
 
-1. **Network Connectivity**
+If you installed igntui but the command is not found, try:
 
-    ```powershell
-    gitest  # Test API connectivity
-    ```
+1. Close and reopen your PowerShell session
+2. Verify pipx is in your PATH: `pipx --version`
+3. Manually add to PATH or use: `python -m igntui`
 
-2. **Unknown Technology Names**
+### Python not found
 
-    ```powershell
-    gilist -Filter <technology>  # Check available templates
-    ```
+The module requires Python to be installed. Install Python from:
 
-3. **File Permission Issues**
+-   Windows: [python.org](https://python.org) or `winget install Python.Python.3.12`
+-   macOS: `brew install python3`
+-   Linux: Use your package manager (e.g., `apt install python3`)
 
-    ```powershell
-    # Ensure you have write permissions to the target directory
-    Test-Path .\ -IsValid
-    ```
+### pipx not found
 
-4. **PowerShell Version Compatibility**
-    ```powershell
-    $PSVersionTable.PSVersion  # Check PowerShell version (requires 5.1+)
-    ```
-
-### Getting Help
+If pipx is not installed:
 
 ```powershell
-# Get detailed help for any function
-Get-Help Get-GitIgnore -Full
-Get-Help gilist -Examples
-Get-Help ginew -Parameter Technologies
+# Install pipx
+python -m pip install --user pipx
+python -m pipx ensurepath
 ```
 
-| PowerShell Equivalent          | Enhancement                             |
-| ------------------------------ | --------------------------------------- |
-| `Get-GitIgnore` / `gi`         | File output, error handling, validation |
-| `Get-GitIgnoreList` / `gilist` | Filtering, grid view, formatting        |
-| Built-in tab completion        | Smart caching, fallback support         |
+Then restart your terminal.
 
-### Advantages of PowerShell Version
+## Module Information
 
--   **Better Error Handling**: Comprehensive error messages and recovery
--   **File Management**: Direct file creation and management capabilities
--   **Tab Completion**: Native PowerShell completion with caching
--   **Parameter Validation**: Strong typing and parameter validation
--   **Help System**: Complete PowerShell help documentation
--   **Cross-Platform**: Works consistently across Windows, macOS, and Linux
--   **Integration**: Seamless integration with PowerShell workflows
+-   **Module**: GitIgnore Utility
+-   **Version**: 5.0.0
+-   **Author**: Mohammad Abu Mattar
+-   **Created**: 2025-09-27
+-   **Updated**: 2026-01-10
 
-## Requirements
+## See Also
 
--   **PowerShell**: Version 5.1 or later
--   **Internet**: Required for API access to gitignore.io
--   **Permissions**: Write access to target directories for file creation
-
-## Contributing
-
-This module is part of the MKAbuMattar PowerShell Profile project. Contributions are welcome through the main repository.
+-   [Utility Module README](../README.md) - Complete utility module documentation
+-   [PowerShell Profile](https://github.com/MKAbuMattar/powershell-profile) - Main profile repository
+-   [igntui on PyPI](https://pypi.org/project/igntui/) - Python package information
+-   [gitignore.io](https://gitignore.io) - Template source
 
 ## License
 
-This module is licensed under the same terms as the main PowerShell Profile project.
+This module is part of the MKAbuMattar PowerShell Profile and is available under the same license.

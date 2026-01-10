@@ -116,24 +116,23 @@ Complete Base64 encoding and decoding utilities with file and text support.
 
 #### **GitIgnore Management**
 
-Comprehensive .gitignore file management using the gitignore.io API service.
+Interactive .gitignore file generation using the igntui TUI application.
 
 **Key Functions:**
 
--   `Get-GitIgnore` (alias: `gitignore`) - Generate .gitignore content
--   `Get-GitIgnoreList` (alias: `gilist`) - List available templates
--   `New-GitIgnoreFile` (alias: `ginew`) - Create .gitignore files
--   `Add-GitIgnoreContent` (alias: `giadd`) - Add to existing .gitignore
+-   `Start-GitIgnoreTUI` (alias: `gitui`) - Launch igntui TUI interface
 
--   `Test-GitIgnoreService` (alias: `gitest`) - Test API connectivity- `ConvertTo-Base64` (alias: `e64`) - Encode text to Base64**Key Functions:**
-
--   `Test-GitIgnoreService` (alias: `gitest`) - Test API connectivity
-
-**Key Features:** Template generation, API integration, file management, technology filtering
+**Key Features:** Interactive TUI, template browsing, multi-select, live preview, auto-installation from PyPI
 
 **Location:** `Module/Utility/GitIgnore/`
 
 **Documentation:** [GitIgnore Utilities README](GitIgnore/README.md)
+
+**`Start-GitIgnoreTUI`** (Alias: `gitui`):
+
+-   _Description:_ Launches the igntui interactive TUI for browsing and generating .gitignore files. Auto-installs from PyPI if not found.
+-   _Usage:_ `gitui`
+-   _Requirements:_ Python 3.9+, pipx or pip
 
 #### **QRCode Generation**
 
