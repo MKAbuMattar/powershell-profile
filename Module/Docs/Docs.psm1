@@ -174,6 +174,7 @@ function Show-ProfileHelp {
             'ASCIIQuarium',
             'AWS',
             'Conda',
+            'Config',
             'Deno',
             'Directory',
             'Docker',
@@ -210,6 +211,41 @@ function Show-ProfileHelp {
 
     $Title = @"
 $($PSStyle.Foreground.Cyan)PowerShell Profile Helper$($PSStyle.Reset)
+"@
+
+    $Config = @"
+$($PSStyle.Foreground.Yellow)Config Module$($PSStyle.Reset)
+    $($PSStyle.Foreground.Green)Get-ProfileConfig$($PSStyle.Reset) [-Key <Key>] [-Default <Default>]
+    $($PSStyle.Foreground.Magenta)cfg$($PSStyle.Reset) [-Key <Key>] [-Default <Default>]
+        Gets configuration values from the user's config file.
+
+    $($PSStyle.Foreground.Green)Set-ProfileConfig$($PSStyle.Reset) -Key <Key> -Value <Value> [-Force]
+    $($PSStyle.Foreground.Magenta)cfg-set$($PSStyle.Reset) -Key <Key> -Value <Value> [-Force]
+        Sets a configuration value in the user's config file.
+
+    $($PSStyle.Foreground.Green)Reset-ProfileConfig$($PSStyle.Reset) [-Section <Section>] [-Force]
+    $($PSStyle.Foreground.Magenta)cfg-reset$($PSStyle.Reset) [-Section <Section>] [-Force]
+        Resets configuration to default values.
+
+    $($PSStyle.Foreground.Green)Export-ProfileConfig$($PSStyle.Reset) -Path <Path> [-Force]
+    $($PSStyle.Foreground.Magenta)cfg-export$($PSStyle.Reset) -Path <Path> [-Force]
+        Exports configuration to a file for backup or sharing.
+
+    $($PSStyle.Foreground.Green)Import-ProfileConfig$($PSStyle.Reset) -Path <Path> [-Merge] [-Force]
+    $($PSStyle.Foreground.Magenta)cfg-import$($PSStyle.Reset) -Path <Path> [-Merge] [-Force]
+        Imports configuration from a file.
+
+    $($PSStyle.Foreground.Green)Edit-ProfileConfig$($PSStyle.Reset) [-Editor <Editor>]
+    $($PSStyle.Foreground.Magenta)cfg-edit$($PSStyle.Reset) [-Editor <Editor>]
+        Opens configuration file in an editor.
+
+    $($PSStyle.Foreground.Green)Test-ProfileConfig$($PSStyle.Reset) [-Path <Path>]
+    $($PSStyle.Foreground.Magenta)cfg-test$($PSStyle.Reset) [-Path <Path>]
+        Validates the configuration file.
+
+    $($PSStyle.Foreground.Green)Show-ProfileConfigInfo$($PSStyle.Reset)
+    $($PSStyle.Foreground.Magenta)cfg-info$($PSStyle.Reset)
+        Displays configuration system information.
 "@
 
     $Directory = @"
@@ -2453,6 +2489,7 @@ $($PSStyle.Foreground.Yellow)Plugins Module - Rust Plugin$($PSStyle.Reset)
     switch ($Section) {
         'All' {
             Write-Host $Title
+            Write-Host $Config
             Write-Host $Directory
             Write-Host $Docs
             Write-Host $Environment
@@ -2471,6 +2508,10 @@ $($PSStyle.Foreground.Yellow)Plugins Module - Rust Plugin$($PSStyle.Reset)
         'Conda' {
             Write-Host $Title
             Write-Host $PluginsConda
+        }
+        'Config' {
+            Write-Host $Title
+            Write-Host $Config
         }
         'Deno' {
             Write-Host $Title

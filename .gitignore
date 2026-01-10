@@ -3,3 +3,7 @@ Scripts
 *.zip
 *.ttf
 oldprofile.ps1
+
+# User-specific configuration files
+ps1-profile-cfg.json
+.config/ps1-profile-cfg.json

@@ -47,22 +47,39 @@
 #---------------------------------------------------------------------------------------------------
 $BaseModuleDir = Join-Path -Path $PSScriptRoot -ChildPath '/'
 
+# Get utility enable/disable settings from config
+$utilityEnabled = Get-ProfileConfig -Key "modules.utilityEnabled" -Default @{}
+
 $ModuleList = @(
-    @{ Name = 'Utility-Base64'; Path = 'Base64/Base64.psd1' }
-    @{ Name = 'Utility-Clock'; Path = 'Clock/Clock.psd1' }
-    @{ Name = 'Utility-GitIgnore'; Path = 'GitIgnore/GitIgnore.psd1' }
-    @{ Name = 'Utility-Matrix'; Path = 'Matrix/Matrix.psd1' }
-    @{ Name = 'Utility-Misc'; Path = 'Misc/Misc.psd1' }
-    @{ Name = 'Utility-PrayerTimes'; Path = 'PrayerTimes/PrayerTimes.psd1' }
-    @{ Name = 'Utility-QRCode'; Path = 'QRCode/QRCode.psd1' }
-    @{ Name = 'Utility-RandomQuote'; Path = 'RandomQuote/RandomQuote.psd1' }
-    @{ Name = 'Utility-WeatherForecast'; Path = 'WeatherForecast/WeatherForecast.psd1' }
-    @{ Name = 'Utility-WebSearch'; Path = 'WebSearch/WebSearch.psd1' }
+    @{ Name = 'Utility-Base64'; Path = 'Base64/Base64.psd1'; ConfigKey = 'Base64' }
+    @{ Name = 'Utility-Clock'; Path = 'Clock/Clock.psd1'; ConfigKey = 'Clock' }
+    @{ Name = 'Utility-GitIgnore'; Path = 'GitIgnore/GitIgnore.psd1'; ConfigKey = 'GitIgnore' }
+    @{ Name = 'Utility-Matrix'; Path = 'Matrix/Matrix.psd1'; ConfigKey = 'Matrix' }
+    @{ Name = 'Utility-Misc'; Path = 'Misc/Misc.psd1'; ConfigKey = 'Misc' }
+    @{ Name = 'Utility-PrayerTimes'; Path = 'PrayerTimes/PrayerTimes.psd1'; ConfigKey = 'PrayerTimes' }
+    @{ Name = 'Utility-QRCode'; Path = 'QRCode/QRCode.psd1'; ConfigKey = 'QRCode' }
+    @{ Name = 'Utility-RandomQuote'; Path = 'RandomQuote/RandomQuote.psd1'; ConfigKey = 'RandomQuote' }
+    @{ Name = 'Utility-WeatherForecast'; Path = 'WeatherForecast/WeatherForecast.psd1'; ConfigKey = 'WeatherForecast' }
+    @{ Name = 'Utility-WebSearch'; Path = 'WebSearch/WebSearch.psd1'; ConfigKey = 'WebSearch' }
 )
 
 foreach ($Module in $ModuleList) {
     $ModulePath = Join-Path -Path $BaseModuleDir -ChildPath $Module.Path
     $ModuleName = $Module.Name
+    $ConfigKey = $Module.ConfigKey
+
+    # Check if utility is enabled in config (default to true if not specified)
+    $isEnabled = if ($utilityEnabled.PSObject.Properties.Name -contains $ConfigKey) {
+        $utilityEnabled.$ConfigKey
+    }
+    else {
+        $true
+    }
+
+    if (-not $isEnabled) {
+        Write-Verbose "$ModuleName is disabled in configuration. Skipping..."
+        continue
+    }
 
     if (Test-Path $ModulePath) {
         Import-Module $ModulePath -Force -ErrorAction SilentlyContinue

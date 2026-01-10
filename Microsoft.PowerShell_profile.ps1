@@ -125,22 +125,45 @@ Set-PSReadLineKeyHandler -Chord '"', "'" `
 #---------------------------------------------------------------------------------------------------
 $BaseModuleDir = Join-Path -Path $PSScriptRoot -ChildPath 'Module'
 
+# Config module must be loaded first
+$ConfigModulePath = Join-Path -Path $BaseModuleDir -ChildPath 'Config/Config.psd1'
+if (Test-Path $ConfigModulePath) {
+    Import-Module $ConfigModulePath -Force -ErrorAction SilentlyContinue
+}
+
+# Get module enable/disable settings from config
+$modulesEnabled = Get-ProfileConfig -Key "modules.enabled" -Default @{}
+
 $ModuleList = @(
-    @{ Name = 'Module-Directory'; Path = 'Directory/Directory.psd1' },
-    @{ Name = 'Module-Docs'; Path = 'Docs/Docs.psd1' },
-    @{ Name = 'Module-Environment'; Path = 'Environment/Environment.psd1' },
-    @{ Name = 'Module-Logging'; Path = 'Logging/Logging.psd1' },
-    @{ Name = 'Module-Network'; Path = 'Network/Network.psd1' },
-    @{ Name = 'Module-Plugins'; Path = 'Plugins/Plugins.psd1' },
-    @{ Name = 'Module-Process'; Path = 'Process/Process.psd1' },
-    @{ Name = 'Module-Starship'; Path = 'Starship/Starship.psd1' },
-    @{ Name = 'Module-Update'; Path = 'Update/Update.psd1' },
-    @{ Name = 'Module-Utility'; Path = 'Utility/Utility.psd1' }
+    @{ Name = 'Module-Directory'; Path = 'Directory/Directory.psd1'; ConfigKey = 'Directory' },
+    @{ Name = 'Module-Docs'; Path = 'Docs/Docs.psd1'; ConfigKey = 'Docs' },
+    @{ Name = 'Module-Environment'; Path = 'Environment/Environment.psd1'; ConfigKey = 'Environment' },
+    @{ Name = 'Module-Logging'; Path = 'Logging/Logging.psd1'; ConfigKey = 'Logging' },
+    @{ Name = 'Module-Network'; Path = 'Network/Network.psd1'; ConfigKey = 'Network' },
+    @{ Name = 'Module-Plugins'; Path = 'Plugins/Plugins.psd1'; ConfigKey = 'Plugins' },
+    @{ Name = 'Module-Process'; Path = 'Process/Process.psd1'; ConfigKey = 'Process' },
+    @{ Name = 'Module-Starship'; Path = 'Starship/Starship.psd1'; ConfigKey = 'Starship' },
+    @{ Name = 'Module-Update'; Path = 'Update/Update.psd1'; ConfigKey = 'Update' },
+    @{ Name = 'Module-Utility'; Path = 'Utility/Utility.psd1'; ConfigKey = 'Utility' }
 )
 
 foreach ($Module in $ModuleList) {
     $ModulePath = Join-Path -Path $BaseModuleDir -ChildPath $Module.Path
     $ModuleName = $Module.Name
+    $ConfigKey = $Module.ConfigKey
+
+    # Check if module is enabled in config (default to true if not specified)
+    $isEnabled = if ($modulesEnabled.PSObject.Properties.Name -contains $ConfigKey) {
+        $modulesEnabled.$ConfigKey
+    }
+    else {
+        $true
+    }
+
+    if (-not $isEnabled) {
+        Write-Verbose "$ModuleName is disabled in configuration. Skipping..."
+        continue
+    }
 
     if (Test-Path $ModulePath) {
         Import-Module $ModulePath -Force -ErrorAction SilentlyContinue

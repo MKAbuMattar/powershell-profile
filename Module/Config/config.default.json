@@ -1,0 +1,138 @@
+{
+  "version": "5.0.0",
+  "lastUpdated": "2026-01-10T00:00:00Z",
+  "profile": {
+    "theme": "default",
+    "colorScheme": "auto",
+    "showWelcomeMessage": true,
+    "showLoadTime": true,
+    "enableTimestamp": true
+  },
+  "modules": {
+    "lazyLoad": false,
+    "loadTimeout": 5000,
+    "autoUpdate": false,
+    "enabled": {
+      "Directory": true,
+      "Docs": true,
+      "Environment": true,
+      "Logging": true,
+      "Network": true,
+      "Process": true,
+      "Starship": true,
+      "Update": true,
+      "Utility": true,
+      "Plugins": true
+    },
+    "pluginsEnabled": {
+      "AWS": true,
+      "Conda": true,
+      "Deno": true,
+      "Docker": true,
+      "DockerCompose": true,
+      "Flutter": true,
+      "GCP": true,
+      "Git": true,
+      "Helm": true,
+      "Kubectl": true,
+      "NPM": true,
+      "PIP": true,
+      "Pipenv": true,
+      "PNPM": true,
+      "Poetry": true,
+      "Rsync": true,
+      "Ruby": true,
+      "Rust": true,
+      "Terraform": true,
+      "Terragrunt": true,
+      "UV": true,
+      "VSCode": true,
+      "Yarn": true
+    },
+    "utilityEnabled": {
+      "Base64": true,
+      "Clock": true,
+      "GitIgnore": true,
+      "Matrix": true,
+      "Misc": true,
+      "PrayerTimes": true,
+      "QRCode": true,
+      "RandomQuote": true,
+      "WeatherForecast": true,
+      "WebSearch": true
+    }
+  },
+  "aliases": {
+    "enableCustomAliases": true,
+    "custom": {
+      "ll": "Get-ChildItem -Force",
+      "grep": "Select-String",
+      "which": "Get-Command",
+      "touch": "New-Item -ItemType File",
+      "rm": "Remove-Item",
+      "cp": "Copy-Item",
+      "mv": "Move-Item",
+      "cat": "Get-Content",
+      "clear": "Clear-Host",
+      "cls": "Clear-Host",
+      "history": "Get-History",
+      "h": "Get-History"
+    }
+  },
+  "environment": {
+    "editor": "code",
+    "browser": "chrome",
+    "terminal": "wt",
+    "pythonPath": "",
+    "nodePath": "",
+    "customPath": []
+  },
+  "performance": {
+    "enableCache": true,
+    "cacheTimeout": 3600,
+    "enableParallelLoading": false,
+    "maxLoadJobs": 4,
+    "profileOnStartup": false
+  },
+  "logging": {
+    "enabled": true,
+    "level": "Info",
+    "logToFile": true,
+    "logPath": "",
+    "maxLogSize": 10485760,
+    "keepLogDays": 30
+  },
+  "starship": {
+    "enabled": true,
+    "configPath": "",
+    "preset": "default"
+  },
+  "psReadLine": {
+    "editMode": "Windows",
+    "historySearchCursorMovesToEnd": true,
+    "showToolTips": true,
+    "predictionSource": "HistoryAndPlugin",
+    "predictionViewStyle": "ListView"
+  },
+  "git": {
+    "defaultBranch": "main",
+    "autoFetch": false,
+    "showStatus": true,
+    "enablePoshGit": true
+  },
+  "docker": {
+    "autoCleanup": false,
+    "cleanupSchedule": "weekly",
+    "showContainerCount": true
+  },
+  "aws": {
+    "defaultRegion": "us-east-1",
+    "defaultProfile": "default",
+    "showProfile": true
+  },
+  "azure": {
+    "defaultSubscription": "",
+    "showSubscription": true
+  },
+  "customSettings": {}
+}
