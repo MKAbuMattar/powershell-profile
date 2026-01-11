@@ -1,37 +1,155 @@
-<!-- filepath: c:\Users\MKAbuMattar\Work\powershell-profile\Module\Logging\README.md -->
+# Logging Module v5.0.0
 
-# Logging Module
+Enhanced logging and error handling system with debug mode, error tracking, log rotation, and recovery mechanisms.
 
-## **Module Overview:**
+## Features
 
-The Logging module provides a simple yet effective function for recording log messages within PowerShell scripts and profile operations. It allows for messages to be timestamped and categorized by log levels (e.g., INFO, WARNING, ERROR), facilitating easier debugging and monitoring of script execution.
+-   ✅ Structured logging with multiple levels (DEBUG, VERBOSE, INFO, WARNING, ERROR, CRITICAL, SUCCESS)
+-   ✅ Comprehensive error tracking with stack traces
+-   ✅ Automatic log rotation and cleanup
+-   ✅ Debug and verbose modes
+-   ✅ File and console logging
+-   ✅ Error recovery and graceful degradation
+-   ✅ Log archiving and export
 
-## **Key Features:**
+## Quick Start
 
-- Timestamped log entries for chronological tracking.
-- Support for different log levels to categorize message severity.
-- Customizable log output (e.g., console, file).
+```powershell
+# Basic logging
+log "Operation completed"
+log "Warning message" -Level WARNING
+log "Critical error" -Level ERROR
 
-## **Functions:**
+# Error tracking
+try { Get-Item "missing" } catch { Write-ErrorReport $_ -Context "File ops" }
+Get-ErrorHistory -Last 10
 
-- **`Write-LogMessage`** (Alias: `log-message`):
-  - _Description:_ Logs a message with a prepended timestamp and a specified log level. If no level is provided, it defaults to "INFO".
-  - _Parameters:_
-    - `Message` (String, Mandatory): The content of the log message.
-    - `Level` (String, Optional): The severity level of the log message (e.g., "INFO", "WARNING", "ERROR", "DEBUG"). Defaults to "INFO".
-    - `LogPath` (String, Optional): Specifies a file path to write the log message to. If not provided, logs may go to the console or a default log file.
-  - _Usage Examples:_
-    - `Write-LogMessage -Message "Script execution started."`
-    - `log-message -Message "An unexpected issue occurred." -Level "ERROR"`
-    - `Write-LogMessage -Message "User preference loaded." -Level "DEBUG" -LogPath "C:\logs\profile.log"`
-  - _Details:_ The format of the log output typically includes the timestamp, log level, and the message itself. Configuration for log file location and rotation can be extended.
+# Debug mode
+Set-DebugMode -Enabled
+log "Debug info" -Level DEBUG
 
-[Back to Modules](../../README.md#modules)
+# Log maintenance
+Clear-OldLogs -DaysToKeep 30
+Export-LogArchive
+```
 
-## **Contribution:**
+## Functions
 
-Enhancements to the logging capabilities, such as adding more log output options (e.g., Event Log), log rotation, or structured logging, are welcome. Please see the main [Contributing Guidelines](../../README.md#contributing).
+### Write-LogMessage (Aliases: log, log-message)
 
-## **License:**
+Logs messages with timestamp and level. Supports DEBUG, VERBOSE, INFO, WARNING, ERROR, CRITICAL, SUCCESS levels.
 
-This project is licensed under the MIT License. See the [LICENSE](../../LICENSE) file for details.
+### Write-ErrorReport (Alias: log-error)
+
+Captures detailed error information including stack trace and context.
+
+### Get-ErrorHistory (Aliases: errors, error-history)
+
+Retrieves error history with filtering by severity, context, time period, or count.
+
+### Clear-OldLogs (Alias: clean-logs)
+
+Removes log files older than specified days (default: 30).
+
+### Export-LogArchive (Alias: export-logs)
+
+Creates compressed archive of logs with optional error history.
+
+### Set-DebugMode (Alias: debug-mode)
+
+Enables/disables DEBUG level logging output.
+
+### Set-VerboseMode (Alias: verbose-mode)
+
+Enables/disables VERBOSE level logging output.
+
+### Get-LoggingConfig (Alias: log-config)
+
+Returns current logging configuration and statistics.
+
+### Clear-ErrorHistory (Alias: clear-errors)
+
+Clears all stored error reports from memory.
+
+## Configuration
+
+Configure in `config.json`:
+
+```json
+{
+    "logging": {
+        "enabled": true,
+        "debugMode": false,
+        "verboseMode": false,
+        "errorReporting": {
+            "enabled": true,
+            "maxErrorHistory": 100
+        },
+        "logRotation": {
+            "maxLogAgeDays": 30,
+            "maxLogSizeMB": 10
+        },
+        "errorRecovery": {
+            "gracefulDegradation": true,
+            "continueOnError": true
+        }
+    }
+}
+```
+
+## Log Levels
+
+| Level    | Color    | Usage                                     |
+| -------- | -------- | ----------------------------------------- |
+| DEBUG    | Gray     | Debugging (only when debug mode on)       |
+| VERBOSE  | DarkGray | Detailed info (only when verbose mode on) |
+| INFO     | Green    | General messages                          |
+| WARNING  | Yellow   | Warnings                                  |
+| ERROR    | Red      | Errors                                    |
+| CRITICAL | Magenta  | Critical failures                         |
+| SUCCESS  | Cyan     | Success confirmations                     |
+
+## Examples
+
+```powershell
+# Enable debug mode for troubleshooting
+Set-DebugMode -Enabled
+log "Starting process" -Level DEBUG
+
+# Log with context
+try {
+    Import-Module "MyModule"
+    log "Module loaded" -Level SUCCESS
+} catch {
+    Write-ErrorReport $_ -Context "Module Loading" -Severity High
+}
+
+# Review recent errors
+Get-ErrorHistory -Last 5 | Format-Table Timestamp, Context, Message
+
+# Clean up old logs
+Clear-OldLogs -DaysToKeep 7
+
+# Export for backup
+Export-LogArchive -IncludeErrorHistory
+```
+
+## Best Practices
+
+1. Use appropriate log levels (DEBUG for development, ERROR for failures)
+2. Always provide context when logging errors
+3. Enable debug mode only when needed
+4. Run log cleanup regularly
+5. Export logs before major changes
+
+## Location
+
+Logs are stored in `~/.logs/ps1-profile/` with format `profile-{timestamp}.log`.
+
+## Version History
+
+**v5.0.0** (2026-01-11): Complete rewrite with error handling, recovery, rotation, debug mode, and comprehensive tracking.
+
+---
+
+For more details: [GitHub](https://github.com/MKAbuMattar/powershell-profile)

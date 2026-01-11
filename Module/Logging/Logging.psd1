@@ -1,47 +1,16 @@
 #---------------------------------------------------------------------------------------------------
-# MKAbuMattar's PowerShell Profile - Logging Plugin
-#
-#
-#                             .
-#         ..                .''
-#         .,'..,.         ..,;,'
-#          ,;;;;,,       .,,;;;
-#           ,;;;;;'    .',;;;
-#            ,;;;;,'...,;;;,
-#             ,;;;;;,,;;;;.
-#              ,;;;;;;;;;
-#              .,;;;;;;;
-#              .,;;;;;;;'
-#              .,;;;;;;;,'
-#            .',;;;;;;;;;;,.
-#          ..,;;;;;;;;;;;;;,.
-#         .';;;;;.   ';;;;;;,'
-#        .,;;;;.      ,; .;; .,
-#        ',;;;.        .
-#        .,;;.
-#        ,;
-#        .
-#
-#      "The only way to do great work is to love what you do."
-#                           - Steve Jobs
-#
-#
+# MKAbuMattar's PowerShell Profile - Logging Module
+# Version: 5.0.0
 # Author: Mohammad Abu Mattar
-#
-# Description:
-#       This Module provides logging functionality for PowerShell scripts and modules.
-#
+# Description: Enhanced logging and error handling system with debug mode support
 # Created: 2021-09-01
-# Updated: 2025-09-24
-#
+# Updated: 2026-01-11
 # GitHub: https://github.com/MKAbuMattar/powershell-profile
-#
-# Version: 4.2.0
 #---------------------------------------------------------------------------------------------------
 
 @{
     RootModule           = 'Logging.psm1'
-    ModuleVersion        = '4.2.0'
+    ModuleVersion        = '5.0.0'
     CompatiblePSEditions = @(
         'Desktop',
         'Core'
@@ -49,16 +18,34 @@
     GUID                 = '508e211f-6649-4616-9253-b4a803cdb653'
     Author               = 'Mohammad Abu Mattar'
     CompanyName          = 'MKAbuMattar'
-    Copyright            = '(c) 2025 Mohammad Abu Mattar. All rights reserved.'
-    Description          = 'This module provides logging functionality with timestamp and log level.'
-    PowerShellVersion    = '5.0'
+    Copyright            = '(c) 2026 Mohammad Abu Mattar. All rights reserved.'
+    Description          = 'Enhanced logging and error handling system with debug mode, error reporting, log rotation, and recovery mechanisms'
+    PowerShellVersion    = '5.1'
     FunctionsToExport    = @(
-        'Write-LogMessage'
+        'Write-LogMessage',
+        'Write-ErrorReport',
+        'Get-ErrorHistory',
+        'Clear-OldLogs',
+        'Export-LogArchive',
+        'Set-DebugMode',
+        'Set-VerboseMode',
+        'Get-LoggingConfig',
+        'Clear-ErrorHistory'
     )
     CmdletsToExport      = @()
     VariablesToExport    = @()
     AliasesToExport      = @(
-        'log-message'
+        'log-message',
+        'log',
+        'log-error',
+        'errors',
+        'error-history',
+        'clean-logs',
+        'export-logs',
+        'debug-mode',
+        'verbose-mode',
+        'log-config',
+        'clear-errors'
     )
     PrivateData          = @{
         PSData = @{

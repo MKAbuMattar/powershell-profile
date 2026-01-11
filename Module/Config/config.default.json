@@ -18,6 +18,7 @@
       "Environment": true,
       "Logging": true,
       "Network": true,
+      "Performance": true,
       "Process": true,
       "Starship": true,
       "Update": true,
@@ -92,7 +93,18 @@
     "cacheTimeout": 3600,
     "enableParallelLoading": false,
     "maxLoadJobs": 4,
-    "profileOnStartup": false
+    "profileOnStartup": false,
+    "monitorMemory": true,
+    "trackModuleTimes": true,
+    "dashboardRefreshInterval": 2,
+    "lazyLoad": {
+      "Network": false,
+      "Plugins": true,
+      "Update": true,
+      "Utility": true
+    },
+    "memoryThresholdMB": 200,
+    "startupTimeThresholdSeconds": 3
   },
   "logging": {
     "enabled": true,
@@ -100,7 +112,28 @@
     "logToFile": true,
     "logPath": "",
     "maxLogSize": 10485760,
-    "keepLogDays": 30
+    "keepLogDays": 30,
+    "debugMode": false,
+    "verboseMode": false,
+    "errorReporting": {
+      "enabled": true,
+      "maxErrorHistory": 100,
+      "logErrors": true,
+      "showStackTrace": true
+    },
+    "logRotation": {
+      "enabled": true,
+      "maxLogAgeDays": 30,
+      "maxLogSizeMB": 10,
+      "autoArchive": false,
+      "archivePath": ""
+    },
+    "errorRecovery": {
+      "enabled": true,
+      "retryFailedModules": true,
+      "gracefulDegradation": true,
+      "continueOnError": true
+    }
   },
   "starship": {
     "enabled": true,
@@ -112,7 +145,11 @@
     "historySearchCursorMovesToEnd": true,
     "showToolTips": true,
     "predictionSource": "HistoryAndPlugin",
-    "predictionViewStyle": "ListView"
+    "predictionViewStyle": "ListView",
+    "historyNoDuplicates": true,
+    "bellStyle": "None",
+    "maxHistorySaveSize": 4096,
+    "historySearchCaseSensitive": false
   },
   "git": {
     "defaultBranch": "main",

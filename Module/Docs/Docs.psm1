@@ -188,6 +188,7 @@ function Show-ProfileHelp {
             'Logging',
             'NPM',
             'Network',
+            'Performance',
             'PIP',
             'Pipenv',
             'PNPM',
@@ -366,10 +367,42 @@ $($PSStyle.Foreground.Yellow)Environment Module$($PSStyle.Reset)
 "@
 
     $Logging = @"
-$($PSStyle.Foreground.Yellow)Logging Module$($PSStyle.Reset)
-    $($PSStyle.Foreground.Green)Write-LogMessage$($PSStyle.Reset) -Message <Message> [-Level <Level>]
-    $($PSStyle.Foreground.Magenta)log-message$($PSStyle.Reset) -Message <Message> [-Level <Level>]
-        Logs a message with a timestamp and log level. The default log level is "INFO".
+$($PSStyle.Foreground.Yellow)Logging Module v5.0.0$($PSStyle.Reset)
+    $($PSStyle.Foreground.Green)Write-LogMessage$($PSStyle.Reset) [-Message] <Message> [[-Level] <Level>] [-ToFile] [-NoConsole]
+    $($PSStyle.Foreground.Magenta)log-message, log$($PSStyle.Reset)
+        Logs messages with timestamp and level. Levels: DEBUG, VERBOSE, INFO, WARNING, ERROR, CRITICAL, SUCCESS
+
+    $($PSStyle.Foreground.Green)Write-ErrorReport$($PSStyle.Reset) [-ErrorRecord] <ErrorRecord> [[-Context] <String>] [-Severity <String>]
+    $($PSStyle.Foreground.Magenta)log-error$($PSStyle.Reset)
+        Captures detailed error information with stack trace and context
+
+    $($PSStyle.Foreground.Green)Get-ErrorHistory$($PSStyle.Reset) [-Last <Int>] [-Severity <String>] [-Context <String>] [-Since <DateTime>]
+    $($PSStyle.Foreground.Magenta)errors, error-history$($PSStyle.Reset)
+        Retrieves logged error history with filtering options
+
+    $($PSStyle.Foreground.Green)Clear-OldLogs$($PSStyle.Reset) [-DaysToKeep <Int>] [-Force] [-WhatIf]
+    $($PSStyle.Foreground.Magenta)clean-logs$($PSStyle.Reset)
+        Removes log files older than specified days (default: 30)
+
+    $($PSStyle.Foreground.Green)Export-LogArchive$($PSStyle.Reset) [-OutputPath <String>] [-IncludeErrorHistory]
+    $($PSStyle.Foreground.Magenta)export-logs$($PSStyle.Reset)
+        Creates compressed archive of log files
+
+    $($PSStyle.Foreground.Green)Set-DebugMode$($PSStyle.Reset) [-Enabled]
+    $($PSStyle.Foreground.Magenta)debug-mode$($PSStyle.Reset)
+        Enables or disables debug level logging
+
+    $($PSStyle.Foreground.Green)Set-VerboseMode$($PSStyle.Reset) [-Enabled]
+    $($PSStyle.Foreground.Magenta)verbose-mode$($PSStyle.Reset)
+        Enables or disables verbose level logging
+
+    $($PSStyle.Foreground.Green)Get-LoggingConfig$($PSStyle.Reset)
+    $($PSStyle.Foreground.Magenta)log-config$($PSStyle.Reset)
+        Returns current logging configuration and statistics
+
+    $($PSStyle.Foreground.Green)Clear-ErrorHistory$($PSStyle.Reset) [-WhatIf]
+    $($PSStyle.Foreground.Magenta)clear-errors$($PSStyle.Reset)
+        Clears all stored error reports from memory
 "@
 
     $Network = @"
@@ -381,6 +414,46 @@ $($PSStyle.Foreground.Yellow)Network Module$($PSStyle.Reset)
     $($PSStyle.Foreground.Green)Clear-FlushDNS$($PSStyle.Reset)
     $($PSStyle.Foreground.Magenta)flush-dns$($PSStyle.Reset)
         Flushes the DNS cache.
+"@
+
+    $Performance = @"
+$($PSStyle.Foreground.Yellow)Performance Module$($PSStyle.Reset)
+    $($PSStyle.Foreground.Green)Measure-ProfileStartup$($PSStyle.Reset) [-Detailed]
+    $($PSStyle.Foreground.Magenta)measure-startup$($PSStyle.Reset) [-Detailed]
+        Measures the total profile startup time and shows module load times.
+
+    $($PSStyle.Foreground.Green)Get-ModuleLoadTime$($PSStyle.Reset) [-ModuleName <ModuleName>]
+    $($PSStyle.Foreground.Magenta)module-time$($PSStyle.Reset) [-ModuleName <ModuleName>]
+        Gets load times for individual modules.
+
+    $($PSStyle.Foreground.Green)Test-ModulePerformance$($PSStyle.Reset) [-ModulePath <ModulePath>] [-Iterations <Iterations>]
+    $($PSStyle.Foreground.Magenta)test-perf$($PSStyle.Reset) [-ModulePath <ModulePath>] [-Iterations <Iterations>]
+        Benchmarks module loading performance with multiple iterations.
+
+    $($PSStyle.Foreground.Green)Get-PerformanceReport$($PSStyle.Reset) [-ExportPath <Path>] [-IncludeSystemInfo]
+    $($PSStyle.Foreground.Magenta)perf-report$($PSStyle.Reset) [-ExportPath <Path>] [-IncludeSystemInfo]
+        Generates a comprehensive performance report with recommendations.
+
+    $($PSStyle.Foreground.Green)Get-ProfileMemoryUsage$($PSStyle.Reset)
+    $($PSStyle.Foreground.Magenta)mem-usage$($PSStyle.Reset)
+        Gets current memory usage statistics for the PowerShell process.
+
+    $($PSStyle.Foreground.Green)Set-PerformanceCache$($PSStyle.Reset) -Key <Key> -Value <Value> [-Expiration <Seconds>] [-Persist]
+    $($PSStyle.Foreground.Magenta)set-cache$($PSStyle.Reset) -Key <Key> -Value <Value> [-Expiration <Seconds>] [-Persist]
+        Stores a value in the performance cache for faster retrieval.
+
+    $($PSStyle.Foreground.Green)Get-PerformanceCache$($PSStyle.Reset) -Key <Key> [-Default <Default>]
+    $($PSStyle.Foreground.Magenta)get-cache$($PSStyle.Reset) -Key <Key> [-Default <Default>]
+        Retrieves a cached value by key.
+
+    $($PSStyle.Foreground.Green)Clear-PerformanceCache$($PSStyle.Reset) [-Key <Key>] [-IncludeDisk]
+    $($PSStyle.Foreground.Magenta)clear-cache$($PSStyle.Reset) [-Key <Key>] [-IncludeDisk]
+        Clears cached performance data from memory and optionally disk.
+
+    $($PSStyle.Foreground.Green)Show-PerformanceDashboard$($PSStyle.Reset) [-RefreshInterval <Seconds>]
+    $($PSStyle.Foreground.Magenta)perf-dash$($PSStyle.Reset) [-RefreshInterval <Seconds>]
+    $($PSStyle.Foreground.Magenta)dashboard$($PSStyle.Reset) [-RefreshInterval <Seconds>]
+        Displays a real-time performance monitoring dashboard.
 "@
 
     $Process = @"
@@ -2495,6 +2568,7 @@ $($PSStyle.Foreground.Yellow)Plugins Module - Rust Plugin$($PSStyle.Reset)
             Write-Host $Environment
             Write-Host $Logging
             Write-Host $Network
+            Write-Host $Performance
             Write-Host $Plugins
             Write-Host $Process
             Write-Host $Starship
@@ -2568,6 +2642,10 @@ $($PSStyle.Foreground.Yellow)Plugins Module - Rust Plugin$($PSStyle.Reset)
         'Network' {
             Write-Host $Title
             Write-Host $Network
+        }
+        'Performance' {
+            Write-Host $Title
+            Write-Host $Performance
         }
         'PIP' {
             Write-Host $Title

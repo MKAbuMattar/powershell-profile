@@ -90,14 +90,6 @@ Import-Module -Name CompletionPredictor
 Import-Module -Name PSReadLine
 Import-Module -Name Posh-Git
 
-#---------------------------------------------------------------------------------------------------
-# Set the PSReadLine options and key handlers
-#---------------------------------------------------------------------------------------------------
-Set-PSReadLineOption -PredictionSource HistoryAndPlugin
-Set-PSReadLineOption -PredictionViewStyle ListView
-Set-PSReadLineOption -HistoryNoDuplicates
-Set-PSReadLineOption -BellStyle None
-Set-PSReadLineOption -Colors @{ "Selection" = "`e[7m" }
 Set-PSReadLineKeyHandler -Chord '"', "'" `
     -BriefDescription SmartInsertQuote `
     -LongDescription "Insert paired quotes if not already on a quote" `
@@ -125,34 +117,81 @@ Set-PSReadLineKeyHandler -Chord '"', "'" `
 #---------------------------------------------------------------------------------------------------
 $BaseModuleDir = Join-Path -Path $PSScriptRoot -ChildPath 'Module'
 
-# Config module must be loaded first
+# Track profile startup time
+$script:ProfileStartTime = Get-Date
+
+# Load Config module first (critical dependency)
 $ConfigModulePath = Join-Path -Path $BaseModuleDir -ChildPath 'Config/Config.psd1'
 if (Test-Path $ConfigModulePath) {
-    Import-Module $ConfigModulePath -Force -ErrorAction SilentlyContinue
+    try {
+        Import-Module $ConfigModulePath -Force -ErrorAction Stop
+        Write-Verbose "Config module loaded successfully"
+    }
+    catch {
+        Write-Warning "Failed to load Config module: $_"
+        Write-Warning "Profile will continue with default settings"
+    }
+}
+
+# Load Performance module second for tracking
+$PerformanceModulePath = Join-Path -Path $BaseModuleDir -ChildPath 'Performance/Performance.psd1'
+if (Test-Path $PerformanceModulePath) {
+    try {
+        Import-Module $PerformanceModulePath -Force -ErrorAction Stop
+        Write-Verbose "Performance module loaded successfully"
+    }
+    catch {
+        Write-Warning "Failed to load Performance module: $_"
+    }
+}
+
+# Get error recovery settings from config
+$errorRecoveryEnabled = $true
+$continueOnError = $true
+if (Get-Command -Name Get-ProfileConfig -ErrorAction SilentlyContinue) {
+    $loggingConfig = Get-ProfileConfig -Key 'logging.errorRecovery' -Default @{}
+    if ($loggingConfig.PSObject.Properties.Name -contains 'enabled') {
+        $errorRecoveryEnabled = $loggingConfig.enabled
+    }
+    if ($loggingConfig.PSObject.Properties.Name -contains 'continueOnError') {
+        $continueOnError = $loggingConfig.continueOnError
+    }
 }
 
 # Get module enable/disable settings from config
-$modulesEnabled = Get-ProfileConfig -Key "modules.enabled" -Default @{}
+$modulesEnabled = if (Get-Command -Name Get-ProfileConfig -ErrorAction SilentlyContinue) {
+    Get-ProfileConfig -Key "modules.enabled" -Default @{}
+}
+else {
+    @{}
+}
+
+$lazyLoadModules = if (Get-Command -Name Get-ProfileConfig -ErrorAction SilentlyContinue) {
+    Get-ProfileConfig -Key "performance.lazyLoad" -Default @{}
+}
+else {
+    @{}
+}
 
 $ModuleList = @(
-    @{ Name = 'Module-Directory'; Path = 'Directory/Directory.psd1'; ConfigKey = 'Directory' },
-    @{ Name = 'Module-Docs'; Path = 'Docs/Docs.psd1'; ConfigKey = 'Docs' },
-    @{ Name = 'Module-Environment'; Path = 'Environment/Environment.psd1'; ConfigKey = 'Environment' },
-    @{ Name = 'Module-Logging'; Path = 'Logging/Logging.psd1'; ConfigKey = 'Logging' },
-    @{ Name = 'Module-Network'; Path = 'Network/Network.psd1'; ConfigKey = 'Network' },
-    @{ Name = 'Module-Plugins'; Path = 'Plugins/Plugins.psd1'; ConfigKey = 'Plugins' },
-    @{ Name = 'Module-Process'; Path = 'Process/Process.psd1'; ConfigKey = 'Process' },
-    @{ Name = 'Module-Starship'; Path = 'Starship/Starship.psd1'; ConfigKey = 'Starship' },
-    @{ Name = 'Module-Update'; Path = 'Update/Update.psd1'; ConfigKey = 'Update' },
-    @{ Name = 'Module-Utility'; Path = 'Utility/Utility.psd1'; ConfigKey = 'Utility' }
+    @{ Name = 'Module-Directory'; Path = 'Directory/Directory.psd1'; ConfigKey = 'Directory'; LazyLoad = $false },
+    @{ Name = 'Module-Docs'; Path = 'Docs/Docs.psd1'; ConfigKey = 'Docs'; LazyLoad = $false },
+    @{ Name = 'Module-Environment'; Path = 'Environment/Environment.psd1'; ConfigKey = 'Environment'; LazyLoad = $false },
+    @{ Name = 'Module-Logging'; Path = 'Logging/Logging.psd1'; ConfigKey = 'Logging'; LazyLoad = $false },
+    @{ Name = 'Module-Network'; Path = 'Network/Network.psd1'; ConfigKey = 'Network'; LazyLoad = $true },
+    @{ Name = 'Module-Plugins'; Path = 'Plugins/Plugins.psd1'; ConfigKey = 'Plugins'; LazyLoad = $true },
+    @{ Name = 'Module-Process'; Path = 'Process/Process.psd1'; ConfigKey = 'Process'; LazyLoad = $false },
+    @{ Name = 'Module-Starship'; Path = 'Starship/Starship.psd1'; ConfigKey = 'Starship'; LazyLoad = $false },
+    @{ Name = 'Module-Update'; Path = 'Update/Update.psd1'; ConfigKey = 'Update'; LazyLoad = $true },
+    @{ Name = 'Module-Utility'; Path = 'Utility/Utility.psd1'; ConfigKey = 'Utility'; LazyLoad = $true }
 )
 
 foreach ($Module in $ModuleList) {
     $ModulePath = Join-Path -Path $BaseModuleDir -ChildPath $Module.Path
     $ModuleName = $Module.Name
     $ConfigKey = $Module.ConfigKey
+    $shouldLazyLoad = $Module.LazyLoad
 
-    # Check if module is enabled in config (default to true if not specified)
     $isEnabled = if ($modulesEnabled.PSObject.Properties.Name -contains $ConfigKey) {
         $modulesEnabled.$ConfigKey
     }
@@ -165,8 +204,43 @@ foreach ($Module in $ModuleList) {
         continue
     }
 
+    if ($lazyLoadModules.PSObject.Properties.Name -contains $ConfigKey) {
+        $shouldLazyLoad = $lazyLoadModules.$ConfigKey
+    }
+
+    if ($shouldLazyLoad) {
+        Write-Verbose "$ModuleName will be lazy-loaded on first use"
+        continue
+    }
+
     if (Test-Path $ModulePath) {
-        Import-Module $ModulePath -Force -ErrorAction SilentlyContinue
+        try {
+            # Measure module load time
+            $sw = [System.Diagnostics.Stopwatch]::StartNew()
+            Import-Module $ModulePath -Force -ErrorAction Stop
+            $sw.Stop()
+            
+            # Register load time if Performance module is available
+            if (Get-Command Register-ModuleLoadTime -ErrorAction SilentlyContinue) {
+                Register-ModuleLoadTime -ModuleName $ModuleName -LoadTimeMs $sw.ElapsedMilliseconds
+            }
+            
+            Write-Verbose "$ModuleName loaded successfully in $($sw.ElapsedMilliseconds)ms"
+        }
+        catch {
+            $errorMessage = "Failed to load $ModuleName`: $_"
+            Write-Warning $errorMessage
+            
+            # Log error if logging module is available
+            if (Get-Command Write-ErrorReport -ErrorAction SilentlyContinue) {
+                Write-ErrorReport -ErrorRecord $_ -Context "Module Loading: $ModuleName" -Severity Medium
+            }
+            
+            # Stop profile loading if continueOnError is false
+            if (-not $continueOnError) {
+                throw "Critical module loading failure. Profile initialization stopped."
+            }
+        }
     }
     else {
         Write-Warning "$ModuleName module not found at: $ModulePath"
@@ -219,13 +293,13 @@ if ($global:AutoUpdatePowerShell -eq $true) {
 #------------------------------------------------------
 # Editor Configuration
 #------------------------------------------------------
-$EDITOR = if (Test-CommandExists nvim) { 'nvim' }
-elseif (Test-CommandExists pvim) { 'pvim' }
-elseif (Test-CommandExists vim) { 'vim' }
-elseif (Test-CommandExists vi) { 'vi' }
-elseif (Test-CommandExists code) { 'code' }
-elseif (Test-CommandExists notepad++) { 'notepad++' }
-elseif (Test-CommandExists sublime_text) { 'sublime_text' }
+$EDITOR = if (Get-Command nvim -ErrorAction SilentlyContinue) { 'nvim' }
+elseif (Get-Command pvim -ErrorAction SilentlyContinue) { 'pvim' }
+elseif (Get-Command vim -ErrorAction SilentlyContinue) { 'vim' }
+elseif (Get-Command vi -ErrorAction SilentlyContinue) { 'vi' }
+elseif (Get-Command code -ErrorAction SilentlyContinue) { 'code' }
+elseif (Get-Command notepad++ -ErrorAction SilentlyContinue) { 'notepad++' }
+elseif (Get-Command sublime_text -ErrorAction SilentlyContinue) { 'sublime_text' }
 else { 'notepad' }
 
 #------------------------------------------------------
@@ -236,7 +310,7 @@ Set-Alias -Name vim -Value $EDITOR
 #------------------------------------------------------
 # Run FastFetch
 #------------------------------------------------------
-# if (Test-CommandExists FastFetch) {
+# if (Get-Command FastFetch -ErrorAction SilentlyContinue) {
 #     Invoke-Expression -Command "Clear-Host"
 #     Invoke-Expression -Command "FastFetch"
 # }
