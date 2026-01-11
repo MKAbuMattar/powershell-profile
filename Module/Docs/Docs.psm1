@@ -456,6 +456,33 @@ $($PSStyle.Foreground.Yellow)Performance Module$($PSStyle.Reset)
         Displays a real-time performance monitoring dashboard.
 "@
 
+    $Dependency = @"
+$($PSStyle.Foreground.Yellow)Dependency Module$($PSStyle.Reset) $($PSStyle.Foreground.Gray)(v1.0.0)$($PSStyle.Reset)
+    $($PSStyle.Foreground.Green)Get-ModuleDependencies$($PSStyle.Reset) -ModuleName <ModuleName> [-IncludeChain]
+    $($PSStyle.Foreground.Magenta)deps$($PSStyle.Reset) <ModuleName> [-IncludeChain]
+        Gets the dependencies for a profile module (direct or full chain).
+
+    $($PSStyle.Foreground.Green)Test-ModuleVersion$($PSStyle.Reset) -ModuleName <ModuleName> [-RequiredVersion <Version>]
+    $($PSStyle.Foreground.Magenta)test-version$($PSStyle.Reset) <ModuleName> [-RequiredVersion <Version>]
+        Tests if a module version meets requirements.
+
+    $($PSStyle.Foreground.Green)Test-ModuleHealth$($PSStyle.Reset) [-ModuleName <ModuleName>] [-UseCache]
+    $($PSStyle.Foreground.Magenta)module-health$($PSStyle.Reset) [-ModuleName <ModuleName>] [-UseCache]
+        Performs comprehensive health check on module(s).
+
+    $($PSStyle.Foreground.Green)Install-ModuleDependencies$($PSStyle.Reset) [-ModuleName <ModuleName>] [-Force]
+    $($PSStyle.Foreground.Magenta)install-deps$($PSStyle.Reset) [-ModuleName <ModuleName>] [-Force]
+        Automatically installs missing module dependencies.
+
+    $($PSStyle.Foreground.Green)Test-ModuleConflict$($PSStyle.Reset) [-ModuleName <ModuleName>]
+    $($PSStyle.Foreground.Magenta)check-conflicts$($PSStyle.Reset) [-ModuleName <ModuleName>]
+        Detects conflicts between modules (functions, aliases, circular deps).
+
+    $($PSStyle.Foreground.Green)Show-DependencyGraph$($PSStyle.Reset) [-ModuleName <ModuleName>]
+    $($PSStyle.Foreground.Magenta)dep-graph$($PSStyle.Reset) [-ModuleName <ModuleName>]
+        Displays a visual dependency graph for modules.
+"@
+
     $Process = @"
 $($PSStyle.Foreground.Yellow)Process Module$($PSStyle.Reset)
     $($PSStyle.Foreground.Green)Get-SystemInfo$($PSStyle.Reset)
@@ -2682,6 +2709,10 @@ $($PSStyle.Foreground.Yellow)Plugins Module - Rust Plugin$($PSStyle.Reset)
         'Rsync' {
             Write-Host $Title
             Write-Host $PluginsRsync
+        }
+        'Dependency' {
+            Write-Host $Title
+            Write-Host $Dependency
         }
         'Starship' {
             Write-Host $Title
