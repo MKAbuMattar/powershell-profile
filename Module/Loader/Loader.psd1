@@ -40,7 +40,17 @@
         'Get-ProfileDependency',
         'Install-ProfileDependency',
         'Get-ProfileModuleName',
-        'Show-ProfileHelp'
+        'Show-ProfileHelp',
+        'Register-ProfileLazyCommand',
+        'Register-ProfileDeferredModule',
+        'Enable-ProfileDeferredImport',
+        'Invoke-ProfileDeferredImport',
+        'Get-ProfilePluginTool',
+        'Get-ProfilePluginRoot',
+        'Get-ProfilePlugin',
+        'Enable-ProfilePlugin',
+        'Disable-ProfilePlugin',
+        'New-ProfilePlugin'
     )
     CmdletsToExport      = @()
     VariablesToExport    = @()
@@ -51,7 +61,11 @@
         'profile-python',
         'profile-deps',
         'install-profile-deps',
-        'profile-help'
+        'profile-help',
+        'profile-plugins',
+        'enable-plugin',
+        'disable-plugin',
+        'new-plugin'
     )
     PrivateData          = @{
         PSData = @{

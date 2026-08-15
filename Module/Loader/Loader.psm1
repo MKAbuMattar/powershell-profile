@@ -47,6 +47,11 @@
 . (Join-Path $PSScriptRoot 'Python.ps1')
 . (Join-Path $PSScriptRoot 'Dependency.ps1')
 . (Join-Path $PSScriptRoot 'Help.ps1')
+. (Join-Path $PSScriptRoot 'Lazy.ps1')
+. (Join-Path $PSScriptRoot 'Plugin.ps1')
+
+# Compared against a plugin's MinimumProfileVersion.
+$script:ProfileVersion = '5.1.0'
 
 $script:LoadReport = [System.Collections.Generic.List[PSCustomObject]]::new()
 $script:LoadNotice = [System.Collections.Generic.List[string]]::new()
@@ -113,6 +118,7 @@ function Get-ProfileConfig {
         Plugins               = @()
         Utilities             = @()
         ExternalModules       = @('Terminal-Icons', 'PSReadLine', 'CompletionPredictor')
+        DeferExternalModules  = @()
         LoadChocolateyProfile = $false
         SkipMissingTools      = $true
         PreferNativeTools     = $true
@@ -423,14 +429,46 @@ function Import-ProfileModule {
             -Path (Join-Path $moduleRoot "$name/$name.psd1")
     }
 
+    # Plugins are resolved through discovery rather than by building a path, so a plugin outside
+    # the repository loads exactly like a built-in and can override one of the same name.
+    $script:PluginCache = $null
+    $discovered = @{}
+    foreach ($plugin in Get-ProfilePlugin) { $discovered[$plugin.Name] = $plugin }
+
     foreach ($name in $config.Plugins) {
-        if ($config.SkipMissingTools -and -not (Test-ProfileTool -Plugin $name)) {
+        $plugin = $discovered[$name]
+
+        if (-not $plugin) {
+            if ($report) { Write-Warning "Plugin '$name' is enabled but was not found in any plugin directory." }
+            $script:LoadReport.Add([PSCustomObject]@{ Kind = 'Plugin'; Name = $name; Status = 'missing'; Milliseconds = 0 })
+            continue
+        }
+
+        if ($plugin.MinimumProfileVersion -and [version]$plugin.MinimumProfileVersion -gt [version]$script:ProfileVersion) {
+            if ($report) {
+                Write-Warning "Plugin '$name' needs profile $($plugin.MinimumProfileVersion); this is $script:ProfileVersion."
+            }
+            $script:LoadReport.Add([PSCustomObject]@{ Kind = 'Plugin'; Name = $name; Status = 'incompatible'; Milliseconds = 0 })
+            continue
+        }
+
+        if ($config.SkipMissingTools -and -not $plugin.ToolPresent) {
             $script:LoadReport.Add([PSCustomObject]@{ Kind = 'Plugin'; Name = $name; Status = 'skipped'; Milliseconds = 0 })
             continue
         }
 
-        Import-ProfileComponent -Name $name -Kind 'Plugin' -Track:$track -Report:$report `
-            -Path (Join-Path $moduleRoot "Plugins/$name/$name.psd1")
+        if ($plugin.Shadows) {
+            $script:LoadNotice.Add(("plugin '{0}' from {1} overrides the {2} one" -f $plugin.Name, $plugin.Scope, $plugin.Shadows))
+        }
+
+        # A lazy plugin registers stubs now and imports itself on first use.
+        if ($plugin.LazyCommands -and $plugin.LazyCommands.Count) {
+            Register-ProfileLazyCommand -Plugin $plugin
+            $script:LoadReport.Add([PSCustomObject]@{ Kind = 'Plugin'; Name = $name; Status = 'lazy'; Milliseconds = 0 })
+            continue
+        }
+
+        Import-ProfileComponent -Name $name -Kind 'Plugin' -Track:$track -Report:$report -Path $plugin.Path
     }
 
     foreach ($name in $config.Utilities) {
@@ -439,6 +477,15 @@ function Import-ProfileModule {
     }
 
     foreach ($name in $config.ExternalModules) {
+        # A Gallery module listed in DeferExternalModules is imported just after the first prompt
+        # rather than during startup. Interactive shells reach a prompt sooner; non-interactive
+        # ones never draw a prompt and so never pay for it at all.
+        if ($config.DeferExternalModules -contains $name) {
+            Register-ProfileDeferredModule -Name $name
+            $script:LoadReport.Add([PSCustomObject]@{ Kind = 'External'; Name = $name; Status = 'deferred'; Milliseconds = 0 })
+            continue
+        }
+
         $stopwatch = if ($track) { [System.Diagnostics.Stopwatch]::StartNew() } else { $null }
 
         Import-Module -Name $name -Global -ErrorAction SilentlyContinue

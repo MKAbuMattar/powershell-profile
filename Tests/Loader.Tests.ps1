@@ -208,6 +208,120 @@ Describe 'Update-Profile' {
     }
 }
 
+Describe 'Plugin system' {
+
+    BeforeAll {
+        Import-Module (Join-Path $script:Root 'Module/Loader/Loader.psd1') -Force
+        $script:Scratch = Join-Path ([System.IO.Path]::GetTempPath()) "plugin-test-$([guid]::NewGuid())"
+        New-Item -ItemType Directory -Path $script:Scratch -Force | Out-Null
+    }
+
+    AfterAll {
+        Remove-Item -LiteralPath $script:Scratch -Recurse -Force -ErrorAction SilentlyContinue
+    }
+
+    It 'discovers the built-in plugins' {
+        $plugins = @(Get-ProfilePlugin -Force)
+        $plugins.Count | Should -BeGreaterThan 10
+        $plugins.Name | Should -Contain 'Git'
+    }
+
+    It 'knows which tool each built-in plugin needs' {
+        Get-ProfilePluginTool -Plugin 'Kubectl' | Should -Be 'kubectl'
+        Get-ProfilePluginTool -Plugin 'NotAPlugin' | Should -BeNullOrEmpty
+    }
+
+    It 'includes a user plugin directory in the search path' {
+        # The point of the whole feature: at least one root must be outside the repository, or a
+        # plugin cannot survive Update-LocalProfileModuleDirectory replacing the Module tree.
+        $roots = @(Get-ProfilePluginRoot -RepositoryRoot $script:Root)
+        $external = @($roots | Where-Object { -not $_.Path.StartsWith($script:Root, [StringComparison]::OrdinalIgnoreCase) })
+
+        # The user directory only appears once it exists, so create it for the test.
+        $userRoot = Join-Path $HOME '.config/powershell-profile/plugins'
+        if (-not (Test-Path $userRoot)) {
+            New-Item -ItemType Directory -Path $userRoot -Force | Out-Null
+            $roots = @(Get-ProfilePluginRoot -RepositoryRoot $script:Root)
+            $external = @($roots | Where-Object { -not $_.Path.StartsWith($script:Root, [StringComparison]::OrdinalIgnoreCase) })
+        }
+
+        $external.Count | Should -BeGreaterThan 0
+    }
+
+    It 'scaffolds a plugin that is then discoverable' {
+        New-ProfilePlugin -Name 'PesterScratch' -Tool 'definitely-not-a-real-tool' -Path $script:Scratch | Out-Null
+
+        Test-Path (Join-Path $script:Scratch 'PesterScratch/plugin.psd1') | Should -BeTrue
+        Test-Path (Join-Path $script:Scratch 'PesterScratch/PesterScratch.psd1') | Should -BeTrue
+        Test-Path (Join-Path $script:Scratch 'PesterScratch/PesterScratch.psm1') | Should -BeTrue
+
+        $env:PROFILE_PLUGIN_PATH = $script:Scratch
+        try {
+            $found = Get-ProfilePlugin -Name 'PesterScratch' -Force
+            @($found).Count | Should -Be 1
+            $found.Scope | Should -Be 'Environment'
+            $found.Tool | Should -Be 'definitely-not-a-real-tool'
+            $found.ToolPresent | Should -BeFalse
+        }
+        finally {
+            $env:PROFILE_PLUGIN_PATH = $null
+            Get-ProfilePlugin -Force | Out-Null
+        }
+    }
+
+    It 'produces a plugin whose module actually imports' {
+        $manifest = Join-Path $script:Scratch 'PesterScratch/PesterScratch.psd1'
+        { Import-Module $manifest -Force -ErrorAction Stop } | Should -Not -Throw
+        Remove-Module PesterScratch -Force -ErrorAction SilentlyContinue
+    }
+
+    It 'refuses a plugin name that is not a valid identifier' {
+        { New-ProfilePlugin -Name 'not valid!' -Path $script:Scratch -ErrorAction Stop } | Should -Throw
+    }
+}
+
+Describe 'Deferred module loading' {
+
+    BeforeAll {
+        Import-Module (Join-Path $script:Root 'Module/Loader/Loader.psd1') -Force
+    }
+
+    It 'does nothing for a module that is not installed' {
+        { Register-ProfileDeferredModule -Name 'NoSuchGalleryModule' } | Should -Not -Throw
+    }
+
+    It 'leaves Get-ChildItem alone' {
+        # An earlier attempt stubbed Get-ChildItem to import Terminal-Icons on first use. Shadowing
+        # a core cmdlet that module auto-loading and tab completion depend on hung the shell during
+        # startup, so deferral moved to the prompt instead. This guards against reintroducing it.
+        (Get-Command Get-ChildItem).CommandType | Should -Be 'Cmdlet'
+    }
+}
+
+Describe 'Coreutils integration' {
+
+    BeforeAll {
+        Import-Module (Join-Path $script:Root 'Module/Coreutils/Coreutils.psd1') -Force
+    }
+
+    It 'reports installation state without throwing when absent' {
+        { Get-CoreutilsInstallation } | Should -Not -Throw
+        (Get-CoreutilsInstallation).Installed | Should -BeOfType [bool]
+    }
+
+    It 'lists utilities when coreutils is present' -Skip:(-not (Get-Command coreutils-manager -CommandType Application -ErrorAction SilentlyContinue)) {
+        $utilities = @(Get-CoreutilsUtility)
+        $utilities.Count | Should -BeGreaterThan 50
+        $utilities.Name | Should -Contain 'grep'
+    }
+
+    It 'flags names the profile also claims' -Skip:(-not (Get-Command coreutils-manager -CommandType Application -ErrorAction SilentlyContinue)) {
+        $contested = @(Get-CoreutilsUtility -ContestedOnly)
+        $contested.Name | Should -Contain 'grep'
+        $contested | ForEach-Object { $_.Contested | Should -BeTrue }
+    }
+}
+
 Describe 'Pipeline binding' {
 
     BeforeAll {
