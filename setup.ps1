@@ -112,21 +112,30 @@
 .LINK
     https://github.com/MKAbuMattar/powershell-profile
 #>
-[CmdletBinding(SupportsShouldProcess)]
+#---------------------------------------------------------------------------------------------------
+# This param block is deliberately plain: no [CmdletBinding()], no [ValidateSet], no defaults that
+# call cmdlets. The documented install pipes this file into Invoke-Expression, which runs it in the
+# caller's scope rather than a script scope, and that breaks both of those in ways worth spelling
+# out because the failure is obscure:
+#
+#   [ValidateSet] is applied to the caller's existing variable, and an unbound $Step holds $null,
+#   which is not in the set. The install died on
+#     "The attribute cannot be added because variable Step with value would no longer be valid."
+#
+#   [CmdletBinding()] does not create a $PSCmdlet under Invoke-Expression, so every
+#   $PSCmdlet.ShouldProcess() call would throw on a null reference.
+#
+# Validation, ShouldProcess and -WhatIf all work correctly inside a function, so the real work
+# lives in Install-MKAbuMattarProfile below and this block only forwards to it.
+#---------------------------------------------------------------------------------------------------
 param(
-    [string]$InstallPath = (Split-Path -Parent $PROFILE),
-
-    [string]$Branch = 'main',
-
-    [ValidateSet('Modules', 'Profile', 'Starship', 'FastFetch', 'Figlet', 'WindowsTerminal', 'Font', 'Tools', 'GalleryModules')]
+    [string]$InstallPath,
+    [string]$Branch,
     [string[]]$Step,
-
     [switch]$IncludeOptional,
-
-    [ValidateSet('Ask', 'Winget', 'Chocolatey', 'None')]
-    [string]$PackageManager = 'Ask',
-
-    [switch]$Force
+    [string]$PackageManager,
+    [switch]$Force,
+    [switch]$WhatIf
 )
 
 $ErrorActionPreference = 'Stop'
@@ -668,84 +677,154 @@ function Install-ProfileTool {
 # Run
 #---------------------------------------------------------------------------------------------------
 
-$defaultSteps = @('Modules', 'Profile', 'Starship', 'FastFetch', 'Figlet', 'WindowsTerminal', 'GalleryModules')
-if (-not $Step) {
-    $Step = if ($IncludeOptional) { $defaultSteps + @('Font', 'Tools') } else { $defaultSteps }
-}
+function Install-MKAbuMattarProfile {
+    <#
+    .SYNOPSIS
+        Runs the install.
 
-Write-Host ''
-Write-SetupLog "Installing to $InstallPath from branch $Branch"
-Write-SetupLog ("Steps: {0}" -f ($Step -join ', '))
-Write-Host ''
+    .DESCRIPTION
+        The real entry point. Everything lives in a function so that [ValidateSet], $PSCmdlet and
+        -WhatIf all behave, which they do not in a top-level param block when the script is piped
+        into Invoke-Expression.
 
-if (-not (Test-SetupConnection)) {
-    Write-SetupLog 'github.com is not reachable. Check your connection and try again.' -Level ERROR
-    return
-}
+    .PARAMETER InstallPath
+        Directory to install into. Defaults to the parent of $PROFILE.
 
-$repository = $null
+    .PARAMETER Branch
+        Repository branch to install from.
 
-try {
-    $repository = Get-RepositoryArchive -Branch $Branch
-    $workspace = Split-Path -Parent $repository
+    .PARAMETER Step
+        Run only the named steps.
 
-    $configTargets = @{
-        Starship        = @{
-            Source      = Join-Path $repository '.config/starship.toml'
-            Destination = Join-Path $env:USERPROFILE '.config/starship.toml'
-            Label       = 'starship.toml'
-        }
-        FastFetch       = @{
-            Source      = Join-Path $repository '.config/fastfetch/config.jsonc'
-            Destination = Join-Path $env:USERPROFILE '.config/fastfetch/config.jsonc'
-            Label       = 'fastfetch config.jsonc'
-        }
-        Figlet          = @{
-            Source      = Join-Path $repository '.config/.figlet/ANSI_Shadow.flf'
-            Destination = Join-Path $env:USERPROFILE '.config/.figlet/ANSI_Shadow.flf'
-            Label       = 'ANSI_Shadow.flf'
-        }
-        WindowsTerminal = @{
-            Source      = Join-Path $repository '.config/windows-terminal/settings.json'
-            Destination = Join-Path $env:LOCALAPPDATA 'Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json'
-            Label       = 'Windows Terminal settings.json'
-        }
+    .PARAMETER IncludeOptional
+        Also run the Font and Tools steps.
+
+    .PARAMETER PackageManager
+        Winget, Chocolatey, None, or Ask to be prompted.
+
+    .PARAMETER Force
+        Overwrite an existing profile.config.psd1.
+
+    .OUTPUTS
+        None.
+
+    .EXAMPLE
+        Install-MKAbuMattarProfile -Step Profile -WhatIf
+    #>
+    [CmdletBinding(SupportsShouldProcess)]
+    [OutputType([void])]
+    param(
+        [string]$InstallPath = (Split-Path -Parent $PROFILE),
+
+        [string]$Branch = 'main',
+
+        [ValidateSet('Modules', 'Profile', 'Starship', 'FastFetch', 'Figlet', 'WindowsTerminal', 'Font', 'Tools', 'GalleryModules')]
+        [string[]]$Step,
+
+        [switch]$IncludeOptional,
+
+        [ValidateSet('Ask', 'Winget', 'Chocolatey', 'None')]
+        [string]$PackageManager = 'Ask',
+
+        [switch]$Force
+    )
+    $defaultSteps = @('Modules', 'Profile', 'Starship', 'FastFetch', 'Figlet', 'WindowsTerminal', 'GalleryModules')
+    if (-not $Step) {
+        $Step = if ($IncludeOptional) { $defaultSteps + @('Font', 'Tools') } else { $defaultSteps }
     }
 
-    foreach ($name in $Step) {
-        switch ($name) {
-            'Modules' { Install-ProfileModule -Repository $repository -InstallPath $InstallPath -Force:$Force }
-            'Profile' { Install-Profile -Repository $repository }
-            'GalleryModules' { Install-GalleryModule }
-            'Font' { Install-CascadiaCodeFont }
-            'Tools' { Install-ProfileTool -Manager (Resolve-PackageManager -Preference $PackageManager) }
-            default {
-                $target = $configTargets[$name]
-                if ($target) {
-                    Install-RepositoryFile -Source $target.Source -Destination $target.Destination -Label $target.Label
+    Write-Host ''
+    Write-SetupLog "Installing to $InstallPath from branch $Branch"
+    Write-SetupLog ("Steps: {0}" -f ($Step -join ', '))
+    Write-Host ''
+
+    if (-not (Test-SetupConnection)) {
+        Write-SetupLog 'github.com is not reachable. Check your connection and try again.' -Level ERROR
+        return
+    }
+
+    $repository = $null
+
+    try {
+        $repository = Get-RepositoryArchive -Branch $Branch
+        $workspace = Split-Path -Parent $repository
+
+        $configTargets = @{
+            Starship        = @{
+                Source      = Join-Path $repository '.config/starship.toml'
+                Destination = Join-Path $env:USERPROFILE '.config/starship.toml'
+                Label       = 'starship.toml'
+            }
+            FastFetch       = @{
+                Source      = Join-Path $repository '.config/fastfetch/config.jsonc'
+                Destination = Join-Path $env:USERPROFILE '.config/fastfetch/config.jsonc'
+                Label       = 'fastfetch config.jsonc'
+            }
+            Figlet          = @{
+                Source      = Join-Path $repository '.config/.figlet/ANSI_Shadow.flf'
+                Destination = Join-Path $env:USERPROFILE '.config/.figlet/ANSI_Shadow.flf'
+                Label       = 'ANSI_Shadow.flf'
+            }
+            WindowsTerminal = @{
+                Source      = Join-Path $repository '.config/windows-terminal/settings.json'
+                Destination = Join-Path $env:LOCALAPPDATA 'Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json'
+                Label       = 'Windows Terminal settings.json'
+            }
+        }
+
+        foreach ($name in $Step) {
+            switch ($name) {
+                'Modules' { Install-ProfileModule -Repository $repository -InstallPath $InstallPath -Force:$Force }
+                'Profile' { Install-Profile -Repository $repository }
+                'GalleryModules' { Install-GalleryModule }
+                'Font' { Install-CascadiaCodeFont }
+                'Tools' { Install-ProfileTool -Manager (Resolve-PackageManager -Preference $PackageManager) }
+                default {
+                    $target = $configTargets[$name]
+                    if ($target) {
+                        Install-RepositoryFile -Source $target.Source -Destination $target.Destination -Label $target.Label
+                    }
                 }
             }
         }
-    }
 
-    Write-Host ''
-    Write-SetupLog 'Setup complete.'
-    Write-Host ''
-    Write-Host '  Next steps:' -ForegroundColor Cyan
-    Write-Host '    Install-ProfileDependency      install the CLI tools the profile uses'
-    Write-Host '    Measure-ProfileLoad            see what loads and what it costs'
-    Write-Host '    Show-ProfileHelp               list the commands you now have'
-    Write-Host ''
-    Write-Host "  Edit $InstallPath\profile.config.psd1 to choose what loads." -ForegroundColor DarkGray
-    Write-Host '  Restart your shell to pick everything up.' -ForegroundColor DarkGray
-    Write-Host ''
-}
-catch {
-    Write-SetupLog "Setup failed: $($_.Exception.Message)" -Level ERROR
-    Write-SetupLog 'Nothing further was installed. Existing files were backed up alongside the originals.' -Level ERROR
-}
-finally {
-    if ($repository) {
-        Remove-Item -LiteralPath (Split-Path -Parent $repository) -Recurse -Force -ErrorAction SilentlyContinue -WhatIf:$false
+        Write-Host ''
+        Write-SetupLog 'Setup complete.'
+        Write-Host ''
+        Write-Host '  Next steps:' -ForegroundColor Cyan
+        Write-Host '    Install-ProfileDependency      install the CLI tools the profile uses'
+        Write-Host '    Measure-ProfileLoad            see what loads and what it costs'
+        Write-Host '    Show-ProfileHelp               list the commands you now have'
+        Write-Host ''
+        Write-Host "  Edit $InstallPath\profile.config.psd1 to choose what loads." -ForegroundColor DarkGray
+        Write-Host '  Restart your shell to pick everything up.' -ForegroundColor DarkGray
+        Write-Host ''
+    }
+    catch {
+        Write-SetupLog "Setup failed: $($_.Exception.Message)" -Level ERROR
+        Write-SetupLog 'Nothing further was installed. Existing files were backed up alongside the originals.' -Level ERROR
+    }
+    finally {
+        if ($repository) {
+            Remove-Item -LiteralPath (Split-Path -Parent $repository) -Recurse -Force -ErrorAction SilentlyContinue -WhatIf:$false
+        }
     }
 }
+
+#---------------------------------------------------------------------------------------------------
+# Entry point
+#
+# Forwards only the arguments actually supplied, so the function's own defaults apply to the rest.
+# This works identically for `irm ... | iex`, for & ([scriptblock]::Create(...)) -Arg, and for
+# ./setup.ps1 -Arg.
+#---------------------------------------------------------------------------------------------------
+$forward = @{}
+if ($InstallPath) { $forward['InstallPath'] = $InstallPath }
+if ($Branch) { $forward['Branch'] = $Branch }
+if ($Step) { $forward['Step'] = $Step }
+if ($PackageManager) { $forward['PackageManager'] = $PackageManager }
+if ($IncludeOptional) { $forward['IncludeOptional'] = $true }
+if ($Force) { $forward['Force'] = $true }
+if ($WhatIf) { $forward['WhatIf'] = $true }
+
+Install-MKAbuMattarProfile @forward
