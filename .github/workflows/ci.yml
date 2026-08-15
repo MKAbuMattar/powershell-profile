@@ -32,6 +32,10 @@ jobs:
         shell: pwsh
         run: ./Tools/Test-Pipeline.ps1
 
+      - name: Verify README command tables match the code
+        shell: pwsh
+        run: ./Tools/Test-Readme.ps1
+
       - name: Cache PowerShell modules
         uses: actions/cache@v4
         with:

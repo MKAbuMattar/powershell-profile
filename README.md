@@ -109,15 +109,21 @@ These checks run in CI and can be run locally:
 | `./Tools/Test-Manifest.ps1` | A manifest that no longer matches its code. Kubectl once exported 91 functions nobody had written. |
 | `./Tools/Test-Load.ps1` | A module that parses but will not import, such as Conda's malformed GUID. |
 | `./Tools/Test-Pipeline.ps1` | A `ValueFromPipeline` parameter with no `process` block, which silently keeps only the last piped item. |
+| `./Tools/Test-Readme.ps1` | A module README whose command table no longer matches the code. |
 | `./Tools/Invoke-Analyzer.ps1` | PSScriptAnalyzer findings, using [`PSScriptAnalyzerSettings.psd1`](./PSScriptAnalyzerSettings.psd1). |
-| `./Tools/Invoke-Pester.ps1` | The load contract in [`Tests/`](./Tests) — 101 tests over manifests, imports, alias safety and pipeline behaviour. |
+| `./Tools/Invoke-Pester.ps1` | The load contract in [`Tests/`](./Tests) — tests over manifests, imports, alias safety and pipeline behaviour. |
 
-Two helpers apply fixes rather than report them:
+Three helpers apply fixes rather than report them:
 
 | Tool | Purpose |
 | --- | --- |
 | `./Tools/Update-Manifest.ps1` | Regenerate every export list from source. Run after adding or renaming a function. |
+| `./Tools/Update-Readme.ps1` | Regenerate every module README's command table from comment-based help. |
 | `./Tools/Add-ProcessBlock.ps1` | Wrap pipeline-bound function bodies in a `process` block. |
+
+Comment-based help is the single source of truth for documentation. The command table in each
+module README sits between `<!-- BEGIN GENERATED COMMANDS -->` and
+`<!-- END GENERATED COMMANDS -->`; everything outside those markers is hand-written and preserved.
 
 `Test-ProfileAliasContention` reports aliases claimed by more than one loaded module — PNPM,
 Pipenv and Poetry all want the `p*` namespace, and load order decides the winner.
