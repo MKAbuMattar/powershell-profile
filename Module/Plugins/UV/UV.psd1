@@ -46,7 +46,6 @@
     RootModule             = 'UV.psm1'
     ModuleVersion          = '4.2.0'
     CompatiblePSEditions   = @(
-        'Desktop', 
         'Core'
     )
     GUID                   = 'a8f7b2c3-4d5e-6f7a-8b9c-0d1e2f3a4b5c'
@@ -54,7 +53,7 @@
     CompanyName            = 'MKAbuMattar'
     Copyright              = '(c) 2025 Mohammad Abu Mattar. All rights reserved.'
     Description            = 'Comprehensive UV (Python package manager) CLI integration with PowerShell functions and convenient aliases for modern Python dependency management, virtual environment handling, and project workflows.'
-    PowerShellVersion      = '5.0'
+    PowerShellVersion      = '7.0'
     PowerShellHostName     = ''
     PowerShellHostVersion  = ''
     DotNetFrameworkVersion = ''
@@ -67,21 +66,21 @@
     FormatsToProcess       = @()
     NestedModules          = @()
     FunctionsToExport      = @(
+        'Get-UVProjectInfo',
+        'Get-UVVirtualEnvPath',
         'Invoke-UVAdd',
-        'Invoke-UVExport',
-        'Invoke-UVLock',
-        'Invoke-UVLockRefresh',
-        'Invoke-UVLockUpgrade',
-        'Invoke-UVPip',
-        'Invoke-UVPython',
-        'Invoke-UVRun',
         'Invoke-UVRemove',
         'Invoke-UVSync',
         'Invoke-UVSyncRefresh',
         'Invoke-UVSyncUpgrade',
-        'Invoke-UVSelfUpdate',
+        'Invoke-UVLock',
+        'Invoke-UVLockRefresh',
+        'Invoke-UVLockUpgrade',
+        'Invoke-UVExport',
+        'Invoke-UVRun',
+        'Invoke-UVPython',
+        'Invoke-UVPip',
         'Invoke-UVVenv',
-        'Invoke-UVVersion',
         'Invoke-UVInit',
         'Invoke-UVBuild',
         'Invoke-UVPublish',
@@ -91,37 +90,37 @@
         'Invoke-UVToolUninstall',
         'Invoke-UVToolList',
         'Invoke-UVToolUpgrade',
-        'Get-UVProjectInfo',
-        'Get-UVVirtualEnvPath'
+        'Invoke-UVSelfUpdate',
+        'Invoke-UVVersion'
     )
     CmdletsToExport        = @()
     VariablesToExport      = ''
     AliasesToExport        = @(
         'uva',
-        'uvexp',
-        'uvl',
-        'uvlr',
-        'uvlu',
-        'uvp',
-        'uvpy',
-        'uvr',
         'uvrm',
         'uvs',
         'uvsr',
         'uvsu',
-        'uvup',
+        'uvl',
+        'uvlr',
+        'uvlu',
+        'uvexp',
+        'uvr',
+        'uvpy',
+        'uvp',
         'uvv',
-        'uvver',
         'uvi',
         'uvb',
         'uvpub',
         'uvt',
         'uvtr',
+        'uvx',
         'uvti',
         'uvtu',
         'uvtl',
         'uvtup',
-        'uvx'
+        'uvup',
+        'uvver'
     )
     DscResourcesToExport   = @()
     ModuleList             = @()

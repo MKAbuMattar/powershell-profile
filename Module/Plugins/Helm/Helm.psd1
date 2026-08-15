@@ -44,7 +44,6 @@
     RootModule           = 'Helm.psm1'
     ModuleVersion        = '4.2.0'
     CompatiblePSEditions = @(
-        'Desktop',
         'Core'
     )
     GUID                 = 'a8b9c0d1-e2f3-4567-8901-234567890abc'
@@ -52,7 +51,7 @@
     CompanyName          = 'MKAbuMattar'
     Copyright            = '(c) 2025 Mohammad Abu Mattar. All rights reserved.'
     Description          = 'Helm plugin for MKAbuMattar PowerShell Profile - provides Helm CLI shortcuts and utility functions for Kubernetes package management workflows.'
-    PowerShellVersion    = '5.0'
+    PowerShellVersion    = '7.0'
     FunctionsToExport    = @(
         'Invoke-Helm',
         'Invoke-HelmInstall',

@@ -44,7 +44,6 @@
     RootModule           = 'Update.psm1'
     ModuleVersion        = '4.2.0'
     CompatiblePSEditions = @(
-        'Desktop',
         'Core'
     )
     GUID                 = '74b25afc-cc1a-4658-9257-e4645e00c7b2'
@@ -52,9 +51,10 @@
     CompanyName          = 'MKAbuMattar'
     Copyright            = '(c) 2025 Mohammad Abu Mattar. All rights reserved.'
     Description          = 'This module provides functions to update the local profile module directory, profile, and PowerShell.'
-    PowerShellVersion    = '5.0'
+    PowerShellVersion    = '7.0'
     FunctionsToExport    = @(
         'Update-LocalProfileModuleDirectory',
+        'Get-ForeignProfileSection',
         'Update-Profile',
         'Update-PowerShell',
         'Update-WindowsTerminalConfig'
@@ -63,7 +63,6 @@
     VariablesToExport    = @()
     AliasesToExport      = @(
         'update-local-module',
-        'update-profile',
         'update-ps1',
         'update-terminal-config'
     )

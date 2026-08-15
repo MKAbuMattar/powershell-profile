@@ -102,6 +102,60 @@ function Write-LogMessage {
         [string]$Level = "INFO"
     )
 
-    $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
-    Write-Output "[$timestamp][$Level] $Message"
+    process {
+        $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+        Write-Output "[$timestamp][$Level] $Message"
+    }
+}
+
+function Invoke-ErrorHandling {
+    <#
+    .SYNOPSIS
+        Reports a failure with its underlying exception.
+
+    .DESCRIPTION
+        Writes the caller's summary and the exception behind it as a single ERROR line, then emits
+        a non-terminating error so the caller's own error handling still applies.
+
+        This function was previously defined only in setup.ps1, yet Update.psm1 called it twice.
+        Those calls failed with "The term 'Invoke-ErrorHandling' is not recognized", so a genuine
+        update failure produced a confusing second error instead of the real reason. Defining it
+        here puts it alongside Write-LogMessage, where both callers can reach it.
+
+    .PARAMETER ErrorMessage
+        A short description of what failed, in the caller's terms.
+
+    .PARAMETER ErrorRecord
+        The error record that caused the failure, normally $_ from a catch block.
+
+    .INPUTS
+        None.
+
+    .OUTPUTS
+        None. Writes to the error stream.
+
+    .NOTES
+        Does not stop the pipeline. Use `throw` when the caller must not continue.
+
+    .EXAMPLE
+        try { Update-Thing } catch { Invoke-ErrorHandling -ErrorMessage 'Could not update.' -ErrorRecord $_ }
+
+    .LINK
+        https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
+    #>
+    [CmdletBinding()]
+    [Alias("handle-error")]
+    [OutputType([void])]
+    param (
+        [Parameter(Mandatory, Position = 0)]
+        [string]$ErrorMessage,
+
+        [Parameter(Position = 1)]
+        [System.Management.Automation.ErrorRecord]$ErrorRecord
+    )
+
+    $detail = if ($ErrorRecord) { $ErrorRecord.Exception.Message } else { 'No exception detail available.' }
+
+    Write-LogMessage -Message "$ErrorMessage $detail" -Level 'ERROR'
+    Write-Error -Message "$ErrorMessage $detail"
 }

@@ -135,24 +135,26 @@ function Get-MyIPAddress {
         [string]$ComputerName = $env:COMPUTERNAME
     )
 
-    try {
-        if ($Local) {
-            $LocalAddress = [System.Net.Dns]::GetHostAddresses($ComputerName) | Where-Object { $_.AddressFamily -eq 'InterNetwork' } | Select-Object -ExpandProperty IPAddressToString
-            Write-Output "Local: $LocalAddress"
-        }
+    process {
+        try {
+            if ($Local) {
+                $LocalAddress = [System.Net.Dns]::GetHostAddresses($ComputerName) | Where-Object { $_.AddressFamily -eq 'InterNetwork' } | Select-Object -ExpandProperty IPAddressToString
+                Write-Output "Local: $LocalAddress"
+            }
 
-        if ($IPv4) {
-            $IPv4Address = (Invoke-RestMethod -Uri "http://ipv4.icanhazip.com").Trim()
-            Write-Output "IPv4: $IPv4Address"
-        }
+            if ($IPv4) {
+                $IPv4Address = (Invoke-RestMethod -Uri "http://ipv4.icanhazip.com").Trim()
+                Write-Output "IPv4: $IPv4Address"
+            }
 
-        if ($IPv6) {
-            $IPv6Address = (Invoke-RestMethod -Uri "http://ipv6.icanhazip.com").Trim()
-            Write-Output "IPv6: $IPv6Address"
+            if ($IPv6) {
+                $IPv6Address = (Invoke-RestMethod -Uri "http://ipv6.icanhazip.com").Trim()
+                Write-Output "IPv6: $IPv6Address"
+            }
         }
-    }
-    catch {
-        Write-LogMessage -Message "Failed to retrieve IP address: $_" -Level "ERROR"
+        catch {
+            Write-LogMessage -Message "Failed to retrieve IP address: $_" -Level "ERROR"
+        }
     }
 }
 

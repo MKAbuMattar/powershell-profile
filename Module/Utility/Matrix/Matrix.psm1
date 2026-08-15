@@ -54,40 +54,42 @@ function Start-Matrix {
         [double]$SleepTime = 30
     )
 
-    $scriptDir = Split-Path -Parent $PSCommandPath
-    $pythonScript = Join-Path $scriptDir "matrix.py"
+    process {
+        $scriptDir = Split-Path -Parent $PSCommandPath
+        $pythonScript = Join-Path $scriptDir "matrix.py"
 
-    if (-not (Test-Path $pythonScript)) {
-        Write-Error "matrix.py not found at: $pythonScript"
-        return
-    }
+        if (-not (Test-Path $pythonScript)) {
+            Write-Error "matrix.py not found at: $pythonScript"
+            return
+        }
 
-    $pythonCmd = $null
-    try {
-        $pythonCmd = Get-Command python -ErrorAction Stop
-    }
-    catch {
+        $pythonCmd = $null
         try {
-            $pythonCmd = Get-Command python3 -ErrorAction Stop
+            $pythonCmd = Get-Command python -ErrorAction Stop
         }
         catch {
-            Write-Error "Python is not installed or not available in PATH"
-            return
-        }
-    }
-
-    $pythonPath = $pythonCmd.Source
-
-    try {
-        if ($SleepTime -lt 0.01 -or $SleepTime -gt 50) {
-            Write-Error "Sleep time must be between 0.01 and 50 seconds"
-            return
+            try {
+                $pythonCmd = Get-Command python3 -ErrorAction Stop
+            }
+            catch {
+                Write-Error "Python is not installed or not available in PATH"
+                return
+            }
         }
 
-        $arguments = @($pythonScript, "--sleep", $SleepTime)
-        & $pythonPath $arguments 2>&1
-    }
-    catch {
-        Write-Error "Failed to start matrix animation: $_"
+        $pythonPath = $pythonCmd.Source
+
+        try {
+            if ($SleepTime -lt 0.01 -or $SleepTime -gt 50) {
+                Write-Error "Sleep time must be between 0.01 and 50 seconds"
+                return
+            }
+
+            $arguments = @($pythonScript, "--sleep", $SleepTime)
+            & $pythonPath $arguments 2>&1
+        }
+        catch {
+            Write-Error "Failed to start matrix animation: $_"
+        }
     }
 }

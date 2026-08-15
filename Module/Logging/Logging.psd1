@@ -43,7 +43,6 @@
     RootModule           = 'Logging.psm1'
     ModuleVersion        = '4.2.0'
     CompatiblePSEditions = @(
-        'Desktop',
         'Core'
     )
     GUID                 = '508e211f-6649-4616-9253-b4a803cdb653'
@@ -51,14 +50,16 @@
     CompanyName          = 'MKAbuMattar'
     Copyright            = '(c) 2025 Mohammad Abu Mattar. All rights reserved.'
     Description          = 'This module provides logging functionality with timestamp and log level.'
-    PowerShellVersion    = '5.0'
+    PowerShellVersion    = '7.0'
     FunctionsToExport    = @(
-        'Write-LogMessage'
+        'Write-LogMessage',
+        'Invoke-ErrorHandling'
     )
     CmdletsToExport      = @()
     VariablesToExport    = @()
     AliasesToExport      = @(
-        'log-message'
+        'log-message',
+        'handle-error'
     )
     PrivateData          = @{
         PSData = @{

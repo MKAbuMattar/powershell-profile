@@ -129,37 +129,39 @@ function Get-PrayerTimes {
         [switch]$Use24HourFormat = $false
     )
 
-    $scriptDir = Split-Path -Parent $PSCommandPath
-    $pythonScript = Join-Path -Path $scriptDir -ChildPath "prayer_times.py"
+    process {
+        $scriptDir = Split-Path -Parent $PSCommandPath
+        $pythonScript = Join-Path -Path $scriptDir -ChildPath "prayer_times.py"
 
-    if (-not (Test-Path -Path $pythonScript)) {
-        Write-Host "Error: prayer_times.py not found at $pythonScript" -ForegroundColor Red
-        return
-    }
+        if (-not (Test-Path -Path $pythonScript)) {
+            Write-Host "Error: prayer_times.py not found at $pythonScript" -ForegroundColor Red
+            return
+        }
 
-    try {
-        $pythonVersion = python --version 2>&1
-    }
-    catch {
-        Write-Host "Error: Python is not installed or not available in PATH." -ForegroundColor Red
-        return
-    }
+        try {
+            $pythonVersion = python --version 2>&1
+        }
+        catch {
+            Write-Host "Error: Python is not installed or not available in PATH." -ForegroundColor Red
+            return
+        }
 
-    $arguments = @(
-        $pythonScript,
-        "--city", $City,
-        "--country", $Country,
-        "--method", $Method
-    )
+        $arguments = @(
+            $pythonScript,
+            "--city", $City,
+            "--country", $Country,
+            "--method", $Method
+        )
     
-    if ($Use24HourFormat) {
-        $arguments += @("--format", "24")
-    }
+        if ($Use24HourFormat) {
+            $arguments += @("--format", "24")
+        }
 
-    try {
-        & python @arguments
-    }
-    catch {
-        Write-Host "Error executing prayer_times.py: $_" -ForegroundColor Red
+        try {
+            & python @arguments
+        }
+        catch {
+            Write-Host "Error executing prayer_times.py: $_" -ForegroundColor Red
+        }
     }
 }

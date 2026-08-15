@@ -44,7 +44,6 @@
     RootModule           = 'Misc.psm1'
     ModuleVersion        = '4.2.0'
     CompatiblePSEditions = @(
-        'Desktop',
         'Core'
     )
     GUID                 = 'c9a53499-0b33-4410-9b93-044f888da988'
@@ -52,7 +51,7 @@
     CompanyName          = 'MKAbuMattar'
     Copyright            = '(c) 2025 Mohammad Abu Mattar. All rights reserved.'
     Description          = 'A collection of utility functions for system and process management.'
-    PowerShellVersion    = '5.0'
+    PowerShellVersion    = '7.0'
     FunctionsToExport    = @(
         'Test-Administrator',
         'Test-CommandExists',

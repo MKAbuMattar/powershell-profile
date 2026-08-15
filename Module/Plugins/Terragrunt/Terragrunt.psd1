@@ -46,7 +46,6 @@
     RootModule           = 'Terragrunt.psm1'
     ModuleVersion        = '4.2.0'
     CompatiblePSEditions = @(
-        'Desktop',
         'Core'
     )
     GUID                 = 'b5e8f1c3-6d9a-4f2b-9c8e-3f1a5b7d2c4f'
@@ -54,7 +53,7 @@
     CompanyName          = 'MKAbuMattar'
     Copyright            = '(c) 2025 Mohammad Abu Mattar. All rights reserved.'
     Description          = 'Comprehensive Terragrunt CLI integration for PowerShell with 25+ functions and aliases for DRY Infrastructure as Code management, multi-environment workflows, dependency orchestration, and advanced Terraform operations.'
-    PowerShellVersion    = '5.1'
+    PowerShellVersion    = '7.0'
     FunctionsToExport    = @(
         'Invoke-Terragrunt',
         'Get-TerragruntWorkingDir',
@@ -91,34 +90,34 @@
     CmdletsToExport      = @()
     VariablesToExport    = @()
     AliasesToExport      = @(
-        'tg',          
-        'tgi',         
-        'tgifm',       
-        'tgp',         
-        'tgpa',        
-        'tga',         
-        'tgaa',        
-        'tgr',         
-        'tgra',        
-        'tgd',         
-        'tgda',        
-        'tgf',         
-        'tgfmt',       
-        'tgv',         
-        'tgva',        
-        'tgvi',        
-        'tgrj',        
-        'tggd',        
-        'tgo',         
-        'tgomg',       
-        'tgsl',         
-        'tgss',         
-        'tgsm',         
-        'tgsr',         
-        'tgsh',        
-        'tgpv',        
-        'tgget',       
-        'tgver'        
+        'tg',
+        'tgi',
+        'tgifm',
+        'tgp',
+        'tgpa',
+        'tga',
+        'tgaa',
+        'tgr',
+        'tgra',
+        'tgd',
+        'tgda',
+        'tgf',
+        'tgfmt',
+        'tgv',
+        'tgva',
+        'tgvi',
+        'tgrj',
+        'tggd',
+        'tgo',
+        'tgomg',
+        'tgsl',
+        'tgss',
+        'tgsm',
+        'tgsr',
+        'tgsh',
+        'tgpv',
+        'tgget',
+        'tgver'
     )
     DscResourcesToExport = @()
     ModuleList           = @()

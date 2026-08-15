@@ -43,7 +43,6 @@
     RootModule           = 'Starship.psm1'
     ModuleVersion        = '4.2.0'
     CompatiblePSEditions = @(
-        'Desktop',
         'Core'
     )
     GUID                 = '1e2ead21-fa02-4d39-9c29-4c2d1b7d22d0'
@@ -51,7 +50,7 @@
     CompanyName          = 'MKAbuMattar'
     Copyright            = '(c) 2025 Mohammad Abu Mattar. All rights reserved.'
     Description          = 'This module transiently invokes the Starship prompt to enhance the appearance and functionality of the PowerShell prompt.'
-    PowerShellVersion    = '5.0'
+    PowerShellVersion    = '7.0'
     FunctionsToExport    = @(
         'Invoke-StarshipTransientFunction'
     )

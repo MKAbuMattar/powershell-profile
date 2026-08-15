@@ -45,13 +45,15 @@
 @{
     RootModule             = 'VSCode.psm1'
     ModuleVersion          = '4.2.0'
-    CompatiblePSEditions   = @()
+    CompatiblePSEditions   = @(
+        'Core'
+    )
     GUID                   = '5e2d1f8a-7b3c-4d0e-2f5a-6b9c8d1e2f3a'
     Author                 = 'Mohammad Abu Mattar'
     CompanyName            = 'MKAbuMattar'
     Copyright              = '(c) Mohammad Abu Mattar. All rights reserved.'
     Description            = 'Comprehensive VS Code CLI integration with PowerShell functions and convenient aliases for Visual Studio Code, VS Code Insiders, and VSCodium. Provides automatic VS Code flavour detection, file operations, extension management, and comprehensive VS Code workflow automation with automatic PowerShell completion for modern development.'
-    PowerShellVersion      = '5.0'
+    PowerShellVersion      = '7.0'
     PowerShellHostName     = ''
     PowerShellHostVersion  = ''
     DotNetFrameworkVersion = ''
@@ -65,7 +67,6 @@
     NestedModules          = @()
     FunctionsToExport      = @(
         'Get-VSCodeExecutable',
-        'Initialize-VSCodeCompletion',
         'Invoke-VSCode',
         'Invoke-VSCodeAdd',
         'Invoke-VSCodeDiff',

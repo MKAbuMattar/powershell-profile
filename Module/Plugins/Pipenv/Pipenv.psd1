@@ -46,7 +46,6 @@
     RootModule             = 'Pipenv.psm1'
     ModuleVersion          = '4.2.0'
     CompatiblePSEditions   = @(
-        'Desktop',
         'Core'
     )
     GUID                   = '9d4e0f5c-1e3f-6a7b-0c9d-3e4f5a6b7c8d'
@@ -54,7 +53,7 @@
     CompanyName            = 'MKAbuMattar'
     Copyright              = '(c) 2025 Mohammad Abu Mattar. All rights reserved.'
     Description            = 'A comprehensive PowerShell module that provides pipenv CLI shortcuts and utility functions for Python virtual environment management workflow. Includes automatic shell activation, dependency management, and complete pipenv integration.'
-    PowerShellVersion      = '5.0'
+    PowerShellVersion      = '7.0'
     DotNetFrameworkVersion = '4.5'
     CLRVersion             = '4.0'
     FunctionsToExport      = @(
@@ -62,43 +61,43 @@
         'Disable-PipenvAutoShell',
         'Test-PipenvAutoShell',
         'Invoke-PipenvShellToggle',
-        'Invoke-PipenvCheck',
-        'Invoke-PipenvClean',
-        'Invoke-PipenvGraph',
         'Invoke-PipenvInstall',
         'Invoke-PipenvInstallDev',
-        'Invoke-PipenvLock',
-        'Invoke-PipenvOpen',
-        'Invoke-PipenvRun',
-        'Invoke-PipenvShell',
-        'Invoke-PipenvSync',
         'Invoke-PipenvUninstall',
         'Invoke-PipenvUpdate',
+        'Invoke-PipenvShell',
+        'Invoke-PipenvRun',
         'Invoke-PipenvWhere',
         'Invoke-PipenvVenv',
         'Invoke-PipenvPython',
+        'Invoke-PipenvLock',
+        'Invoke-PipenvSync',
         'Invoke-PipenvRequirements',
+        'Invoke-PipenvCheck',
+        'Invoke-PipenvClean',
+        'Invoke-PipenvGraph',
+        'Invoke-PipenvOpen',
         'Invoke-PipenvScript'
     )
     CmdletsToExport        = @()
     VariablesToExport      = @()
     AliasesToExport        = @(
-        'pch',
-        'pcl',
-        'pgr',
         'pi',
         'pidev',
-        'pl',
-        'po',
-        'prun',
-        'psh',
-        'psy',
         'pu',
         'pupd',
+        'psh',
+        'prun',
         'pwh',
         'pvenv',
         'ppy',
+        'pl',
+        'psy',
         'preq',
+        'pch',
+        'pcl',
+        'pgr',
+        'po',
         'pscr'
     )
     DscResourcesToExport   = @()

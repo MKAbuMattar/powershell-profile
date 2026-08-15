@@ -44,7 +44,6 @@
     RootModule           = 'AWS.psm1'
     ModuleVersion        = '4.2.0'
     CompatiblePSEditions = @(
-        'Desktop',
         'Core'
     )
     GUID                 = 'd018c9e3-a978-4656-8557-495e86b160f1'
@@ -52,7 +51,7 @@
     CompanyName          = 'MKAbuMattar'
     Copyright            = '(c) 2025 Mohammad Abu Mattar. All rights reserved.'
     Description          = 'AWS CLI shortcuts and utility functions with profile management, MFA support, and role assumption for PowerShell environments'
-    PowerShellVersion    = '5.0'
+    PowerShellVersion    = '7.0'
     FunctionsToExport    = @(
         'Get-AWSCurrentProfile',
         'Get-AWSCurrentRegion',

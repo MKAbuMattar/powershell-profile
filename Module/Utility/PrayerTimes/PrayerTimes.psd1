@@ -43,7 +43,6 @@
     RootModule           = 'PrayerTimes.psm1'
     ModuleVersion        = '4.2.0'
     CompatiblePSEditions = @(
-        'Desktop',
         'Core'
     )
     GUID                 = 'f996fb1f-8e0a-4940-9d2d-e7c8febda03c'
@@ -51,7 +50,7 @@
     CompanyName          = 'MKAbuMattar'
     Copyright            = '(c) 2025 Mohammad Abu Mattar. All rights reserved.'
     Description          = ''
-    PowerShellVersion    = '5.0'
+    PowerShellVersion    = '7.0'
     FunctionsToExport    = @(
         'Get-PrayerTimes'
     )

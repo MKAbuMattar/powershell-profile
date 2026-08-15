@@ -44,7 +44,6 @@
     RootModule           = 'Docker.psm1'
     ModuleVersion        = '4.2.0'
     CompatiblePSEditions = @(
-        'Desktop',
         'Core'
     )
     GUID                 = 'c616992d-3bc1-4c78-a210-5e4d139a9a6f'
@@ -52,30 +51,17 @@
     CompanyName          = 'MKAbuMattar'
     Copyright            = '(c) 2025 Mohammad Abu Mattar. All rights reserved.'
     Description          = 'Docker command aliases and utility functions for improved Docker workflow in PowerShell'
-    PowerShellVersion    = '5.0'
+    PowerShellVersion    = '7.0'
     FunctionsToExport    = @(
         'Invoke-DockerBuild',
+        'Invoke-DockerImageBuild',
         'Invoke-DockerContainerInspect',
         'Invoke-DockerContainerList',
         'Invoke-DockerContainerListAll',
-        'Invoke-DockerImageBuild',
-        'Invoke-DockerImageInspect',
-        'Invoke-DockerImageList',
-        'Invoke-DockerImagePush',
-        'Invoke-DockerImagePrune',
-        'Invoke-DockerImageRemove',
-        'Invoke-DockerImageTag',
         'Invoke-DockerContainerLogs',
-        'Invoke-DockerNetworkCreate',
-        'Invoke-DockerNetworkConnect',
-        'Invoke-DockerNetworkDisconnect',
-        'Invoke-DockerNetworkInspect',
-        'Invoke-DockerNetworkList',
-        'Invoke-DockerNetworkRemove',
         'Invoke-DockerContainerPort',
         'Invoke-DockerPs',
         'Invoke-DockerPsAll',
-        'Invoke-DockerPull',
         'Invoke-DockerContainerRun',
         'Invoke-DockerContainerRunInteractive',
         'Invoke-DockerContainerRemove',
@@ -86,37 +72,37 @@
         'Invoke-DockerContainerStop',
         'Invoke-DockerStats',
         'Invoke-DockerTop',
+        'Invoke-DockerContainerExec',
+        'Invoke-DockerContainerExecInteractive',
+        'Invoke-DockerImageInspect',
+        'Invoke-DockerImageList',
+        'Invoke-DockerImagePush',
+        'Invoke-DockerImagePrune',
+        'Invoke-DockerImageRemove',
+        'Invoke-DockerImageTag',
+        'Invoke-DockerPull',
+        'Invoke-DockerNetworkCreate',
+        'Invoke-DockerNetworkConnect',
+        'Invoke-DockerNetworkDisconnect',
+        'Invoke-DockerNetworkInspect',
+        'Invoke-DockerNetworkList',
+        'Invoke-DockerNetworkRemove',
         'Invoke-DockerVolumeInspect',
         'Invoke-DockerVolumeList',
-        'Invoke-DockerVolumePrune',
-        'Invoke-DockerContainerExec',
-        'Invoke-DockerContainerExecInteractive'
+        'Invoke-DockerVolumePrune'
     )
     CmdletsToExport      = @()
     VariablesToExport    = @()
     AliasesToExport      = @(
         'dbl',
+        'dib',
         'dcin',
         'dcls',
         'dclsa',
-        'dib',
-        'dii',
-        'dils',
-        'dipu',
-        'dipru',
-        'dirm',
-        'dit',
         'dlo',
-        'dnc',
-        'dncn',
-        'dndcn',
-        'dni',
-        'dnls',
-        'dnrm',
         'dpo',
         'dps',
         'dpsa',
-        'dpu',
         'dr',
         'drit',
         'drm',
@@ -127,11 +113,24 @@
         'dstp',
         'dsts',
         'dtop',
+        'dxc',
+        'dxcit',
+        'dii',
+        'dils',
+        'dipu',
+        'dipru',
+        'dirm',
+        'dit',
+        'dpu',
+        'dnc',
+        'dncn',
+        'dndcn',
+        'dni',
+        'dnls',
+        'dnrm',
         'dvi',
         'dvls',
-        'dvprune',
-        'dxc',
-        'dxcit'
+        'dvprune'
     )
     PrivateData          = @{
         PSData = @{

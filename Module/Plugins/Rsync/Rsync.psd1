@@ -45,7 +45,6 @@
     RootModule           = 'Rsync.psm1'
     ModuleVersion        = '4.2.0'
     CompatiblePSEditions = @(
-        'Desktop',
         'Core'
     )
     GUID                 = '9a3c4e5f-6b7d-8e9f-0a1b-2c3d4e5f6a7b'
@@ -60,8 +59,7 @@
         'Invoke-RsyncUpdate',
         'Sync-RsyncDirectories',
         'Get-RsyncVersion',
-        'Test-RsyncPath',
-        'Show-RsyncHelp'
+        'Test-RsyncPath'
     )
     CmdletsToExport      = @()
     VariablesToExport    = @()

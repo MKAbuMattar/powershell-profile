@@ -45,13 +45,15 @@
 @{
     RootModule             = 'Conda.psm1'
     ModuleVersion          = '4.2.0'
-    CompatiblePSEditions   = @()
-    GUID                   = '34d0a0f5-6e1c-4d0f-1f4c-0e9f8g7h6i5j'
+    CompatiblePSEditions   = @(
+        'Core'
+    )
+    GUID                   = '34d0a0f5-6e1c-4d0f-9f4c-0e9f8a7b6c5d'
     Author                 = 'Mohammad Abu Mattar'
     CompanyName            = 'MKAbuMattar'
     Copyright              = '(c) Mohammad Abu Mattar. All rights reserved.'
     Description            = 'Comprehensive Conda CLI integration with PowerShell functions and convenient aliases for Python environment and package management. Provides complete environment lifecycle management, package installation, configuration management, and advanced Conda workflow automation with automatic PowerShell completion for data science and Python development.'
-    PowerShellVersion      = '5.0'
+    PowerShellVersion      = '7.0'
     PowerShellHostName     = ''
     PowerShellHostVersion  = ''
     DotNetFrameworkVersion = ''
@@ -75,8 +77,8 @@
         'Invoke-CondaCreate',
         'Invoke-CondaCreateFromFile',
         'Invoke-CondaCreateName',
-        'Invoke-CondaCreatePath',
         'Invoke-CondaCreateNameYes',
+        'Invoke-CondaCreatePath',
         'Invoke-CondaRemoveEnv',
         'Invoke-CondaRemoveEnvName',
         'Invoke-CondaRemoveEnvPath',
@@ -112,9 +114,9 @@
         'cnde',
         'cnc',
         'cncf',
+        'cncr',
         'cncn',
         'cncp',
-        'cncr',
         'cnrn',
         'cnrp',
         'cnel',

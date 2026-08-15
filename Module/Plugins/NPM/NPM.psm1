@@ -900,7 +900,7 @@ function Invoke-NpmInit {
         https://github.com/MKAbuMattar/powershell-profile/blob/main/Module/Plugins/NPM/README.md
     #>
     [CmdletBinding()]
-    [Alias("npmI")]
+    [Alias("npminit")]
     [OutputType([void])]
     param(
         [Parameter(ValueFromRemainingArguments = $true)]

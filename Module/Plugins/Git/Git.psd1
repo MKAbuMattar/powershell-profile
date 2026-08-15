@@ -44,7 +44,6 @@
     RootModule           = 'Git.psm1'
     ModuleVersion        = '4.2.0'
     CompatiblePSEditions = @(
-        'Desktop',
         'Core'
     )
     GUID                 = '6dbbc3bc-d044-4202-af9d-c124e5af130c'
@@ -52,7 +51,7 @@
     CompanyName          = 'MKAbuMattar'
     Copyright            = '(c) 2025 Mohammad Abu Mattar. All rights reserved.'
     Description          = ''
-    PowerShellVersion    = '5.0'
+    PowerShellVersion    = '7.0'
     FunctionsToExport    = @(
         'g',
         'grt',
@@ -184,6 +183,7 @@
         'gstp',
         'gsta',
         'gsts',
+        'gstu',
         'gst',
         'gss',
         'gsb',
@@ -204,7 +204,6 @@
         'gwtls',
         'gwtmv',
         'gwtrm',
-        'gstu',
         'gwip',
         'gunwip',
         'gcd',
@@ -257,7 +256,7 @@
     )
     CmdletsToExport      = @()
     VariablesToExport    = @()
-    AliasesToExport      = @(  )
+    AliasesToExport      = @()
     PrivateData          = @{
         PSData = @{
             Tags                       = @()

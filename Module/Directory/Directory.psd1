@@ -44,7 +44,6 @@
     RootModule           = 'Directory.psm1'
     ModuleVersion        = '4.2.0'
     CompatiblePSEditions = @(
-        'Desktop',
         'Core'
     )
     GUID                 = '23724530-b558-4a50-bc83-98525b46d859'
@@ -52,7 +51,7 @@
     CompanyName          = 'MKAbuMattar'
     Copyright            = '(c) 2025 Mohammad Abu Mattar. All rights reserved.'
     Description          = 'A PowerShell utility module for file and directory management, including file search, creation, compression, extraction, and content manipulation.'
-    PowerShellVersion    = '5.0'
+    PowerShellVersion    = '7.0'
     FunctionsToExport    = @(
         'Find-Files',
         'Set-FreshFile',
@@ -78,8 +77,6 @@
         'zip',
         'grep',
         'sed',
-        'z',
-        'zi',
         'head',
         'tail',
         'shortpath',

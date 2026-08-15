@@ -46,7 +46,6 @@
     RootModule             = 'PIP.psm1'
     ModuleVersion          = '4.2.0'
     CompatiblePSEditions   = @(
-        'Desktop',
         'Core'
     )
     GUID                   = '8c3f9e4b-0d2e-5f6a-9b8c-2d3e4f5a6b7c'
@@ -54,19 +53,24 @@
     CompanyName            = 'MKAbuMattar'
     Copyright              = '(c) 2025 Mohammad Abu Mattar. All rights reserved.'
     Description            = 'A comprehensive PowerShell module that provides pip CLI shortcuts and utility functions for Python package management workflow. Includes automatic completion, package management, requirements handling, GitHub installations, and advanced pip operations.'
-    PowerShellVersion      = '5.0'
+    PowerShellVersion      = '7.0'
     DotNetFrameworkVersion = '4.5'
     CLRVersion             = '4.0'
     FunctionsToExport      = @(
-        'Clear-PipCache',
         'Get-PipCacheFile',
+        'Clear-PipCache',
         'Update-PipPackageCache',
         'Invoke-PipInstall',
         'Invoke-PipUpgrade',
         'Invoke-PipUninstall',
+        'Invoke-PipInstallUser',
+        'Invoke-PipInstallEditable',
         'Invoke-PipFreeze',
         'Invoke-PipFreezeGrep',
         'Invoke-PipListOutdated',
+        'Invoke-PipList',
+        'Invoke-PipShow',
+        'Invoke-PipSearch',
         'Invoke-PipRequirements',
         'Invoke-PipInstallRequirements',
         'Invoke-PipUpgradeAll',
@@ -74,9 +78,6 @@
         'Invoke-PipInstallGitHub',
         'Invoke-PipInstallGitHubBranch',
         'Invoke-PipInstallGitHubPR',
-        'Invoke-PipShow',
-        'Invoke-PipSearch',
-        'Invoke-PipList',
         'Invoke-PipCheck',
         'Invoke-PipWheel',
         'Invoke-PipDownload',
@@ -84,19 +85,21 @@
         'Invoke-PipDebug',
         'Invoke-PipHash',
         'Invoke-PipHelp',
-        'Invoke-PipCache',
-        'Invoke-PipInstallUser',
-        'Invoke-PipInstallEditable'
+        'Invoke-PipCache'
     )
     CmdletsToExport        = @()
     VariablesToExport      = @()
     AliasesToExport        = @(
-        'pipp',
         'pipi',
         'pipu',
         'pipun',
+        'pipiu',
+        'pipie',
         'pipgi',
         'piplo',
+        'pipl',
+        'pips',
+        'pipsr',
         'pipreq',
         'pipir',
         'pipupall',
@@ -104,18 +107,13 @@
         'pipig',
         'pipigb',
         'pipigp',
-        'pips',
-        'pipsr',
-        'pipl',
         'pipck',
         'pipw',
         'pipd',
         'pipc',
         'pipdbg',
         'piph',
-        'pipcc',
-        'pipiu',
-        'pipie'
+        'pipcc'
     )
     DscResourcesToExport   = @()
     ModuleList             = @()

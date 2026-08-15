@@ -505,7 +505,11 @@ function Switch-AWSProfile {
         }
         catch { }
 
-        Write-Host "Assuming role $roleArn using profile $($sourceProfile ?? 'profile')" -ForegroundColor Yellow
+        # $profileOption is the same value the command above uses, and is computed without the
+        # null-coalescing operator, which Windows PowerShell 5.1 cannot parse. This manifest
+        # declares CompatiblePSEditions = Desktop, so `??` here made the whole module unloadable
+        # on 5.1.
+        Write-Host "Assuming role $roleArn using profile $profileOption" -ForegroundColor Yellow
     }
     else {
         $awsCommand = @('aws', 'sts', 'get-session-token', "--profile=$Profile") + $mfaOptions

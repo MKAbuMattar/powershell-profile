@@ -43,7 +43,6 @@
     RootModule           = 'Network.psm1'
     ModuleVersion        = '4.2.0'
     CompatiblePSEditions = @(
-        'Desktop',
         'Core'
     )
     GUID                 = '7763387b-5179-43c4-84bc-f24a2f62b534'
@@ -51,7 +50,7 @@
     CompanyName          = 'MKAbuMattar'
     Copyright            = '(c) 2025 Mohammad Abu Mattar. All rights reserved.'
     Description          = 'This module provides functions to retrieve IP addresses and flush DNS cache.'
-    PowerShellVersion    = '5.0'
+    PowerShellVersion    = '7.0'
     FunctionsToExport    = @(
         'Get-MyIPAddress',
         'Clear-FlushDNS'

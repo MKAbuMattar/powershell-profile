@@ -75,26 +75,64 @@ $global:AutoUpdateProfile = [bool]$false
 #>
 $global:AutoUpdatePowerShell = [bool]$false
 
-<#
-.SYNOPSIS
-    Set environment variables for Testing GitHub connectivity.
+$script:GitHubReachable = $null
 
-.DESCRIPTION
-    This script sets environment variables to test if the machine can connect to GitHub.
+function Test-GitHubConnection {
+    <#
+    .SYNOPSIS
+        Reports whether github.com answers, caching the answer for the session.
 
-INPUTS
-    None.
+    .DESCRIPTION
+        This used to run at module import as `$global:CanConnectToGitHub = Test-Connection ...`,
+        which put a blocking ping of up to a second in front of every shell that opened, whether
+        or not anything went on to need the network.
 
-.OUTPUTS
-    Environment variables for Testing GitHub connectivity.
+        Nothing calls this except the update functions, so the ping now happens on the first
+        call and the result is reused for the rest of the session.
 
-.NOTES
-    This script is used to test if the machine can connect to GitHub.
+    .PARAMETER Force
+        Re-test instead of reusing the cached answer. Use after a network change.
 
-.LINK
-    https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
-#>
-$global:CanConnectToGitHub = Test-Connection github.com -Count 1 -Quiet -TimeoutSeconds 1
+    .INPUTS
+        None.
+
+    .OUTPUTS
+        [bool] True when github.com responded.
+
+    .NOTES
+        A cached false is not permanent: pass -Force to re-test within the same session.
+
+    .EXAMPLE
+        Test-GitHubConnection
+        Returns $true when github.com is reachable.
+
+    .EXAMPLE
+        Test-GitHubConnection -Force
+        Ignores the cached answer and pings again.
+
+    .LINK
+        https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
+    #>
+    [CmdletBinding()]
+    [Alias('test-github')]
+    [OutputType([bool])]
+    param(
+        [switch]$Force
+    )
+
+    if ($null -ne $script:GitHubReachable -and -not $Force) {
+        return $script:GitHubReachable
+    }
+
+    $script:GitHubReachable = try {
+        Test-Connection -TargetName 'github.com' -Count 1 -Quiet -TimeoutSeconds 1 -ErrorAction Stop
+    }
+    catch {
+        $false
+    }
+
+    return $script:GitHubReachable
+}
 
 function Invoke-ReloadPathEnvironmentVariable {
     <#
@@ -186,33 +224,35 @@ function Get-PathEnvironmentVariable {
         $Scope = 'All'
     )
 
-    $machine_paths = try {
-        [System.Environment]::GetEnvironmentVariable('Path', 'Machine').Split(';') `
-        | Select-Object @{name = 'Path'; exp = { $_ } }, @{name = 'Scope'; exp = { 'Machine' } } `
-        | Where-Object { $_.Path }
-    }
-    catch {
-        $null
-    }
-
-    $user_paths = try {
-        [System.Environment]::GetEnvironmentVariable('Path', 'User').Split(';') `
-        | Select-Object @{name = 'Path'; exp = { $_ } }, @{name = 'Scope'; exp = { 'User' } } `
-        | Where-Object { $_.Path }
-    }
-    catch {
-        $null
-    }
-
-    switch ($Scope) {
-        'User' {
-            return $user_paths
+    process {
+        $machine_paths = try {
+            [System.Environment]::GetEnvironmentVariable('Path', 'Machine').Split(';') `
+            | Select-Object @{name = 'Path'; exp = { $_ } }, @{name = 'Scope'; exp = { 'Machine' } } `
+            | Where-Object { $_.Path }
         }
-        'Machine' {
-            return $machine_paths
+        catch {
+            $null
         }
-        default {
-            return $machine_paths + $user_paths
+
+        $user_paths = try {
+            [System.Environment]::GetEnvironmentVariable('Path', 'User').Split(';') `
+            | Select-Object @{name = 'Path'; exp = { $_ } }, @{name = 'Scope'; exp = { 'User' } } `
+            | Where-Object { $_.Path }
+        }
+        catch {
+            $null
+        }
+
+        switch ($Scope) {
+            'User' {
+                return $user_paths
+            }
+            'Machine' {
+                return $machine_paths
+            }
+            default {
+                return $machine_paths + $user_paths
+            }
         }
     }
 }
@@ -361,48 +401,50 @@ function Add-PathEnvironmentVariable {
         [switch]$Quiet
     )
 
-    $machine_paths = @(Get-PathEnvironmentVariable -Scope Machine | Select-Object -ExpandProperty Path)
-    $user_paths = @(Get-PathEnvironmentVariable -Scope User | Select-Object -ExpandProperty Path)
+    process {
+        $machine_paths = @(Get-PathEnvironmentVariable -Scope Machine | Select-Object -ExpandProperty Path)
+        $user_paths = @(Get-PathEnvironmentVariable -Scope User | Select-Object -ExpandProperty Path)
 
-    if ($MakeShort) {
-        $Path = $Path | Get-ShortPath
-    }
+        if ($MakeShort) {
+            $Path = $Path | Get-ShortPath
+        }
 
-    switch ($Scope) {
-        'User' {
-            if ($Prepend) {
-                $user_paths = $Path + $user_paths
+        switch ($Scope) {
+            'User' {
+                if ($Prepend) {
+                    $user_paths = $Path + $user_paths
+                }
+                else {
+                    $user_paths = $user_paths + $Path
+                }
+                Set-PathEnvironmentVariable -Path $user_paths -Scope 'User' -ErrorAction Stop
+                Reload-PathEnvironmentVariable
             }
-            else {
-                $user_paths = $user_paths + $Path
+            'Machine' {
+                if ($Prepend) {
+                    $machine_paths = $Path + $machine_paths
+                }
+                else {
+                    $machine_paths = $machine_paths + $Path
+                }
+                Set-PathEnvironmentVariable -Path $machine_paths -Scope 'Machine' -ErrorAction Stop
+                Reload-PathEnvironmentVariable
             }
-            Set-PathEnvironmentVariable -Path $user_paths -Scope 'User' -ErrorAction Stop
-            Reload-PathEnvironmentVariable
+            default {
+                if ($Prepend) {
+                    $env:Path = ($Path + $env:Path.Split(';') ) -join ';'
+                }
+                else {
+                    $env:Path = ($env:Path.Split(';') + $Path) -join ';'
+                }
+            }
         }
-        'Machine' {
-            if ($Prepend) {
-                $machine_paths = $Path + $machine_paths
-            }
-            else {
-                $machine_paths = $machine_paths + $Path
-            }
-            Set-PathEnvironmentVariable -Path $machine_paths -Scope 'Machine' -ErrorAction Stop
-            Reload-PathEnvironmentVariable
-        }
-        default {
-            if ($Prepend) {
-                $env:Path = ($Path + $env:Path.Split(';') ) -join ';'
-            }
-            else {
-                $env:Path = ($env:Path.Split(';') + $Path) -join ';'
-            }
-        }
-    }
 
-    if (-not $Quiet) {
-        Write-Host "Added the following path(s) to PATH environment variable of scope " -NoNewline
-        Write-Host "$Scope`n`t" -NoNewline -ForegroundColor Yellow
-        Write-Host $Path -Separator "`n`t" -ForegroundColor Yellow
+        if (-not $Quiet) {
+            Write-Host "Added the following path(s) to PATH environment variable of scope " -NoNewline
+            Write-Host "$Scope`n`t" -NoNewline -ForegroundColor Yellow
+            Write-Host $Path -Separator "`n`t" -ForegroundColor Yellow
+        }
     }
 }
 
@@ -489,42 +531,44 @@ function Remove-PathEnvironmentVariable {
         [switch]$Force
     )
 
-    $old_paths = switch ($Scope) {
-        'Process' { $env:Path -split ';' }
-        default { Get-PathEnvironmentVariable -Scope $Scope | Select-Object -ExpandProperty Path }
-    }
-    $requested_paths = @()
-    Write-Verbose "Old paths of scope $Scope`:"
-    $old_paths | Write-Verbose
-
-    $requested_paths += $Path
-
-    Write-Verbose "Request to remove paths:"
-    $requested_paths | Write-Verbose
-    $notfound_paths = $requested_paths | Where-Object { $_ -notin $old_paths }
-    $toberemoved_paths = $requested_paths | Where-Object { $_ -in $old_paths }
-
-    if ($notfound_paths) {
-        Write-Host "Could not find the following path(s) in PATH environment variable of scope " -NoNewline
-        Write-Host "$Scope`n`t" -NoNewline -ForegroundColor Yellow
-        Write-Host $notfound_paths -ForegroundColor Red -Separator "`n`t"
-    }
-
-    if ($toberemoved_paths) {
-        $new_paths = $old_paths | Where-Object { $_ -and ($_ -notin $requested_paths) }
-        Write-Verbose "Paths to remove:"
-        $toberemoved_paths | Write-Verbose
-        Write-Verbose "New paths of scope $Scope`:"
-        $new_paths | Write-Verbose
-        try {
-            Set-PathEnvironmentVariable -Path $new_paths -Scope $Scope
+    process {
+        $old_paths = switch ($Scope) {
+            'Process' { $env:Path -split ';' }
+            default { Get-PathEnvironmentVariable -Scope $Scope | Select-Object -ExpandProperty Path }
         }
-        catch {
-            return
+        $requested_paths = @()
+        Write-Verbose "Old paths of scope $Scope`:"
+        $old_paths | Write-Verbose
+
+        $requested_paths += $Path
+
+        Write-Verbose "Request to remove paths:"
+        $requested_paths | Write-Verbose
+        $notfound_paths = $requested_paths | Where-Object { $_ -notin $old_paths }
+        $toberemoved_paths = $requested_paths | Where-Object { $_ -in $old_paths }
+
+        if ($notfound_paths) {
+            Write-Host "Could not find the following path(s) in PATH environment variable of scope " -NoNewline
+            Write-Host "$Scope`n`t" -NoNewline -ForegroundColor Yellow
+            Write-Host $notfound_paths -ForegroundColor Red -Separator "`n`t"
         }
-        Write-Host "Removed the following path(s) from PATH environment variable of scope " -NoNewline
-        Write-Host "$Scope`n`t" -NoNewline -ForegroundColor Yellow
-        Write-Host $toberemoved_paths -ForegroundColor Yellow -Separator "`n`t"
+
+        if ($toberemoved_paths) {
+            $new_paths = $old_paths | Where-Object { $_ -and ($_ -notin $requested_paths) }
+            Write-Verbose "Paths to remove:"
+            $toberemoved_paths | Write-Verbose
+            Write-Verbose "New paths of scope $Scope`:"
+            $new_paths | Write-Verbose
+            try {
+                Set-PathEnvironmentVariable -Path $new_paths -Scope $Scope
+            }
+            catch {
+                return
+            }
+            Write-Host "Removed the following path(s) from PATH environment variable of scope " -NoNewline
+            Write-Host "$Scope`n`t" -NoNewline -ForegroundColor Yellow
+            Write-Host $toberemoved_paths -ForegroundColor Yellow -Separator "`n`t"
+        }
     }
 }
 
@@ -587,11 +631,13 @@ function Set-EnvVar {
         [string]$Value
     )
 
-    try {
-        Set-Item -Force -Path "env:$Name" -Value $Value -ErrorAction Stop
-    }
-    catch {
-        Write-LogMessage -Message "Failed to export environment variable '$Name'." -Level "ERROR"
+    process {
+        try {
+            Set-Item -Force -Path "env:$Name" -Value $Value -ErrorAction Stop
+        }
+        catch {
+            Write-LogMessage -Message "Failed to export environment variable '$Name'." -Level "ERROR"
+        }
     }
 }
 
@@ -637,16 +683,18 @@ function Get-EnvVar {
         [string]$Name
     )
 
-    try {
-        $value = Get-Item -Path "env:$Name" -ErrorAction Stop | Select-Object -ExpandProperty Value
-        if ($value) {
-            Write-Output $value
+    process {
+        try {
+            $value = Get-Item -Path "env:$Name" -ErrorAction Stop | Select-Object -ExpandProperty Value
+            if ($value) {
+                Write-Output $value
+            }
+            else {
+                Write-LogMessage -Message "Environment variable '$Name' not found." -Level "WARNING"
+            }
         }
-        else {
-            Write-LogMessage -Message "Environment variable '$Name' not found." -Level "WARNING"
+        catch {
+            Write-LogMessage -Message "An error occurred while retrieving the value of environment variable '$Name'." -Level "ERROR"
         }
-    }
-    catch {
-        Write-LogMessage -Message "An error occurred while retrieving the value of environment variable '$Name'." -Level "ERROR"
     }
 }

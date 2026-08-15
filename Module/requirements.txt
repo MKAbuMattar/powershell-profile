@@ -1,0 +1,10 @@
+# Python packages the bundled utility scripts need.
+#
+# Install with:  Install-ProfileDependency -IncludePython
+#            or: python -m pip install --user -r Module/requirements.txt
+#
+# Everything not listed here is standard library. The scripts deliberately lean on urllib rather
+# than requests so that most of them work with a bare interpreter.
+
+# Module/Utility/Clock/clock.py - ASCII banner rendering for the wall clock
+pyfiglet>=1.0.2

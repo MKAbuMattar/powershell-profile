@@ -46,7 +46,6 @@
     RootModule           = 'Poetry.psm1'
     ModuleVersion        = '4.2.0'
     CompatiblePSEditions = @(
-        'Desktop',
         'Core'
     )
     GUID                 = 'f9a4c2e1-8b3d-4a5e-9c7f-6d8e2a1b4c9e'
@@ -54,7 +53,7 @@
     CompanyName          = 'MKAbuMattar'
     Copyright            = '(c) 2025 Mohammad Abu Mattar. All rights reserved.'
     Description          = 'Comprehensive Poetry CLI integration for PowerShell with 30+ functions and aliases for modern Python dependency management, virtual environment handling, package building, and project lifecycle management.'
-    PowerShellVersion    = '5.1'
+    PowerShellVersion    = '7.0'
     FunctionsToExport    = @(
         'Invoke-PoetryInit',
         'Invoke-PoetryNew',
@@ -87,33 +86,33 @@
     CmdletsToExport      = @()
     VariablesToExport    = @()
     AliasesToExport      = @(
-        'pin',         
-        'pnew',        
-        'pch',         
-        'pcmd',        
-        'pad',         
-        'prm',           
-        'pup',         
-        'pinst',       
-        'psync',        
-        'plck',        
-        'pexp',        
-        'psh',         
-        'prun',        
-        'pvinf',        
-        'ppath',         
-        'pvu',          
-        'pvrm',         
-        'pbld',        
-        'ppub',        
-        'pshw',        
-        'pslt',         
-        'ptree',        
-        'pconf',        
-        'pvoff',         
-        'psup',         
-        'psad',         
-        'pplug'          
+        'pin',
+        'pnew',
+        'pch',
+        'pcmd',
+        'pad',
+        'prm',
+        'pup',
+        'pinst',
+        'psync',
+        'plck',
+        'pexp',
+        'psh',
+        'prun',
+        'pvinf',
+        'ppath',
+        'pvu',
+        'pvrm',
+        'pbld',
+        'ppub',
+        'pshw',
+        'pslt',
+        'ptree',
+        'pconf',
+        'pvoff',
+        'psup',
+        'psad',
+        'pplug'
     )
     DscResourcesToExport = @()
     ModuleList           = @()

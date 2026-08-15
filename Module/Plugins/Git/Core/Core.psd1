@@ -2,14 +2,13 @@
     RootModule           = 'Core.psm1'
     ModuleVersion        = '4.2.0'
     CompatiblePSEditions = @(
-        'Desktop',
         'Core'
     )
     GUID                 = '5eb0ffb0-a70b-478a-8163-1e57982ef80b'
     Author               = 'Mohammad Abu Mattar'
     Copyright            = '(c) 2025 Mohammad Abu Mattar. All rights reserved.'
     Description          = 'Git Core Functions - Core Git operations and prompt functions'
-    PowerShellVersion    = '5.0'
+    PowerShellVersion    = '7.0'
     FunctionsToExport    = @(
         'Invoke-GitPromptGit',
         'Test-GitVersionAtLeast',

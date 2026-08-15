@@ -1,0 +1,88 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  static:
+    name: Static checks
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Parse every PowerShell file
+        shell: pwsh
+        run: ./Tools/Test-Syntax.ps1
+
+      - name: Verify manifests match their modules
+        shell: pwsh
+        run: ./Tools/Test-Manifest.ps1
+
+      - name: Verify pipeline parameters have process blocks
+        shell: pwsh
+        run: ./Tools/Test-Pipeline.ps1
+
+      - name: Verify README command tables match the code
+        shell: pwsh
+        run: ./Tools/Test-Readme.ps1
+
+      - name: Cache PowerShell modules
+        uses: actions/cache@v4
+        with:
+          path: ~/Documents/PowerShell/Modules
+          key: psmodules-${{ runner.os }}-analyzer-pester
+
+      - name: Install PSScriptAnalyzer
+        shell: pwsh
+        run: |
+          if (-not (Get-Module -ListAvailable PSScriptAnalyzer)) {
+            Install-Module PSScriptAnalyzer -Scope CurrentUser -Force -SkipPublisherCheck
+          }
+
+      - name: Run PSScriptAnalyzer
+        shell: pwsh
+        run: ./Tools/Invoke-Analyzer.ps1
+
+  load:
+    name: Load and test
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Import every module and report failures
+        shell: pwsh
+        run: ./Tools/Test-Load.ps1
+
+      - name: Cache PowerShell modules
+        uses: actions/cache@v4
+        with:
+          path: ~/Documents/PowerShell/Modules
+          key: psmodules-${{ runner.os }}-analyzer-pester
+
+      - name: Install Pester
+        shell: pwsh
+        run: |
+          if (-not (Get-Module -ListAvailable Pester | Where-Object Version -ge '5.0')) {
+            Install-Module Pester -MinimumVersion 5.0 -Scope CurrentUser -Force -SkipPublisherCheck
+          }
+
+      - name: Run Pester
+        shell: pwsh
+        run: ./Tools/Invoke-Pester.ps1
+
+  # There is no Windows PowerShell 5.1 job. The manifests used to claim Desktop support, but the
+  # code has never been 5.1-compatible: it uses Remove-Alias, the background `&` operator, $PSStyle
+  # and PS7 parse-level syntax throughout, and two modules already required 7.0 outright. The
+  # manifests now say PowerShellVersion 7.0 / CompatiblePSEditions Core, which is the truth.

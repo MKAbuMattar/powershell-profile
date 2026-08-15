@@ -45,7 +45,6 @@
     RootModule           = 'QRCode.psm1'
     ModuleVersion        = '4.2.0'
     CompatiblePSEditions = @(
-        'Desktop',
         'Core'
     )
     GUID                 = '8f2c3d1e-5a6b-7c8d-9e0f-1a2b3c4d5e6f'

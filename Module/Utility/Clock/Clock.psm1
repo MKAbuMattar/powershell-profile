@@ -40,24 +40,41 @@
 # Version: 4.2.0
 #---------------------------------------------------------------------------------------------------
 
-function Get-PythonExecutable {
-    $pythonCmd = $null
-    
-    # Try 'python' first
-    if (Get-Command python -ErrorAction SilentlyContinue) {
-        $pythonCmd = "python"
+function Get-ClockPython {
+    <#
+    .SYNOPSIS
+        Resolves the Python interpreter for this module.
+
+    .DESCRIPTION
+        Defers to the shared Get-PythonExecutable from the Loader module when the profile is
+        loaded, and falls back to a local probe when this module is imported on its own, as the
+        CI load test does.
+
+        The shared version is preferred because it verifies the interpreter actually runs, which
+        rejects the Microsoft Store stub that Windows installs under the name `python.exe`.
+
+    .OUTPUTS
+        [string] Interpreter path or name, or $null when none was found.
+
+    .EXAMPLE
+        $python = Get-ClockPython
+    #>
+    [CmdletBinding()]
+    [OutputType([string])]
+    param()
+
+    if (Get-Command -Name Get-PythonExecutable -ErrorAction SilentlyContinue) {
+        return Get-PythonExecutable
     }
-    # Fall back to 'python3'
-    elseif (Get-Command python3 -ErrorAction SilentlyContinue) {
-        $pythonCmd = "python3"
+
+    foreach ($candidate in 'python3', 'python') {
+        if (Get-Command -Name $candidate -CommandType Application -ErrorAction SilentlyContinue) {
+            return $candidate
+        }
     }
-    
-    if (-not $pythonCmd) {
-        Write-Error "Python is not installed or not in PATH. Please install Python 3.6 or later."
-        return $null
-    }
-    
-    return $pythonCmd
+
+    Write-Error 'Python is not installed or not in PATH. Please install Python 3.6 or later.'
+    return $null
 }
 
 function Start-Countdown {
@@ -139,38 +156,40 @@ function Start-Countdown {
         [string]$Title = ""
     )
 
-    $pythonCmd = Get-PythonExecutable
-    if (-not $pythonCmd) {
-        return
-    }
+    process {
+        $pythonCmd = Get-ClockPython
+        if (-not $pythonCmd) {
+            return
+        }
 
-    $scriptPath = Join-Path $PSScriptRoot "clock.py"
+        $scriptPath = Join-Path $PSScriptRoot "clock.py"
     
-    if (-not (Test-Path $scriptPath)) {
-        Write-Error "Clock utility Python script not found at: $scriptPath"
-        return
-    }
+        if (-not (Test-Path $scriptPath)) {
+            Write-Error "Clock utility Python script not found at: $scriptPath"
+            return
+        }
 
-    $arguments = @(
-        $scriptPath,
-        "countdown",
-        "--duration", $Duration
-    )
+        $arguments = @(
+            $scriptPath,
+            "countdown",
+            "--duration", $Duration
+        )
 
-    if ($Title) {
-        $arguments += "--title"
-        $arguments += $Title
-    }
+        if ($Title) {
+            $arguments += "--title"
+            $arguments += $Title
+        }
 
-    if ($CountUp) {
-        $arguments += "--countup"
-    }
+        if ($CountUp) {
+            $arguments += "--countup"
+        }
 
-    try {
-        & $pythonCmd $arguments
-    }
-    catch {
-        Write-Error "Failed to run countdown: $_"
+        try {
+            & $pythonCmd $arguments
+        }
+        catch {
+            Write-Error "Failed to run countdown: $_"
+        }
     }
 }
 
@@ -221,33 +240,35 @@ function Start-StopWatch {
         [string]$Title = ""
     )
 
-    $pythonCmd = Get-PythonExecutable
-    if (-not $pythonCmd) {
-        return
-    }
+    process {
+        $pythonCmd = Get-ClockPython
+        if (-not $pythonCmd) {
+            return
+        }
 
-    $scriptPath = Join-Path $PSScriptRoot "clock.py"
+        $scriptPath = Join-Path $PSScriptRoot "clock.py"
     
-    if (-not (Test-Path $scriptPath)) {
-        Write-Error "Clock utility Python script not found at: $scriptPath"
-        return
-    }
+        if (-not (Test-Path $scriptPath)) {
+            Write-Error "Clock utility Python script not found at: $scriptPath"
+            return
+        }
 
-    $arguments = @(
-        $scriptPath,
-        "stopwatch"
-    )
+        $arguments = @(
+            $scriptPath,
+            "stopwatch"
+        )
 
-    if ($Title) {
-        $arguments += "--title"
-        $arguments += $Title
-    }
+        if ($Title) {
+            $arguments += "--title"
+            $arguments += $Title
+        }
 
-    try {
-        & $pythonCmd $arguments
-    }
-    catch {
-        Write-Error "Failed to run stopwatch: $_"
+        try {
+            & $pythonCmd $arguments
+        }
+        catch {
+            Write-Error "Failed to run stopwatch: $_"
+        }
     }
 }
 
@@ -328,37 +349,39 @@ function Get-WallClock {
         [switch]$Use24Hour = $false
     )
 
-    $pythonCmd = Get-PythonExecutable
-    if (-not $pythonCmd) {
-        return
-    }
+    process {
+        $pythonCmd = Get-ClockPython
+        if (-not $pythonCmd) {
+            return
+        }
 
-    $scriptPath = Join-Path $PSScriptRoot "clock.py"
+        $scriptPath = Join-Path $PSScriptRoot "clock.py"
     
-    if (-not (Test-Path $scriptPath)) {
-        Write-Error "Clock utility Python script not found at: $scriptPath"
-        return
-    }
+        if (-not (Test-Path $scriptPath)) {
+            Write-Error "Clock utility Python script not found at: $scriptPath"
+            return
+        }
 
-    $arguments = @(
-        $scriptPath,
-        "wallclock",
-        "--timezone", $TimeZone
-    )
+        $arguments = @(
+            $scriptPath,
+            "wallclock",
+            "--timezone", $TimeZone
+        )
 
-    if ($Title) {
-        $arguments += "--title"
-        $arguments += $Title
-    }
+        if ($Title) {
+            $arguments += "--title"
+            $arguments += $Title
+        }
 
-    if ($Use24Hour) {
-        $arguments += "--24hour"
-    }
+        if ($Use24Hour) {
+            $arguments += "--24hour"
+        }
 
-    try {
-        & $pythonCmd $arguments
-    }
-    catch {
-        Write-Error "Failed to run wall clock: $_"
+        try {
+            & $pythonCmd $arguments
+        }
+        catch {
+            Write-Error "Failed to run wall clock: $_"
+        }
     }
 }

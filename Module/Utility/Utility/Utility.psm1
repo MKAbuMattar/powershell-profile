@@ -86,22 +86,24 @@ function Format-ConvertSize {
         [int]$DecimalPlaces = 1
     )
 
-    if ($Value -lt 0) { return "N/A" }
-    if ($Value -eq 0) { return "0 $($Units[0])" }
+    process {
+        if ($Value -lt 0) { return "N/A" }
+        if ($Value -eq 0) { return "0 $($Units[0])" }
 
-    $tier = 0
-    [double]$scaledValue = $Value
+        $tier = 0
+        [double]$scaledValue = $Value
 
-    while ($scaledValue -ge $Scale -and $tier -lt ($Units.Length - 1)) {
-        $scaledValue /= $Scale
-        $tier++
+        while ($scaledValue -ge $Scale -and $tier -lt ($Units.Length - 1)) {
+            $scaledValue /= $Scale
+            $tier++
+        }
+
+        $currentDecimalPlaces = $DecimalPlaces
+        if ($tier -eq 0 -or ($scaledValue - [System.Math]::Truncate($scaledValue)) -eq 0) {
+            $currentDecimalPlaces = 0
+        }
+
+        $formatted = $scaledValue.ToString("F$currentDecimalPlaces")
+        return "$formatted $($Units[$tier])"
     }
-
-    $currentDecimalPlaces = $DecimalPlaces
-    if ($tier -eq 0 -or ($scaledValue - [System.Math]::Truncate($scaledValue)) -eq 0) {
-        $currentDecimalPlaces = 0
-    }
-
-    $formatted = $scaledValue.ToString("F$currentDecimalPlaces")
-    return "$formatted $($Units[$tier])"
 }

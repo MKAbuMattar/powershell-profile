@@ -45,13 +45,15 @@
 @{  
     RootModule             = 'Deno.psm1'
     ModuleVersion          = '4.2.0'
-    CompatiblePSEditions   = @()
+    CompatiblePSEditions   = @(
+        'Core'
+    )
     GUID                   = '12b8e8d3-4c9a-4b8e-9f2a-8c7b6d5e4f3a'
     Author                 = 'Mohammad Abu Mattar'
     CompanyName            = 'MKAbuMattar'
     Copyright              = '(c) Mohammad Abu Mattar. All rights reserved.'
     Description            = 'Comprehensive Deno CLI integration with PowerShell functions and convenient aliases for TypeScript/JavaScript runtime operations. Provides bundle, compile, cache, format, lint, run, test, and upgrade functionality with automatic PowerShell completion and enhanced workflow automation for modern Deno development.'
-    PowerShellVersion      = '5.0'
+    PowerShellVersion      = '7.0'
     PowerShellHostName     = ''
     PowerShellHostVersion  = ''
     DotNetFrameworkVersion = ''
@@ -77,6 +79,7 @@
         'Invoke-DenoRunWatch',
         'Invoke-DenoRunUnstable',
         'Invoke-DenoTest',
+        'Invoke-DenoCheck',
         'Invoke-DenoUpgrade',
         'Invoke-DenoInstall',
         'Invoke-DenoUninstall',
@@ -84,7 +87,6 @@
         'Invoke-DenoEval',
         'Invoke-DenoRepl',
         'Invoke-DenoDoc',
-        'Invoke-DenoCheck',
         'Invoke-DenoTypes',
         'Invoke-DenoInit',
         'Invoke-DenoTask',
@@ -96,7 +98,7 @@
     AliasesToExport        = @(
         'd',
         'db',
-        'dc', 
+        'dc',
         'dca',
         'dfmt',
         'dh',
@@ -106,6 +108,7 @@
         'drw',
         'dru',
         'dts',
+        'dch',
         'dup',
         'di',
         'dun',
@@ -113,7 +116,6 @@
         'de',
         'dr',
         'ddoc',
-        'dch',
         'dt',
         'dinit',
         'dtask',

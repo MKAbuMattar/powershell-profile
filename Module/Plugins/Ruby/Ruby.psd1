@@ -45,13 +45,15 @@
 @{
     RootModule             = 'Ruby.psm1'
     ModuleVersion          = '4.2.0'
-    CompatiblePSEditions   = @()
+    CompatiblePSEditions   = @(
+        'Core'
+    )
     GUID                   = '6f3e2a9b-8c4d-5e1f-3a6b-9c2d5e8f1a4b'
     Author                 = 'Mohammad Abu Mattar'
     CompanyName            = 'MKAbuMattar'
     Copyright              = '(c) Mohammad Abu Mattar. All rights reserved.'
     Description            = 'Comprehensive Ruby CLI integration with PowerShell functions and convenient aliases for Ruby development and gem management. Provides Ruby execution, gem operations, file searching, development server, and comprehensive Ruby workflow automation with automatic PowerShell completion for modern Ruby development and scripting.'
-    PowerShellVersion      = '5.0'
+    PowerShellVersion      = '7.0'
     PowerShellHostName     = ''
     PowerShellHostVersion  = ''
     DotNetFrameworkVersion = ''
