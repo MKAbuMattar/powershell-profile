@@ -1,5 +1,5 @@
 #---------------------------------------------------------------------------------------------------
-# MKAbuMattar's PowerShell Profile
+# MKAbuMattar's PowerShell Profile - Setup
 #
 #
 #                             .
@@ -29,932 +29,723 @@
 # Author: Mohammad Abu Mattar
 #
 # Description:
-#       This script is used to setup the PowerShell
-#       environment by installing required modules
-#       and tools.
+#       Installs the profile, its modules and its configuration files.
+#
+#       Everything comes from one repository archive rather than a request per file, every step
+#       can be run on its own, and nothing is overwritten without a backup.
 #
 # Created: 2021-09-01
-# Updated: 2025-09-24
+# Updated: 2026-08-15
 #
 # GitHub: https://github.com/MKAbuMattar/powershell-profile
 #
-# Version: 4.2.0
+# Version: 5.0.0
 #---------------------------------------------------------------------------------------------------
 
-function Write-LogMessage {
+<#
+.SYNOPSIS
+    Installs MKAbuMattar's PowerShell profile.
+
+.DESCRIPTION
+    Downloads the repository once and installs from that copy: the profile, the Module tree,
+    profile.config.psd1, the Tools directory, and the Starship, FastFetch, Figlet and Windows
+    Terminal configuration files. Optionally installs the Cascadia Code font, Chocolatey, and the
+    PowerShell Gallery modules the profile expects.
+
+    Every step is separately runnable with -Step, and -WhatIf reports what would happen without
+    touching anything.
+
+    Three things this no longer does, each of which used to cause a problem:
+
+    It does not fetch each file individually. It walked the GitHub Contents API and pulled roughly
+    135 files one at a time, against an unauthenticated limit of 60 requests an hour, so a single
+    run could exhaust the quota and fail partway through.
+
+    It does not move your existing $PROFILE aside and replace it. Microsoft coreutils injects a
+    marked block into that file and records the path in the registry; moving the file away left
+    coreutils believing its shims were installed when they were gone. Marked third-party sections
+    are now carried across, and a symlinked $PROFILE is written through rather than replaced.
+
+    It does not demand Administrator for everything. Only the font and Chocolatey steps need it,
+    and they are skipped with a warning rather than aborting the install.
+
+.PARAMETER InstallPath
+    Directory to install into. Defaults to the parent of $PROFILE.
+
+.PARAMETER Branch
+    Repository branch to install from. Defaults to main.
+
+.PARAMETER Step
+    Run only the named steps. Defaults to every step except Font and Tools, which are opt-in.
+
+.PARAMETER IncludeOptional
+    Also run the Font and Tools steps.
+
+.PARAMETER PackageManager
+    Which package manager installs the command-line tools: Winget, Chocolatey, or None to skip.
+    Defaults to Ask, which prompts when the session is interactive and both are available, and
+    otherwise picks whichever is installed, preferring winget because it ships with Windows.
+
+.PARAMETER Force
+    Overwrite an existing profile.config.psd1. Without this, your configuration is kept.
+
+.EXAMPLE
+    irm "https://raw.githubusercontent.com/MKAbuMattar/powershell-profile/main/setup.ps1" | iex
+    Installs with the defaults.
+
+.EXAMPLE
+    & ([scriptblock]::Create((irm "https://raw.githubusercontent.com/MKAbuMattar/powershell-profile/main/setup.ps1"))) -WhatIf
+    Reports what a fresh install would do, without doing it.
+
+.EXAMPLE
+    ./setup.ps1 -Step Profile, Modules
+    Reinstalls just the profile and the Module tree.
+
+.EXAMPLE
+    ./setup.ps1 -IncludeOptional
+    Also installs the font and the command-line tools, asking which package manager to use.
+
+.EXAMPLE
+    ./setup.ps1 -Step Tools -PackageManager Chocolatey
+    Installs starship, zoxide, fzf and fastfetch through Chocolatey without prompting.
+
+.LINK
+    https://github.com/MKAbuMattar/powershell-profile
+#>
+[CmdletBinding(SupportsShouldProcess)]
+param(
+    [string]$InstallPath = (Split-Path -Parent $PROFILE),
+
+    [string]$Branch = 'main',
+
+    [ValidateSet('Modules', 'Profile', 'Starship', 'FastFetch', 'Figlet', 'WindowsTerminal', 'Font', 'Tools', 'GalleryModules')]
+    [string[]]$Step,
+
+    [switch]$IncludeOptional,
+
+    [ValidateSet('Ask', 'Winget', 'Chocolatey', 'None')]
+    [string]$PackageManager = 'Ask',
+
+    [switch]$Force
+)
+
+$ErrorActionPreference = 'Stop'
+
+#---------------------------------------------------------------------------------------------------
+# The profile requires PowerShell 7. Checked explicitly rather than with #Requires, because
+# #Requires is not enforced when this script is run through Invoke-Expression, which is how the
+# documented one-line install works.
+#---------------------------------------------------------------------------------------------------
+if ($PSVersionTable.PSVersion.Major -lt 7) {
+    Write-Warning "This profile requires PowerShell 7 or later. You are running $($PSVersionTable.PSVersion)."
+    Write-Warning "Install it with: winget install --id Microsoft.PowerShell"
+    return
+}
+
+#---------------------------------------------------------------------------------------------------
+# Helpers
+#---------------------------------------------------------------------------------------------------
+
+function Write-SetupLog {
     <#
     .SYNOPSIS
-        Logs a message with a timestamp and log level.
-
-    .DESCRIPTION
-        This function logs a message with a timestamp and log level. The default log level is "INFO".
+        Writes a timestamped setup message.
 
     .PARAMETER Message
-        Specifies the message to log.
+        The message to write.
 
     .PARAMETER Level
-        Specifies the log level. Default is "INFO".
-
-    .OUTPUTS
-        A log message with a timestamp and log level.
-
-    .EXAMPLE
-        Write-LogMessage -Message "This is an informational message."
-        Logs an informational message with the default log level "INFO".
-        Write-LogMessage -Message "This is a warning message." -Level "WARNING"
-        Logs a warning message with the log level "WARNING".
-
-    .NOTES
-        This function is used to log messages with a timestamp and log level.
+        INFO, WARNING or ERROR. Defaults to INFO.
     #>
     [CmdletBinding()]
-    param (
-        [Parameter(
-            Mandatory = $true,
-            Position = 0,
-            ValueFromPipeline = $true,
-            ValueFromPipelineByPropertyName = $true,
-            HelpMessage = "The message to log."
-        )]
+    [OutputType([void])]
+    param(
+        [Parameter(Mandatory, Position = 0)]
         [string]$Message,
 
-        [Parameter(
-            Mandatory = $false,
-            Position = 1,
-            ValueFromPipeline = $true,
-            ValueFromPipelineByPropertyName = $true,
-            HelpMessage = "The log level. Default is 'INFO'."
-        )]
-        [string]$Level = "INFO"
+        [ValidateSet('INFO', 'WARNING', 'ERROR')]
+        [string]$Level = 'INFO'
     )
 
-    process {
-        $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
-        Write-Output "[$timestamp][$Level] $Message"
+    $colour = switch ($Level) {
+        'WARNING' { 'Yellow' }
+        'ERROR' { 'Red' }
+        default { 'Gray' }
     }
+
+    Write-Host ("[{0}][{1}] {2}" -f (Get-Date -Format 'HH:mm:ss'), $Level, $Message) -ForegroundColor $colour
 }
 
-function Invoke-ErrorHandling {
+function Test-SetupAdministrator {
     <#
     .SYNOPSIS
-        Eeror handling function to log the error message and break the script.
-
-    .DESCRIPTION
-        This function logs the error message and the exception message and then breaks the script.
-
-    .PARAMETER ErrorMessage
-        Specifies the error message to log.
-
-    .PARAMETER ErrorRecord
-        Specifies the error record object.
+        Reports whether the current session is elevated.
 
     .OUTPUTS
-        A log message with the error message and exception message.
-
-    .EXAMPLE
-        Invoke-ErrorHandling -ErrorMessage "An error occurred." -ErrorRecord $Error
-        Logs an error message and the exception message and breaks the script.
-
-    .NOTES
-        This function is used to handle errors by logging the error message and exception message.
+        [bool]
     #>
     [CmdletBinding()]
-    param (
-        [Parameter(
-            Mandatory = $true,
-            Position = 0,
-            ValueFromPipeline = $true,
-            ValueFromPipelineByPropertyName = $true,
-            HelpMessage = "The error message to log."
-        )]
-        [string]$ErrorMessage,
+    [OutputType([bool])]
+    param()
 
-        [Parameter(
-            Mandatory = $true,
-            Position = 1,
-            ValueFromPipeline = $true,
-            ValueFromPipelineByPropertyName = $true,
-            HelpMessage = "The error record object."
-        )]
-        [System.Management.Automation.ErrorRecord]$ErrorRecord
-    )
-
-    process {
-        Write-LogMessage -Message "$ErrorMessage`n$($ErrorRecord.Exception.Message)" -Level "ERROR"
-        break
-    }
+    $identity = [Security.Principal.WindowsIdentity]::GetCurrent()
+    return ([Security.Principal.WindowsPrincipal]$identity).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 }
 
-#---------------------------------------------------------------------------------------------------
-# Check if the script is running as an Administrator
-#---------------------------------------------------------------------------------------------------
-if (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
-    Write-LogMessage -Message "Please run this script as an Administrator!" -Level "WARNING"
-    break
-}
-
-function Test-InternetConnection {
+function Test-SetupConnection {
     <#
     .SYNOPSIS
-        Checks if the script has an internet connection by attempting to ping a specified host.
+        Reports whether GitHub is reachable.
 
     .DESCRIPTION
-        This function attempts to ping a specified host (by default, www.google.com) to determine if the script has an internet connection. If the ping is successful, it returns $true; otherwise, it returns $false. If no internet connection is available, it displays a warning message.
-
-    .PARAMETER HostName
-        Specifies the host to ping to check for internet connectivity. Default is www.google.com.
+        Uses an HTTPS request rather than ICMP. The previous version pinged www.google.com, which
+        fails on any network that blocks ICMP even when HTTPS works perfectly well.
 
     .OUTPUTS
-        $true if the internet connection is available; otherwise, $false.
-
-    .EXAMPLE
-        Test-InternetConnection
-        Checks for internet connection using the default host (www.google.com).
-
-    .NOTES
-        This function is used to check for internet connection before proceeding with the script.
+        [bool]
     #>
     [CmdletBinding()]
-    param(
-        [Parameter(
-            Mandatory = $false,
-            Position = 0,
-            ValueFromPipeline = $true,
-            ValueFromPipelineByPropertyName = $true,
-            HelpMessage = "The host to ping to check for internet connectivity."
-        )]
-        [string]$HostName = "www.google.com"
-    )
+    [OutputType([bool])]
+    param()
 
-    process {
-        try {
-            Test-Connection -ComputerName $HostName -Count 1 -ErrorAction Stop | Out-Null
-            return $true
-        }
-        catch {
-            Invoke-ErrorHandling -ErrorMessage "Internet connection is required but not available. Please check your connection." -ErrorRecord $_
-            return $false
-        }
+    try {
+        $null = Invoke-WebRequest -Uri 'https://github.com' -Method Head -TimeoutSec 10 -UseBasicParsing
+        return $true
+    }
+    catch {
+        return $false
     }
 }
 
-#---------------------------------------------------------------------------------------------------
-# Check for internet connection before proceeding
-#---------------------------------------------------------------------------------------------------
-if (-not (Test-InternetConnection)) {
-    break
-}
-
-function Copy-ModuleDirectory {
+function Get-RepositoryArchive {
     <#
     .SYNOPSIS
-        Installs the Module directory from the repository.
+        Downloads and extracts the repository, returning the extracted directory.
 
     .DESCRIPTION
-        Downloads the repository as a single archive and copies its Module tree into place.
-
-        This previously walked the GitHub Contents API directory by directory and downloaded each
-        of roughly 135 files individually. Unauthenticated API access is limited to 60 requests an
-        hour, so a single setup run exhausted the quota and then failed partway through, leaving an
-        incomplete install. Update.psm1 carried a second copy of the same routine.
-
-    .PARAMETER LocalPath
-        Directory to install into. Defaults to the PowerShell profile directory.
+        One request for the whole repository. The caller is responsible for removing the returned
+        directory's parent when finished.
 
     .PARAMETER Branch
-        Repository branch to fetch. Defaults to main.
+        Branch to download.
 
     .OUTPUTS
-        None.
-
-    .EXAMPLE
-        Copy-ModuleDirectory
-        Installs the Module directory under the profile directory.
+        [string] Path to the extracted repository root.
     #>
-    [CmdletBinding(SupportsShouldProcess)]
-    param (
-        [Parameter(Position = 0)]
-        [string]$LocalPath = "$HOME\Documents\PowerShell",
-
-        [Parameter(Position = 1)]
-        [string]$Branch = 'main'
+    [CmdletBinding()]
+    [OutputType([string])]
+    param(
+        [Parameter(Mandatory)]
+        [string]$Branch
     )
-
-    $targetModule = Join-Path $LocalPath 'Module'
-
-    # Checked before the download so a dry run stays free of side effects, network included.
-    if (-not $PSCmdlet.ShouldProcess($targetModule, 'Install the Module directory')) {
-        return
-    }
 
     $workspace = Join-Path ([System.IO.Path]::GetTempPath()) ("profile-setup-" + [guid]::NewGuid().ToString('N'))
     $archive = "$workspace.tar.gz"
 
-    try {
-        $null = New-Item -ItemType Directory -Path $workspace -Force
-        $null = New-Item -ItemType Directory -Path $LocalPath -Force
+    # -WhatIf:$false on the scratch directory: it is internal scaffolding, not a change to the
+    # user's machine, and a dry run still needs the archive on disk to report what it would
+    # install. Without this the directory is never created and tar fails.
+    $null = New-Item -ItemType Directory -Path $workspace -Force -WhatIf:$false
 
-        $url = "https://codeload.github.com/MKAbuMattar/powershell-profile/tar.gz/refs/heads/$Branch"
-        Write-LogMessage -Message "Downloading the profile archive..."
-        Invoke-WebRequest -Uri $url -OutFile $archive -UseBasicParsing
+    $url = "https://codeload.github.com/MKAbuMattar/powershell-profile/tar.gz/refs/heads/$Branch"
+    Write-SetupLog "Downloading $Branch..."
+    Invoke-WebRequest -Uri $url -OutFile $archive -UseBasicParsing
 
-        # tar ships with Windows 10 1803 and later.
-        & tar -xzf $archive -C $workspace
-        if ($LASTEXITCODE -ne 0) {
-            throw "tar exited with code $LASTEXITCODE while extracting the archive."
+    # tar ships with Windows 10 1803 and later.
+    & tar -xzf $archive -C $workspace
+    if ($LASTEXITCODE -ne 0) {
+        throw "tar exited with code $LASTEXITCODE while extracting the archive."
+    }
+
+    Remove-Item -LiteralPath $archive -Force -ErrorAction SilentlyContinue -WhatIf:$false
+
+    $extracted = Get-ChildItem -LiteralPath $workspace -Directory | Select-Object -First 1
+    if (-not $extracted) {
+        throw 'The archive did not contain the expected directory.'
+    }
+
+    return $extracted.FullName
+}
+
+function Get-ForeignProfileSection {
+    <#
+    .SYNOPSIS
+        Extracts a block another installer injected into a profile file.
+
+    .DESCRIPTION
+        Microsoft coreutils appends a marked block to Microsoft.PowerShell_profile.ps1 and records
+        the path under HKLM:\SOFTWARE\Microsoft\coreutils\PowerShellProfiles. Replacing the profile
+        without carrying that block across leaves coreutils believing its shims are installed.
+
+    .PARAMETER Path
+        Profile file to inspect.
+
+    .OUTPUTS
+        [string] The section including its marker line, or an empty string.
+    #>
+    [CmdletBinding()]
+    [OutputType([string])]
+    param(
+        [Parameter(Mandatory)]
+        [string]$Path
+    )
+
+    if (-not (Test-Path -LiteralPath $Path)) { return '' }
+
+    $lines = @(Get-Content -LiteralPath $Path)
+
+    for ($i = 0; $i -lt $lines.Count; $i++) {
+        if ($lines[$i] -match '^\s*#\s*DO NOT MODIFY') {
+            return ($lines[$i..($lines.Count - 1)] -join [Environment]::NewLine)
         }
+    }
 
-        $extracted = Get-ChildItem -LiteralPath $workspace -Directory | Select-Object -First 1
-        if (-not $extracted) {
-            throw "The archive did not contain the expected directory."
-        }
+    return ''
+}
 
-        $sourceModule = Join-Path $extracted.FullName 'Module'
-        if (-not (Test-Path -LiteralPath $sourceModule)) {
-            throw "The archive did not contain a Module directory."
-        }
+function Install-RepositoryFile {
+    <#
+    .SYNOPSIS
+        Copies one file out of the extracted repository, backing up whatever is there.
 
-        if (Test-Path -LiteralPath $targetModule) {
-            $backup = "$targetModule.old"
+    .PARAMETER Source
+        File inside the extracted repository.
+
+    .PARAMETER Destination
+        Where to put it.
+
+    .PARAMETER Label
+        Human-readable name for the log.
+    #>
+    [CmdletBinding(SupportsShouldProcess)]
+    [OutputType([void])]
+    param(
+        [Parameter(Mandatory)][string]$Source,
+        [Parameter(Mandatory)][string]$Destination,
+        [Parameter(Mandatory)][string]$Label
+    )
+
+    if (-not (Test-Path -LiteralPath $Source)) {
+        Write-SetupLog "$Label is not in the archive, skipping." -Level WARNING
+        return
+    }
+
+    if (-not $PSCmdlet.ShouldProcess($Destination, "Install $Label")) { return }
+
+    $parent = Split-Path -Parent $Destination
+    if ($parent -and -not (Test-Path -LiteralPath $parent)) {
+        $null = New-Item -ItemType Directory -Path $parent -Force
+    }
+
+    if (Test-Path -LiteralPath $Destination) {
+        Copy-Item -LiteralPath $Destination -Destination "$Destination.bak" -Force
+    }
+
+    Copy-Item -LiteralPath $Source -Destination $Destination -Force
+    Write-SetupLog "$Label -> $Destination"
+}
+
+#---------------------------------------------------------------------------------------------------
+# Steps
+#---------------------------------------------------------------------------------------------------
+
+function Install-ProfileModule {
+    <#
+    .SYNOPSIS
+        Installs the Module tree, profile.config.psd1 and Tools.
+    #>
+    [CmdletBinding(SupportsShouldProcess)]
+    [OutputType([void])]
+    param(
+        [Parameter(Mandatory)][string]$Repository,
+        [Parameter(Mandatory)][string]$InstallPath,
+        [switch]$Force
+    )
+
+    $target = Join-Path $InstallPath 'Module'
+    $source = Join-Path $Repository 'Module'
+
+    if ($PSCmdlet.ShouldProcess($target, 'Install the Module directory')) {
+        # Move the old tree aside rather than deleting it, so a failure is recoverable.
+        if (Test-Path -LiteralPath $target) {
+            $backup = "$target.old"
             if (Test-Path -LiteralPath $backup) { Remove-Item -LiteralPath $backup -Recurse -Force }
-            Move-Item -LiteralPath $targetModule -Destination $backup -Force
-            Write-LogMessage -Message "Existing Module directory moved to $backup"
+            Move-Item -LiteralPath $target -Destination $backup -Force
+            Write-SetupLog "Existing Module directory moved to $backup"
         }
 
-        Copy-Item -LiteralPath $sourceModule -Destination $targetModule -Recurse -Force
-
-        # The loader reads profile.config.psd1 and Tools/ExportPolicy.psd1 from the profile root.
-        foreach ($extra in 'profile.config.psd1', 'Tools') {
-            $source = Join-Path $extracted.FullName $extra
-            if (Test-Path -LiteralPath $source) {
-                $destination = Join-Path $LocalPath $extra
-
-                # Never clobber an existing configuration; the user will have edited it.
-                if ($extra -eq 'profile.config.psd1' -and (Test-Path -LiteralPath $destination)) {
-                    Write-LogMessage -Message "Keeping the existing profile.config.psd1."
-                    continue
-                }
-
-                Copy-Item -LiteralPath $source -Destination $destination -Recurse -Force
-            }
-        }
-
-        $count = @(Get-ChildItem -LiteralPath $targetModule -Recurse -File).Count
-        Write-LogMessage -Message "Installed the Module directory ($count files) to $targetModule"
+        Copy-Item -LiteralPath $source -Destination $target -Recurse -Force
+        Write-SetupLog ("Module directory installed ({0} files)" -f @(Get-ChildItem -LiteralPath $target -Recurse -File).Count)
     }
-    catch {
-        Invoke-ErrorHandling -ErrorMessage "Failed to install the Module directory." -ErrorRecord $_
+
+    # The loader reads its policy from Tools/ExportPolicy.psd1.
+    $toolsSource = Join-Path $Repository 'Tools'
+    $toolsTarget = Join-Path $InstallPath 'Tools'
+    if ((Test-Path -LiteralPath $toolsSource) -and $PSCmdlet.ShouldProcess($toolsTarget, 'Install Tools')) {
+        if (Test-Path -LiteralPath $toolsTarget) { Remove-Item -LiteralPath $toolsTarget -Recurse -Force }
+        Copy-Item -LiteralPath $toolsSource -Destination $toolsTarget -Recurse -Force
+        Write-SetupLog "Tools installed"
     }
-    finally {
-        Remove-Item -LiteralPath $workspace -Recurse -Force -ErrorAction SilentlyContinue
-        Remove-Item -LiteralPath $archive -Force -ErrorAction SilentlyContinue
+
+    # Never clobber a configuration the user has edited.
+    $configSource = Join-Path $Repository 'profile.config.psd1'
+    $configTarget = Join-Path $InstallPath 'profile.config.psd1'
+
+    if ((Test-Path -LiteralPath $configTarget) -and -not $Force) {
+        Write-SetupLog "Keeping your existing profile.config.psd1. Use -Force to replace it."
+        return
     }
-}
-function Initialize-PowerShellProfile {
-    <#
-    .SYNOPSIS
-        Initializes the PowerShell profile by creating or updating the profile script.
 
-    .DESCRIPTION
-        This function initializes the PowerShell profile by creating or updating the profile script. The profile script is downloaded from the GitHub repository and saved to the appropriate location based on the PowerShell edition (Core or Desktop). If the profile already exists, it is backed up before being updated.
-
-    .OUTPUTS
-        The required modules and tools are installed or updated.
-
-    .EXAMPLE
-        Initialize-PowerShellProfile
-        Initializes the PowerShell profile by creating or updating the profile script.
-
-    .NOTES
-        This function is used to initialize the PowerShell profile by creating or updating the profile script.
-    #>
-    [CmdletBinding()]
-    param(
-        # This function does not accept any parameters
-    )
-
-    try {
-        if (!(Test-Path -Path $PROFILE -PathType Leaf)) {
-            $profilePath = if ($PSVersionTable.PSEdition -eq "Core") {
-                "$ENV:USERPROFILE\Documents\Powershell"
-            }
-            elseif ($PSVersionTable.PSEdition -eq "Desktop") {
-                "$ENV:USERPROFILE\Documents\WindowsPowerShell"
-            }
-
-            if (!(Test-Path -Path $profilePath)) {
-                New-Item -Path $profilePath -ItemType "directory"
-            }
-
-            Invoke-RestMethod https://github.com/MKAbuMattar/powershell-profile/raw/main/Microsoft.PowerShell_profile.ps1 -OutFile $PROFILE
-            Write-LogMessage -Message "The profile @ [$PROFILE] has been created."
-            Write-LogMessage -Message "If you want to add any persistent components, please do so at [$profilePath\Microsoft.PowerShell_profile.ps1] as there is an updater in the installed profile which uses the hash to update the profile and will lead to loss of changes."
-        }
-        else {
-            $tmpDir = "$HOME\.tmp"
-            if (-not (Test-Path -Path $tmpDir)) {
-                New-Item -Path $tmpDir -ItemType Directory -Force
-            }
-            Get-Item -Path $PROFILE | Move-Item -Destination "$tmpDir\Microsoft.PowerShell_profile.ps1.old" -Force
-            Invoke-RestMethod https://github.com/MKAbuMattar/powershell-profile/raw/main/Microsoft.PowerShell_profile.ps1 -OutFile $PROFILE
-            Write-LogMessage -Message "The profile @ [$PROFILE] has been created and old profile moved to $tmpDir\Microsoft.PowerShell_profile.ps1.old."
-            Write-LogMessage -Message "Please back up any persistent components of your old profile to [$HOME\Documents\PowerShell\Microsoft.PowerShell_profile.ps1] as there is an updater in the installed profile which uses the hash to update the profile and will lead to loss of changes."
-        }
-    }
-    catch {
-        Invoke-ErrorHandling -ErrorMessage "Failed to create or update the profile." -ErrorRecord $_
-    }
+    Install-RepositoryFile -Source $configSource -Destination $configTarget -Label 'profile.config.psd1'
 }
 
-function Initialize-StarshipConfig {
+function Install-Profile {
     <#
     .SYNOPSIS
-        Initializes the Starship configuration by creating the ~/.config directory and copying the starship.toml file.
-
-    .DESCRIPTION
-        This function initializes the Starship configuration by creating the ~/.config directory and copying the starship.toml file from the GitHub repository.
-
-    .OUTPUTS
-        The ~/.config directory is created, and the starship.toml file is copied.
-
-    .EXAMPLE
-        Initialize-StarshipConfig
-        Initializes the Starship configuration by creating the ~/.config directory and copying the starship.toml file.
-
-    .NOTES
-        This function is used to initialize the Starship configuration by creating the ~/.config directory and copying the starship.toml file.
+        Installs Microsoft.PowerShell_profile.ps1, preserving third-party sections.
     #>
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess)]
+    [OutputType([void])]
     param(
-        # This function does not accept any parameters
+        [Parameter(Mandatory)][string]$Repository
     )
 
-    try {
-        $configDir = "$ENV:USERPROFILE\.config"
-        $starshipTomlPath = Join-Path -Path $configDir -ChildPath "starship.toml"
-
-        if (!(Test-Path -Path $starshipTomlPath -PathType Leaf)) {
-            if (!(Test-Path -Path $configDir)) {
-                New-Item -Path $configDir -ItemType "directory"
-            }
-
-            Invoke-RestMethod https://github.com/MKAbuMattar/powershell-profile/raw/main/.config/starship.toml -OutFile $starshipTomlPath
-            Write-LogMessage -Message "The starship.toml @ [$starshipTomlPath] has been created."
-            Write-LogMessage -Message "If you want to add any persistent components, please do so at [$configDir\starship.toml] as there is an updater in the installed profile which uses the hash to update the profile and will lead to loss of changes."
-        }
-        else {
-            $tmpDir = "$HOME\.tmp"
-            if (-not (Test-Path -Path $tmpDir)) {
-                New-Item -Path $tmpDir -ItemType Directory -Force
-            }
-            Get-Item -Path $starshipTomlPath | Move-Item -Destination "$tmpDir\starship.toml.old" -Force
-            Invoke-RestMethod https://github.com/MKAbuMattar/powershell-profile/raw/main/.config/starship.toml -OutFile $starshipTomlPath
-            Write-LogMessage -Message "The starship.toml @ [$starshipTomlPath] has been created and old starship.toml moved to $tmpDir\starship.toml.old."
-            Write-LogMessage -Message "Please back up any persistent components of your old starship.toml to [$configDir\starship.toml] as there is an updater in the installed profile which uses the hash to update the profile and will lead to loss of changes."
-        }
+    $source = Join-Path $Repository 'Microsoft.PowerShell_profile.ps1'
+    if (-not (Test-Path -LiteralPath $source)) {
+        Write-SetupLog 'The archive has no profile script.' -Level ERROR
+        return
     }
-    catch {
-        Invoke-ErrorHandling -ErrorMessage "Failed to create or update the starship.toml." -ErrorRecord $_
+
+    if (-not $PSCmdlet.ShouldProcess($PROFILE, 'Install the profile')) { return }
+
+    $parent = Split-Path -Parent $PROFILE
+    if (-not (Test-Path -LiteralPath $parent)) {
+        $null = New-Item -ItemType Directory -Path $parent -Force
     }
+
+    $incoming = Get-Content -LiteralPath $source -Raw
+    $foreign = Get-ForeignProfileSection -Path $PROFILE
+
+    if ($foreign) {
+        $incoming = $incoming.TrimEnd() + [Environment]::NewLine + [Environment]::NewLine + $foreign + [Environment]::NewLine
+        Write-SetupLog 'Preserved a third-party section already present in your profile.'
+    }
+
+    if (Test-Path -LiteralPath $PROFILE) {
+        Copy-Item -LiteralPath $PROFILE -Destination "$PROFILE.bak" -Force
+    }
+
+    # Set-Content writes through a symlink; Copy-Item -Force would replace the link itself.
+    Set-Content -LiteralPath $PROFILE -Value $incoming -NoNewline -Encoding UTF8
+    Write-SetupLog "Profile installed -> $PROFILE"
 }
 
-function Initialize-FastFetchConfig {
+function Install-GalleryModule {
     <#
     .SYNOPSIS
-        Initializes the FastFetch configuration by creating the ~/.config/fastfetch directory and copying the config.jsonc file.
+        Installs the PowerShell Gallery modules the profile imports.
 
     .DESCRIPTION
-        This function initializes the FastFetch configuration by creating the ~/.config/fastfetch directory and copying the config.jsonc file from the GitHub repository.
-
-    .OUTPUTS
-        The ~/.config/fastfetch directory is created, and the config.jsonc file is copied.
-
-    .EXAMPLE
-        Initialize-FastFetchConfig
-        Initializes the FastFetch configuration by creating the ~/.config/fastfetch directory and copying the config.jsonc file.
-
-    .NOTES
-        This function is used to initialize the FastFetch configuration by creating the ~/.config/fastfetch directory and copying the config.jsonc file.
+        Posh-Git is deliberately absent: starship.toml already renders git_branch, git_commit,
+        git_state, git_metrics and git_status, and nothing in the profile calls a posh-git
+        function, so importing it cost about 220 ms of every shell for nothing.
     #>
-    [CmdletBinding()]
-    param(
-        # This function does not accept any parameters
-    )
+    [CmdletBinding(SupportsShouldProcess)]
+    [OutputType([void])]
+    param()
 
-    try {
-        $configDir = "$ENV:USERPROFILE\.config"
-        $configPath = Join-Path -Path $configDir -ChildPath "fastfetch"
-        $fastfetchConfigPath = Join-Path -Path $configPath -ChildPath "config.jsonc"
-
-        if (!(Test-Path -Path $fastfetchConfigPath -PathType Leaf)) {
-            if (!(Test-Path -Path $configDir)) {
-                New-Item -Path $configDir -ItemType "directory"
-            }
-
-            if (!(Test-Path -Path $configPath)) {
-                New-Item -Path $configPath -ItemType "directory"
-            }
-
-            Invoke-RestMethod https://github.com/MKAbuMattar/powershell-profile/raw/main/.config/fastfetch/config.jsonc -OutFile $fastfetchConfigPath
-            Write-LogMessage -Message "The config.jsonc @ [$fastfetchConfigPath] has been created."
-            Write-LogMessage -Message "If you want to add any persistent components, please do so at [$configPath\config.jsonc] as there is an updater in the installed profile which uses the hash to update the profile and will lead to loss of changes."
+    foreach ($name in 'Terminal-Icons', 'PSReadLine', 'CompletionPredictor') {
+        if (Get-Module -ListAvailable -Name $name) {
+            Write-SetupLog "$name is already installed."
+            continue
         }
-        else {
-            $tmpDir = "$HOME\.tmp"
-            if (-not (Test-Path -Path $tmpDir)) {
-                New-Item -Path $tmpDir -ItemType Directory -Force
-            }
-            Get-Item -Path $fastfetchConfigPath | Move-Item -Destination "$tmpDir\config.jsonc.old" -Force
-            Invoke-RestMethod https://github.com/MKAbuMattar/powershell-profile/raw/main/.config/fastfetch/config.jsonc -OutFile $fastfetchConfigPath
-            Write-LogMessage -Message "The config.jsonc @ [$fastfetchConfigPath] has been created and old config.jsonc moved to $tmpDir\config.jsonc.old."
-            Write-LogMessage -Message "Please back up any persistent components of your old config.jsonc to [$configPath\config.jsonc] as there is an updater in the installed profile which uses the hash to update the profile and will lead to loss of changes."
+
+        if (-not $PSCmdlet.ShouldProcess($name, 'Install-Module')) { continue }
+
+        try {
+            Install-Module -Name $name -Scope CurrentUser -Force -SkipPublisherCheck
+            Write-SetupLog "Installed $name"
         }
-    }
-    catch {
-        Invoke-ErrorHandling -ErrorMessage "Failed to create or update the config.jsonc." -ErrorRecord $_
-    }
-}
-
-function Initialize-FigletConfig {
-    <#
-    .SYNOPSIS
-        Initializes the Figlet configuration by creating the ~/.config/.figlet directory and copying the ANSI_Shadow.flf file.
-
-    .DESCRIPTION
-        This function initializes the Figlet configuration by creating the ~/.config/.figlet directory and copying the ANSI_Shadow.flf file from the GitHub repository.
-
-    .OUTPUTS
-        The ~/.config/.figlet directory is created, and the ANSI_Shadow.flf file is copied.
-
-    .EXAMPLE
-        Initialize-FigletConfig
-        Initializes the Figlet configuration by creating the ~/.config/.figlet directory and copying the ANSI_Shadow.flf file.
-
-    .NOTES
-        This function is used to initialize the Figlet configuration by creating the ~/.config/.figlet directory and copying the ANSI_Shadow.flf file.
-    #>
-    [CmdletBinding()]
-    param(
-        # This function does not accept any parameters
-    )
-
-    try {
-        $configDir = "$ENV:USERPROFILE\.config"
-        $configPath = Join-Path -Path $configDir -ChildPath ".figlet"
-        $figletConfigPath = Join-Path -Path $configPath -ChildPath "ANSI_Shadow.flf"
-
-        if (!(Test-Path -Path $figletConfigPath -PathType Leaf)) {
-            if (!(Test-Path -Path $configDir)) {
-                New-Item -Path $configDir -ItemType "directory"
-            }
-
-            if (!(Test-Path -Path $configPath)) {
-                New-Item -Path $configPath -ItemType "directory"
-            }
-
-            Invoke-RestMethod https://github.com/MKAbuMattar/powershell-profile/raw/main/.config/.figlet/ANSI_Shadow.flf -OutFile $figletConfigPath
-            Write-LogMessage -Message "The ANSI_Shadow.flf @ [$figletConfigPath] has been created."
-            Write-LogMessage -Message "If you want to add any persistent components, please do so at [$configPath\ANSI_Shadow.flf] as there is an updater in the installed profile which uses the hash to update the profile and will lead to loss of changes."
+        catch {
+            Write-SetupLog "Could not install ${name}: $($_.Exception.Message)" -Level WARNING
         }
-        else {
-            $tmpDir = "$HOME\.tmp"
-            if (-not (Test-Path -Path $tmpDir)) {
-                New-Item -Path $tmpDir -ItemType Directory -Force
-            }
-            Get-Item -Path $figletConfigPath | Move-Item -Destination "$tmpDir\ANSI_Shadow.flf.old" -Force
-            Invoke-RestMethod https://github.com/MKAbuMattar/powershell-profile/raw/main/.config/.figlet/ANSI_Shadow.flf -OutFile $figletConfigPath
-            Write-LogMessage -Message "The ANSI_Shadow.flf @ [$figletConfigPath] has been created and old ANSI_Shadow.flf moved to $tmpDir\ANSI_Shadow.flf.old."
-            Write-LogMessage -Message "Please back up any persistent components of your old ANSI_Shadow.flf to [$configPath\ANSI_Shadow.flf] as there is an updater in the installed profile which uses the hash to update the profile and will lead to loss of changes."
-        }
-    }
-    catch {
-        Invoke-ErrorHandling -ErrorMessage "Failed to create or update the ANSI_Shadow.flf." -ErrorRecord $_
     }
 }
 
 function Install-CascadiaCodeFont {
     <#
     .SYNOPSIS
-        Installs the Cascadia Code font if it is not already installed.
-
-    .DESCRIPTION
-        This function installs the Cascadia Code font if it is not already installed. The font is downloaded from the GitHub repository and installed in the Windows Fonts directory.
-
-    .PARAMETER FontName
-        Specifies the name of the font to install. Default is "CascadiaCode".
-
-    .PARAMETER FontDisplayName
-        Specifies the display name of the font. Default is "CaskaydiaCove NF".
-
-    .PARAMETER Version
-        Specifies the version of the font to download. Default is "3.2.1".
-
-    .OUTPUTS
-        The Cascadia Code font is installed.
-
-    .EXAMPLE
-        Install-CascadiaCodeFont
-        Installs the Cascadia Code font with the default parameters.
-
-    .EXAMPLE
-        Install-CascadiaCodeFont -FontName "CascadiaCode" -FontDisplayName "CaskaydiaCove NF" -Version "3.2.1"
-        Installs the Cascadia Code font with the specified parameters.
-
-    .NOTES
-        This function is used to install the Cascadia Code font if it is not already installed.
+        Installs the Cascadia Code Nerd Font. Requires an elevated session.
     #>
-    [CmdletBinding()]
-    param (
-        [Parameter(
-            Mandatory = $false,
-            Position = 0,
-            ValueFromPipeline = $true,
-            ValueFromPipelineByPropertyName = $true,
-            HelpMessage = "The name of the font to install."
-        )]
-        [string]$FontName = "CascadiaCode",
-
-        [Parameter(
-            Mandatory = $false,
-            Position = 1,
-            ValueFromPipeline = $true,
-            ValueFromPipelineByPropertyName = $true,
-            HelpMessage = "The display name of the font."
-        )]
-        [string]$FontDisplayName = "CaskaydiaCove NF",
-
-        [Parameter(
-            Mandatory = $false,
-            Position = 2,
-            ValueFromPipeline = $true,
-            ValueFromPipelineByPropertyName = $true,
-            HelpMessage = "The version of the font to download."
-        )]
-        [string]$Version = "3.4.0"
-    )
-
-    process {
-        try {
-            [void] [System.Reflection.Assembly]::LoadWithPartialName("System.Drawing")
-            $fontFamilies = (New-Object System.Drawing.Text.InstalledFontCollection).Families.Name
-            if ($fontFamilies -notcontains "${FontDisplayName}") {
-                $fontZipUrl = "https://github.com/ryanoasis/nerd-fonts/releases/download/v${Version}/${FontName}.zip"
-                $zipFilePath = "$env:TEMP\${FontName}.zip"
-                $extractPath = "$env:TEMP\${FontName}"
-
-                $webClient = New-Object System.Net.WebClient
-                $webClient.DownloadFileAsync((New-Object System.Uri($fontZipUrl)), $zipFilePath)
-
-                while ($webClient.IsBusy) {
-                    Start-Sleep -Seconds 2
-                }
-
-                Expand-Archive -Path $zipFilePath -DestinationPath $extractPath -Force
-                $destination = (New-Object -ComObject Shell.Application).Namespace(0x14)
-                Get-ChildItem -Path $extractPath -Recurse -Filter "*.ttf" | ForEach-Object {
-                    if (-not(Test-Path "C:\Windows\Fonts\$($_.Name)")) {
-                        $destination.CopyHere($_.FullName, 0x10)
-                    }
-                }
-
-                Remove-Item -Path $extractPath -Recurse -Force
-                Remove-Item -Path $zipFilePath -Force
-            }
-            else {
-                Write-LogMessage -Message "${FontDisplayName} font is already installed."
-            }
-        }
-        catch {
-            Invoke-ErrorHandling "Failed to download or install ${FontDisplayName} font. Error: $_"
-        }
-    }
-}
-
-function Install-Chocolatey {
-    <#
-    .SYNOPSIS
-        Installs Chocolatey package manager.
-
-    .DESCRIPTION
-        This function installs the Chocolatey package manager by setting the execution policy to Bypass, updating the security protocol, and invoking the Chocolatey installation script.
-
-    .OUTPUTS
-        The Chocolatey package manager is installed.
-
-    .EXAMPLE
-        Install-Chocolatey
-        Installs the Chocolatey package manager.
-
-    .NOTES
-        This function is used to install the Chocolatey package manager.
-    #>
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess)]
+    [OutputType([void])]
     param(
-        # This function does not accept any parameters
+        [string]$FontName = 'CascadiaCode',
+        [string]$FontDisplayName = 'CaskaydiaCove NF'
     )
+
+    if (-not (Test-SetupAdministrator)) {
+        Write-SetupLog 'Font installation needs an elevated session. Skipping.' -Level WARNING
+        return
+    }
+
+    $family = [System.Drawing.Text.InstalledFontCollection]::new().Families
+    if ($family.Name -contains $FontDisplayName) {
+        Write-SetupLog "$FontDisplayName is already installed."
+        return
+    }
+
+    if (-not $PSCmdlet.ShouldProcess($FontDisplayName, 'Install font')) { return }
+
+    $zip = Join-Path $env:TEMP "$FontName.zip"
+    $extract = Join-Path $env:TEMP $FontName
 
     try {
-        Set-ExecutionPolicy Bypass -Scope Process -Force
-        [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
-        Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+        $url = "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/$FontName.zip"
+        Write-SetupLog "Downloading $FontDisplayName..."
+        Invoke-WebRequest -Uri $url -OutFile $zip -UseBasicParsing
+
+        Expand-Archive -Path $zip -DestinationPath $extract -Force
+
+        $shell = (New-Object -ComObject Shell.Application).Namespace(0x14)
+        foreach ($file in Get-ChildItem -LiteralPath $extract -Recurse -Filter '*.ttf') {
+            if (Test-Path -LiteralPath (Join-Path $env:WINDIR "Fonts\$($file.Name)")) { continue }
+            $shell.CopyHere($file.FullName, 0x10)
+        }
+
+        Write-SetupLog "Installed $FontDisplayName"
     }
     catch {
-        Invoke-ErrorHandling -ErrorMessage "Failed to install Chocolatey." -ErrorRecord $_
+        Write-SetupLog "Font installation failed: $($_.Exception.Message)" -Level WARNING
+    }
+    finally {
+        Remove-Item -LiteralPath $extract -Recurse -Force -ErrorAction SilentlyContinue
+        Remove-Item -LiteralPath $zip -Force -ErrorAction SilentlyContinue
     }
 }
 
-function Invoke-UpdateInstallPSModules {
+# The command-line tools the profile shells out to, with the package id each manager knows them by.
+$script:ProfileTool = [ordered]@{
+    starship  = @{ Winget = 'Starship.Starship'; Chocolatey = 'starship' }
+    zoxide    = @{ Winget = 'ajeetdsouza.zoxide'; Chocolatey = 'zoxide' }
+    fzf       = @{ Winget = 'junegunn.fzf'; Chocolatey = 'fzf' }
+    fastfetch = @{ Winget = 'Fastfetch-cli.Fastfetch'; Chocolatey = 'fastfetch' }
+}
+
+function Resolve-PackageManager {
     <#
     .SYNOPSIS
-        Installs or updates the required PowerShell modules.
+        Decides which package manager to use, asking when it is reasonable to ask.
 
     .DESCRIPTION
-        This function installs or updates the required PowerShell modules based on the provided module list. If the module is not found, it is installed; otherwise, it is updated.
+        Honours an explicit -PackageManager. Otherwise it looks at what is installed:
 
-    .PARAMETER ModuleList
-        Specifies the list of modules to install or update.
+        Neither available    returns None and explains how to get one.
+        Only one available   returns that one.
+        Both available       asks when the session is interactive, and otherwise picks winget,
+                             because it ships with Windows and needs no elevation.
+
+        The prompt is skipped when the host cannot prompt, which is the case for the documented
+        `irm ... | iex` one-liner piped from a non-interactive context.
+
+    .PARAMETER Preference
+        Ask, Winget, Chocolatey or None.
 
     .OUTPUTS
-        The required modules are installed or updated.
-
-    .EXAMPLE
-        Invoke-UpdateInstallPSModules -ModuleList @("Module1", "Module2", "Module3")
-        Installs or updates the modules "Module1", "Module2", and "Module3".
-
-    .NOTES
-        This function is used to install or update the required PowerShell modules.
+        [string] Winget, Chocolatey or None.
     #>
     [CmdletBinding()]
-    param (
-        [Parameter(
-            Mandatory = $true,
-            Position = 0,
-            ValueFromPipeline = $true,
-            ValueFromPipelineByPropertyName = $true,
-            HelpMessage = "The list of modules to install or update."
-        )]
-        [string[]]$ModuleList
+    [OutputType([string])]
+    param(
+        [Parameter(Mandatory)]
+        [string]$Preference
     )
 
-    process {
-        foreach ($module in $ModuleList) {
-            Write-LogMessage -Message "Checking $module"
-            try {
-                $installedModule = Get-InstalledModule -Name $module -ErrorAction SilentlyContinue
-                if ($installedModule) {
-                    $installedVersion = $installedModule.Version
-                    $latestVersion = (Find-Module -Name $module).Version
+    if ($Preference -ne 'Ask') { return $Preference }
 
-                    if ($installedVersion -ne $latestVersion) {
-                        Write-LogMessage -Message "Updating $module from version $installedVersion to $latestVersion"
-                        Update-Module -Name $module -Force
-                    }
-                    else {
-                        Write-LogMessage -Message "$module is already up-to-date (version $installedVersion)"
-                    }
-                }
-                else {
-                    Write-LogMessage -Message "Installing $module"
-                    Install-Module -Name $module -Force
-                }
-            }
-            catch {
-                Invoke-ErrorHandling -ErrorMessage "Failed to process module $module." -ErrorRecord $_
-            }
+    $hasWinget = [bool](Get-Command winget -CommandType Application -ErrorAction SilentlyContinue)
+    $hasChoco = [bool](Get-Command choco -CommandType Application -ErrorAction SilentlyContinue)
+
+    if (-not $hasWinget -and -not $hasChoco) {
+        Write-SetupLog 'Neither winget nor Chocolatey is available, so the tools cannot be installed.' -Level WARNING
+        Write-SetupLog 'winget ships with Windows 11 and recent Windows 10; install it from the Microsoft Store as "App Installer".' -Level WARNING
+        return 'None'
+    }
+
+    if ($hasWinget -and -not $hasChoco) { return 'Winget' }
+    if ($hasChoco -and -not $hasWinget) { return 'Chocolatey' }
+
+    # Both are present. Ask, if this session can be asked.
+    $canPrompt = -not [System.Console]::IsInputRedirected -and $Host.UI.RawUI
+
+    if (-not $canPrompt) {
+        Write-SetupLog 'Both winget and Chocolatey are available; using winget (non-interactive session).'
+        return 'Winget'
+    }
+
+    Write-Host ''
+    $choices = @(
+        [System.Management.Automation.Host.ChoiceDescription]::new('&Winget', 'Ships with Windows. No elevation needed.')
+        [System.Management.Automation.Host.ChoiceDescription]::new('&Chocolatey', 'Already installed on this machine. Needs an elevated shell.')
+        [System.Management.Automation.Host.ChoiceDescription]::new('&Skip', 'Do not install the command-line tools.')
+    )
+
+    $answer = $Host.UI.PromptForChoice(
+        'Command-line tools',
+        "Install starship, zoxide, fzf and fastfetch with which package manager?",
+        $choices,
+        0)
+
+    Write-Host ''
+
+    switch ($answer) {
+        0 { return 'Winget' }
+        1 { return 'Chocolatey' }
+        default { return 'None' }
+    }
+}
+
+function Install-ProfileTool {
+    <#
+    .SYNOPSIS
+        Installs the command-line tools the profile uses.
+
+    .DESCRIPTION
+        Anything already on PATH is left alone. Chocolatey needs an elevated session; winget does
+        not for these packages.
+
+    .PARAMETER Manager
+        Winget, Chocolatey or None.
+    #>
+    [CmdletBinding(SupportsShouldProcess)]
+    [OutputType([void])]
+    param(
+        [Parameter(Mandatory)]
+        [string]$Manager
+    )
+
+    if ($Manager -eq 'None') {
+        Write-SetupLog 'Skipping the command-line tools.'
+        return
+    }
+
+    if ($Manager -eq 'Chocolatey' -and -not (Test-SetupAdministrator)) {
+        Write-SetupLog 'Chocolatey needs an elevated session. Skipping the tools.' -Level WARNING
+        Write-SetupLog 'Re-run in an elevated shell, or use -PackageManager Winget.' -Level WARNING
+        return
+    }
+
+    Write-SetupLog "Installing command-line tools with $Manager"
+
+    foreach ($tool in $script:ProfileTool.Keys) {
+        if (Get-Command $tool -CommandType Application -ErrorAction SilentlyContinue) {
+            Write-SetupLog "$tool is already installed."
+            continue
         }
-    }
-}
 
-function Invoke-UpdateInstallChocoPackages {
-    <#
-    .SYNOPSIS
-        Installs or updates the required Chocolatey packages.
+        $package = $script:ProfileTool[$tool].$Manager
 
-    .DESCRIPTION
-        This function installs or updates the required Chocolatey packages based on the provided package list. If the package is not found, it is installed; otherwise, it is updated if it is outdated.
+        if (-not $PSCmdlet.ShouldProcess($package, "$Manager install")) { continue }
 
-    .PARAMETER PackageList
-        Specifies the list of packages to install or update.
-
-    .OUTPUTS
-        The required packages are installed or updated.
-
-    .EXAMPLE
-        Invoke-UpdateInstallChocoPackages -PackageList @("Package1", "Package2", "Package3")
-        Installs or updates the packages "Package1", "Package2", and "Package3".
-
-    .NOTES
-        This function is used to install or update the required Chocolatey packages.
-    #>
-    [CmdletBinding()]
-    param (
-        [Parameter(
-            Mandatory = $true,
-            Position = 0,
-            ValueFromPipeline = $true,
-            ValueFromPipelineByPropertyName = $true,
-            HelpMessage = "The list of packages to install or update."
-        )]
-        [string[]]$PackageList
-    )
-
-    process {
-        foreach ($package in $PackageList) {
-            Write-LogMessage -Message "Checking $package"
-            try {
-                $installedPackage = choco list --local-only --exact $package -r -e | Select-String -Pattern $package
-                if ($installedPackage) {
-                    $installedVersion = $installedPackage.ToString().Split('|')[1].Trim()
-                    $latestVersion = (choco search $package --exact --limit-output | Select-String -Pattern $package).ToString().Split('|')[1].Trim()
-
-                    if ($installedVersion -ne $latestVersion) {
-                        Write-LogMessage -Message "Updating $package from version $installedVersion to $latestVersion"
-                        choco upgrade $package -y
-                    }
-                    else {
-                        Write-LogMessage -Message "$package is already up-to-date (version $installedVersion)"
-                    }
-                }
-                else {
-                    Write-LogMessage -Message "Installing $package"
-                    choco install $package -y
-                }
-            }
-            catch {
-                Invoke-ErrorHandling -ErrorMessage "Failed to process package $package." -ErrorRecord $_
-            }
-        }
-    }
-}
-
-function Initialize-WindowsTerminalConfig {
-    <#
-    .SYNOPSIS
-        Initializes the Windows Terminal configuration by downloading the settings.json file from the GitHub repository.
-
-    .DESCRIPTION
-        This function initializes the Windows Terminal configuration by downloading the settings.json file from the GitHub repository and saving it to the appropriate location. If the destination file already exists, it will be overwritten.
-
-    .PARAMETER SourceUrl
-        Specifies the URL of the settings.json file to download. Default is "https://github.com/MKAbuMattar/powershell-profile/raw/main/.config/windows-terminal/settings.json".
-
-    .PARAMETER DestinationPath
-        Specifies the destination path where the settings.json file will be saved. Default is "$env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json".
-
-    .INPUTS
-        SourceUrl: (Optional) The URL of the settings.json file to download.
-        DestinationPath: (Optional) The destination path where the settings.json file will be saved.
-
-    .OUTPUTS
-        The settings.json file is downloaded and saved to the destination path.
-
-    .EXAMPLE
-        Initialize-WindowsTerminalConfig
-        Initializes the Windows Terminal configuration by downloading the settings.json file from the GitHub repository.
-
-    .NOTES
-        This function is used to initialize the Windows Terminal configuration by downloading the settings.json file from the GitHub repository.
-    #>
-    [CmdletBinding()]
-    param (
-        [Parameter(
-            Mandatory = $false,
-            Position = 0,
-            ValueFromPipeline = $true,
-            ValueFromPipelineByPropertyName = $true,
-            HelpMessage = "The URL of the settings.json file to download."
-        )]
-        [string]$SourceUrl = "https://github.com/MKAbuMattar/powershell-profile/raw/main/.config/windows-terminal/settings.json",
-
-        [Parameter(
-            Mandatory = $false,
-            Position = 1,
-            ValueFromPipeline = $true,
-            ValueFromPipelineByPropertyName = $true,
-            HelpMessage = "The destination path where the settings.json file will be saved."
-        )]
-        [string]$DestinationPath = "$env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json"
-    )
-
-    process {
         try {
-            if (!(Test-Path -Path $DestinationPath -PathType Leaf)) {
-                $destinationDir = Split-Path -Path $DestinationPath -Parent
-                if (!(Test-Path -Path $destinationDir)) {
-                    New-Item -Path $destinationDir -ItemType "directory"
-                }
-
-                Invoke-RestMethod $SourceUrl -OutFile $DestinationPath
-                Write-LogMessage -Message "The settings.json @ [$DestinationPath] has been created."
-                Write-LogMessage -Message "If you want to add any persistent components, please do so at [$destinationDir\settings.json] as there is an updater in the installed profile which uses the hash to update the profile and will lead to loss of changes."
+            if ($Manager -eq 'Winget') {
+                & winget install --exact --id $package --accept-source-agreements --accept-package-agreements --silent
             }
             else {
-                $tmpDir = "$HOME\.tmp"
-                if (-not (Test-Path -Path $tmpDir)) {
-                    New-Item -Path $tmpDir -ItemType Directory -Force
-                }
-                Get-Item -Path $DestinationPath | Move-Item -Destination "$tmpDir\settings.json.old" -Force
-                Invoke-RestMethod $SourceUrl -OutFile $DestinationPath
-                Write-LogMessage -Message "The settings.json @ [$DestinationPath] has been created and old settings.json moved to $tmpDir\settings.json.old."
-                Write-LogMessage -Message "Please back up any persistent components of your old settings.json to [$destinationDir\settings.json] as there is an updater in the installed profile which uses the hash to update the profile and will lead to loss of changes."
+                & choco install $package -y --limit-output
             }
+
+            if ($LASTEXITCODE -ne 0) { throw "$Manager exited with code $LASTEXITCODE." }
+            Write-SetupLog "Installed $tool"
         }
         catch {
-            Invoke-ErrorHandling -ErrorMessage "Failed to create or update the settings.json." -ErrorRecord $_
+            Write-SetupLog "Could not install ${tool}: $($_.Exception.Message)" -Level WARNING
         }
     }
 }
 
 #---------------------------------------------------------------------------------------------------
-# Start the setup process
+# Run
 #---------------------------------------------------------------------------------------------------
-Write-LogMessage -Message "Starting the setup process..."
 
-#---------------------------------------------------------------------------------------------------
-# Copy the Module directory from the repository to the local path
-#---------------------------------------------------------------------------------------------------
-Write-LogMessage -Message "Copying the Module directory from the repository to the local path..."
-Invoke-Command -ScriptBlock ${function:Copy-ModuleDirectory} -ErrorAction Stop
-
-#---------------------------------------------------------------------------------------------------
-# Initialize the PowerShell profile
-#---------------------------------------------------------------------------------------------------
-Write-LogMessage -Message "Initializing the PowerShell profile..."
-Invoke-Command -ScriptBlock ${function:Initialize-PowerShellProfile} -ErrorAction Stop
-
-#---------------------------------------------------------------------------------------------------
-# Initialize the Starship configuration
-#---------------------------------------------------------------------------------------------------
-Write-LogMessage -Message "Initializing the Starship configuration..."
-Invoke-Command -ScriptBlock ${function:Initialize-StarshipConfig} -ErrorAction Stop
-
-#---------------------------------------------------------------------------------------------------
-# Initialize the FastFetch configuration
-#---------------------------------------------------------------------------------------------------
-Write-LogMessage -Message "Initializing the FastFetch configuration..."
-Invoke-Command -ScriptBlock ${function:Initialize-FastFetchConfig} -ErrorAction Stop
-
-#---------------------------------------------------------------------------------------------------
-# Initialize the Figlet configuration
-#---------------------------------------------------------------------------------------------------
-Write-LogMessage -Message "Initializing the Figlet configuration..."
-Invoke-Command -ScriptBlock ${function:Initialize-FigletConfig} -ErrorAction Stop
-
-#---------------------------------------------------------------------------------------------------
-# Install the Cascadia Code font
-#---------------------------------------------------------------------------------------------------
-Write-LogMessage -Message "Installing the Cascadia Code font..."
-Invoke-Command -ScriptBlock ${function:Install-CascadiaCodeFont} -ErrorAction Stop
-
-#---------------------------------------------------------------------------------------------------
-# Install Chocolatey package manager
-#---------------------------------------------------------------------------------------------------
-Write-LogMessage -Message "Installing Chocolatey..."
-Invoke-Command -ScriptBlock ${function:Install-Chocolatey} -ErrorAction Stop
-
-#---------------------------------------------------------------------------------------------------
-# Install or update required PowerShell modules
-#---------------------------------------------------------------------------------------------------
-Write-LogMessage -Message "Installing or updating required PowerShell modules..."
-$modules = @(
-    'Terminal-Icons',
-    'PowerShellGet',
-    'PSReadLine',
-    'Posh-Git',
-    'CompletionPredictor'
-)
-Invoke-Command -ScriptBlock ${function:Invoke-UpdateInstallPSModules} -ArgumentList $modules
-
-#---------------------------------------------------------------------------------------------------
-# Install or update required Chocolatey packages
-#---------------------------------------------------------------------------------------------------
-Write-LogMessage -Message "Installing or updating required Chocolatey packages..."
-$packages = @(
-    'fastfetch',
-    'powershell-core',
-    'starship',
-    'zoxide',
-    'fzf'
-)
-Invoke-Command -ScriptBlock ${function:Invoke-UpdateInstallChocoPackages} -ArgumentList $packages
-
-#---------------------------------------------------------------------------------------------------
-# Initialize the Windows Terminal configuration
-#---------------------------------------------------------------------------------------------------
-Write-LogMessage -Message "Initializing the Windows Terminal configuration..."
-Invoke-Command -ScriptBlock ${function:Initialize-WindowsTerminalConfig} -ErrorAction Stop
-
-#---------------------------------------------------------------------------------------------------
-# End the setup process
-#---------------------------------------------------------------------------------------------------
-Write-LogMessage -Message "Setup process completed successfully."
-
-#---------------------------------------------------------------------------------------------------
-# Check if the setup completed successfully
-#---------------------------------------------------------------------------------------------------
-if (Test-Path -Path $PROFILE) {
-    Write-LogMessage -Message "Setup completed successfully. Please restart your PowerShell session to apply changes."
+$defaultSteps = @('Modules', 'Profile', 'Starship', 'FastFetch', 'Figlet', 'WindowsTerminal', 'GalleryModules')
+if (-not $Step) {
+    $Step = if ($IncludeOptional) { $defaultSteps + @('Font', 'Tools') } else { $defaultSteps }
 }
-else {
-    Invoke-ErrorHandling -ErrorMessage "Setup completed with errors. Please check the error messages above." -ErrorRecord $_
+
+Write-Host ''
+Write-SetupLog "Installing to $InstallPath from branch $Branch"
+Write-SetupLog ("Steps: {0}" -f ($Step -join ', '))
+Write-Host ''
+
+if (-not (Test-SetupConnection)) {
+    Write-SetupLog 'github.com is not reachable. Check your connection and try again.' -Level ERROR
+    return
+}
+
+$repository = $null
+
+try {
+    $repository = Get-RepositoryArchive -Branch $Branch
+    $workspace = Split-Path -Parent $repository
+
+    $configTargets = @{
+        Starship        = @{
+            Source      = Join-Path $repository '.config/starship.toml'
+            Destination = Join-Path $env:USERPROFILE '.config/starship.toml'
+            Label       = 'starship.toml'
+        }
+        FastFetch       = @{
+            Source      = Join-Path $repository '.config/fastfetch/config.jsonc'
+            Destination = Join-Path $env:USERPROFILE '.config/fastfetch/config.jsonc'
+            Label       = 'fastfetch config.jsonc'
+        }
+        Figlet          = @{
+            Source      = Join-Path $repository '.config/.figlet/ANSI_Shadow.flf'
+            Destination = Join-Path $env:USERPROFILE '.config/.figlet/ANSI_Shadow.flf'
+            Label       = 'ANSI_Shadow.flf'
+        }
+        WindowsTerminal = @{
+            Source      = Join-Path $repository '.config/windows-terminal/settings.json'
+            Destination = Join-Path $env:LOCALAPPDATA 'Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json'
+            Label       = 'Windows Terminal settings.json'
+        }
+    }
+
+    foreach ($name in $Step) {
+        switch ($name) {
+            'Modules' { Install-ProfileModule -Repository $repository -InstallPath $InstallPath -Force:$Force }
+            'Profile' { Install-Profile -Repository $repository }
+            'GalleryModules' { Install-GalleryModule }
+            'Font' { Install-CascadiaCodeFont }
+            'Tools' { Install-ProfileTool -Manager (Resolve-PackageManager -Preference $PackageManager) }
+            default {
+                $target = $configTargets[$name]
+                if ($target) {
+                    Install-RepositoryFile -Source $target.Source -Destination $target.Destination -Label $target.Label
+                }
+            }
+        }
+    }
+
+    Write-Host ''
+    Write-SetupLog 'Setup complete.'
+    Write-Host ''
+    Write-Host '  Next steps:' -ForegroundColor Cyan
+    Write-Host '    Install-ProfileDependency      install the CLI tools the profile uses'
+    Write-Host '    Measure-ProfileLoad            see what loads and what it costs'
+    Write-Host '    Show-ProfileHelp               list the commands you now have'
+    Write-Host ''
+    Write-Host "  Edit $InstallPath\profile.config.psd1 to choose what loads." -ForegroundColor DarkGray
+    Write-Host '  Restart your shell to pick everything up.' -ForegroundColor DarkGray
+    Write-Host ''
+}
+catch {
+    Write-SetupLog "Setup failed: $($_.Exception.Message)" -Level ERROR
+    Write-SetupLog 'Nothing further was installed. Existing files were backed up alongside the originals.' -Level ERROR
+}
+finally {
+    if ($repository) {
+        Remove-Item -LiteralPath (Split-Path -Parent $repository) -Recurse -Force -ErrorAction SilentlyContinue -WhatIf:$false
+    }
 }
