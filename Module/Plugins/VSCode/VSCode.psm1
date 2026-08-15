@@ -93,7 +93,9 @@ function Get-VSCodeExecutable {
             Write-Verbose "Detected VS Code flavour: $flavour"
             return $script:VSCodeExecutable
         }
-        catch {        }
+        catch {
+        Write-Verbose "VS Code executable probe failed: $($_.Exception.Message)"
+    }
     }
 
     Write-Warning "No VS Code flavour detected. Please install VS Code, VS Code Insiders, or VSCodium."

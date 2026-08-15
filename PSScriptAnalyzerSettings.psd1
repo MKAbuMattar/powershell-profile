@@ -10,20 +10,23 @@
 
 @{
     Rules        = @{
-        PSUseCompatibleSyntax                       = @{
+        PSUseCompatibleSyntax = @{
             Enable         = $true
             TargetVersions = @('7.0')
         }
-
-        # Profile functions are thin wrappers around external tools (git, kubectl, docker).
-        # They deliberately do not implement -WhatIf/-Confirm.
-        PSUseShouldProcessForStateChangingFunctions = @{ Enable = $false }
-
-        # Plugin names mirror their upstream CLI verbs (Get-GComputeZones, Invoke-KubectlGetPods).
-        PSUseSingularNouns                          = @{ Enable = $false }
     }
 
+    # Rules are disabled here, not with Enable = $false inside Rules. That form is silently
+    # ignored: PSUseShouldProcessForStateChangingFunctions was set that way and carried on
+    # reporting 53 warnings regardless.
     ExcludeRules = @(
+        # Profile functions are thin wrappers around external tools (git, kubectl, docker).
+        # They deliberately do not implement -WhatIf/-Confirm.
+        'PSUseShouldProcessForStateChangingFunctions',
+
+        # Plugin names mirror their upstream CLI verbs (Get-GComputeZones, Invoke-KubectlGetPods).
+        'PSUseSingularNouns',
+
         # Console output is the point of a shell profile; these functions render, they do not return.
         'PSAvoidUsingWriteHost',
 

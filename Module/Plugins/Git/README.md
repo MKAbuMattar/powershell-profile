@@ -907,13 +907,13 @@ This project is licensed under the MIT License. See the [LICENSE](../../../LICEN
 | `gav` |  | A PowerShell function that wraps `git add --verbose`. |
 | `gb` |  | A PowerShell function that wraps `git branch`. |
 | `gba` |  | A PowerShell function that wraps `git branch --all`. |
-| `gbD` |  | A PowerShell function that wraps `git branch --delete --force`. |
 | `gbd` |  | A PowerShell function that wraps `git branch --delete`. |
 | `gbda` |  |  |
+| `gbdf` |  | A PowerShell function that wraps `git branch --delete --force`. |
 | `gbds` |  |  |
 | `gbg` |  |  |
 | `gbgd` |  |  |
-| `gbgD` |  |  |
+| `gbgdf` |  |  |
 | `gbl` |  | A PowerShell function that wraps `git blame -w`. |
 | `gbm` |  | A PowerShell function that wraps `git branch --move`. |
 | `gbnm` |  | A PowerShell function that wraps `git branch --move --no-ff`. |
@@ -930,7 +930,7 @@ This project is licensed under the MIT License. See the [LICENSE](../../../LICEN
 | `gcas` |  |  |
 | `gcasm` |  |  |
 | `gcb` |  | A PowerShell function that wraps `git checkout -b`. |
-| `gcB` |  | A PowerShell function that wraps `git checkout -B`. |
+| `gcbf` |  | A PowerShell function that wraps `git checkout -B`. |
 | `gccd` |  |  |
 | `gcd` |  |  |
 | `gcf` |  |  |

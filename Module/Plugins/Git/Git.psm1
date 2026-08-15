@@ -1,4 +1,4 @@
-﻿#---------------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------
 # MKAbuMattar's PowerShell Profile - Git Plugin
 #
 #
@@ -47,7 +47,6 @@ $BaseModuleDir = Join-Path -Path $PSScriptRoot -ChildPath '/'
 
 $ModuleList = @(
     @{ Name = 'Core'; Path = 'Core/Core.psd1' }
-    @{ Name = 'Utility'; Path = 'Utility/Utility.psd1' }
 )
 
 foreach ($Module in $ModuleList) {
@@ -1085,7 +1084,7 @@ function gbd {
     & git branch --delete @Arguments
 }
 
-function gbD {
+function gbdf {
     <#
     .SYNOPSIS
         A PowerShell function that wraps `git branch --delete --force`.
@@ -1105,10 +1104,10 @@ function gbD {
         None. This function writes Git output to the console but does not return objects.
 
     .EXAMPLE
-        gbD branch-name
+        gbdf branch-name
         Forcefully deletes the specified branch, even if it has unmerged changes.
 
-        gbD -r origin/branch-name
+        gbdf -r origin/branch-name
         Forcefully deletes the specified remote-tracking branch, even if it has unmerged changes.
 
     .NOTES
@@ -1373,7 +1372,7 @@ function gcb {
     & git checkout -b @Arguments
 }
 
-function gcB {
+function gcbf {
     <#
     .SYNOPSIS
         A PowerShell function that wraps `git checkout -B`.
@@ -1393,10 +1392,10 @@ function gcB {
         None. This function writes Git output to the console but does not return objects.
 
     .EXAMPLE
-        gcB branch-name
+        gcbf branch-name
         Creates or resets the branch named "branch-name" to the current HEAD and switches to it.
 
-        gcB branch-name start-point
+        gcbf branch-name start-point
         Creates or resets the branch named "branch-name" to "start-point" and switches to it.
 
     .NOTES
@@ -5379,7 +5378,7 @@ function gbgd {
     }
 }
 
-function gbgD {
+function gbgdf {
     <#
     .SYNOPSIS
 

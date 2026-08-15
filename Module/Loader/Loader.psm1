@@ -295,6 +295,7 @@ function Resolve-ProfileConflict {
             }
             catch {
                 # An AllScope or read-only alias; leave it rather than fight the session.
+                Write-Verbose "Could not yield alias '$name' to the native tool: $($_.Exception.Message)"
             }
         }
 
