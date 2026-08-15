@@ -292,7 +292,11 @@ function Set-AWSProfile {
     try {
         $env:AWS_PROFILE_REGION = aws configure get region --profile $Profile 2>$null
     }
-    catch {}
+    catch {
+        # An optional profile setting that is simply not configured. Not an error, but
+        # visible with -Verbose rather than discarded outright.
+        Write-Verbose "AWS profile lookup returned nothing: $($_.Exception.Message)"
+    }
 
     Update-AWSState
 
@@ -463,7 +467,11 @@ function Switch-AWSProfile {
         $mfaSerial = aws configure get mfa_serial --profile $Profile 2>$null
         $sessDuration = aws configure get duration_seconds --profile $Profile 2>$null
     }
-    catch {}
+    catch {
+        # An optional profile setting that is simply not configured. Not an error, but
+        # visible with -Verbose rather than discarded outright.
+        Write-Verbose "AWS profile lookup returned nothing: $($_.Exception.Message)"
+    }
 
     $mfaOptions = @()
     if (-not [string]::IsNullOrEmpty($mfaSerial)) {
@@ -481,7 +489,11 @@ function Switch-AWSProfile {
         $roleArn = aws configure get role_arn --profile $Profile 2>$null
         $sessName = aws configure get role_session_name --profile $Profile 2>$null
     }
-    catch {}
+    catch {
+        # An optional profile setting that is simply not configured. Not an error, but
+        # visible with -Verbose rather than discarded outright.
+        Write-Verbose "AWS profile lookup returned nothing: $($_.Exception.Message)"
+    }
 
     $awsCommand = @()
     if (-not [string]::IsNullOrEmpty($roleArn)) {
@@ -493,7 +505,11 @@ function Switch-AWSProfile {
                 $awsCommand += @('--external-id', $externalId)
             }
         }
-        catch {}
+        catch {
+        # An optional profile setting that is simply not configured. Not an error, but
+        # visible with -Verbose rather than discarded outright.
+        Write-Verbose "AWS profile lookup returned nothing: $($_.Exception.Message)"
+    }
 
         try {
             $sourceProfile = aws configure get source_profile --profile $Profile 2>$null
@@ -503,7 +519,11 @@ function Switch-AWSProfile {
             $profileOption = if ([string]::IsNullOrEmpty($sourceProfile)) { 'profile' } else { $sourceProfile }
             $awsCommand += @("--profile=$profileOption", '--role-session-name', $sessName)
         }
-        catch { }
+        catch {
+        # An optional profile setting that is simply not configured. Not an error, but
+        # visible with -Verbose rather than discarded outright.
+        Write-Verbose "AWS profile lookup returned nothing: $($_.Exception.Message)"
+    }
 
         # $profileOption is the same value the command above uses, and is computed without the
         # null-coalescing operator, which Windows PowerShell 5.1 cannot parse. This manifest
@@ -763,7 +783,11 @@ function Get-AWSProfiles {
             return ($result -split "`n" | Where-Object { -not [string]::IsNullOrWhiteSpace($_) } | Sort-Object)
         }
     }
-    catch { }
+    catch {
+        # An optional profile setting that is simply not configured. Not an error, but
+        # visible with -Verbose rather than discarded outright.
+        Write-Verbose "AWS profile lookup returned nothing: $($_.Exception.Message)"
+    }
 
     $configFile = if ($env:AWS_CONFIG_FILE) { $env:AWS_CONFIG_FILE } else { "$env:HOME\.aws\config" }
     if (Test-Path -Path $configFile) {
@@ -892,7 +916,11 @@ function Initialize-AWSState {
                             $env:AWS_REGION = aws configure get region --profile $env:AWS_PROFILE 2>$null
                             $env:AWS_DEFAULT_REGION = $env:AWS_REGION
                         }
-                        catch { }
+                        catch {
+        # An optional profile setting that is simply not configured. Not an error, but
+        # visible with -Verbose rather than discarded outright.
+        Write-Verbose "AWS profile lookup returned nothing: $($_.Exception.Message)"
+    }
                     }
                 }
             }

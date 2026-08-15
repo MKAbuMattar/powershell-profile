@@ -32,6 +32,10 @@ jobs:
         shell: pwsh
         run: ./Tools/Test-Pipeline.ps1
 
+      - name: Verify no command is silently overwritten
+        shell: pwsh
+        run: ./Tools/Test-Duplicate.ps1
+
       - name: Verify README command tables match the code
         shell: pwsh
         run: ./Tools/Test-Readme.ps1

@@ -14,6 +14,9 @@
     # Functions that exist to support other functions in the same module. They stay internal and
     # are never written into FunctionsToExport.
     PrivateFunctions = @(
+        'Set-ProfilePluginState'
+        'Resolve-ProfileLazyCommand'
+        'Invoke-CoreutilsManager'
         'Get-GitHubDirectoryFiles'
         'Get-DockerComposeCommand'
         'Get-PipCommand'

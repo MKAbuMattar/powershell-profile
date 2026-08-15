@@ -39,8 +39,9 @@ $ErrorActionPreference = 'Stop'
 
 $moduleRoot = Join-Path $Path 'Module'
 
-# Git.psd1 imports Core and Utility itself, so testing it too would report the same failure twice.
-$aggregators = @('Git.psd1')
+# Git.psd1 imports Core itself, so testing it too would report the same failure twice.
+# commands.psd1 is a plugin command table, not a module manifest, and importing it as one fails.
+$aggregators = @('Git.psd1', 'commands.psd1', 'plugin.psd1')
 
 $manifests = Get-ChildItem -LiteralPath $moduleRoot -Recurse -File -Filter '*.psd1' |
     Where-Object { $_.Name -notin $aggregators } |

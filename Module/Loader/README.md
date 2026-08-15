@@ -76,21 +76,31 @@ Two rules are enforced at generation time and cannot be overridden:
 
 | Command | Alias | Description |
 | --- | --- | --- |
+| `Disable-ProfilePlugin` | `disable-plugin` | Removes a plugin from the enabled list in profile.config.psd1. |
+| `Enable-ProfileDeferredImport` |  | Wraps the prompt so deferred modules import once, after the first prompt. |
+| `Enable-ProfilePlugin` | `enable-plugin` | Adds a plugin to the enabled list in profile.config.psd1. |
 | `Get-ProfileConfig` |  | Reads profile.config.psd1 and fills in defaults for anything it omits. |
 | `Get-ProfileDependency` | `profile-deps` | Lists what the profile wants installed and whether it is present. |
 | `Get-ProfileModuleName` |  | Returns the names of the profile modules currently loaded. |
+| `Get-ProfilePlugin` | `profile-plugins` | Lists every plugin found, where it came from, and whether it is enabled. |
+| `Get-ProfilePluginRoot` |  | Returns the directories plugins are discovered from, in precedence order. |
+| `Get-ProfilePluginTool` |  | Returns the executable a built-in plugin wraps, or $null. |
 | `Get-PythonExecutable` | `profile-python` | Returns the path to a usable Python 3 interpreter, or $null. |
 | `Import-ProfileComponent` |  | Imports one module and records the outcome. |
 | `Import-ProfileModule` | `load-profile` | Loads everything named in the profile configuration. |
 | `Install-ProfileDependency` | `install-profile-deps` | Installs whatever the profile needs and does not have. |
+| `Invoke-ProfileDeferredImport` |  | Imports the deferred modules and restores the original prompt. |
 | `Invoke-ProfilePython` |  | Runs one of the bundled Python scripts, or explains why it cannot. |
 | `Measure-ProfileLoad` | `profile-load` | Shows what the last profile load did, and what it cost. |
+| `New-ProfilePlugin` | `new-plugin` | Scaffolds a working plugin in your own plugin directory. |
+| `Register-ProfileDeferredModule` |  | Defers a Gallery module until just after the first prompt is drawn. |
+| `Register-ProfileLazyCommand` |  | Registers stubs that import a plugin on first use. |
 | `Resolve-ProfileConflict` |  | Applies the alias and shadowing policy once every module has loaded. |
 | `Resolve-ProfilePackageManager` |  | Decides which package manager to install with, asking when it is reasonable to ask. |
 | `Show-ProfileHelp` | `profile-help` | Lists the commands the profile has actually loaded. |
 | `Test-ProfileAliasContention` | `profile-alias-conflicts` | Reports aliases that more than one loaded profile module defines. |
 | `Test-ProfileTool` |  | Reports whether the command-line tool a plugin wraps is available. |
 
-14 command(s).
+24 command(s).
 
 <!-- END GENERATED COMMANDS -->

@@ -179,6 +179,18 @@ function Get-ProfileDependency {
         Purpose    = 'extracting the update archive (ships with Windows)'
     }
 
+    # Optional, but it changes what grep, head, tail, touch and sed mean, so it is worth surfacing
+    # alongside everything else rather than being discovered by accident.
+    [PSCustomObject]@{
+        Kind       = 'Tool'
+        Name       = 'coreutils'
+        Installed  = [bool](Get-Command -Name 'coreutils-manager' -CommandType Application -ErrorAction SilentlyContinue)
+        Required   = $false
+        Package    = 'Microsoft.Coreutils'
+        Chocolatey = $null
+        Purpose    = 'GNU tools on Windows; see Show-CoreutilsConflict'
+    }
+
     $requirements = Join-Path $RepositoryRoot 'Module/requirements.txt'
     if (Test-Path -LiteralPath $requirements) {
         foreach ($line in Get-Content -LiteralPath $requirements) {

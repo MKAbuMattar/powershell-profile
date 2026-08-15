@@ -907,13 +907,13 @@ This project is licensed under the MIT License. See the [LICENSE](../../../LICEN
 | `gav` |  | A PowerShell function that wraps `git add --verbose`. |
 | `gb` |  | A PowerShell function that wraps `git branch`. |
 | `gba` |  | A PowerShell function that wraps `git branch --all`. |
-| `gbD` |  | A PowerShell function that wraps `git branch --delete --force`. |
 | `gbd` |  | A PowerShell function that wraps `git branch --delete`. |
 | `gbda` |  |  |
+| `gbdf` |  | A PowerShell function that wraps `git branch --delete --force`. |
 | `gbds` |  |  |
 | `gbg` |  |  |
 | `gbgd` |  |  |
-| `gbgD` |  |  |
+| `gbgdf` |  |  |
 | `gbl` |  | A PowerShell function that wraps `git blame -w`. |
 | `gbm` |  | A PowerShell function that wraps `git branch --move`. |
 | `gbnm` |  | A PowerShell function that wraps `git branch --move --no-ff`. |
@@ -925,173 +925,173 @@ This project is licensed under the MIT License. See the [LICENSE](../../../LICEN
 | `gbso` |  | A PowerShell function that wraps `git bisect old`. |
 | `gbsr` |  | A PowerShell function that wraps `git bisect reset`. |
 | `gbss` |  | A PowerShell function that wraps `git bisect start`. |
-| `gca` |  |  |
-| `gcam` |  |  |
-| `gcas` |  |  |
-| `gcasm` |  |  |
+| `gca` |  | Wraps `& git commit --verbose --all @Arguments`. |
+| `gcam` |  | Wraps `& git commit --all --message @Arguments`. |
+| `gcas` |  | Wraps `& git commit --all --signoff @Arguments`. |
+| `gcasm` |  | Wraps `& git commit --all --signoff --message @Arguments`. |
 | `gcb` |  | A PowerShell function that wraps `git checkout -b`. |
-| `gcB` |  | A PowerShell function that wraps `git checkout -B`. |
+| `gcbf` |  | A PowerShell function that wraps `git checkout -B`. |
 | `gccd` |  |  |
-| `gcd` |  |  |
-| `gcf` |  |  |
-| `gcfu` |  |  |
-| `gcl` |  |  |
-| `gclean` |  |  |
-| `gclf` |  |  |
-| `gcm` |  |  |
-| `gcmsg` |  |  |
+| `gcd` |  | Wraps `& git checkout (Get-GitDevelopBranch) @Arguments`. |
+| `gcf` |  | Wraps `& git config --list @Arguments`. |
+| `gcfu` |  | Wraps `& git commit --fixup @Arguments`. |
+| `gcl` |  | Wraps `& git clone --recurse-submodules @Arguments`. |
+| `gclean` |  | Wraps `& git clean --interactive -d @Arguments`. |
+| `gclf` |  | Wraps `& git clone --recursive --shallow-submodules --filter=blob:none --also-filter-submodules @Arguments`. |
+| `gcm` |  | Wraps `& git checkout (Get-GitMainBranch) @Arguments`. |
+| `gcmsg` |  | Wraps `& git commit --message @Arguments`. |
 | `gco` |  | A PowerShell function that wraps `git checkout`. |
 | `gcor` |  | A PowerShell function that wraps `git checkout --recurse-submodules`. |
-| `gcount` |  |  |
-| `gcp` |  |  |
-| `gcpa` |  |  |
-| `gcpc` |  |  |
-| `gcs` |  |  |
-| `gcsm` |  |  |
-| `gcss` |  |  |
-| `gcssm` |  |  |
-| `gcv` |  |  |
-| `gd` |  |  |
-| `gdca` |  |  |
-| `gdct` |  |  |
-| `gdcw` |  |  |
+| `gcount` |  | Wraps `& git shortlog --summary --numbered @Arguments`. |
+| `gcp` |  | Wraps `& git cherry-pick @Arguments`. |
+| `gcpa` |  | Wraps `& git cherry-pick --abort @Arguments`. |
+| `gcpc` |  | Wraps `& git cherry-pick --continue @Arguments`. |
+| `gcs` |  | Wraps `& git commit --gpg-sign @Arguments`. |
+| `gcsm` |  | Wraps `& git commit --signoff --message @Arguments`. |
+| `gcss` |  | Wraps `& git commit --gpg-sign --signoff @Arguments`. |
+| `gcssm` |  | Wraps `& git commit --gpg-sign --signoff --message @Arguments`. |
+| `gcv` |  | Wraps `& git commit --verbose @Arguments`. |
+| `gd` |  | Wraps `& git diff @Arguments`. |
+| `gdca` |  | Wraps `& git diff --cached @Arguments`. |
+| `gdct` |  | Wraps `& git describe --tags (git rev-list --tags --max-count=1) @Arguments`. |
+| `gdcw` |  | Wraps `& git diff --cached --word-diff @Arguments`. |
 | `gdnolock` |  |  |
-| `gds` |  |  |
-| `gdt` |  |  |
+| `gds` |  | Wraps `& git diff --staged @Arguments`. |
+| `gdt` |  | Wraps `& git diff-tree --no-commit-id --name-only -r @Arguments`. |
 | `gdup` |  |  |
 | `gdv` |  |  |
-| `gdw` |  |  |
-| `gf` |  |  |
-| `gfa` |  |  |
-| `gfg` |  |  |
-| `gfo` |  |  |
-| `gg` |  |  |
-| `gga` |  |  |
+| `gdw` |  | Wraps `& git diff --word-diff @Arguments`. |
+| `gf` |  | Wraps `& git fetch @Arguments`. |
+| `gfa` |  | Wraps `& git fetch --all --tags --prune @Arguments`. |
+| `gfg` |  | Wraps `& git ls-files \| grep @Arguments`. |
+| `gfo` |  | Wraps `& git fetch origin @Arguments`. |
+| `gg` |  | Wraps `& git gui citool @Arguments`. |
+| `gga` |  | Wraps `& git gui citool --amend @Arguments`. |
 | `ggf` |  |  |
 | `ggfl` |  |  |
 | `ggl` |  |  |
 | `ggp` |  |  |
 | `ggpnp` |  |  |
-| `ggpull` |  |  |
-| `ggpush` |  |  |
-| `ggsup` |  |  |
+| `ggpull` |  | Wraps `& git pull origin (Get-GitCurrentBranch) @Arguments`. |
+| `ggpush` |  | Wraps `& git push origin (Get-GitCurrentBranch) @Arguments`. |
+| `ggsup` |  | Wraps `& git branch --set-upstream-to="origin/$(Get-GitCurrentBranch)" @Arguments`. |
 | `ggu` |  |  |
-| `ghh` |  |  |
-| `gignore` |  |  |
+| `ghh` |  | Wraps `& git help @Arguments`. |
+| `gignore` |  | Wraps `& git update-index --assume-unchanged @Arguments`. |
 | `gignored` |  |  |
-| `gl` |  |  |
-| `glg` |  |  |
-| `glgg` |  |  |
-| `glgga` |  |  |
-| `glgm` |  |  |
-| `glgp` |  |  |
-| `glo` |  |  |
-| `glod` |  |  |
-| `glods` |  |  |
-| `glog` |  |  |
-| `gloga` |  |  |
-| `glol` |  |  |
-| `glola` |  |  |
-| `glols` |  |  |
+| `gl` |  | Wraps `& git pull @Arguments`. |
+| `glg` |  | Wraps `& git log --stat @Arguments`. |
+| `glgg` |  | Wraps `& git log --graph @Arguments`. |
+| `glgga` |  | Wraps `& git log --graph --decorate --all @Arguments`. |
+| `glgm` |  | Wraps `& git log --graph --max-count=10 @Arguments`. |
+| `glgp` |  | Wraps `& git log --stat --patch @Arguments`. |
+| `glo` |  | Wraps `& git log --oneline --decorate @Arguments`. |
+| `glod` |  | Wraps `& git log --graph --pretty="%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ad) %C(bold blue)<%an>%Creset" @Arguments`. |
+| `glods` |  | Wraps `& git log --graph --pretty="%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ad) %C(bold blue)<%an>%Creset" --date=short @Arguments`. |
+| `glog` |  | Wraps `& git log --oneline --decorate --graph @Arguments`. |
+| `gloga` |  | Wraps `& git log --oneline --decorate --graph --all @Arguments`. |
+| `glol` |  | Wraps `& git log --graph --pretty="%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Creset" @Arguments`. |
+| `glola` |  | Wraps `& git log --graph --pretty="%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Creset" --all @Arguments`. |
+| `glols` |  | Wraps `& git log --graph --pretty="%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Creset" --stat @Arguments`. |
 | `glp` |  |  |
-| `gluc` |  |  |
-| `glum` |  |  |
-| `gm` |  |  |
-| `gma` |  |  |
-| `gmc` |  |  |
-| `gmff` |  |  |
-| `gmom` |  |  |
-| `gms` |  |  |
-| `gmtl` |  |  |
-| `gmtlvim` |  |  |
-| `gmum` |  |  |
-| `gp` |  |  |
-| `gpd` |  |  |
+| `gluc` |  | Wraps `& git pull upstream (Get-GitCurrentBranch) @Arguments`. |
+| `glum` |  | Wraps `& git pull upstream (Get-GitMainBranch) @Arguments`. |
+| `gm` |  | Wraps `& git merge @Arguments`. |
+| `gma` |  | Wraps `& git merge --abort @Arguments`. |
+| `gmc` |  | Wraps `& git merge --continue @Arguments`. |
+| `gmff` |  | Wraps `& git merge --ff-only @Arguments`. |
+| `gmom` |  | Wraps `& git merge "origin/$(Get-GitMainBranch)" @Arguments`. |
+| `gms` |  | Wraps `& git merge --squash @Arguments`. |
+| `gmtl` |  | Wraps `& git mergetool --no-prompt @Arguments`. |
+| `gmtlvim` |  | Wraps `& git mergetool --no-prompt --tool=vimdiff @Arguments`. |
+| `gmum` |  | Wraps `& git merge "upstream/$(Get-GitMainBranch)" @Arguments`. |
+| `gp` |  | Wraps `& git push @Arguments`. |
+| `gpd` |  | Wraps `& git push --dry-run @Arguments`. |
 | `gpf` |  |  |
 | `gpoat` |  |  |
-| `gpod` |  |  |
-| `gpr` |  |  |
-| `gpra` |  |  |
-| `gprav` |  |  |
+| `gpod` |  | Wraps `& git push origin --delete @Arguments`. |
+| `gpr` |  | Wraps `& git pull --rebase @Arguments`. |
+| `gpra` |  | Wraps `& git pull --rebase --autostash @Arguments`. |
+| `gprav` |  | Wraps `& git pull --rebase --autostash -v @Arguments`. |
 | `gpristine` |  |  |
-| `gprom` |  |  |
-| `gpromi` |  |  |
-| `gprum` |  |  |
-| `gprumi` |  |  |
-| `gprv` |  |  |
-| `gpsup` |  |  |
+| `gprom` |  | Wraps `& git pull --rebase origin (Get-GitMainBranch) @Arguments`. |
+| `gpromi` |  | Wraps `& git pull --rebase=interactive origin (Get-GitMainBranch) @Arguments`. |
+| `gprum` |  | Wraps `& git pull --rebase upstream (Get-GitMainBranch) @Arguments`. |
+| `gprumi` |  | Wraps `& git pull --rebase=interactive upstream (Get-GitMainBranch) @Arguments`. |
+| `gprv` |  | Wraps `& git pull --rebase -v @Arguments`. |
+| `gpsup` |  | Wraps `& git push --set-upstream origin (Get-GitCurrentBranch) @Arguments`. |
 | `gpsupf` |  |  |
-| `gpu` |  |  |
-| `gpv` |  |  |
-| `gr` |  |  |
-| `gra` |  |  |
-| `grb` |  |  |
-| `grba` |  |  |
-| `grbc` |  |  |
-| `grbd` |  |  |
-| `grbi` |  |  |
-| `grbm` |  |  |
-| `grbo` |  |  |
-| `grbom` |  |  |
-| `grbs` |  |  |
-| `grbum` |  |  |
-| `grev` |  |  |
-| `greva` |  |  |
-| `grevc` |  |  |
-| `grf` |  |  |
-| `grh` |  |  |
-| `grhh` |  |  |
-| `grhk` |  |  |
-| `grhs` |  |  |
-| `grm` |  |  |
-| `grmc` |  |  |
-| `grmv` |  |  |
-| `groh` |  |  |
-| `grrm` |  |  |
-| `grs` |  |  |
-| `grset` |  |  |
-| `grss` |  |  |
-| `grst` |  |  |
+| `gpu` |  | Wraps `& git push upstream @Arguments`. |
+| `gpv` |  | Wraps `& git push --verbose @Arguments`. |
+| `gr` |  | Wraps `& git remote @Arguments`. |
+| `gra` |  | Wraps `& git remote add @Arguments`. |
+| `grb` |  | Wraps `& git rebase @Arguments`. |
+| `grba` |  | Wraps `& git rebase --abort @Arguments`. |
+| `grbc` |  | Wraps `& git rebase --continue @Arguments`. |
+| `grbd` |  | Wraps `& git rebase (Get-GitDevelopBranch) @Arguments`. |
+| `grbi` |  | Wraps `& git rebase --interactive @Arguments`. |
+| `grbm` |  | Wraps `& git rebase (Get-GitMainBranch) @Arguments`. |
+| `grbo` |  | Wraps `& git rebase --onto @Arguments`. |
+| `grbom` |  | Wraps `& git rebase "origin/$(Get-GitMainBranch)" @Arguments`. |
+| `grbs` |  | Wraps `& git rebase --skip @Arguments`. |
+| `grbum` |  | Wraps `& git rebase "upstream/$(Get-GitMainBranch)" @Arguments`. |
+| `grev` |  | Wraps `& git revert @Arguments`. |
+| `greva` |  | Wraps `& git revert --abort @Arguments`. |
+| `grevc` |  | Wraps `& git revert --continue @Arguments`. |
+| `grf` |  | Wraps `& git reflog @Arguments`. |
+| `grh` |  | Wraps `& git reset @Arguments`. |
+| `grhh` |  | Wraps `& git reset --hard @Arguments`. |
+| `grhk` |  | Wraps `& git reset --keep @Arguments`. |
+| `grhs` |  | Wraps `& git reset --soft @Arguments`. |
+| `grm` |  | Wraps `& git rm @Arguments`. |
+| `grmc` |  | Wraps `& git rm --cached @Arguments`. |
+| `grmv` |  | Wraps `& git remote rename @Arguments`. |
+| `groh` |  | Wraps `& git reset "origin/$(Get-GitCurrentBranch)" --hard @Arguments`. |
+| `grrm` |  | Wraps `& git remote remove @Arguments`. |
+| `grs` |  | Wraps `& git restore @Arguments`. |
+| `grset` |  | Wraps `& git remote set-url @Arguments`. |
+| `grss` |  | Wraps `& git restore --source @Arguments`. |
+| `grst` |  | Wraps `& git restore --staged @Arguments`. |
 | `grt` |  | A PowerShell function that wraps `git rev-parse --show-toplevel`. |
-| `gru` |  |  |
-| `grup` |  |  |
-| `grv` |  |  |
-| `gsb` |  |  |
-| `gsd` |  |  |
-| `gsh` |  |  |
-| `gsi` |  |  |
-| `gsps` |  |  |
-| `gsr` |  |  |
-| `gss` |  |  |
-| `gst` |  |  |
+| `gru` |  | Wraps `& git reset -- @Arguments`. |
+| `grup` |  | Wraps `& git remote update @Arguments`. |
+| `grv` |  | Wraps `& git remote --verbose @Arguments`. |
+| `gsb` |  | Wraps `& git status --short --branch @Arguments`. |
+| `gsd` |  | Wraps `& git svn dcommit @Arguments`. |
+| `gsh` |  | Wraps `& git show @Arguments`. |
+| `gsi` |  | Wraps `& git submodule init @Arguments`. |
+| `gsps` |  | Wraps `& git show --pretty=short --show-signature @Arguments`. |
+| `gsr` |  | Wraps `& git svn rebase @Arguments`. |
+| `gss` |  | Wraps `& git status --short @Arguments`. |
+| `gst` |  | Wraps `& git status @Arguments`. |
 | `gsta` |  |  |
-| `gstaa` |  |  |
-| `gstall` |  |  |
-| `gstc` |  |  |
-| `gstd` |  |  |
-| `gstl` |  |  |
-| `gstp` |  |  |
-| `gsts` |  |  |
-| `gstu` |  |  |
-| `gsu` |  |  |
-| `gsw` |  |  |
-| `gswc` |  |  |
-| `gswd` |  |  |
-| `gswm` |  |  |
-| `gta` |  |  |
+| `gstaa` |  | Wraps `& git stash apply @Arguments`. |
+| `gstall` |  | Wraps `& git stash --all @Arguments`. |
+| `gstc` |  | Wraps `& git stash clear @Arguments`. |
+| `gstd` |  | Wraps `& git stash drop @Arguments`. |
+| `gstl` |  | Wraps `& git stash list @Arguments`. |
+| `gstp` |  | Wraps `& git stash pop @Arguments`. |
+| `gsts` |  | Wraps `& git stash show --patch @Arguments`. |
+| `gstu` |  | Wraps `& git stash --include-untracked @Arguments`. |
+| `gsu` |  | Wraps `& git submodule update @Arguments`. |
+| `gsw` |  | Wraps `& git switch @Arguments`. |
+| `gswc` |  | Wraps `& git switch --create @Arguments`. |
+| `gswd` |  | Wraps `& git switch (Get-GitDevelopBranch) @Arguments`. |
+| `gswm` |  | Wraps `& git switch (Get-GitMainBranch) @Arguments`. |
+| `gta` |  | Wraps `& git tag --annotate @Arguments`. |
 | `gtl` |  |  |
-| `gts` |  |  |
-| `gtv` |  |  |
-| `gunignore` |  |  |
+| `gts` |  | Wraps `& git tag --sign @Arguments`. |
+| `gtv` |  | Wraps `& git tag \| Sort-Object -V @Arguments`. |
+| `gunignore` |  | Wraps `& git update-index --no-assume-unchanged @Arguments`. |
 | `gunwip` |  |  |
-| `gwch` |  |  |
+| `gwch` |  | Wraps `& git whatchanged -p --abbrev-commit --pretty=medium @Arguments`. |
 | `gwip` |  |  |
 | `gwipe` |  |  |
-| `gwt` |  |  |
-| `gwta` |  |  |
-| `gwtls` |  |  |
-| `gwtmv` |  |  |
-| `gwtrm` |  |  |
+| `gwt` |  | Wraps `& git worktree @Arguments`. |
+| `gwta` |  | Wraps `& git worktree add @Arguments`. |
+| `gwtls` |  | Wraps `& git worktree list @Arguments`. |
+| `gwtmv` |  | Wraps `& git worktree move @Arguments`. |
+| `gwtrm` |  | Wraps `& git worktree remove @Arguments`. |
 
 200 command(s).
 

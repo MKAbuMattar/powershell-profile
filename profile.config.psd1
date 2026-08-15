@@ -14,6 +14,7 @@
     # Core modules. These are not tool-gated and load in the order given.
     #-----------------------------------------------------------------------------------------------
     Modules               = @(
+        'Coreutils'
         'Directory'
         'Environment'
         'Logging'
@@ -82,6 +83,22 @@
         # 'Posh-Git'            #  220 ms  redundant: starship.toml already renders git_branch,
         #                       #          git_commit, git_state, git_metrics and git_status, and
         #                       #          nothing in this repository calls a posh-git function.
+    )
+
+    # Gallery modules imported just after the first prompt is drawn, rather than during startup.
+    #
+    # Terminal-Icons is 252 ms, roughly half of all module loading, spent so Get-ChildItem can show
+    # file-type icons. Interactive shells pay the same total cost but reach a usable prompt sooner;
+    # non-interactive shells -- pwsh -c, scripts, CI, editor integrations -- never draw a prompt and
+    # so never pay for it at all.
+    #
+    # Stubbing Get-ChildItem to import on first use was tried and rejected: a global function
+    # shadowing a core cmdlet that module auto-loading and tab completion depend on hung the shell
+    # during startup.
+    #
+    # Remove an entry to load it eagerly again.
+    DeferExternalModules  = @(
+        'Terminal-Icons'
     )
 
     # Import the Chocolatey helper module. It exists only to give `choco` tab completion and
