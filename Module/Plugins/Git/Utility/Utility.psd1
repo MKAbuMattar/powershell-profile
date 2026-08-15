@@ -2,14 +2,13 @@
     RootModule           = 'Utility.psm1'
     ModuleVersion        = '4.2.0'
     CompatiblePSEditions = @(
-        'Desktop',
         'Core'
     )
     GUID                 = 'a2a7d067-ddb2-4a53-a14c-717dbcc43153'
     Author               = 'Mohammad Abu Mattar'
     Copyright            = '(c) 2025 Mohammad Abu Mattar. All rights reserved.'
     Description          = 'Git Utility Functions - Git branch management and utility operations'
-    PowerShellVersion    = '5.0'
+    PowerShellVersion    = '7.0'
     FunctionsToExport    = @(
         'Rename-GitBranch'
     )

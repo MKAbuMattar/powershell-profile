@@ -2,7 +2,6 @@
     RootModule           = 'Utility.psm1'
     ModuleVersion        = '4.2.0'
     CompatiblePSEditions = @(
-        'Desktop',
         'Core'
     )
     GUID                 = '6bb34050-aa50-44dc-8acc-8a9ed0200839'
@@ -10,7 +9,7 @@
     CompanyName          = 'MKAbuMattar'
     Copyright            = '(c) 2025 Mohammad Abu Mattar. All rights reserved.'
     Description          = ''
-    PowerShellVersion    = '5.0'
+    PowerShellVersion    = '7.0'
     FunctionsToExport    = @(
         'Format-ConvertSize'
     )

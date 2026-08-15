@@ -43,7 +43,6 @@
     RootModule           = 'Environment.psm1'
     ModuleVersion        = '4.2.0'
     CompatiblePSEditions = @(
-        'Desktop',
         'Core'
     )
     GUID                 = 'efc9d380-babd-422a-b4e3-90606e59073b'
@@ -51,7 +50,7 @@
     CompanyName          = 'MKAbuMattar'
     Copyright            = '(c) 2025 Mohammad Abu Mattar. All rights reserved.'
     Description          = 'This module provides functions to manage environment variables, test GitHub connectivity, and manipulate the PATH environment variable.'
-    PowerShellVersion    = '5.0'
+    PowerShellVersion    = '7.0'
     FunctionsToExport    = @(
         'Test-GitHubConnection',
         'Invoke-ReloadPathEnvironmentVariable',

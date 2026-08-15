@@ -46,7 +46,6 @@
     RootModule             = 'UV.psm1'
     ModuleVersion          = '4.2.0'
     CompatiblePSEditions   = @(
-        'Desktop', 
         'Core'
     )
     GUID                   = 'a8f7b2c3-4d5e-6f7a-8b9c-0d1e2f3a4b5c'
@@ -54,7 +53,7 @@
     CompanyName            = 'MKAbuMattar'
     Copyright              = '(c) 2025 Mohammad Abu Mattar. All rights reserved.'
     Description            = 'Comprehensive UV (Python package manager) CLI integration with PowerShell functions and convenient aliases for modern Python dependency management, virtual environment handling, and project workflows.'
-    PowerShellVersion      = '5.0'
+    PowerShellVersion      = '7.0'
     PowerShellHostName     = ''
     PowerShellHostVersion  = ''
     DotNetFrameworkVersion = ''

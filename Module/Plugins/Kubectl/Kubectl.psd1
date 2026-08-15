@@ -44,7 +44,6 @@
     RootModule           = 'Kubectl.psm1'
     ModuleVersion        = '4.2.0'
     CompatiblePSEditions = @(
-        'Desktop',
         'Core'
     )
     GUID                 = 'b1c2d3e4-f5a6-7890-1234-567890abcdef'
@@ -52,7 +51,7 @@
     CompanyName          = 'MKAbuMattar'
     Copyright            = '(c) 2025 Mohammad Abu Mattar. All rights reserved.'
     Description          = 'Kubectl plugin for MKAbuMattar PowerShell Profile - provides kubectl CLI shortcuts and utility functions for Kubernetes cluster management workflows.'
-    PowerShellVersion    = '5.0'
+    PowerShellVersion    = '7.0'
     FunctionsToExport    = @(
         'Invoke-Kubectl',
         'Invoke-KubectlAllNamespaces',

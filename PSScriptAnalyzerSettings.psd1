@@ -1,8 +1,9 @@
 #---------------------------------------------------------------------------------------------------
 # MKAbuMattar's PowerShell Profile - PSScriptAnalyzer Settings
 #
-# The manifests declare CompatiblePSEditions = Desktop, Core and PowerShellVersion = 5.0,
-# so the syntax check targets both 5.1 and 7.0.
+# The manifests declare PowerShellVersion = 7.0 and CompatiblePSEditions = Core, so the syntax
+# check targets 7.0 only. They previously claimed 5.1, which was never true: the code uses
+# Remove-Alias, the background `&` operator and PS7 parse-level syntax throughout.
 #
 # GitHub: https://github.com/MKAbuMattar/powershell-profile
 #---------------------------------------------------------------------------------------------------
@@ -11,7 +12,7 @@
     Rules        = @{
         PSUseCompatibleSyntax                       = @{
             Enable         = $true
-            TargetVersions = @('5.1', '7.0')
+            TargetVersions = @('7.0')
         }
 
         # Profile functions are thin wrappers around external tools (git, kubectl, docker).

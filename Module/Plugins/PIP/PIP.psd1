@@ -46,7 +46,6 @@
     RootModule             = 'PIP.psm1'
     ModuleVersion          = '4.2.0'
     CompatiblePSEditions   = @(
-        'Desktop',
         'Core'
     )
     GUID                   = '8c3f9e4b-0d2e-5f6a-9b8c-2d3e4f5a6b7c'
@@ -54,7 +53,7 @@
     CompanyName            = 'MKAbuMattar'
     Copyright              = '(c) 2025 Mohammad Abu Mattar. All rights reserved.'
     Description            = 'A comprehensive PowerShell module that provides pip CLI shortcuts and utility functions for Python package management workflow. Includes automatic completion, package management, requirements handling, GitHub installations, and advanced pip operations.'
-    PowerShellVersion      = '5.0'
+    PowerShellVersion      = '7.0'
     DotNetFrameworkVersion = '4.5'
     CLRVersion             = '4.0'
     FunctionsToExport      = @(

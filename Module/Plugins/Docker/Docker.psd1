@@ -44,7 +44,6 @@
     RootModule           = 'Docker.psm1'
     ModuleVersion        = '4.2.0'
     CompatiblePSEditions = @(
-        'Desktop',
         'Core'
     )
     GUID                 = 'c616992d-3bc1-4c78-a210-5e4d139a9a6f'
@@ -52,7 +51,7 @@
     CompanyName          = 'MKAbuMattar'
     Copyright            = '(c) 2025 Mohammad Abu Mattar. All rights reserved.'
     Description          = 'Docker command aliases and utility functions for improved Docker workflow in PowerShell'
-    PowerShellVersion    = '5.0'
+    PowerShellVersion    = '7.0'
     FunctionsToExport    = @(
         'Invoke-DockerBuild',
         'Invoke-DockerImageBuild',

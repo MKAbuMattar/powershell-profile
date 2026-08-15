@@ -18,7 +18,6 @@
     RootModule           = 'Loader.psm1'
     ModuleVersion        = '5.0.0'
     CompatiblePSEditions = @(
-        'Desktop',
         'Core'
     )
     GUID                 = 'f2b7c4a1-9d3e-4f8a-b6c5-1e7d9a2f4b83'
@@ -26,7 +25,7 @@
     CompanyName          = 'MKAbuMattar'
     Copyright            = '(c) 2026 Mohammad Abu Mattar. All rights reserved.'
     Description          = 'Configuration-driven module loader for the PowerShell profile.'
-    PowerShellVersion    = '5.1'
+    PowerShellVersion    = '7.0'
     FunctionsToExport    = @(
         'Get-ProfileConfig',
         'Test-ProfileTool',

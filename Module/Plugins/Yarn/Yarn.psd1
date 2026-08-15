@@ -46,7 +46,6 @@
     RootModule             = 'Yarn.psm1'
     ModuleVersion          = '4.2.0'
     CompatiblePSEditions   = @(
-        'Desktop',
         'Core'
     )
     GUID                   = 'b9f8c3d4-5e6f-7a8b-9c0d-1e2f3a4b5c6d'
@@ -54,7 +53,7 @@
     CompanyName            = 'MKAbuMattar'
     Copyright              = '(c) 2025 Mohammad Abu Mattar. All rights reserved.'
     Description            = 'Comprehensive Yarn CLI integration with PowerShell functions and convenient aliases for JavaScript/Node.js package management, workspace handling, and development workflows with support for both Classic and Berry Yarn versions.'
-    PowerShellVersion      = '5.0'
+    PowerShellVersion      = '7.0'
     PowerShellHostName     = ''
     PowerShellHostVersion  = ''
     DotNetFrameworkVersion = ''

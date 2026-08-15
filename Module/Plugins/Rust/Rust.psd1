@@ -45,7 +45,6 @@
     RootModule           = 'Rust.psm1'
     ModuleVersion        = '1.0.0'
     CompatiblePSEditions = @(
-        'Desktop',
         'Core'
     )
     GUID                 = 'f8e9d2b1-4c3a-5b6e-9f1a-2d3e4f5a6b7c'
@@ -53,7 +52,7 @@
     CompanyName          = 'MKAbuMattar'
     Copyright            = '(c) 2025 Mohammad Abu Mattar. All rights reserved.'
     Description          = 'Rust Plugin for PowerShell Profile - Provides comprehensive Cargo and Rustup CLI integration with PowerShell aliases and functions for Rust development, including building, testing, dependency management, and toolchain operations.'
-    PowerShellVersion    = '5.1'
+    PowerShellVersion    = '7.0'
     FunctionsToExport    = @(
         'Invoke-Cargo',
         'New-CargoProject',

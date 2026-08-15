@@ -44,7 +44,6 @@
     RootModule           = 'DockerCompose.psm1'
     ModuleVersion        = '4.2.0'
     CompatiblePSEditions = @(
-        'Desktop',
         'Core'
     )
     GUID                 = 'd8a1e2b3-4c5f-6789-abc0-def123456789'
@@ -52,7 +51,7 @@
     CompanyName          = 'MKAbuMattar'
     Copyright            = '(c) 2025 Mohammad Abu Mattar. All rights reserved.'
     Description          = 'Docker Compose command aliases and utility functions for improved Docker Compose workflow in PowerShell environments'
-    PowerShellVersion    = '5.0'
+    PowerShellVersion    = '7.0'
     FunctionsToExport    = @(
         'Invoke-DockerCompose',
         'Invoke-DockerComposeBuild',

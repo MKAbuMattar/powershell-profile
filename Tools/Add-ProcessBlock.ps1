@@ -35,8 +35,12 @@
 [OutputType([int])]
 param(
     [Parameter(Position = 0)]
-    [string]$Path = (Split-Path -Parent $PSScriptRoot)
+    [string]$Path
 )
+
+# $PSScriptRoot is empty inside a param() default under Windows PowerShell 5.1, so the repository
+# root is resolved here instead.
+if (-not $Path) { $Path = Split-Path -Parent $PSScriptRoot }
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
@@ -68,7 +72,9 @@ function Get-PipelineParameterName {
 $changedFiles = 0
 $changedFunctions = 0
 
-foreach ($file in Get-ChildItem -LiteralPath $Path -Recurse -File -Include '*.ps1', '*.psm1' |
+# Extension, not -Include: Windows PowerShell 5.1 ignores -Include alongside -LiteralPath.
+foreach ($file in Get-ChildItem -LiteralPath $Path -Recurse -File |
+    Where-Object { $_.Extension -in '.ps1', '.psm1' } |
     Where-Object { $_.FullName -notmatch '[\\/](\.git|Tools)[\\/]' }) {
 
     $content = Get-Content -LiteralPath $file.FullName -Raw

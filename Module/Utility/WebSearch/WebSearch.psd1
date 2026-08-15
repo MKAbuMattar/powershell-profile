@@ -42,12 +42,15 @@
 @{
     RootModule        = 'WebSearch.psm1'
     ModuleVersion     = '4.2.0'
+    CompatiblePSEditions = @(
+        'Core'
+    )
     GUID              = 'a8e5d9c2-4f7b-4c8e-9a5d-8e7f6c9b4a3e'
     Author            = 'Mohammad Abu Mattar'
     CompanyName       = 'MKAbuMattar'
     Copyright         = '(c) 2025 Mohammad Abu Mattar. All rights reserved.'
     Description       = 'WebSearch utility module for performing web searches across multiple search engines with cross-platform browser launching capabilities.'
-    PowerShellVersion = '5.1'
+    PowerShellVersion = '7.0'
     FunctionsToExport = @(
         'Start-WebBrowser',
         'Search-Google',

@@ -45,13 +45,15 @@
 @{
     RootModule             = 'PNPM.psm1'
     ModuleVersion          = '4.2.0'
-    CompatiblePSEditions   = @()
+    CompatiblePSEditions   = @(
+        'Core'
+    )
     GUID                   = '23c9f9e4-5d0b-4c9f-0f3b-9d8e7f6a5b4c'
     Author                 = 'Mohammad Abu Mattar'
     CompanyName            = 'MKAbuMattar'
     Copyright              = '(c) Mohammad Abu Mattar. All rights reserved.'
     Description            = 'Comprehensive PNPM CLI integration with PowerShell functions and convenient aliases for fast, disk space efficient package management. Provides complete workspace support, dependency management, development workflow automation, and advanced PNPM features with automatic PowerShell completion for modern JavaScript/Node.js development.'
-    PowerShellVersion      = '5.0'
+    PowerShellVersion      = '7.0'
     PowerShellHostName     = ''
     PowerShellHostVersion  = ''
     DotNetFrameworkVersion = ''

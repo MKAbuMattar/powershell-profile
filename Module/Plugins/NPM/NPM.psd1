@@ -46,7 +46,6 @@
     RootModule             = 'NPM.psm1'
     ModuleVersion          = '4.2.0'
     CompatiblePSEditions   = @(
-        'Desktop',
         'Core'
     )
     GUID                   = '7b2e8f3a-9c1d-4e5f-8a7b-1c2d3e4f5a6b'
@@ -54,7 +53,7 @@
     CompanyName            = 'MKAbuMattar'
     Copyright              = '(c) 2025 Mohammad Abu Mattar. All rights reserved.'
     Description            = 'A comprehensive PowerShell module that provides npm CLI shortcuts and utility functions for Node.js package management workflow. Includes automatic PowerShell completion, package management, dependency handling, and advanced npm operations.'
-    PowerShellVersion      = '5.0'
+    PowerShellVersion      = '7.0'
     DotNetFrameworkVersion = '4.5'
     CLRVersion             = '4.0'
     FunctionsToExport      = @(

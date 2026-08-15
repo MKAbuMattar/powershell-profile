@@ -1,12 +1,15 @@
 @{
     RootModule        = 'GCP.psm1'
     ModuleVersion     = '4.2.0'
+    CompatiblePSEditions = @(
+        'Core'
+    )
     GUID              = 'f7b8c9d0-e1f2-4a5b-8c6d-9e0f1a2b3c4d'
     Author            = 'MKAbuMattar'
     CompanyName       = 'Personal'
     Copyright         = '(c) 2025 MKAbuMattar. All rights reserved.'
     Description       = 'Google Cloud Platform CLI integration plugin for PowerShell'
-    PowerShellVersion = '5.1'
+    PowerShellVersion = '7.0'
     RequiredModules   = @()
     FunctionsToExport = @(
         'Initialize-GCloudTool',

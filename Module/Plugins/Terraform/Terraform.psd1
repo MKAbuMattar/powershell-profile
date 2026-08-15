@@ -45,7 +45,6 @@
     RootModule           = 'Terraform.psm1'
     ModuleVersion        = '4.2.0'
     CompatiblePSEditions = @(
-        'Desktop',
         'Core'
     )
     GUID                 = 'a8f7d3c2-5b9e-4f1a-8c6d-2e9b1f4a7c3e'
@@ -53,7 +52,7 @@
     CompanyName          = 'MKAbuMattar'
     Copyright            = '(c) 2025 Mohammad Abu Mattar. All rights reserved.'
     Description          = 'Comprehensive Terraform CLI integration for PowerShell with 20+ functions and aliases for Infrastructure as Code management, workspace operations, state management, and prompt integration with workspace awareness.'
-    PowerShellVersion    = '5.1'
+    PowerShellVersion    = '7.0'
     FunctionsToExport    = @(
         'Invoke-Terraform',
         'Get-TerraformWorkspace',

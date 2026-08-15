@@ -82,18 +82,7 @@ jobs:
         shell: pwsh
         run: ./Tools/Invoke-Pester.ps1
 
-  # The manifests declare CompatiblePSEditions = Desktop, so the load contract is checked on
-  # Windows PowerShell 5.1 as well as PowerShell 7.
-  windows-powershell:
-    name: Windows PowerShell 5.1
-    runs-on: windows-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Parse and load under 5.1
-        shell: powershell
-        run: |
-          ./Tools/Test-Syntax.ps1
-          ./Tools/Test-Load.ps1
+  # There is no Windows PowerShell 5.1 job. The manifests used to claim Desktop support, but the
+  # code has never been 5.1-compatible: it uses Remove-Alias, the background `&` operator, $PSStyle
+  # and PS7 parse-level syntax throughout, and two modules already required 7.0 outright. The
+  # manifests now say PowerShellVersion 7.0 / CompatiblePSEditions Core, which is the truth.

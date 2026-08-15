@@ -27,8 +27,12 @@
 [OutputType([int])]
 param(
     [Parameter(Position = 0)]
-    [string]$Path = (Split-Path -Parent $PSScriptRoot)
+    [string]$Path
 )
+
+# $PSScriptRoot is empty inside a param() default under Windows PowerShell 5.1, so the repository
+# root is resolved here instead.
+if (-not $Path) { $Path = Split-Path -Parent $PSScriptRoot }
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
