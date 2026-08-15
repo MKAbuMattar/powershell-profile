@@ -36,6 +36,7 @@
         'Measure-ProfileLoad',
         'Get-PythonExecutable',
         'Invoke-ProfilePython',
+        'Resolve-ProfilePackageManager',
         'Get-ProfileDependency',
         'Install-ProfileDependency',
         'Get-ProfileModuleName',

@@ -86,10 +86,11 @@ Two rules are enforced at generation time and cannot be overridden:
 | `Invoke-ProfilePython` |  | Runs one of the bundled Python scripts, or explains why it cannot. |
 | `Measure-ProfileLoad` | `profile-load` | Shows what the last profile load did, and what it cost. |
 | `Resolve-ProfileConflict` |  | Applies the alias and shadowing policy once every module has loaded. |
+| `Resolve-ProfilePackageManager` |  | Decides which package manager to install with, asking when it is reasonable to ask. |
 | `Show-ProfileHelp` | `profile-help` | Lists the commands the profile has actually loaded. |
 | `Test-ProfileAliasContention` | `profile-alias-conflicts` | Reports aliases that more than one loaded profile module defines. |
 | `Test-ProfileTool` |  | Reports whether the command-line tool a plugin wraps is available. |
 
-13 command(s).
+14 command(s).
 
 <!-- END GENERATED COMMANDS -->

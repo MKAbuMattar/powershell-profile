@@ -17,14 +17,34 @@ A modular PowerShell profile: plugins for the tools I use, utilities backed by s
 irm "https://raw.githubusercontent.com/MKAbuMattar/powershell-profile/main/setup.ps1" | iex
 ```
 
+Requires PowerShell 7. The installer downloads the repository once and installs from that copy.
+
+To see what it would do first, or to run one step at a time:
+
+```powershell
+$setup = [scriptblock]::Create((irm "https://raw.githubusercontent.com/MKAbuMattar/powershell-profile/main/setup.ps1"))
+
+& $setup -WhatIf                       # preview, change nothing
+& $setup -Step Profile, Modules        # just these
+& $setup -IncludeOptional              # also the font and the CLI tools
+& $setup -PackageManager Chocolatey    # use choco instead of winget
+```
+
 Then install what the profile depends on:
 
 ```powershell
-Install-ProfileDependency            # Gallery modules and CLI tools
+Get-ProfileDependency                      # what is needed, and what is missing
+Install-ProfileDependency                  # install it
 Install-ProfileDependency -IncludePython   # also the Python packages
 ```
 
-`Install-ProfileDependency -WhatIf` lists what it would install without installing anything.
+Both ask whether to use **winget or Chocolatey** when both are present, and pick whichever is
+installed when only one is. `-PackageManager` skips the question. `-WhatIf` lists what would be
+installed without installing anything.
+
+Only the tools the profile itself uses are installed — starship, zoxide, git, and optionally fzf
+and fastfetch. Plugin tools like `kubectl` and `terraform` are never installed for you; a plugin
+whose tool is absent simply doesn't load.
 
 ## Configuring what loads
 
