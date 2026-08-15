@@ -81,24 +81,24 @@
     CmdletsToExport      = @()
     VariablesToExport    = @()
     AliasesToExport      = @(
-        'tf',          
-        'tfi',        
-        'tfir',       
-        'tfiu',        
-        'tfiur',        
-        'tfp',        
-        'tfa',        
-        'tfaa',        
-        'tfd',        
-        'tfd!',        
-        'tff',        
-        'tffr',        
-        'tfv',        
-        'tft',        
-        'tfs',        
-        'tfo',        
-        'tfsh',       
-        'tfc'         
+        'tf',
+        'tfi',
+        'tfir',
+        'tfiu',
+        'tfiur',
+        'tfp',
+        'tfa',
+        'tfaa',
+        'tfd',
+        'tfd!',
+        'tff',
+        'tffr',
+        'tfv',
+        'tft',
+        'tfs',
+        'tfo',
+        'tfsh',
+        'tfc'
     )
     DscResourcesToExport = @()
     ModuleList           = @()

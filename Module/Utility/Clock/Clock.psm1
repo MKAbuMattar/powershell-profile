@@ -40,24 +40,41 @@
 # Version: 4.2.0
 #---------------------------------------------------------------------------------------------------
 
-function Get-PythonExecutable {
-    $pythonCmd = $null
-    
-    # Try 'python' first
-    if (Get-Command python -ErrorAction SilentlyContinue) {
-        $pythonCmd = "python"
+function Get-ClockPython {
+    <#
+    .SYNOPSIS
+        Resolves the Python interpreter for this module.
+
+    .DESCRIPTION
+        Defers to the shared Get-PythonExecutable from the Loader module when the profile is
+        loaded, and falls back to a local probe when this module is imported on its own, as the
+        CI load test does.
+
+        The shared version is preferred because it verifies the interpreter actually runs, which
+        rejects the Microsoft Store stub that Windows installs under the name `python.exe`.
+
+    .OUTPUTS
+        [string] Interpreter path or name, or $null when none was found.
+
+    .EXAMPLE
+        $python = Get-ClockPython
+    #>
+    [CmdletBinding()]
+    [OutputType([string])]
+    param()
+
+    if (Get-Command -Name Get-PythonExecutable -ErrorAction SilentlyContinue) {
+        return Get-PythonExecutable
     }
-    # Fall back to 'python3'
-    elseif (Get-Command python3 -ErrorAction SilentlyContinue) {
-        $pythonCmd = "python3"
+
+    foreach ($candidate in 'python3', 'python') {
+        if (Get-Command -Name $candidate -CommandType Application -ErrorAction SilentlyContinue) {
+            return $candidate
+        }
     }
-    
-    if (-not $pythonCmd) {
-        Write-Error "Python is not installed or not in PATH. Please install Python 3.6 or later."
-        return $null
-    }
-    
-    return $pythonCmd
+
+    Write-Error 'Python is not installed or not in PATH. Please install Python 3.6 or later.'
+    return $null
 }
 
 function Start-Countdown {
@@ -139,7 +156,7 @@ function Start-Countdown {
         [string]$Title = ""
     )
 
-    $pythonCmd = Get-PythonExecutable
+    $pythonCmd = Get-ClockPython
     if (-not $pythonCmd) {
         return
     }
@@ -221,7 +238,7 @@ function Start-StopWatch {
         [string]$Title = ""
     )
 
-    $pythonCmd = Get-PythonExecutable
+    $pythonCmd = Get-ClockPython
     if (-not $pythonCmd) {
         return
     }
@@ -328,7 +345,7 @@ function Get-WallClock {
         [switch]$Use24Hour = $false
     )
 
-    $pythonCmd = Get-PythonExecutable
+    $pythonCmd = Get-ClockPython
     if (-not $pythonCmd) {
         return
     }

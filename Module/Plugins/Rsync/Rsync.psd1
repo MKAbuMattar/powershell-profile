@@ -60,8 +60,7 @@
         'Invoke-RsyncUpdate',
         'Sync-RsyncDirectories',
         'Get-RsyncVersion',
-        'Test-RsyncPath',
-        'Show-RsyncHelp'
+        'Test-RsyncPath'
     )
     CmdletsToExport      = @()
     VariablesToExport    = @()

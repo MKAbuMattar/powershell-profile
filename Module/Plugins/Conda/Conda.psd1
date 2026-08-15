@@ -46,7 +46,7 @@
     RootModule             = 'Conda.psm1'
     ModuleVersion          = '4.2.0'
     CompatiblePSEditions   = @()
-    GUID                   = '34d0a0f5-6e1c-4d0f-1f4c-0e9f8g7h6i5j'
+    GUID                   = '34d0a0f5-6e1c-4d0f-9f4c-0e9f8a7b6c5d'
     Author                 = 'Mohammad Abu Mattar'
     CompanyName            = 'MKAbuMattar'
     Copyright              = '(c) Mohammad Abu Mattar. All rights reserved.'
@@ -75,8 +75,8 @@
         'Invoke-CondaCreate',
         'Invoke-CondaCreateFromFile',
         'Invoke-CondaCreateName',
-        'Invoke-CondaCreatePath',
         'Invoke-CondaCreateNameYes',
+        'Invoke-CondaCreatePath',
         'Invoke-CondaRemoveEnv',
         'Invoke-CondaRemoveEnvName',
         'Invoke-CondaRemoveEnvPath',
@@ -112,9 +112,9 @@
         'cnde',
         'cnc',
         'cncf',
+        'cncr',
         'cncn',
         'cncp',
-        'cncr',
         'cnrn',
         'cnrp',
         'cnel',

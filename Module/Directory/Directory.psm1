@@ -420,33 +420,16 @@ function Set-ContentMatching {
     }
 }
 
-<#
-.SYNOPSIS
-    Initializes and configures the zoxide tool for PowerShell.
-
-.DESCRIPTION
-    This function checks if the zoxide tool is installed and initializes it for use in PowerShell. If the tool is not installed, it attempts to install it using the winget package manager.
-
-.NOTES
-    This function is useful for setting up the zoxide tool for directory navigation in PowerShell.
-#>
-if (Get-Command zoxide -ErrorAction SilentlyContinue) {
-    Invoke-Expression (& { (zoxide init --cmd cd powershell | Out-String) })
-}
-else {
-    Write-Host "zoxide command not found. Attempting to install via winget..."
-    try {
-        winget install -e --id ajeetdsouza.zoxide
-        Write-Host "zoxide installed successfully. Initializing..."
-        Invoke-Expression (& { (zoxide init powershell | Out-String) })
-    }
-    catch {
-        Write-Error "Failed to install zoxide. Error: $_"
-    }
-}
-
-Set-Alias -Name z -Value __zoxide_z -Option AllScope -Scope Global -Force
-Set-Alias -Name zi -Value __zoxide_zi -Option AllScope -Scope Global -Force
+#---------------------------------------------------------------------------------------------------
+# zoxide
+#
+# Initialisation moved to Microsoft.PowerShell_profile.ps1. It ran here, at module import, and did
+# two things a module import should never do: shell out to `winget install` when zoxide was absent,
+# and replace the `prompt` function - which Starship then replaced again a few lines later.
+#
+# The profile now initialises zoxide after Starship, so the prompt hooks compose in a defined order,
+# and a missing zoxide is reported by Install-ProfileDependency rather than installed silently.
+#---------------------------------------------------------------------------------------------------
 
 function Get-FileHead {
     <#

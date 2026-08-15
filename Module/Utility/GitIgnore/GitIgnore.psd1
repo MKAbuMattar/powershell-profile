@@ -52,17 +52,19 @@
     PowerShellVersion = '5.1'
     FunctionsToExport = @(
         'Get-GitIgnore',
-        'Get-GitIgnoreList', 
+        'Get-GitIgnoreList',
         'New-GitIgnoreFile',
         'Add-GitIgnoreContent',
-        'Test-GitIgnoreService'
+        'Test-GitIgnoreService',
+        'Get-GitIgnoreTypes'
     )
     AliasesToExport   = @(
         'gitignore',
         'gilist',
-        'ginew', 
+        'ginew',
         'giadd',
-        'gitest'
+        'gitest',
+        'gitypes'
     )
     CmdletsToExport   = @()
     VariablesToExport = @()

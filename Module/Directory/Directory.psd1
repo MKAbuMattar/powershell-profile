@@ -78,8 +78,6 @@
         'zip',
         'grep',
         'sed',
-        'z',
-        'zi',
         'head',
         'tail',
         'shortpath',

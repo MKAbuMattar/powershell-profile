@@ -65,7 +65,6 @@
     NestedModules          = @()
     FunctionsToExport      = @(
         'Get-VSCodeExecutable',
-        'Initialize-VSCodeCompletion',
         'Invoke-VSCode',
         'Invoke-VSCodeAdd',
         'Invoke-VSCodeDiff',

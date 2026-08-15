@@ -577,7 +577,7 @@ function Search-Scholar {
     .EXAMPLE
         scholar "data science"
         Using the alias to search Google Scholar.
-    #>\
+    #>
     [CmdletBinding()]
     [Alias('wsscholar', 'scholar')]
     param([Parameter(ValueFromRemainingArguments = $true)][string[]]$SearchTerms)
@@ -850,7 +850,7 @@ function Search-Claude {
         Using the alias to ask Claude about quantum computing.
     #>
     [CmdletBinding()]
-    [Alias('wschaude', 'claude')]
+    [Alias('wsclaude', 'claude')]
     param([Parameter(ValueFromRemainingArguments = $true)][string[]]$SearchTerms)
     Invoke-SearchEngine -Engine "claude" -Query ($SearchTerms -join ' ')
 }

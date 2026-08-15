@@ -54,7 +54,8 @@
     Description          = ''
     PowerShellVersion    = '5.0'
     FunctionsToExport    = @(
-        'Get-WeatherForecast'
+        'Get-WeatherForecast',
+        'Test-WeatherService'
     )
     CmdletsToExport      = @()
     VariablesToExport    = @()

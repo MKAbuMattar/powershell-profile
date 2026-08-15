@@ -33,12 +33,15 @@
 #       Mohammad Abu Mattar to enhance the PowerShell
 #       experience and productivity.
 #
+#       What loads is decided by profile.config.psd1, not by this file.
+#       Run `Measure-ProfileLoad` to see what the last startup cost.
+#
 # Created: 2021-09-01
-# Updated: 2025-09-24
+# Updated: 2026-08-15
 #
 # GitHub: https://github.com/MKAbuMattar/powershell-profile
 #
-# Version: 4.2.0
+# Version: 5.0.0
 #---------------------------------------------------------------------------------------------------
 
 #---------------------------------------------------------------------------------------------------
@@ -47,173 +50,128 @@
 [console]::InputEncoding = [console]::OutputEncoding = New-Object System.Text.UTF8Encoding
 
 #---------------------------------------------------------------------------------------------------
-# Check if Terminal Icons module is installed
+# Where this profile lives. When $PROFILE is a symlink into the repository, resolve through it so
+# the Module tree and profile.config.psd1 are found in the repository rather than beside the link.
 #---------------------------------------------------------------------------------------------------
-if (-not (Get-Module -ListAvailable -Name Terminal-Icons)) {
-    Install-Module -Name Terminal-Icons -Scope CurrentUser -Force -SkipPublisherCheck
-}
+$ProfileRoot = $PSScriptRoot
 
-#---------------------------------------------------------------------------------------------------
-# Check if PowerShellGet module is installed
-#---------------------------------------------------------------------------------------------------
-if (-not (Get-Module -ListAvailable -Name PowerShellGet)) {
-    Install-Module -Name PowerShellGet -Scope CurrentUser -Force -SkipPublisherCheck
-}
-
-#---------------------------------------------------------------------------------------------------
-# Check if CompletionPredictor module is installed
-#---------------------------------------------------------------------------------------------------
-if (-not (Get-Module -ListAvailable -Name CompletionPredictor)) {
-    Install-Module -Name CompletionPredictor -Scope CurrentUser -Force -SkipPublisherCheck
-}
-
-#---------------------------------------------------------------------------------------------------
-# Check if PSReadLine module is installed
-#---------------------------------------------------------------------------------------------------
-if (-not (Get-Module -ListAvailable -Name PSReadLine)) {
-    Install-Module -Name PSReadLine -Scope CurrentUser -Force -SkipPublisherCheck
-}
-
-#---------------------------------------------------------------------------------------------------
-# Check if Posh-Git module is installed
-#---------------------------------------------------------------------------------------------------
-if (-not (Get-Module -ListAvailable -Name Posh-Git)) {
-    Install-Module -Name Posh-Git -Scope CurrentUser -Force -SkipPublisherCheck
-}
-
-#---------------------------------------------------------------------------------------------------
-# Load the modules
-#---------------------------------------------------------------------------------------------------
-Import-Module -Name Terminal-Icons
-Import-Module -Name PowerShellGet
-Import-Module -Name CompletionPredictor
-Import-Module -Name PSReadLine
-Import-Module -Name Posh-Git
-
-#---------------------------------------------------------------------------------------------------
-# Set the PSReadLine options and key handlers
-#---------------------------------------------------------------------------------------------------
-Set-PSReadLineOption -PredictionSource HistoryAndPlugin
-Set-PSReadLineOption -PredictionViewStyle ListView
-Set-PSReadLineOption -HistoryNoDuplicates
-Set-PSReadLineOption -BellStyle None
-Set-PSReadLineOption -Colors @{ "Selection" = "`e[7m" }
-Set-PSReadLineKeyHandler -Chord '"', "'" `
-    -BriefDescription SmartInsertQuote `
-    -LongDescription "Insert paired quotes if not already on a quote" `
-    -ScriptBlock {
-    param($key, $arg)
-
-    $line = $null
-    $cursor = $null
-    [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$line, [ref]$cursor)
-
-    if ($line.Length -gt $cursor -and $line[$cursor] -eq $key.KeyChar) {
-        # Just move the cursor
-        [Microsoft.PowerShell.PSConsoleReadLine]::SetCursorPosition($cursor + 1)
+$ProfileItem = Get-Item -LiteralPath $PSCommandPath -ErrorAction SilentlyContinue
+if ($ProfileItem -and $ProfileItem.LinkType -eq 'SymbolicLink' -and $ProfileItem.Target) {
+    $LinkTarget = @($ProfileItem.Target)[0]
+    if (Test-Path -LiteralPath $LinkTarget) {
+        $ProfileRoot = Split-Path -Parent (Resolve-Path -LiteralPath $LinkTarget).Path
     }
-    else {
-        # Insert matching quotes, move cursor to be in between the quotes
-        [Microsoft.PowerShell.PSConsoleReadLine]::Insert("$($key.KeyChar)" * 2)
+}
+
+#---------------------------------------------------------------------------------------------------
+# Load the profile modules named in profile.config.psd1
+#---------------------------------------------------------------------------------------------------
+$LoaderManifest = Join-Path -Path $ProfileRoot -ChildPath 'Module/Loader/Loader.psd1'
+
+if (Test-Path -LiteralPath $LoaderManifest) {
+    Import-Module -Name $LoaderManifest -Global -Force -DisableNameChecking
+    Import-ProfileModule -RepositoryRoot $ProfileRoot
+}
+else {
+    Write-Warning "Profile loader not found at $LoaderManifest. Only built-in PowerShell commands are available."
+}
+
+#---------------------------------------------------------------------------------------------------
+# PSReadLine options and key handlers
+#
+# Prediction needs a console that supports virtual terminal processing. Redirected and
+# non-interactive hosts (CI, `pwsh -Command`, piped output) do not, and these calls throw there.
+#---------------------------------------------------------------------------------------------------
+if ((Get-Module -Name PSReadLine) -and -not [System.Console]::IsOutputRedirected -and $Host.Name -eq 'ConsoleHost') {
+    Set-PSReadLineOption -PredictionSource HistoryAndPlugin -ErrorAction SilentlyContinue
+    Set-PSReadLineOption -PredictionViewStyle ListView -ErrorAction SilentlyContinue
+    Set-PSReadLineOption -HistoryNoDuplicates
+    Set-PSReadLineOption -BellStyle None
+    Set-PSReadLineOption -Colors @{ 'Selection' = "`e[7m" }
+
+    Set-PSReadLineKeyHandler -Chord '"', "'" `
+        -BriefDescription SmartInsertQuote `
+        -LongDescription 'Insert paired quotes if not already on a quote' `
+        -ScriptBlock {
+        param($key, $arg)
+
+        $line = $null
+        $cursor = $null
         [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$line, [ref]$cursor)
-        [Microsoft.PowerShell.PSConsoleReadLine]::SetCursorPosition($cursor - 1)
+
+        if ($line.Length -gt $cursor -and $line[$cursor] -eq $key.KeyChar) {
+            # Just move the cursor
+            [Microsoft.PowerShell.PSConsoleReadLine]::SetCursorPosition($cursor + 1)
+        }
+        else {
+            # Insert matching quotes, move cursor to be in between the quotes
+            [Microsoft.PowerShell.PSConsoleReadLine]::Insert("$($key.KeyChar)" * 2)
+            [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$line, [ref]$cursor)
+            [Microsoft.PowerShell.PSConsoleReadLine]::SetCursorPosition($cursor - 1)
+        }
     }
 }
 
 #---------------------------------------------------------------------------------------------------
-# Import the custom modules and plugins
+# Starship prompt
 #---------------------------------------------------------------------------------------------------
-$BaseModuleDir = Join-Path -Path $PSScriptRoot -ChildPath 'Module'
-
-$ModuleList = @(
-    @{ Name = 'Module-Directory'; Path = 'Directory/Directory.psd1' },
-    @{ Name = 'Module-Docs'; Path = 'Docs/Docs.psd1' },
-    @{ Name = 'Module-Environment'; Path = 'Environment/Environment.psd1' },
-    @{ Name = 'Module-Logging'; Path = 'Logging/Logging.psd1' },
-    @{ Name = 'Module-Network'; Path = 'Network/Network.psd1' },
-    @{ Name = 'Module-Plugins'; Path = 'Plugins/Plugins.psd1' },
-    @{ Name = 'Module-Process'; Path = 'Process/Process.psd1' },
-    @{ Name = 'Module-Starship'; Path = 'Starship/Starship.psd1' },
-    @{ Name = 'Module-Update'; Path = 'Update/Update.psd1' },
-    @{ Name = 'Module-Utility'; Path = 'Utility/Utility.psd1' }
-)
-
-foreach ($Module in $ModuleList) {
-    $ModulePath = Join-Path -Path $BaseModuleDir -ChildPath $Module.Path
-    $ModuleName = $Module.Name
-
-    if (Test-Path $ModulePath) {
-        Import-Module $ModulePath -Force -ErrorAction SilentlyContinue
+if (Get-Command -Name starship -CommandType Application -ErrorAction SilentlyContinue) {
+    if (Get-Command -Name Invoke-StarshipTransientFunction -ErrorAction SilentlyContinue) {
+        Invoke-StarshipTransientFunction
     }
-    else {
-        Write-Warning "$ModuleName module not found at: $ModulePath"
+
+    (& starship init powershell) -join "`n" | Invoke-Expression
+}
+
+#---------------------------------------------------------------------------------------------------
+# Directory jumping
+#
+# zoxide replaces `cd` and installs a prompt hook, so it initialises after Starship rather than
+# during module import.
+#---------------------------------------------------------------------------------------------------
+if (Get-Command -Name zoxide -CommandType Application -ErrorAction SilentlyContinue) {
+    (& zoxide init --cmd cd powershell) -join "`n" | Invoke-Expression
+}
+
+#---------------------------------------------------------------------------------------------------
+# Automatic updates
+#
+# Both default to off. Update-Profile preserves any third-party section in $PROFILE, so turning
+# these on no longer risks the block that Microsoft coreutils injects.
+#---------------------------------------------------------------------------------------------------
+if ($global:AutoUpdateProfile -eq $true -and (Get-Command -Name Update-Profile -ErrorAction SilentlyContinue)) {
+    Update-Profile
+}
+
+if ($global:AutoUpdatePowerShell -eq $true -and (Get-Command -Name Update-PowerShell -ErrorAction SilentlyContinue)) {
+    Update-PowerShell
+}
+
+#---------------------------------------------------------------------------------------------------
+# Editor
+#
+# A foreach with break, not a Where-Object pipeline: Where-Object has no early exit, so the old
+# version probed all seven editors even when the first one matched.
+#---------------------------------------------------------------------------------------------------
+$EDITOR = $env:EDITOR
+
+if (-not $EDITOR) {
+    foreach ($Candidate in 'nvim', 'pvim', 'vim', 'vi', 'code', 'notepad++', 'sublime_text') {
+        if (Get-Command -Name $Candidate -ErrorAction SilentlyContinue) {
+            $EDITOR = $Candidate
+            break
+        }
     }
 }
 
-#---------------------------------------------------------------------------------------------------
-# Invoke Starship Transient Function
-#---------------------------------------------------------------------------------------------------
-Invoke-Command -ScriptBlock ${function:Invoke-StarshipTransientFunction} -ErrorAction Stop
+if (-not $EDITOR) { $EDITOR = 'notepad' }
 
-#---------------------------------------------------------------------------------------------------
-# Load Starship
-#---------------------------------------------------------------------------------------------------
-Invoke-Expression (&starship init powershell)
-
-#---------------------------------------------------------------------------------------------------
-# Set Chocolatey Profile
-#---------------------------------------------------------------------------------------------------
-$ChocolateyProfile = Join-Path -Path $ENV:CHOCOLATEYINSTALL -ChildPath 'helpers\chocolateyProfile.psm1'
-
-#---------------------------------------------------------------------------------------------------
-# Import Chocolatey Profile
-#---------------------------------------------------------------------------------------------------
-if (Test-Path $ChocolateyProfile) {
-    Import-Module $ChocolateyProfile
-}
-
-#---------------------------------------------------------------------------------------------------
-# Invoke the profile update function
-#---------------------------------------------------------------------------------------------------
-if ($global:AutoUpdateProfile -eq $true) {
-    &${function:Update-LocalProfileModuleDirectory} -ErrorAction SilentlyContinue
-}
-
-#---------------------------------------------------------------------------------------------------
-# Invoke the profile update function
-#---------------------------------------------------------------------------------------------------
-if ($global:AutoUpdateProfile -eq $true) {
-    &${function:Update-Profile} -ErrorAction SilentlyContinue
-}
-
-#---------------------------------------------------------------------------------------------------
-# Invoke the PowerShell update function
-#---------------------------------------------------------------------------------------------------
-if ($global:AutoUpdatePowerShell -eq $true) {
-    &${function:Update-PowerShell} -ErrorAction SilentlyContinue
-}
-
-#------------------------------------------------------
-# Editor Configuration
-#------------------------------------------------------
-$EDITOR = if (Test-CommandExists nvim) { 'nvim' }
-elseif (Test-CommandExists pvim) { 'pvim' }
-elseif (Test-CommandExists vim) { 'vim' }
-elseif (Test-CommandExists vi) { 'vi' }
-elseif (Test-CommandExists code) { 'code' }
-elseif (Test-CommandExists notepad++) { 'notepad++' }
-elseif (Test-CommandExists sublime_text) { 'sublime_text' }
-else { 'notepad' }
-
-#------------------------------------------------------
-# Set the editor alias
-#------------------------------------------------------
 Set-Alias -Name vim -Value $EDITOR
 
-#------------------------------------------------------
+#---------------------------------------------------------------------------------------------------
 # Run FastFetch
-#------------------------------------------------------
-# if (Test-CommandExists FastFetch) {
-#     Invoke-Expression -Command "Clear-Host"
-#     Invoke-Expression -Command "FastFetch"
+#---------------------------------------------------------------------------------------------------
+# if (Get-Command -Name fastfetch -CommandType Application -ErrorAction SilentlyContinue) {
+#     Clear-Host
+#     fastfetch
 # }

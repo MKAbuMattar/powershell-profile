@@ -130,7 +130,7 @@ function Update-LocalProfileModuleDirectory {
         }
     }
 
-    if (-not $global:CanConnectToGitHub) {
+    if (-not (Test-GitHubConnection)) {
         Write-LogMessage -Message "Skipping profile update check due to GitHub.com not responding within 1 second." -Level "WARNING"
         return
     }
@@ -206,54 +206,155 @@ function Update-LocalProfileModuleDirectory {
     }
 }
 
+function Get-ForeignProfileSection {
+    <#
+    .SYNOPSIS
+        Extracts blocks that another installer injected into a profile file.
+
+    .DESCRIPTION
+        Microsoft coreutils appends a marked block to Microsoft.PowerShell_profile.ps1 to install
+        its GNU tool shims, and records the profile path under
+        HKLM:\SOFTWARE\Microsoft\coreutils\PowerShellProfiles so it can clean up later.
+
+        Update-Profile used to overwrite $PROFILE wholesale, which deleted that block while
+        leaving the registry entry pointing at a file that no longer contained it. This finds any
+        such block so it can be carried across an update.
+
+        A section is recognised by a line containing "DO NOT MODIFY" and an owner name, and runs
+        to the end of the file. That is the shape coreutils uses.
+
+    .PARAMETER Path
+        The profile file to inspect.
+
+    .INPUTS
+        None.
+
+    .OUTPUTS
+        [string] The foreign section including its marker line, or an empty string.
+
+    .EXAMPLE
+        Get-ForeignProfileSection -Path $PROFILE
+        Returns the coreutils block, if one is present.
+
+    .LINK
+        https://github.com/MKAbuMattar/powershell-profile
+    #>
+    [CmdletBinding()]
+    [OutputType([string])]
+    param(
+        [Parameter(Mandatory, Position = 0)]
+        [string]$Path
+    )
+
+    if (-not (Test-Path -LiteralPath $Path)) { return '' }
+
+    $lines = @(Get-Content -LiteralPath $Path)
+
+    for ($i = 0; $i -lt $lines.Count; $i++) {
+        if ($lines[$i] -match '^\s*#\s*DO NOT MODIFY') {
+            return ($lines[$i..($lines.Count - 1)] -join [Environment]::NewLine)
+        }
+    }
+
+    return ''
+}
+
 function Update-Profile {
     <#
     .SYNOPSIS
-        Checks for updates to the PowerShell profile from a specified GitHub repository and updates the local profile if changes are detected.
+        Updates the local profile from GitHub, preserving any third-party section.
 
     .DESCRIPTION
-        This function checks for updates to the PowerShell profile from the GitHub repository specified in the script. It compares the hash of the local profile with the hash of the profile on GitHub. If updates are found, it downloads the updated profile and replaces the local profile with the updated one. The function provides feedback on whether the profile has been updated and prompts the user to restart the shell to reflect changes.
+        Downloads Microsoft.PowerShell_profile.ps1 from the repository and installs it over the
+        local copy only when the content differs.
 
-    .PARAMETER None
-        This function does not accept any parameters.
+        Two things are protected that the previous implementation destroyed:
+
+        A symlinked $PROFILE is written through rather than replaced, so a profile linked into a
+        cloned repository stays a link.
+
+        A marked third-party block - the one Microsoft coreutils injects - is carried across and
+        re-appended after the update. Without this, enabling $AutoUpdateProfile silently removed
+        the coreutils shims while its registry entry still claimed they were installed.
+
+        The previous copy is kept alongside the profile with a .bak extension.
+
+    .PARAMETER Path
+        Profile file to update. Defaults to $PROFILE.
+
+    .INPUTS
+        None.
 
     .OUTPUTS
-        This function does not return any output.
+        None.
 
     .EXAMPLE
         Update-Profile
-        Checks for updates to the PowerShell profile and updates the local profile if changes are detected.
+        Updates $PROFILE if the repository copy differs.
+
+    .EXAMPLE
+        Update-Profile -WhatIf
+        Reports whether an update is available without writing anything.
 
     .NOTES
-        The profile update function is disabled by default. To enable it, uncomment the line that invokes the function at the end of the script.
+        Automatic invocation is off by default. Set $global:AutoUpdateProfile = $true to enable it.
+
+    .LINK
+        https://github.com/MKAbuMattar/powershell-profile
     #>
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess)]
     [Alias("update-profile")]
     [OutputType([void])]
     param (
-        # This function does not accept any parameters
+        [Parameter(Position = 0)]
+        [string]$Path = $PROFILE
     )
 
-    if (-not $global:CanConnectToGitHub) {
-        Write-LogMessage -Message "Skipping profile update check due to GitHub.com not responding within 1 second." -Level "WARNING"
+    if (-not (Test-GitHubConnection)) {
+        Write-LogMessage -Message "Skipping profile update check because github.com did not respond within 1 second." -Level "WARNING"
         return
     }
 
+    $url = "https://raw.githubusercontent.com/MKAbuMattar/powershell-profile/main/Microsoft.PowerShell_profile.ps1"
+    $temp = Join-Path ([System.IO.Path]::GetTempPath()) "Microsoft.PowerShell_profile.$PID.ps1"
+
     try {
-        $url = "https://raw.githubusercontent.com/MKAbuMattar/powershell-profile/main/Microsoft.PowerShell_profile.ps1"
-        $oldhash = Get-FileHash $PROFILE
-        Invoke-RestMethod $url -OutFile "$env:temp/Microsoft.PowerShell_profile.ps1"
-        $newhash = Get-FileHash "$env:temp/Microsoft.PowerShell_profile.ps1"
-        if ($newhash.Hash -ne $oldhash.Hash) {
-            Copy-Item -Path "$env:temp/Microsoft.PowerShell_profile.ps1" -Destination $PROFILE -Force
-            Write-LogMessage -Message "Profile has been updated. Please restart your shell to reflect changes" -Level "INFO"
+        Invoke-WebRequest -Uri $url -OutFile $temp -UseBasicParsing
+
+        $incoming = Get-Content -LiteralPath $temp -Raw
+        $current = if (Test-Path -LiteralPath $Path) { Get-Content -LiteralPath $Path -Raw } else { '' }
+
+        $foreign = Get-ForeignProfileSection -Path $Path
+
+        if ($foreign) {
+            $incoming = $incoming.TrimEnd() + [Environment]::NewLine + [Environment]::NewLine + $foreign + [Environment]::NewLine
         }
+
+        if ($incoming -eq $current) {
+            Write-LogMessage -Message "Profile is already up to date." -Level "INFO"
+            return
+        }
+
+        if (-not $PSCmdlet.ShouldProcess($Path, 'Update profile')) { return }
+
+        if (Test-Path -LiteralPath $Path) {
+            Copy-Item -LiteralPath $Path -Destination "$Path.bak" -Force
+        }
+
+        # Set-Content writes through a symlink; Copy-Item -Force would replace the link itself.
+        Set-Content -LiteralPath $Path -Value $incoming -NoNewline -Encoding UTF8
+
+        if ($foreign) {
+            Write-LogMessage -Message "Preserved a third-party section already present in the profile." -Level "INFO"
+        }
+
+        Write-LogMessage -Message "Profile updated. Previous copy saved to $Path.bak. Restart your shell to reflect changes." -Level "INFO"
     }
     catch {
-        Write-LogMessage -Message "Unable to check for `$profile updates" -Level "WARNING"
+        Write-LogMessage -Message "Unable to check for profile updates: $($_.Exception.Message)" -Level "WARNING"
     }
     finally {
-        Remove-Item "$env:temp/Microsoft.PowerShell_profile.ps1" -ErrorAction SilentlyContinue
+        Remove-Item -LiteralPath $temp -ErrorAction SilentlyContinue
     }
 }
 
@@ -285,7 +386,7 @@ function Update-PowerShell {
         # This function does not accept any parameters
     )
 
-    if (-not $global:CanConnectToGitHub) {
+    if (-not (Test-GitHubConnection)) {
         Write-LogMessage -Message "Skipping PowerShell update check due to GitHub.com not responding within 1 second." -Level "WARNING"
         return
     }

@@ -11,14 +11,16 @@
     FunctionsToExport    = @(
         'ConvertTo-Base64',
         'ConvertTo-Base64File',
-        'ConvertFrom-Base64'
+        'ConvertFrom-Base64',
+        'ConvertFrom-Base64File'
     )
     CmdletsToExport      = @()
     VariablesToExport    = @()
     AliasesToExport      = @(
         'e64',
         'ef64',
-        'd64'
+        'd64',
+        'df64'
     )
     PrivateData          = @{
         PSData = @{

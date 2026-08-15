@@ -75,26 +75,64 @@ $global:AutoUpdateProfile = [bool]$false
 #>
 $global:AutoUpdatePowerShell = [bool]$false
 
-<#
-.SYNOPSIS
-    Set environment variables for Testing GitHub connectivity.
+$script:GitHubReachable = $null
 
-.DESCRIPTION
-    This script sets environment variables to test if the machine can connect to GitHub.
+function Test-GitHubConnection {
+    <#
+    .SYNOPSIS
+        Reports whether github.com answers, caching the answer for the session.
 
-INPUTS
-    None.
+    .DESCRIPTION
+        This used to run at module import as `$global:CanConnectToGitHub = Test-Connection ...`,
+        which put a blocking ping of up to a second in front of every shell that opened, whether
+        or not anything went on to need the network.
 
-.OUTPUTS
-    Environment variables for Testing GitHub connectivity.
+        Nothing calls this except the update functions, so the ping now happens on the first
+        call and the result is reused for the rest of the session.
 
-.NOTES
-    This script is used to test if the machine can connect to GitHub.
+    .PARAMETER Force
+        Re-test instead of reusing the cached answer. Use after a network change.
 
-.LINK
-    https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
-#>
-$global:CanConnectToGitHub = Test-Connection github.com -Count 1 -Quiet -TimeoutSeconds 1
+    .INPUTS
+        None.
+
+    .OUTPUTS
+        [bool] True when github.com responded.
+
+    .NOTES
+        A cached false is not permanent: pass -Force to re-test within the same session.
+
+    .EXAMPLE
+        Test-GitHubConnection
+        Returns $true when github.com is reachable.
+
+    .EXAMPLE
+        Test-GitHubConnection -Force
+        Ignores the cached answer and pings again.
+
+    .LINK
+        https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
+    #>
+    [CmdletBinding()]
+    [Alias('test-github')]
+    [OutputType([bool])]
+    param(
+        [switch]$Force
+    )
+
+    if ($null -ne $script:GitHubReachable -and -not $Force) {
+        return $script:GitHubReachable
+    }
+
+    $script:GitHubReachable = try {
+        Test-Connection -TargetName 'github.com' -Count 1 -Quiet -TimeoutSeconds 1 -ErrorAction Stop
+    }
+    catch {
+        $false
+    }
+
+    return $script:GitHubReachable
+}
 
 function Invoke-ReloadPathEnvironmentVariable {
     <#

@@ -53,29 +53,30 @@
     Description          = 'This module provides functions to manage environment variables, test GitHub connectivity, and manipulate the PATH environment variable.'
     PowerShellVersion    = '5.0'
     FunctionsToExport    = @(
-        'Set-EnvVar',
-        'Get-EnvVar',
+        'Test-GitHubConnection',
         'Invoke-ReloadPathEnvironmentVariable',
         'Get-PathEnvironmentVariable',
         'Add-PathEnvironmentVariable',
-        'Remove-PathEnvironmentVariable'
+        'Remove-PathEnvironmentVariable',
+        'Set-EnvVar',
+        'Get-EnvVar'
     )
     CmdletsToExport      = @()
     VariablesToExport    = @(
         'AutoUpdateProfile',
-        'AutoUpdatePowerShell',
-        'CanConnectToGitHub'
+        'AutoUpdatePowerShell'
     )
     AliasesToExport      = @(
-        'set-env',
-        'export',
-        'get-env',
+        'test-github',
         'reload-env-path',
         'reload-path',
         'get-env-path',
         'get-path',
         'add-path',
-        'set-path'
+        'set-path',
+        'set-env',
+        'export',
+        'get-env'
     )
     PrivateData          = @{
         PSData = @{

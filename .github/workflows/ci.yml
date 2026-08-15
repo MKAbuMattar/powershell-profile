@@ -1,0 +1,49 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: Syntax, manifests, analyzer
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Parse every PowerShell file
+        shell: pwsh
+        run: ./Tools/Test-Syntax.ps1
+
+      - name: Verify manifests match their modules
+        shell: pwsh
+        run: ./Tools/Test-Manifest.ps1
+
+      - name: Install PSScriptAnalyzer
+        shell: pwsh
+        run: Install-Module PSScriptAnalyzer -Scope CurrentUser -Force -SkipPublisherCheck
+
+      - name: Run PSScriptAnalyzer
+        shell: pwsh
+        run: ./Tools/Invoke-Analyzer.ps1
+
+  load:
+    name: Load profile
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Import every configured module and report failures
+        shell: pwsh
+        run: ./Tools/Test-Load.ps1

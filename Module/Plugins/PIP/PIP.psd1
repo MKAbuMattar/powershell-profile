@@ -58,15 +58,20 @@
     DotNetFrameworkVersion = '4.5'
     CLRVersion             = '4.0'
     FunctionsToExport      = @(
-        'Clear-PipCache',
         'Get-PipCacheFile',
+        'Clear-PipCache',
         'Update-PipPackageCache',
         'Invoke-PipInstall',
         'Invoke-PipUpgrade',
         'Invoke-PipUninstall',
+        'Invoke-PipInstallUser',
+        'Invoke-PipInstallEditable',
         'Invoke-PipFreeze',
         'Invoke-PipFreezeGrep',
         'Invoke-PipListOutdated',
+        'Invoke-PipList',
+        'Invoke-PipShow',
+        'Invoke-PipSearch',
         'Invoke-PipRequirements',
         'Invoke-PipInstallRequirements',
         'Invoke-PipUpgradeAll',
@@ -74,9 +79,6 @@
         'Invoke-PipInstallGitHub',
         'Invoke-PipInstallGitHubBranch',
         'Invoke-PipInstallGitHubPR',
-        'Invoke-PipShow',
-        'Invoke-PipSearch',
-        'Invoke-PipList',
         'Invoke-PipCheck',
         'Invoke-PipWheel',
         'Invoke-PipDownload',
@@ -84,19 +86,21 @@
         'Invoke-PipDebug',
         'Invoke-PipHash',
         'Invoke-PipHelp',
-        'Invoke-PipCache',
-        'Invoke-PipInstallUser',
-        'Invoke-PipInstallEditable'
+        'Invoke-PipCache'
     )
     CmdletsToExport        = @()
     VariablesToExport      = @()
     AliasesToExport        = @(
-        'pipp',
         'pipi',
         'pipu',
         'pipun',
+        'pipiu',
+        'pipie',
         'pipgi',
         'piplo',
+        'pipl',
+        'pips',
+        'pipsr',
         'pipreq',
         'pipir',
         'pipupall',
@@ -104,18 +108,13 @@
         'pipig',
         'pipigb',
         'pipigp',
-        'pips',
-        'pipsr',
-        'pipl',
         'pipck',
         'pipw',
         'pipd',
         'pipc',
         'pipdbg',
         'piph',
-        'pipcc',
-        'pipiu',
-        'pipie'
+        'pipcc'
     )
     DscResourcesToExport   = @()
     ModuleList             = @()

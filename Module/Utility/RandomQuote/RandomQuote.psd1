@@ -12,7 +12,8 @@
     Description          = ''
     PowerShellVersion    = '5.0'
     FunctionsToExport    = @(
-        'Get-RandomQuote'
+        'Get-RandomQuote',
+        'Test-QuotableService'
     )
     CmdletsToExport      = @()
     VariablesToExport    = @()

@@ -41,6 +41,43 @@
 # Version: 4.2.0
 #---------------------------------------------------------------------------------------------------
 
+function Get-QRCodePython {
+    <#
+    .SYNOPSIS
+        Resolves the Python interpreter for this module.
+
+    .DESCRIPTION
+        Defers to the shared Get-PythonExecutable from the Loader module when the profile is
+        loaded, and falls back to a local probe when this module is imported on its own.
+
+        This module previously invoked bare `python` directly. On Windows that name resolves to
+        the Microsoft Store stub when Python was installed any other way, so every QR code
+        command failed with an advert for the Store instead of an error anyone could act on.
+
+    .OUTPUTS
+        [string] Interpreter path or name, or $null when none was found.
+
+    .EXAMPLE
+        $python = Get-QRCodePython
+    #>
+    [CmdletBinding()]
+    [OutputType([string])]
+    param()
+
+    if (Get-Command -Name Get-PythonExecutable -ErrorAction SilentlyContinue) {
+        return Get-PythonExecutable
+    }
+
+    foreach ($candidate in 'python3', 'python') {
+        if (Get-Command -Name $candidate -CommandType Application -ErrorAction SilentlyContinue) {
+            return $candidate
+        }
+    }
+
+    Write-Error 'Python is not installed or not in PATH. Install it with Install-ProfileDependency.'
+    return $null
+}
+
 function New-QRCode {
     <#
     .SYNOPSIS
@@ -113,13 +150,8 @@ function New-QRCode {
         return
     }
 
-    try {
-        $pythonVersion = python --version 2>&1
-    }
-    catch {
-        Write-Host "Error: Python is not installed or not available in PATH." -ForegroundColor Red
-        return
-    }
+    $pythonCmd = Get-QRCodePython
+    if (-not $pythonCmd) { return }
 
     $arguments = @()
     
@@ -134,7 +166,7 @@ function New-QRCode {
     }
 
     try {
-        & python $pythonScript @arguments
+        & $pythonCmd $pythonScript @arguments
     }
     catch {
         Write-Host "Error executing qrcode.py: $_" -ForegroundColor Red
@@ -227,13 +259,8 @@ function New-QRCodeSVG {
         return
     }
 
-    try {
-        $pythonVersion = python --version 2>&1
-    }
-    catch {
-        Write-Host "Error: Python is not installed or not available in PATH." -ForegroundColor Red
-        return
-    }
+    $pythonCmd = Get-QRCodePython
+    if (-not $pythonCmd) { return }
 
     $arguments = @()
     
@@ -252,7 +279,7 @@ function New-QRCodeSVG {
     }
 
     try {
-        & python $pythonScript @arguments
+        & $pythonCmd $pythonScript @arguments
     }
     catch {
         Write-Host "Error executing qrcode.py: $_" -ForegroundColor Red
@@ -294,16 +321,11 @@ function Test-QRCodeService {
         return $false
     }
 
-    try {
-        $pythonVersion = python --version 2>&1
-    }
-    catch {
-        Write-Host "Error: Python is not installed or not available in PATH." -ForegroundColor Red
-        return $false
-    }
+    $pythonCmd = Get-QRCodePython
+    if (-not $pythonCmd) { return $false }
 
     try {
-        & python $pythonScript --test 2>&1
+        & $pythonCmd $pythonScript --test 2>&1
         if ($LASTEXITCODE -eq 0) {
             return $true
         }
@@ -397,13 +419,8 @@ function Save-QRCode {
         return
     }
 
-    try {
-        $pythonVersion = python --version 2>&1
-    }
-    catch {
-        Write-Host "Error: Python is not installed or not available in PATH." -ForegroundColor Red
-        return
-    }
+    $pythonCmd = Get-QRCodePython
+    if (-not $pythonCmd) { return }
 
     # Determine format from extension if not specified
     if (-not $Format) {
@@ -424,7 +441,7 @@ function Save-QRCode {
     )
 
     try {
-        & python $pythonScript @arguments
+        & $pythonCmd $pythonScript @arguments
     }
     catch {
         Write-Host "Error executing qrcode.py: $_" -ForegroundColor Red

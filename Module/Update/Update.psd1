@@ -55,6 +55,7 @@
     PowerShellVersion    = '5.0'
     FunctionsToExport    = @(
         'Update-LocalProfileModuleDirectory',
+        'Get-ForeignProfileSection',
         'Update-Profile',
         'Update-PowerShell',
         'Update-WindowsTerminalConfig'
@@ -63,7 +64,6 @@
     VariablesToExport    = @()
     AliasesToExport      = @(
         'update-local-module',
-        'update-profile',
         'update-ps1',
         'update-terminal-config'
     )

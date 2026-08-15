@@ -1,0 +1,68 @@
+# Loader Module
+
+Decides what the profile loads, reports what fails, and resolves name conflicts.
+
+This replaced a loader that imported all 46 modules unconditionally with
+`-ErrorAction SilentlyContinue`. That combination meant a module could fail to load and say
+nothing about it, which is exactly what happened: a one-character syntax error in
+`WebSearch.psm1` took out 32 functions and 28 aliases, and nothing reported it.
+
+## What it does
+
+1. Reads [`profile.config.psd1`](../../profile.config.psd1).
+2. Imports the core modules, then enabled plugins, then utilities, then the Gallery modules.
+3. Skips any plugin whose command-line tool is not installed.
+4. Applies the conflict policy in [`Tools/ExportPolicy.psd1`](../../Tools/ExportPolicy.psd1).
+
+Failures are reported as warnings. A broken module is still skipped, so one bad file cannot stop a
+shell from opening, but you are told which one and why.
+
+## Commands
+
+| Command | Alias | Purpose |
+| --- | --- | --- |
+| `Import-ProfileModule` | `load-profile` | Load everything named in the configuration. Called by the profile. |
+| `Measure-ProfileLoad` | `profile-load` | What loaded, what was skipped, what failed, and how long each took. |
+| `Show-ProfileHelp` | `profile-help` | List the commands the session actually has. |
+| `Get-ProfileDependency` | `profile-deps` | List Gallery modules, CLI tools and Python, with install status. |
+| `Install-ProfileDependency` | `install-profile-deps` | Install whatever is missing. Supports `-WhatIf`. |
+| `Get-PythonExecutable` | `profile-python` | Resolve a working Python 3 interpreter. |
+| `Invoke-ProfilePython` | | Run a bundled Python script through that interpreter. |
+| `Get-ProfileConfig` | | Read the configuration with defaults applied. |
+| `Test-ProfileTool` | | Whether a given plugin's tool is on PATH. |
+
+## Startup cost
+
+`Measure-ProfileLoad` reports per-module timings when `TrackTimings` is on, which costs well under
+a millisecond. The Gallery modules dominate, so their measured costs are listed as comments beside
+`ExternalModules` in the configuration.
+
+```powershell
+Measure-ProfileLoad -All | Where-Object Status -eq 'skipped'
+```
+
+## Python resolution
+
+Eleven utility modules shell out to a bundled Python script. Interpreter discovery used to be
+reimplemented in each of them, seven different ways, one of which invoked bare `python`. On Windows
+that name is a Microsoft Store stub when Python was installed any other way, so those commands
+failed with an advert instead of an error.
+
+`Get-PythonExecutable` probes versioned names newest first and verifies each actually runs, which
+rejects the stub. Set `$env:PROFILE_PYTHON` to pin a specific interpreter. The result is cached for
+the session.
+
+This is the counterpart to `DOTFILES_PYTHON` in `.dotfiles/.plugins/.plugins`.
+
+## Conflict policy
+
+See [Name conflicts](../../README.md#name-conflicts) in the root README. The rules live in
+`Tools/ExportPolicy.psd1` and are applied in two places: by `Tools/Update-Manifest.ps1` when export
+lists are generated, and by `Resolve-ProfileConflict` at load time.
+
+Two rules are enforced at generation time and cannot be overridden:
+
+- An alias on the reserved list is never exported, because a real executable owns the name.
+- An alias identical to its own function name is never exported. PowerShell resolves aliases before
+  functions, so such an alias shadows the function and points at itself, making the command
+  uncallable. `Update-Profile` was broken this way and could not run at all.

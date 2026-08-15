@@ -184,6 +184,7 @@
         'gstp',
         'gsta',
         'gsts',
+        'gstu',
         'gst',
         'gss',
         'gsb',
@@ -204,7 +205,6 @@
         'gwtls',
         'gwtmv',
         'gwtrm',
-        'gstu',
         'gwip',
         'gunwip',
         'gcd',
@@ -257,7 +257,7 @@
     )
     CmdletsToExport      = @()
     VariablesToExport    = @()
-    AliasesToExport      = @(  )
+    AliasesToExport      = @()
     PrivateData          = @{
         PSData = @{
             Tags                       = @()
