@@ -32,6 +32,7 @@
         'Test-ProfileTool',
         'Import-ProfileComponent',
         'Resolve-ProfileConflict',
+        'Test-ProfileAliasContention',
         'Import-ProfileModule',
         'Measure-ProfileLoad',
         'Get-PythonExecutable',
@@ -44,6 +45,7 @@
     CmdletsToExport      = @()
     VariablesToExport    = @()
     AliasesToExport      = @(
+        'profile-alias-conflicts',
         'load-profile',
         'profile-load',
         'profile-python',

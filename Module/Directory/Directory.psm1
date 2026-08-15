@@ -86,8 +86,10 @@ function Find-Files {
         [string]$Name
     )
 
-    Get-ChildItem -Recurse -Filter $Name -ErrorAction SilentlyContinue | ForEach-Object {
-        Write-Output $_.FullName
+    process {
+        Get-ChildItem -Recurse -Filter $Name -ErrorAction SilentlyContinue | ForEach-Object {
+            Write-Output $_.FullName
+        }
     }
 }
 
@@ -135,11 +137,13 @@ function Set-FreshFile {
         [string]$File
     )
 
-    if (Test-Path $File) {
-        (Get-Item $File).LastWriteTime = Get-Date
-    }
-    else {
-        "" | Out-File $File -Encoding ASCII
+    process {
+        if (Test-Path $File) {
+            (Get-Item $File).LastWriteTime = Get-Date
+        }
+        else {
+            "" | Out-File $File -Encoding ASCII
+        }
     }
 }
 
@@ -184,14 +188,16 @@ function Expand-File {
         [string]$File
     )
 
-    try {
-        Write-LogMessage -Message "Extracting file '$File' to '$PWD'..." -Level "INFO"
-        $FullFilePath = Get-Item -Path $File -ErrorAction Stop | Select-Object -ExpandProperty FullName
-        Expand-Archive -Path $FullFilePath -DestinationPath $PWD -Force -ErrorAction Stop
-        Write-LogMessage -Message "File extraction completed successfully." -Level "INFO"
-    }
-    catch {
-        Write-LogMessage -Message "Failed to extract file '$File'." -Level "ERROR"
+    process {
+        try {
+            Write-LogMessage -Message "Extracting file '$File' to '$PWD'..." -Level "INFO"
+            $FullFilePath = Get-Item -Path $File -ErrorAction Stop | Select-Object -ExpandProperty FullName
+            Expand-Archive -Path $FullFilePath -DestinationPath $PWD -Force -ErrorAction Stop
+            Write-LogMessage -Message "File extraction completed successfully." -Level "INFO"
+        }
+        catch {
+            Write-LogMessage -Message "Failed to extract file '$File'." -Level "ERROR"
+        }
     }
 }
 
@@ -251,13 +257,15 @@ function Compress-Files {
         [string]$Archive
     )
 
-    try {
-        Write-LogMessage -Message "Compressing files '$Files' into '$Archive'..." -Level "INFO"
-        Compress-Archive -Path $Files -DestinationPath $Archive -Force -ErrorAction Stop
-        Write-LogMessage -Message "File compression completed successfully." -Level "INFO"
-    }
-    catch {
-        Write-LogMessage -Message "Failed to compress files '$Files'." -Level "ERROR"
+    process {
+        try {
+            Write-LogMessage -Message "Compressing files '$Files' into '$Archive'..." -Level "INFO"
+            Compress-Archive -Path $Files -DestinationPath $Archive -Force -ErrorAction Stop
+            Write-LogMessage -Message "File compression completed successfully." -Level "INFO"
+        }
+        catch {
+            Write-LogMessage -Message "Failed to compress files '$Files'." -Level "ERROR"
+        }
     }
 }
 
@@ -317,27 +325,29 @@ function Get-ContentMatching {
         [string]$Path = $PWD
     )
 
-    try {
-        if (-not (Test-Path $Path)) {
-            Write-LogMessage -Message "The specified path '$Path' does not exist." -Level "ERROR"
-            return
-        }
+    process {
+        try {
+            if (-not (Test-Path $Path)) {
+                Write-LogMessage -Message "The specified path '$Path' does not exist." -Level "ERROR"
+                return
+            }
 
-        if (Test-Path $Path -PathType Leaf) {
-            Get-Content -Path $Path | Select-String -Pattern $Pattern
-        }
-        elseif (Test-Path $Path -PathType Container) {
-            Get-ChildItem -Path $Path -Recurse -File | ForEach-Object {
-                Get-Content -Path $_.FullName | Select-String -Pattern $Pattern
+            if (Test-Path $Path -PathType Leaf) {
+                Get-Content -Path $Path | Select-String -Pattern $Pattern
+            }
+            elseif (Test-Path $Path -PathType Container) {
+                Get-ChildItem -Path $Path -Recurse -File | ForEach-Object {
+                    Get-Content -Path $_.FullName | Select-String -Pattern $Pattern
+                }
+            }
+            else {
+                Write-LogMessage -Message "The specified path '$Path' is neither a file nor a directory." -Level "WARNING"
             }
         }
-        else {
-            Write-LogMessage -Message "The specified path '$Path' is neither a file nor a directory." -Level "WARNING"
+        catch {
+            Write-LogMessage -Message "Failed to access path '$Path'." -Level "ERROR"
+            return
         }
-    }
-    catch {
-        Write-LogMessage -Message "Failed to access path '$Path'." -Level "ERROR"
-        return
     }
 }
 
@@ -411,12 +421,14 @@ function Set-ContentMatching {
         [string]$Replace
     )
 
-    try {
-        $content = Get-Content $File -ErrorAction Stop
-        $content -replace $Find, $Replace | Set-Content $File -ErrorAction Stop
-    }
-    catch {
-        Write-LogMessage -Message "An error occurred while performing text replacement." -Level "ERROR"
+    process {
+        try {
+            $content = Get-Content $File -ErrorAction Stop
+            $content -replace $Find, $Replace | Set-Content $File -ErrorAction Stop
+        }
+        catch {
+            Write-LogMessage -Message "An error occurred while performing text replacement." -Level "ERROR"
+        }
     }
 }
 
@@ -487,11 +499,13 @@ function Get-FileHead {
         [int]$Lines = 10
     )
 
-    try {
-        Get-Content -Path $Path -TotalCount $Lines -ErrorAction Stop
-    }
-    catch {
-        Write-LogMessage -Message "Failed to read the first $Lines lines of file '$Path'." -Level "ERROR"
+    process {
+        try {
+            Get-Content -Path $Path -TotalCount $Lines -ErrorAction Stop
+        }
+        catch {
+            Write-LogMessage -Message "Failed to read the first $Lines lines of file '$Path'." -Level "ERROR"
+        }
     }
 }
 
@@ -573,11 +587,13 @@ function Get-FileTail {
         [switch]$Wait = $false
     )
 
-    try {
-        Get-Content -Path $Path -Tail $Lines -Wait:$Wait -ErrorAction Stop
-    }
-    catch {
-        Write-LogMessage -Message "Failed to read the last $Lines lines of file '$Path'." -Level "ERROR"
+    process {
+        try {
+            Get-Content -Path $Path -Tail $Lines -Wait:$Wait -ErrorAction Stop
+        }
+        catch {
+            Write-LogMessage -Message "Failed to read the last $Lines lines of file '$Path'." -Level "ERROR"
+        }
     }
 }
 
@@ -622,20 +638,22 @@ function Get-ShortPath {
         [string]$Path = (Get-Location)
     )
 
-    Write-Verbose "Make short path from: $Path"
-    if ($Path -and (Test-Path $Path)) {
-        $fso = New-Object -ComObject Scripting.FileSystemObject
-        $short = if ((Get-Item $Path).PSIsContainer) {
-            $fso.GetFolder($Path).ShortPath
+    process {
+        Write-Verbose "Make short path from: $Path"
+        if ($Path -and (Test-Path $Path)) {
+            $fso = New-Object -ComObject Scripting.FileSystemObject
+            $short = if ((Get-Item $Path).PSIsContainer) {
+                $fso.GetFolder($Path).ShortPath
+            }
+            else {
+                $fso.GetFile($Path).ShortPath
+            }
+            Write-Output $short
         }
         else {
-            $fso.GetFile($Path).ShortPath
+            Write-Verbose "Ignoring $Path"
+            Write-Output $null
         }
-        Write-Output $short
-    }
-    else {
-        Write-Verbose "Ignoring $Path"
-        Write-Output $null
     }
 }
 

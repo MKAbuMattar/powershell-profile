@@ -330,6 +330,54 @@ function Resolve-ProfileConflict {
     }
 }
 
+function Test-ProfileAliasContention {
+    <#
+    .SYNOPSIS
+        Reports aliases that more than one loaded profile module defines.
+
+    .DESCRIPTION
+        PNPM, Pipenv and Poetry all compete for the p* namespace: pad, pch, pi, pin, ppub, prm,
+        prun, psh and pup are each claimed by two of them, and Deno and Docker both want dr.
+
+        Only one definition survives, decided by load order, which is not something the user
+        chose. Enabling two contending plugins together is legitimate, so this reports rather than
+        resolves; rename the loser in its own module if the collision matters to you.
+
+    .OUTPUTS
+        [PSCustomObject[]] One row per contested alias, with the modules claiming it.
+
+    .EXAMPLE
+        Test-ProfileAliasContention
+        Lists contested aliases in the current session.
+
+    .LINK
+        https://github.com/MKAbuMattar/powershell-profile
+    #>
+    [CmdletBinding()]
+    [Alias('profile-alias-conflicts')]
+    [OutputType([PSCustomObject[]])]
+    param()
+
+    $claims = foreach ($module in Get-Module) {
+        if (-not $module.Path) { continue }
+        foreach ($alias in $module.ExportedAliases.Keys) {
+            [PSCustomObject]@{ Alias = $alias; Module = $module.Name }
+        }
+    }
+
+    return @($claims |
+            Group-Object Alias |
+            Where-Object { $_.Count -gt 1 } |
+            ForEach-Object {
+                [PSCustomObject]@{
+                    Alias   = $_.Name
+                    Modules = ($_.Group.Module | Sort-Object -Unique) -join ', '
+                    Winner  = (Get-Command $_.Name -ErrorAction SilentlyContinue).Source
+                }
+            } |
+            Sort-Object Alias)
+}
+
 function Import-ProfileModule {
     <#
     .SYNOPSIS

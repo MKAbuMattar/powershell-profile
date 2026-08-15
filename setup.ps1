@@ -88,8 +88,10 @@ function Write-LogMessage {
         [string]$Level = "INFO"
     )
 
-    $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
-    Write-Output "[$timestamp][$Level] $Message"
+    process {
+        $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+        Write-Output "[$timestamp][$Level] $Message"
+    }
 }
 
 function Invoke-ErrorHandling {
@@ -137,8 +139,10 @@ function Invoke-ErrorHandling {
         [System.Management.Automation.ErrorRecord]$ErrorRecord
     )
 
-    Write-LogMessage -Message "$ErrorMessage`n$($ErrorRecord.Exception.Message)" -Level "ERROR"
-    break
+    process {
+        Write-LogMessage -Message "$ErrorMessage`n$($ErrorRecord.Exception.Message)" -Level "ERROR"
+        break
+    }
 }
 
 #---------------------------------------------------------------------------------------------------
@@ -182,13 +186,15 @@ function Test-InternetConnection {
         [string]$HostName = "www.google.com"
     )
 
-    try {
-        Test-Connection -ComputerName $HostName -Count 1 -ErrorAction Stop | Out-Null
-        return $true
-    }
-    catch {
-        Invoke-ErrorHandling -ErrorMessage "Internet connection is required but not available. Please check your connection." -ErrorRecord $_
-        return $false
+    process {
+        try {
+            Test-Connection -ComputerName $HostName -Count 1 -ErrorAction Stop | Out-Null
+            return $true
+        }
+        catch {
+            Invoke-ErrorHandling -ErrorMessage "Internet connection is required but not available. Please check your connection." -ErrorRecord $_
+            return $false
+        }
     }
 }
 
@@ -202,136 +208,108 @@ if (-not (Test-InternetConnection)) {
 function Copy-ModuleDirectory {
     <#
     .SYNOPSIS
-        Copies the Module directory and its contents from the repository to the specified local path.
+        Installs the Module directory from the repository.
 
     .DESCRIPTION
-        This function copies the Module directory and its contents from the GitHub repository to the specified local path. If the file already exists, it will be removed before copying the new file.
+        Downloads the repository as a single archive and copies its Module tree into place.
+
+        This previously walked the GitHub Contents API directory by directory and downloaded each
+        of roughly 135 files individually. Unauthenticated API access is limited to 60 requests an
+        hour, so a single setup run exhausted the quota and then failed partway through, leaving an
+        incomplete install. Update.psm1 carried a second copy of the same routine.
 
     .PARAMETER LocalPath
-        Specifies the local path where the Module directory will be copied.
+        Directory to install into. Defaults to the PowerShell profile directory.
+
+    .PARAMETER Branch
+        Repository branch to fetch. Defaults to main.
 
     .OUTPUTS
-        The Module directory and its contents are copied to the specified local path.
+        None.
 
     .EXAMPLE
-        Copy-ModuleDirectory -LocalPath "$HOME\Documents\PowerShell"
-        Copies the Module directory to the specified local path.
-
-    .NOTES
-        This function is used to copy the Module directory from the repository to the local path.
+        Copy-ModuleDirectory
+        Installs the Module directory under the profile directory.
     #>
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess)]
     param (
-        [Parameter(
-            Mandatory = $false,
-            Position = 0,
-            ValueFromPipeline = $true,
-            ValueFromPipelineByPropertyName = $true,
-            HelpMessage = "The local path where the Module directory will be copied."
-        )]
-        [string]$LocalPath = "$HOME\Documents\PowerShell"
+        [Parameter(Position = 0)]
+        [string]$LocalPath = "$HOME\Documents\PowerShell",
+
+        [Parameter(Position = 1)]
+        [string]$Branch = 'main'
     )
 
-    function Get-GitHubDirectoryFiles {
-        param(
-            [string]$Owner,
-            [string]$Repo,
-            [string]$Path,
-            [string]$Branch = "main"
-        )
+    $targetModule = Join-Path $LocalPath 'Module'
 
-        $apiUrl = "https://api.github.com/repos/$Owner/$Repo/contents/$Path" + "?ref=$Branch"
-
-        try {
-            Write-LogMessage -Message "Exploring directory: $Path"
-            $response = Invoke-RestMethod -Uri $apiUrl -Headers @{"Accept" = "application/vnd.github.v3+json" }
-            $files = @()
-
-            foreach ($item in $response) {
-                if ($item.type -eq "file" -and ($item.name -match "\.(psd1|psm1|py)$")) {
-                    Write-LogMessage -Message "Found PowerShell module file: $($item.path)"
-                    if ($item.download_url -and $item.download_url.Trim() -ne "" -and $item.path -and $item.path.Trim() -ne "") {
-                        $files += @{
-                            Path        = $item.path
-                            DownloadUrl = $item.download_url
-                        }
-                    }
-                    else {
-                        Write-LogMessage -Message "Warning: Invalid download URL or path for file $($item.path)" -Level "WARNING"
-                    }
-                }
-                elseif ($item.type -eq "dir") {
-                    Write-LogMessage -Message "Found subdirectory: $($item.path), recursing..."
-                    $subFiles = Get-GitHubDirectoryFiles -Owner $Owner -Repo $Repo -Path $item.path -Branch $Branch
-                    if ($subFiles -and $subFiles.Count -gt 0) {
-                        foreach ($subFile in $subFiles) {
-                            if ($subFile.Path -and $subFile.DownloadUrl) {
-                                $files += $subFile
-                            }
-                        }
-                    }
-                }
-            }
-
-            return $files
-        }
-        catch {
-            Write-LogMessage -Message "Failed to get directory contents for $Path`: $($_.Exception.Message)" -Level "ERROR"
-            return @()
-        }
+    # Checked before the download so a dry run stays free of side effects, network included.
+    if (-not $PSCmdlet.ShouldProcess($targetModule, 'Install the Module directory')) {
+        return
     }
+
+    $workspace = Join-Path ([System.IO.Path]::GetTempPath()) ("profile-setup-" + [guid]::NewGuid().ToString('N'))
+    $archive = "$workspace.tar.gz"
 
     try {
-        $localModuleDir = Join-Path -Path $LocalPath -ChildPath "Module"
-        if (-not (Test-Path -Path $localModuleDir)) {
-            New-Item -Path $localModuleDir -ItemType Directory -Force
-            Write-LogMessage -Message "Created directory: $localModuleDir"
+        $null = New-Item -ItemType Directory -Path $workspace -Force
+        $null = New-Item -ItemType Directory -Path $LocalPath -Force
+
+        $url = "https://codeload.github.com/MKAbuMattar/powershell-profile/tar.gz/refs/heads/$Branch"
+        Write-LogMessage -Message "Downloading the profile archive..."
+        Invoke-WebRequest -Uri $url -OutFile $archive -UseBasicParsing
+
+        # tar ships with Windows 10 1803 and later.
+        & tar -xzf $archive -C $workspace
+        if ($LASTEXITCODE -ne 0) {
+            throw "tar exited with code $LASTEXITCODE while extracting the archive."
         }
 
-        Write-LogMessage -Message "Discovering PowerShell module files from repository (main branch)..."
-        $moduleFiles = Get-GitHubDirectoryFiles -Owner "MKAbuMattar" -Repo "powershell-profile" -Path "Module" -Branch "main"
-
-        if ($moduleFiles.Count -eq 0) {
-            Write-LogMessage -Message "No PowerShell module files found in the repository." -Level "WARNING"
-            return
+        $extracted = Get-ChildItem -LiteralPath $workspace -Directory | Select-Object -First 1
+        if (-not $extracted) {
+            throw "The archive did not contain the expected directory."
         }
 
-        Write-LogMessage -Message "Found $($moduleFiles.Count) PowerShell module files to copy."
+        $sourceModule = Join-Path $extracted.FullName 'Module'
+        if (-not (Test-Path -LiteralPath $sourceModule)) {
+            throw "The archive did not contain a Module directory."
+        }
 
-        foreach ($fileInfo in $moduleFiles) {
-            $relativePath = $fileInfo.Path -replace "^Module/", ""
-            $localFilePath = Join-Path -Path $localModuleDir -ChildPath $relativePath
+        if (Test-Path -LiteralPath $targetModule) {
+            $backup = "$targetModule.old"
+            if (Test-Path -LiteralPath $backup) { Remove-Item -LiteralPath $backup -Recurse -Force }
+            Move-Item -LiteralPath $targetModule -Destination $backup -Force
+            Write-LogMessage -Message "Existing Module directory moved to $backup"
+        }
 
-            $localFileDir = Split-Path -Path $localFilePath -Parent
-            if (-not (Test-Path -Path $localFileDir)) {
-                New-Item -Path $localFileDir -ItemType Directory -Force
-                Write-LogMessage -Message "Created directory: $localFileDir"
-            }
+        Copy-Item -LiteralPath $sourceModule -Destination $targetModule -Recurse -Force
 
-            if (Test-Path -Path $localFilePath) {
-                $tmpDir = "$HOME\.tmp"
-                if (-not (Test-Path -Path $tmpDir)) {
-                    New-Item -Path $tmpDir -ItemType Directory -Force
+        # The loader reads profile.config.psd1 and Tools/ExportPolicy.psd1 from the profile root.
+        foreach ($extra in 'profile.config.psd1', 'Tools') {
+            $source = Join-Path $extracted.FullName $extra
+            if (Test-Path -LiteralPath $source) {
+                $destination = Join-Path $LocalPath $extra
+
+                # Never clobber an existing configuration; the user will have edited it.
+                if ($extra -eq 'profile.config.psd1' -and (Test-Path -LiteralPath $destination)) {
+                    Write-LogMessage -Message "Keeping the existing profile.config.psd1."
+                    continue
                 }
-                $backupName = "$($relativePath -replace '[\\/]', '_').old"
-                Get-Item -Path $localFilePath | Move-Item -Destination "$tmpDir\$backupName" -Force
-                Write-LogMessage -Message "Backed up existing file: $localFilePath to $tmpDir\$backupName"
-            }
 
-            try {
-                Invoke-WebRequest -Uri $fileInfo.DownloadUrl -OutFile $localFilePath
-                Write-LogMessage -Message "Copied $relativePath to: $localFilePath"
-            }
-            catch {
-                Write-LogMessage -Message "Failed to download $($fileInfo.Path)`: $($_.Exception.Message)" -Level "ERROR"
+                Copy-Item -LiteralPath $source -Destination $destination -Recurse -Force
             }
         }
+
+        $count = @(Get-ChildItem -LiteralPath $targetModule -Recurse -File).Count
+        Write-LogMessage -Message "Installed the Module directory ($count files) to $targetModule"
     }
     catch {
-        Invoke-ErrorHandling -ErrorMessage "Failed to copy Module directory from the repository." -ErrorRecord $_
+        Invoke-ErrorHandling -ErrorMessage "Failed to install the Module directory." -ErrorRecord $_
+    }
+    finally {
+        Remove-Item -LiteralPath $workspace -Recurse -Force -ErrorAction SilentlyContinue
+        Remove-Item -LiteralPath $archive -Force -ErrorAction SilentlyContinue
     }
 }
-
 function Initialize-PowerShellProfile {
     <#
     .SYNOPSIS
@@ -615,38 +593,40 @@ function Install-CascadiaCodeFont {
         [string]$Version = "3.4.0"
     )
 
-    try {
-        [void] [System.Reflection.Assembly]::LoadWithPartialName("System.Drawing")
-        $fontFamilies = (New-Object System.Drawing.Text.InstalledFontCollection).Families.Name
-        if ($fontFamilies -notcontains "${FontDisplayName}") {
-            $fontZipUrl = "https://github.com/ryanoasis/nerd-fonts/releases/download/v${Version}/${FontName}.zip"
-            $zipFilePath = "$env:TEMP\${FontName}.zip"
-            $extractPath = "$env:TEMP\${FontName}"
+    process {
+        try {
+            [void] [System.Reflection.Assembly]::LoadWithPartialName("System.Drawing")
+            $fontFamilies = (New-Object System.Drawing.Text.InstalledFontCollection).Families.Name
+            if ($fontFamilies -notcontains "${FontDisplayName}") {
+                $fontZipUrl = "https://github.com/ryanoasis/nerd-fonts/releases/download/v${Version}/${FontName}.zip"
+                $zipFilePath = "$env:TEMP\${FontName}.zip"
+                $extractPath = "$env:TEMP\${FontName}"
 
-            $webClient = New-Object System.Net.WebClient
-            $webClient.DownloadFileAsync((New-Object System.Uri($fontZipUrl)), $zipFilePath)
+                $webClient = New-Object System.Net.WebClient
+                $webClient.DownloadFileAsync((New-Object System.Uri($fontZipUrl)), $zipFilePath)
 
-            while ($webClient.IsBusy) {
-                Start-Sleep -Seconds 2
-            }
-
-            Expand-Archive -Path $zipFilePath -DestinationPath $extractPath -Force
-            $destination = (New-Object -ComObject Shell.Application).Namespace(0x14)
-            Get-ChildItem -Path $extractPath -Recurse -Filter "*.ttf" | ForEach-Object {
-                if (-not(Test-Path "C:\Windows\Fonts\$($_.Name)")) {
-                    $destination.CopyHere($_.FullName, 0x10)
+                while ($webClient.IsBusy) {
+                    Start-Sleep -Seconds 2
                 }
-            }
 
-            Remove-Item -Path $extractPath -Recurse -Force
-            Remove-Item -Path $zipFilePath -Force
+                Expand-Archive -Path $zipFilePath -DestinationPath $extractPath -Force
+                $destination = (New-Object -ComObject Shell.Application).Namespace(0x14)
+                Get-ChildItem -Path $extractPath -Recurse -Filter "*.ttf" | ForEach-Object {
+                    if (-not(Test-Path "C:\Windows\Fonts\$($_.Name)")) {
+                        $destination.CopyHere($_.FullName, 0x10)
+                    }
+                }
+
+                Remove-Item -Path $extractPath -Recurse -Force
+                Remove-Item -Path $zipFilePath -Force
+            }
+            else {
+                Write-LogMessage -Message "${FontDisplayName} font is already installed."
+            }
         }
-        else {
-            Write-LogMessage -Message "${FontDisplayName} font is already installed."
+        catch {
+            Invoke-ErrorHandling "Failed to download or install ${FontDisplayName} font. Error: $_"
         }
-    }
-    catch {
-        Invoke-ErrorHandling "Failed to download or install ${FontDisplayName} font. Error: $_"
     }
 }
 
@@ -716,29 +696,31 @@ function Invoke-UpdateInstallPSModules {
         [string[]]$ModuleList
     )
 
-    foreach ($module in $ModuleList) {
-        Write-LogMessage -Message "Checking $module"
-        try {
-            $installedModule = Get-InstalledModule -Name $module -ErrorAction SilentlyContinue
-            if ($installedModule) {
-                $installedVersion = $installedModule.Version
-                $latestVersion = (Find-Module -Name $module).Version
+    process {
+        foreach ($module in $ModuleList) {
+            Write-LogMessage -Message "Checking $module"
+            try {
+                $installedModule = Get-InstalledModule -Name $module -ErrorAction SilentlyContinue
+                if ($installedModule) {
+                    $installedVersion = $installedModule.Version
+                    $latestVersion = (Find-Module -Name $module).Version
 
-                if ($installedVersion -ne $latestVersion) {
-                    Write-LogMessage -Message "Updating $module from version $installedVersion to $latestVersion"
-                    Update-Module -Name $module -Force
+                    if ($installedVersion -ne $latestVersion) {
+                        Write-LogMessage -Message "Updating $module from version $installedVersion to $latestVersion"
+                        Update-Module -Name $module -Force
+                    }
+                    else {
+                        Write-LogMessage -Message "$module is already up-to-date (version $installedVersion)"
+                    }
                 }
                 else {
-                    Write-LogMessage -Message "$module is already up-to-date (version $installedVersion)"
+                    Write-LogMessage -Message "Installing $module"
+                    Install-Module -Name $module -Force
                 }
             }
-            else {
-                Write-LogMessage -Message "Installing $module"
-                Install-Module -Name $module -Force
+            catch {
+                Invoke-ErrorHandling -ErrorMessage "Failed to process module $module." -ErrorRecord $_
             }
-        }
-        catch {
-            Invoke-ErrorHandling -ErrorMessage "Failed to process module $module." -ErrorRecord $_
         }
     }
 }
@@ -776,29 +758,31 @@ function Invoke-UpdateInstallChocoPackages {
         [string[]]$PackageList
     )
 
-    foreach ($package in $PackageList) {
-        Write-LogMessage -Message "Checking $package"
-        try {
-            $installedPackage = choco list --local-only --exact $package -r -e | Select-String -Pattern $package
-            if ($installedPackage) {
-                $installedVersion = $installedPackage.ToString().Split('|')[1].Trim()
-                $latestVersion = (choco search $package --exact --limit-output | Select-String -Pattern $package).ToString().Split('|')[1].Trim()
+    process {
+        foreach ($package in $PackageList) {
+            Write-LogMessage -Message "Checking $package"
+            try {
+                $installedPackage = choco list --local-only --exact $package -r -e | Select-String -Pattern $package
+                if ($installedPackage) {
+                    $installedVersion = $installedPackage.ToString().Split('|')[1].Trim()
+                    $latestVersion = (choco search $package --exact --limit-output | Select-String -Pattern $package).ToString().Split('|')[1].Trim()
 
-                if ($installedVersion -ne $latestVersion) {
-                    Write-LogMessage -Message "Updating $package from version $installedVersion to $latestVersion"
-                    choco upgrade $package -y
+                    if ($installedVersion -ne $latestVersion) {
+                        Write-LogMessage -Message "Updating $package from version $installedVersion to $latestVersion"
+                        choco upgrade $package -y
+                    }
+                    else {
+                        Write-LogMessage -Message "$package is already up-to-date (version $installedVersion)"
+                    }
                 }
                 else {
-                    Write-LogMessage -Message "$package is already up-to-date (version $installedVersion)"
+                    Write-LogMessage -Message "Installing $package"
+                    choco install $package -y
                 }
             }
-            else {
-                Write-LogMessage -Message "Installing $package"
-                choco install $package -y
+            catch {
+                Invoke-ErrorHandling -ErrorMessage "Failed to process package $package." -ErrorRecord $_
             }
-        }
-        catch {
-            Invoke-ErrorHandling -ErrorMessage "Failed to process package $package." -ErrorRecord $_
         }
     }
 }
@@ -852,30 +836,32 @@ function Initialize-WindowsTerminalConfig {
         [string]$DestinationPath = "$env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json"
     )
 
-    try {
-        if (!(Test-Path -Path $DestinationPath -PathType Leaf)) {
-            $destinationDir = Split-Path -Path $DestinationPath -Parent
-            if (!(Test-Path -Path $destinationDir)) {
-                New-Item -Path $destinationDir -ItemType "directory"
-            }
+    process {
+        try {
+            if (!(Test-Path -Path $DestinationPath -PathType Leaf)) {
+                $destinationDir = Split-Path -Path $DestinationPath -Parent
+                if (!(Test-Path -Path $destinationDir)) {
+                    New-Item -Path $destinationDir -ItemType "directory"
+                }
 
-            Invoke-RestMethod $SourceUrl -OutFile $DestinationPath
-            Write-LogMessage -Message "The settings.json @ [$DestinationPath] has been created."
-            Write-LogMessage -Message "If you want to add any persistent components, please do so at [$destinationDir\settings.json] as there is an updater in the installed profile which uses the hash to update the profile and will lead to loss of changes."
-        }
-        else {
-            $tmpDir = "$HOME\.tmp"
-            if (-not (Test-Path -Path $tmpDir)) {
-                New-Item -Path $tmpDir -ItemType Directory -Force
+                Invoke-RestMethod $SourceUrl -OutFile $DestinationPath
+                Write-LogMessage -Message "The settings.json @ [$DestinationPath] has been created."
+                Write-LogMessage -Message "If you want to add any persistent components, please do so at [$destinationDir\settings.json] as there is an updater in the installed profile which uses the hash to update the profile and will lead to loss of changes."
             }
-            Get-Item -Path $DestinationPath | Move-Item -Destination "$tmpDir\settings.json.old" -Force
-            Invoke-RestMethod $SourceUrl -OutFile $DestinationPath
-            Write-LogMessage -Message "The settings.json @ [$DestinationPath] has been created and old settings.json moved to $tmpDir\settings.json.old."
-            Write-LogMessage -Message "Please back up any persistent components of your old settings.json to [$destinationDir\settings.json] as there is an updater in the installed profile which uses the hash to update the profile and will lead to loss of changes."
+            else {
+                $tmpDir = "$HOME\.tmp"
+                if (-not (Test-Path -Path $tmpDir)) {
+                    New-Item -Path $tmpDir -ItemType Directory -Force
+                }
+                Get-Item -Path $DestinationPath | Move-Item -Destination "$tmpDir\settings.json.old" -Force
+                Invoke-RestMethod $SourceUrl -OutFile $DestinationPath
+                Write-LogMessage -Message "The settings.json @ [$DestinationPath] has been created and old settings.json moved to $tmpDir\settings.json.old."
+                Write-LogMessage -Message "Please back up any persistent components of your old settings.json to [$destinationDir\settings.json] as there is an updater in the installed profile which uses the hash to update the profile and will lead to loss of changes."
+            }
         }
-    }
-    catch {
-        Invoke-ErrorHandling -ErrorMessage "Failed to create or update the settings.json." -ErrorRecord $_
+        catch {
+            Invoke-ErrorHandling -ErrorMessage "Failed to create or update the settings.json." -ErrorRecord $_
+        }
     }
 }
 
@@ -972,4 +958,3 @@ if (Test-Path -Path $PROFILE) {
 else {
     Invoke-ErrorHandling -ErrorMessage "Setup completed with errors. Please check the error messages above." -ErrorRecord $_
 }
-

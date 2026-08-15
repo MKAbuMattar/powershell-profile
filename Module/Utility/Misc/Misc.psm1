@@ -125,8 +125,10 @@ function Test-CommandExists {
         [string]$Command
     )
 
-    $exists = $null -ne (Get-Command $Command -ErrorAction SilentlyContinue)
-    return $exists
+    process {
+        $exists = $null -ne (Get-Command $Command -ErrorAction SilentlyContinue)
+        return $exists
+    }
 }
 
 function Invoke-ReloadProfile {
@@ -299,17 +301,19 @@ function Get-CommandDefinition {
         [string]$Name
     )
 
-    try {
-        $definition = Get-Command $Name -ErrorAction Stop | Select-Object -ExpandProperty Definition
-        if ($definition) {
-            Write-Output $definition
+    process {
+        try {
+            $definition = Get-Command $Name -ErrorAction Stop | Select-Object -ExpandProperty Definition
+            if ($definition) {
+                Write-Output $definition
+            }
+            else {
+                Write-LogMessage -Message "Command '$Name' not found." -Level "WARNING"
+            }
         }
-        else {
-            Write-LogMessage -Message "Command '$Name' not found." -Level "WARNING"
+        catch {
+            Write-LogMessage -Message "An error occurred while retrieving the definition of '$Name'." -Level "ERROR"
         }
-    }
-    catch {
-        Write-LogMessage -Message "An error occurred while retrieving the definition of '$Name'." -Level "ERROR"
     }
 }
 

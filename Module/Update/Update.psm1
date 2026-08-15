@@ -40,169 +40,129 @@
 # Version: 4.2.0
 #---------------------------------------------------------------------------------------------------
 
+
 function Update-LocalProfileModuleDirectory {
     <#
     .SYNOPSIS
-        Updates the Modules directory in the local profile with the latest version from the GitHub repository.
+        Updates the local Module directory from the repository.
 
     .DESCRIPTION
-        This function checks for updates to the Modules directory in the local profile from the GitHub repository specified in the script. It compares the hash of the local Modules directory with the hash of the Modules directory on GitHub. If updates are found, it downloads the updated Modules directory and replaces the local Modules directory with the updated one. The function provides feedback on whether the Modules directory has been updated and prompts the user to restart the shell to reflect changes.
+        Downloads the repository as a single tarball and replaces the local Module tree with the
+        copy it contains.
+
+        The previous implementation walked the GitHub Contents API directory by directory, then
+        downloaded every one of roughly 135 module files to a temporary path purely to compare
+        hashes. That is well over a hundred HTTP requests per check, against an unauthenticated
+        rate limit of 60 per hour, so in practice it exhausted the limit and then reported failures
+        for the remainder of the hour.
+
+        One archive request replaces all of it. When the profile lives in a git clone, use
+        `git pull` instead: this function is for installs made by setup.ps1, which are not clones.
+
+        The existing Module directory is moved aside before the new one is put in place, so a
+        failed download cannot leave a half-updated tree.
 
     .PARAMETER LocalPath
-        Specifies the local path where the Modules directory should be updated. The default value is "$HOME\Documents\PowerShell".
+        Directory holding the Module tree. Defaults to the profile directory.
+
+    .PARAMETER Branch
+        Repository branch to fetch. Defaults to main.
 
     .INPUTS
-        LocalPath: (Required) Specifies the local path where the Modules directory should be updated.
+        [string] A path.
 
     .OUTPUTS
-        This function does not return any output.
+        None.
 
     .NOTES
-        The local profile update function is disabled by default. To enable it, uncomment the line that invokes the function at the end of the script.
+        Automatic invocation is off by default. Set $global:AutoUpdateProfile = $true to enable it.
 
     .EXAMPLE
         Update-LocalProfileModuleDirectory
-        Checks for updates to the Modules directory in the local profile and updates the local Modules directory if changes are detected.
+        Refreshes the Module directory from the main branch.
+
+    .EXAMPLE
+        Update-LocalProfileModuleDirectory -WhatIf
+        Reports what would be replaced without downloading anything.
 
     .LINK
         https://github.com/MKAbuMattar/powershell-profile?tab=readme-ov-file#my-powershell-profile
     #>
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess)]
     [Alias("update-local-module")]
     [OutputType([void])]
     param (
-        [Parameter(
-            Mandatory = $false,
-            Position = 0,
-            ValueFromPipeline = $true,
-            ValueFromPipelineByPropertyName = $true,
-            HelpMessage = "Specifies the local path where the Modules directory should be updated."
-        )]
-        [string]$LocalPath = "$HOME\Documents\PowerShell"
+        [Parameter(Position = 0, ValueFromPipeline)]
+        [string]$LocalPath = (Split-Path -Parent $PROFILE),
+
+        [Parameter(Position = 1)]
+        [string]$Branch = 'main'
     )
 
-    function Get-GitHubDirectoryFiles {
-        param(
-            [string]$Owner,
-            [string]$Repo,
-            [string]$Path,
-            [string]$Branch = "main"
-        )
-
-        $apiUrl = "https://api.github.com/repos/$Owner/$Repo/contents/$Path" + "?ref=$Branch"
-
-        try {
-            Write-LogMessage -Message "Exploring directory: $Path"
-            $response = Invoke-RestMethod -Uri $apiUrl -Headers @{"Accept" = "application/vnd.github.v3+json" }
-            $files = @()
-
-            foreach ($item in $response) {
-                if ($item.type -eq "file" -and ($item.name -match "\.(psd1|psm1|py)$")) {
-                    Write-LogMessage -Message "Found PowerShell module file: $($item.path)"
-                    if ($item.download_url -and $item.download_url.Trim() -ne "" -and $item.path -and $item.path.Trim() -ne "") {
-                        $files += @{
-                            Path        = $item.path
-                            DownloadUrl = $item.download_url
-                        }
-                    }
-                    else {
-                        Write-LogMessage -Message "Warning: Invalid download URL or path for file $($item.path)" -Level "WARNING"
-                    }
-                }
-                elseif ($item.type -eq "dir") {
-                    Write-LogMessage -Message "Found subdirectory: $($item.path), recursing..."
-                    $subFiles = Get-GitHubDirectoryFiles -Owner $Owner -Repo $Repo -Path $item.path -Branch $Branch
-                    if ($subFiles -and $subFiles.Count -gt 0) {
-                        foreach ($subFile in $subFiles) {
-                            if ($subFile.Path -and $subFile.DownloadUrl) {
-                                $files += $subFile
-                            }
-                        }
-                    }
-                }
-            }
-
-            return $files
-        }
-        catch {
-            Write-LogMessage -Message "Failed to get directory contents for $Path`: $($_.Exception.Message)" -Level "ERROR"
-            return @()
-        }
-    }
-
-    if (-not (Test-GitHubConnection)) {
-        Write-LogMessage -Message "Skipping profile update check due to GitHub.com not responding within 1 second." -Level "WARNING"
-        return
-    }
-
-    try {
-        $localModuleDir = Join-Path -Path $LocalPath -ChildPath "Module"
-        if (-not (Test-Path -Path $localModuleDir)) {
-            New-Item -Path $localModuleDir -ItemType Directory -Force
-            Write-LogMessage -Message "Created directory: $localModuleDir"
-        }
-
-        Write-LogMessage -Message "Discovering PowerShell module files from repository (main branch)..."
-        $moduleFiles = Get-GitHubDirectoryFiles -Owner "MKAbuMattar" -Repo "powershell-profile" -Path "Module" -Branch "main"
-
-        if ($moduleFiles.Count -eq 0) {
-            Write-LogMessage -Message "No PowerShell module files found in the repository." -Level "WARNING"
+    process {
+        if (-not (Test-GitHubConnection)) {
+            Write-LogMessage -Message "Skipping module update because github.com did not respond within 1 second." -Level "WARNING"
             return
         }
 
-        Write-LogMessage -Message "Found $($moduleFiles.Count) PowerShell module files to update."
-
-        foreach ($fileInfo in $moduleFiles) {
-            $relativePath = $fileInfo.Path -replace "^Module/", ""
-            $localFilePath = Join-Path -Path $localModuleDir -ChildPath $relativePath
-
-            $localFileDir = Split-Path -Path $localFilePath -Parent
-            if (-not (Test-Path -Path $localFileDir)) {
-                New-Item -Path $localFileDir -ItemType Directory -Force
-                Write-LogMessage -Message "Created directory: $localFileDir"
-            }
-
-            $downloadFile = $true
-
-            if (Test-Path -Path $localFilePath) {
-                try {
-                    $localFileHash = Get-FileHash -Path $localFilePath
-                    $tempFilePath = [System.IO.Path]::GetTempFileName()
-                    Invoke-WebRequest -Uri $fileInfo.DownloadUrl -OutFile $tempFilePath
-                    $remoteFileHash = Get-FileHash -Path $tempFilePath
-
-                    if ($localFileHash.Hash -eq $remoteFileHash.Hash) {
-                        Write-LogMessage -Message "File $relativePath is already up-to-date."
-                        $downloadFile = $false
-                    }
-                    else {
-                        Write-LogMessage -Message "File $relativePath has changed, updating..."
-                        Remove-Item -Path $localFilePath -Force
-                    }
-
-                    Remove-Item -Path $tempFilePath -Force
-                }
-                catch {
-                    Write-LogMessage -Message "Failed to compare hashes for $relativePath`: $($_.Exception.Message)" -Level "ERROR"
-                }
-            }
-
-            if ($downloadFile) {
-                try {
-                    Invoke-WebRequest -Uri $fileInfo.DownloadUrl -OutFile $localFilePath
-                    Write-LogMessage -Message "Updated $relativePath to: $localFilePath"
-                }
-                catch {
-                    Write-LogMessage -Message "Failed to download $($fileInfo.Path)`: $($_.Exception.Message)" -Level "ERROR"
-                }
-            }
+        $gitDirectory = Join-Path $LocalPath '.git'
+        if (Test-Path -LiteralPath $gitDirectory) {
+            Write-LogMessage -Message "$LocalPath is a git clone. Use 'git pull' rather than this function." -Level "WARNING"
+            return
         }
-    }
-    catch {
-        Invoke-ErrorHandling -ErrorMessage "Failed to update Module directory from the repository." -ErrorRecord $_
-    }
-    finally {
-        Write-LogMessage -Message "Module directory update check completed. Please restart your shell to reflect changes." -Level "INFO"
+
+        $targetModule = Join-Path $LocalPath 'Module'
+
+        # Checked before the download so a dry run stays free of side effects, network included.
+        if (-not $PSCmdlet.ShouldProcess($targetModule, 'Replace with the copy from the repository')) {
+            return
+        }
+
+        $workspace = Join-Path ([System.IO.Path]::GetTempPath()) ("profile-update-" + [guid]::NewGuid().ToString('N'))
+        $archive = "$workspace.tar.gz"
+
+        try {
+            $null = New-Item -ItemType Directory -Path $workspace -Force
+
+            $url = "https://codeload.github.com/MKAbuMattar/powershell-profile/tar.gz/refs/heads/$Branch"
+            Write-LogMessage -Message "Downloading $Branch as a single archive..."
+            Invoke-WebRequest -Uri $url -OutFile $archive -UseBasicParsing
+
+            # tar ships with Windows 10 1803 and later, and with every supported PowerShell host.
+            & tar -xzf $archive -C $workspace
+            if ($LASTEXITCODE -ne 0) {
+                throw "tar exited with code $LASTEXITCODE while extracting the archive."
+            }
+
+            $extracted = Get-ChildItem -LiteralPath $workspace -Directory | Select-Object -First 1
+            if (-not $extracted) {
+                throw "The archive did not contain the expected directory."
+            }
+
+            $sourceModule = Join-Path $extracted.FullName 'Module'
+            if (-not (Test-Path -LiteralPath $sourceModule)) {
+                throw "The archive did not contain a Module directory."
+            }
+
+            # Move the old tree aside rather than deleting it, so a failure here is recoverable.
+            if (Test-Path -LiteralPath $targetModule) {
+                $backup = "$targetModule.old"
+                if (Test-Path -LiteralPath $backup) { Remove-Item -LiteralPath $backup -Recurse -Force }
+                Move-Item -LiteralPath $targetModule -Destination $backup -Force
+            }
+
+            Copy-Item -LiteralPath $sourceModule -Destination $targetModule -Recurse -Force
+
+            $count = @(Get-ChildItem -LiteralPath $targetModule -Recurse -File).Count
+            Write-LogMessage -Message "Module directory updated ($count files). Restart your shell to reflect changes." -Level "INFO"
+        }
+        catch {
+            Invoke-ErrorHandling -ErrorMessage "Failed to update the Module directory from the repository." -ErrorRecord $_
+        }
+        finally {
+            Remove-Item -LiteralPath $workspace -Recurse -Force -ErrorAction SilentlyContinue
+            Remove-Item -LiteralPath $archive -Force -ErrorAction SilentlyContinue
+        }
     }
 }
 
@@ -467,29 +427,31 @@ function Update-WindowsTerminalConfig {
         [string]$DestinationPath = "$env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json"
     )
 
-    try {
-        if (!(Test-Path -Path $DestinationPath -PathType Leaf)) {
-            $destinationDir = Split-Path -Path $DestinationPath -Parent
-            if (!(Test-Path -Path $destinationDir)) {
-                New-Item -Path $destinationDir -ItemType "directory"
-            }
+    process {
+        try {
+            if (!(Test-Path -Path $DestinationPath -PathType Leaf)) {
+                $destinationDir = Split-Path -Path $DestinationPath -Parent
+                if (!(Test-Path -Path $destinationDir)) {
+                    New-Item -Path $destinationDir -ItemType "directory"
+                }
 
-            Invoke-RestMethod $SourceUrl -OutFile $DestinationPath
-            Write-LogMessage -Message "The settings.json @ [$DestinationPath] has been created."
-            Write-LogMessage -Message "If you want to add any persistent components, please do so at [$destinationDir\settings.json] as there is an updater in the installed profile which uses the hash to update the profile and will lead to loss of changes."
-        }
-        else {
-            $tmpDir = "$HOME\.tmp"
-            if (-not (Test-Path -Path $tmpDir)) {
-                New-Item -Path $tmpDir -ItemType Directory -Force
+                Invoke-RestMethod $SourceUrl -OutFile $DestinationPath
+                Write-LogMessage -Message "The settings.json @ [$DestinationPath] has been created."
+                Write-LogMessage -Message "If you want to add any persistent components, please do so at [$destinationDir\settings.json] as there is an updater in the installed profile which uses the hash to update the profile and will lead to loss of changes."
             }
-            Get-Item -Path $DestinationPath | Move-Item -Destination "$tmpDir\settings.json.old" -Force
-            Invoke-RestMethod $SourceUrl -OutFile $DestinationPath
-            Write-LogMessage -Message "The settings.json @ [$DestinationPath] has been created and old settings.json moved to $tmpDir\settings.json.old."
-            Write-LogMessage -Message "Please back up any persistent components of your old settings.json to [$destinationDir\settings.json] as there is an updater in the installed profile which uses the hash to update the profile and will lead to loss of changes."
+            else {
+                $tmpDir = "$HOME\.tmp"
+                if (-not (Test-Path -Path $tmpDir)) {
+                    New-Item -Path $tmpDir -ItemType Directory -Force
+                }
+                Get-Item -Path $DestinationPath | Move-Item -Destination "$tmpDir\settings.json.old" -Force
+                Invoke-RestMethod $SourceUrl -OutFile $DestinationPath
+                Write-LogMessage -Message "The settings.json @ [$DestinationPath] has been created and old settings.json moved to $tmpDir\settings.json.old."
+                Write-LogMessage -Message "Please back up any persistent components of your old settings.json to [$destinationDir\settings.json] as there is an updater in the installed profile which uses the hash to update the profile and will lead to loss of changes."
+            }
         }
-    }
-    catch {
-        Invoke-ErrorHandling -ErrorMessage "Failed to create or update the settings.json." -ErrorRecord $_
+        catch {
+            Invoke-ErrorHandling -ErrorMessage "Failed to create or update the settings.json." -ErrorRecord $_
+        }
     }
 }

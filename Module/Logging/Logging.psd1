@@ -53,12 +53,14 @@
     Description          = 'This module provides logging functionality with timestamp and log level.'
     PowerShellVersion    = '5.0'
     FunctionsToExport    = @(
-        'Write-LogMessage'
+        'Write-LogMessage',
+        'Invoke-ErrorHandling'
     )
     CmdletsToExport      = @()
     VariablesToExport    = @()
     AliasesToExport      = @(
-        'log-message'
+        'log-message',
+        'handle-error'
     )
     PrivateData          = @{
         PSData = @{

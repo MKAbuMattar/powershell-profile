@@ -101,14 +101,26 @@ Export lists are generated, not maintained by hand. After adding, renaming or re
 ./Tools/Update-Manifest.ps1      # regenerate FunctionsToExport / AliasesToExport
 ```
 
-Four checks run in CI and can be run locally:
+These checks run in CI and can be run locally:
 
 | Check | What it catches |
 | --- | --- |
 | `./Tools/Test-Syntax.ps1` | A file that does not parse. A stray backslash once killed the whole WebSearch module silently. |
 | `./Tools/Test-Manifest.ps1` | A manifest that no longer matches its code. Kubectl once exported 91 functions nobody had written. |
 | `./Tools/Test-Load.ps1` | A module that parses but will not import, such as Conda's malformed GUID. |
+| `./Tools/Test-Pipeline.ps1` | A `ValueFromPipeline` parameter with no `process` block, which silently keeps only the last piped item. |
 | `./Tools/Invoke-Analyzer.ps1` | PSScriptAnalyzer findings, using [`PSScriptAnalyzerSettings.psd1`](./PSScriptAnalyzerSettings.psd1). |
+| `./Tools/Invoke-Pester.ps1` | The load contract in [`Tests/`](./Tests) — 101 tests over manifests, imports, alias safety and pipeline behaviour. |
+
+Two helpers apply fixes rather than report them:
+
+| Tool | Purpose |
+| --- | --- |
+| `./Tools/Update-Manifest.ps1` | Regenerate every export list from source. Run after adding or renaming a function. |
+| `./Tools/Add-ProcessBlock.ps1` | Wrap pipeline-bound function bodies in a `process` block. |
+
+`Test-ProfileAliasContention` reports aliases claimed by more than one loaded module — PNPM,
+Pipenv and Poetry all want the `p*` namespace, and load order decides the winner.
 
 ## Contributing
 

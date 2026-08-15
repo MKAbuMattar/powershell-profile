@@ -116,7 +116,7 @@
         'npmi',
         'npmSe',
         'npmP',
-        'npmI',
+        'npminit',
         'npma',
         'npmaf',
         'npmc',

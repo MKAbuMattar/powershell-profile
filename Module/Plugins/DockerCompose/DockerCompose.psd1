@@ -92,7 +92,7 @@
         'dcdn',
         'dcl',
         'dclf',
-        'dclF',
+        'dclft',
         'dcpull',
         'dcstart',
         'dck'

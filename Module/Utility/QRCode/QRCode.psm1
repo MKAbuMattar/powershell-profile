@@ -142,34 +142,36 @@ function New-QRCode {
         [string]$OutputPath
     )
 
-    $scriptDir = Split-Path -Parent $PSCommandPath
-    $pythonScript = Join-Path -Path $scriptDir -ChildPath "qrcode.py"
+    process {
+        $scriptDir = Split-Path -Parent $PSCommandPath
+        $pythonScript = Join-Path -Path $scriptDir -ChildPath "qrcode.py"
 
-    if (-not (Test-Path -Path $pythonScript)) {
-        Write-Host "Error: qrcode.py not found at $pythonScript" -ForegroundColor Red
-        return
-    }
+        if (-not (Test-Path -Path $pythonScript)) {
+            Write-Host "Error: qrcode.py not found at $pythonScript" -ForegroundColor Red
+            return
+        }
 
-    $pythonCmd = Get-QRCodePython
-    if (-not $pythonCmd) { return }
+        $pythonCmd = Get-QRCodePython
+        if (-not $pythonCmd) { return }
 
-    $arguments = @()
+        $arguments = @()
     
-    if ($InputText) {
-        $arguments += @($InputText)
-    }
+        if ($InputText) {
+            $arguments += @($InputText)
+        }
 
-    $arguments += @("--format", "png")
+        $arguments += @("--format", "png")
 
-    if ($OutputPath) {
-        $arguments += @("--output-path", $OutputPath)
-    }
+        if ($OutputPath) {
+            $arguments += @("--output-path", $OutputPath)
+        }
 
-    try {
-        & $pythonCmd $pythonScript @arguments
-    }
-    catch {
-        Write-Host "Error executing qrcode.py: $_" -ForegroundColor Red
+        try {
+            & $pythonCmd $pythonScript @arguments
+        }
+        catch {
+            Write-Host "Error executing qrcode.py: $_" -ForegroundColor Red
+        }
     }
 }
 
@@ -251,38 +253,40 @@ function New-QRCodeSVG {
         [string]$OutputPath
     )
 
-    $scriptDir = Split-Path -Parent $PSCommandPath
-    $pythonScript = Join-Path -Path $scriptDir -ChildPath "qrcode.py"
+    process {
+        $scriptDir = Split-Path -Parent $PSCommandPath
+        $pythonScript = Join-Path -Path $scriptDir -ChildPath "qrcode.py"
 
-    if (-not (Test-Path -Path $pythonScript)) {
-        Write-Host "Error: qrcode.py not found at $pythonScript" -ForegroundColor Red
-        return
-    }
+        if (-not (Test-Path -Path $pythonScript)) {
+            Write-Host "Error: qrcode.py not found at $pythonScript" -ForegroundColor Red
+            return
+        }
 
-    $pythonCmd = Get-QRCodePython
-    if (-not $pythonCmd) { return }
+        $pythonCmd = Get-QRCodePython
+        if (-not $pythonCmd) { return }
 
-    $arguments = @()
+        $arguments = @()
     
-    if ($InputText) {
-        $arguments += @($InputText)
-    }
+        if ($InputText) {
+            $arguments += @($InputText)
+        }
 
-    $arguments += @("--format", "svg")
+        $arguments += @("--format", "svg")
 
-    if (-not $NoSave) {
-        $arguments += @("--save")
-    }
+        if (-not $NoSave) {
+            $arguments += @("--save")
+        }
 
-    if ($OutputPath) {
-        $arguments += @("--output-path", $OutputPath)
-    }
+        if ($OutputPath) {
+            $arguments += @("--output-path", $OutputPath)
+        }
 
-    try {
-        & $pythonCmd $pythonScript @arguments
-    }
-    catch {
-        Write-Host "Error executing qrcode.py: $_" -ForegroundColor Red
+        try {
+            & $pythonCmd $pythonScript @arguments
+        }
+        catch {
+            Write-Host "Error executing qrcode.py: $_" -ForegroundColor Red
+        }
     }
 }
 
@@ -411,39 +415,41 @@ function Save-QRCode {
         [string]$Format
     )
 
-    $scriptDir = Split-Path -Parent $PSCommandPath
-    $pythonScript = Join-Path -Path $scriptDir -ChildPath "qrcode.py"
+    process {
+        $scriptDir = Split-Path -Parent $PSCommandPath
+        $pythonScript = Join-Path -Path $scriptDir -ChildPath "qrcode.py"
 
-    if (-not (Test-Path -Path $pythonScript)) {
-        Write-Host "Error: qrcode.py not found at $pythonScript" -ForegroundColor Red
-        return
-    }
-
-    $pythonCmd = Get-QRCodePython
-    if (-not $pythonCmd) { return }
-
-    # Determine format from extension if not specified
-    if (-not $Format) {
-        $extension = [System.IO.Path]::GetExtension($Path).ToLower()
-        $Format = switch ($extension) {
-            ".svg" { "svg" }
-            default { "png" }
+        if (-not (Test-Path -Path $pythonScript)) {
+            Write-Host "Error: qrcode.py not found at $pythonScript" -ForegroundColor Red
+            return
         }
-    }
-    else {
-        $Format = $Format.ToLower()
-    }
 
-    $arguments = @(
-        $InputText,
-        "--format", $Format,
-        "--output-path", $Path
-    )
+        $pythonCmd = Get-QRCodePython
+        if (-not $pythonCmd) { return }
 
-    try {
-        & $pythonCmd $pythonScript @arguments
-    }
-    catch {
-        Write-Host "Error executing qrcode.py: $_" -ForegroundColor Red
+        # Determine format from extension if not specified
+        if (-not $Format) {
+            $extension = [System.IO.Path]::GetExtension($Path).ToLower()
+            $Format = switch ($extension) {
+                ".svg" { "svg" }
+                default { "png" }
+            }
+        }
+        else {
+            $Format = $Format.ToLower()
+        }
+
+        $arguments = @(
+            $InputText,
+            "--format", $Format,
+            "--output-path", $Path
+        )
+
+        try {
+            & $pythonCmd $pythonScript @arguments
+        }
+        catch {
+            Write-Host "Error executing qrcode.py: $_" -ForegroundColor Red
+        }
     }
 }

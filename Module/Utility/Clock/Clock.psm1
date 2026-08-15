@@ -156,38 +156,40 @@ function Start-Countdown {
         [string]$Title = ""
     )
 
-    $pythonCmd = Get-ClockPython
-    if (-not $pythonCmd) {
-        return
-    }
+    process {
+        $pythonCmd = Get-ClockPython
+        if (-not $pythonCmd) {
+            return
+        }
 
-    $scriptPath = Join-Path $PSScriptRoot "clock.py"
+        $scriptPath = Join-Path $PSScriptRoot "clock.py"
     
-    if (-not (Test-Path $scriptPath)) {
-        Write-Error "Clock utility Python script not found at: $scriptPath"
-        return
-    }
+        if (-not (Test-Path $scriptPath)) {
+            Write-Error "Clock utility Python script not found at: $scriptPath"
+            return
+        }
 
-    $arguments = @(
-        $scriptPath,
-        "countdown",
-        "--duration", $Duration
-    )
+        $arguments = @(
+            $scriptPath,
+            "countdown",
+            "--duration", $Duration
+        )
 
-    if ($Title) {
-        $arguments += "--title"
-        $arguments += $Title
-    }
+        if ($Title) {
+            $arguments += "--title"
+            $arguments += $Title
+        }
 
-    if ($CountUp) {
-        $arguments += "--countup"
-    }
+        if ($CountUp) {
+            $arguments += "--countup"
+        }
 
-    try {
-        & $pythonCmd $arguments
-    }
-    catch {
-        Write-Error "Failed to run countdown: $_"
+        try {
+            & $pythonCmd $arguments
+        }
+        catch {
+            Write-Error "Failed to run countdown: $_"
+        }
     }
 }
 
@@ -238,33 +240,35 @@ function Start-StopWatch {
         [string]$Title = ""
     )
 
-    $pythonCmd = Get-ClockPython
-    if (-not $pythonCmd) {
-        return
-    }
+    process {
+        $pythonCmd = Get-ClockPython
+        if (-not $pythonCmd) {
+            return
+        }
 
-    $scriptPath = Join-Path $PSScriptRoot "clock.py"
+        $scriptPath = Join-Path $PSScriptRoot "clock.py"
     
-    if (-not (Test-Path $scriptPath)) {
-        Write-Error "Clock utility Python script not found at: $scriptPath"
-        return
-    }
+        if (-not (Test-Path $scriptPath)) {
+            Write-Error "Clock utility Python script not found at: $scriptPath"
+            return
+        }
 
-    $arguments = @(
-        $scriptPath,
-        "stopwatch"
-    )
+        $arguments = @(
+            $scriptPath,
+            "stopwatch"
+        )
 
-    if ($Title) {
-        $arguments += "--title"
-        $arguments += $Title
-    }
+        if ($Title) {
+            $arguments += "--title"
+            $arguments += $Title
+        }
 
-    try {
-        & $pythonCmd $arguments
-    }
-    catch {
-        Write-Error "Failed to run stopwatch: $_"
+        try {
+            & $pythonCmd $arguments
+        }
+        catch {
+            Write-Error "Failed to run stopwatch: $_"
+        }
     }
 }
 
@@ -345,37 +349,39 @@ function Get-WallClock {
         [switch]$Use24Hour = $false
     )
 
-    $pythonCmd = Get-ClockPython
-    if (-not $pythonCmd) {
-        return
-    }
+    process {
+        $pythonCmd = Get-ClockPython
+        if (-not $pythonCmd) {
+            return
+        }
 
-    $scriptPath = Join-Path $PSScriptRoot "clock.py"
+        $scriptPath = Join-Path $PSScriptRoot "clock.py"
     
-    if (-not (Test-Path $scriptPath)) {
-        Write-Error "Clock utility Python script not found at: $scriptPath"
-        return
-    }
+        if (-not (Test-Path $scriptPath)) {
+            Write-Error "Clock utility Python script not found at: $scriptPath"
+            return
+        }
 
-    $arguments = @(
-        $scriptPath,
-        "wallclock",
-        "--timezone", $TimeZone
-    )
+        $arguments = @(
+            $scriptPath,
+            "wallclock",
+            "--timezone", $TimeZone
+        )
 
-    if ($Title) {
-        $arguments += "--title"
-        $arguments += $Title
-    }
+        if ($Title) {
+            $arguments += "--title"
+            $arguments += $Title
+        }
 
-    if ($Use24Hour) {
-        $arguments += "--24hour"
-    }
+        if ($Use24Hour) {
+            $arguments += "--24hour"
+        }
 
-    try {
-        & $pythonCmd $arguments
-    }
-    catch {
-        Write-Error "Failed to run wall clock: $_"
+        try {
+            & $pythonCmd $arguments
+        }
+        catch {
+            Write-Error "Failed to run wall clock: $_"
+        }
     }
 }

@@ -804,7 +804,7 @@ function Invoke-DockerComposeLogsFollowTail {
         - Press Ctrl+C to stop following logs.
         - Useful for monitoring new activity without historical noise.
     #>
-    [Alias("dclF")]
+    [Alias("dclft")]
     param(
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]]$Arguments

@@ -133,16 +133,18 @@ function Get-AllProcesses {
         [Alias("n")]
         [string]$Name
     )
-    try {
-        if ($Name) {
-            Get-Process $Name -ErrorAction Stop
+    process {
+        try {
+            if ($Name) {
+                Get-Process $Name -ErrorAction Stop
+            }
+            else {
+                Get-Process
+            }
         }
-        else {
-            Get-Process
+        catch {
+            Write-LogMessage -Message "Failed to retrieve process information." -Level "ERROR"
         }
-    }
-    catch {
-        Write-LogMessage -Message "Failed to retrieve process information." -Level "ERROR"
     }
 }
 
@@ -188,11 +190,13 @@ function Get-ProcessByName {
         [string]$Name
     )
 
-    try {
-        Get-Process $name -ErrorAction Stop
-    }
-    catch {
-        Write-Warning "No process with the name '$Name' found."
+    process {
+        try {
+            Get-Process $name -ErrorAction Stop
+        }
+        catch {
+            Write-Warning "No process with the name '$Name' found."
+        }
     }
 }
 
@@ -238,11 +242,13 @@ function Get-ProcessByPort {
         [int]$Port
     )
 
-    try {
-        Get-NetTCPConnection -LocalPort $Port -ErrorAction Stop
-    }
-    catch {
-        Write-Warning "No process using port '$Port' found."
+    process {
+        try {
+            Get-NetTCPConnection -LocalPort $Port -ErrorAction Stop
+        }
+        catch {
+            Write-Warning "No process using port '$Port' found."
+        }
     }
 }
 
@@ -288,12 +294,14 @@ function Stop-ProcessByName {
         [string]$Name
     )
 
-    $process = Get-Process $Name -ErrorAction SilentlyContinue
-    if ($process) {
-        $process | Stop-Process -Force
-    }
-    else {
-        Write-LogMessage -Message "No process with the name '$Name' found." -Level "WARNING"
+    process {
+        $process = Get-Process $Name -ErrorAction SilentlyContinue
+        if ($process) {
+            $process | Stop-Process -Force
+        }
+        else {
+            Write-LogMessage -Message "No process with the name '$Name' found." -Level "WARNING"
+        }
     }
 }
 
@@ -339,12 +347,14 @@ function Stop-ProcessByPort {
         [int]$Port
     )
 
-    $process = Get-NetTCPConnection -LocalPort $Port -ErrorAction SilentlyContinue
-    if ($process) {
-        $process | Stop-Process -Force
-    }
-    else {
-        Write-LogMessage -Message "No process using port '$Port' found." -Level "WARNING"
+    process {
+        $process = Get-NetTCPConnection -LocalPort $Port -ErrorAction SilentlyContinue
+        if ($process) {
+            $process | Stop-Process -Force
+        }
+        else {
+            Write-LogMessage -Message "No process using port '$Port' found." -Level "WARNING"
+        }
     }
 }
 
@@ -413,38 +423,40 @@ function Invoke-ClearCache {
         [string]$Type = "All"
     )
 
-    switch ($Type) {
-        "All" {
-            Write-LogMessage "Clearing Windows Prefetch..."
-            Remove-Item -Path "$env:SystemRoot\Prefetch\*" -Force -ErrorAction SilentlyContinue
+    process {
+        switch ($Type) {
+            "All" {
+                Write-LogMessage "Clearing Windows Prefetch..."
+                Remove-Item -Path "$env:SystemRoot\Prefetch\*" -Force -ErrorAction SilentlyContinue
 
-            Write-LogMessage "Clearing Windows Temp..."
-            Remove-Item -Path "$env:SystemRoot\Temp\*" -Recurse -Force -ErrorAction SilentlyContinue
+                Write-LogMessage "Clearing Windows Temp..."
+                Remove-Item -Path "$env:SystemRoot\Temp\*" -Recurse -Force -ErrorAction SilentlyContinue
 
-            Write-LogMessage "Clearing User Temp..."
-            Remove-Item -Path "$env:TEMP\*" -Recurse -Force -ErrorAction SilentlyContinue
+                Write-LogMessage "Clearing User Temp..."
+                Remove-Item -Path "$env:TEMP\*" -Recurse -Force -ErrorAction SilentlyContinue
 
-            Write-LogMessage "Clearing Internet Explorer Cache..."
-            Remove-Item -Path "$env:LOCALAPPDATA\Microsoft\Windows\INetCache\*" -Recurse -Force -ErrorAction SilentlyContinue
-        }
-        "Prefetch" {
-            Write-LogMessage "Clearing Windows Prefetch..."
-            Remove-Item -Path "$env:SystemRoot\Prefetch\*" -Force -ErrorAction SilentlyContinue
-        }
-        "WindowsTemp" {
-            Write-LogMessage "Clearing Windows Temp..."
-            Remove-Item -Path "$env:SystemRoot\Temp\*" -Recurse -Force -ErrorAction SilentlyContinue
-        }
-        "UserTemp" {
-            Write-LogMessage "Clearing User Temp..."
-            Remove-Item -Path "$env:TEMP\*" -Recurse -Force -ErrorAction SilentlyContinue
-        }
-        "IECache" {
-            Write-LogMessage "Clearing Internet Explorer Cache..."
-            Remove-Item -Path "$env:LOCALAPPDATA\Microsoft\Windows\INetCache\*" -Recurse -Force -ErrorAction SilentlyContinue
-        }
-        default {
-            Write-LogMessage "Invalid cache type: $Type" -Level "ERROR"
+                Write-LogMessage "Clearing Internet Explorer Cache..."
+                Remove-Item -Path "$env:LOCALAPPDATA\Microsoft\Windows\INetCache\*" -Recurse -Force -ErrorAction SilentlyContinue
+            }
+            "Prefetch" {
+                Write-LogMessage "Clearing Windows Prefetch..."
+                Remove-Item -Path "$env:SystemRoot\Prefetch\*" -Force -ErrorAction SilentlyContinue
+            }
+            "WindowsTemp" {
+                Write-LogMessage "Clearing Windows Temp..."
+                Remove-Item -Path "$env:SystemRoot\Temp\*" -Recurse -Force -ErrorAction SilentlyContinue
+            }
+            "UserTemp" {
+                Write-LogMessage "Clearing User Temp..."
+                Remove-Item -Path "$env:TEMP\*" -Recurse -Force -ErrorAction SilentlyContinue
+            }
+            "IECache" {
+                Write-LogMessage "Clearing Internet Explorer Cache..."
+                Remove-Item -Path "$env:LOCALAPPDATA\Microsoft\Windows\INetCache\*" -Recurse -Force -ErrorAction SilentlyContinue
+            }
+            default {
+                Write-LogMessage "Invalid cache type: $Type" -Level "ERROR"
+            }
         }
     }
 }

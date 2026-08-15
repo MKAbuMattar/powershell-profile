@@ -93,31 +93,33 @@ function Get-RandomQuote {
         [string]$Format = "default"
     )
 
-    $scriptDir = Split-Path -Parent $PSCommandPath
-    $pythonScript = Join-Path -Path $scriptDir -ChildPath "random_quote.py"
+    process {
+        $scriptDir = Split-Path -Parent $PSCommandPath
+        $pythonScript = Join-Path -Path $scriptDir -ChildPath "random_quote.py"
 
-    if (-not (Test-Path -Path $pythonScript)) {
-        Write-Host "Error: random_quote.py not found at $pythonScript" -ForegroundColor Red
-        return
-    }
+        if (-not (Test-Path -Path $pythonScript)) {
+            Write-Host "Error: random_quote.py not found at $pythonScript" -ForegroundColor Red
+            return
+        }
 
-    try {
-        $pythonVersion = python --version 2>&1
-    }
-    catch {
-        Write-Host "Error: Python is not installed or not available in PATH." -ForegroundColor Red
-        return
-    }
+        try {
+            $pythonVersion = python --version 2>&1
+        }
+        catch {
+            Write-Host "Error: Python is not installed or not available in PATH." -ForegroundColor Red
+            return
+        }
 
-    $arguments = @(
-        "--format", $Format
-    )
+        $arguments = @(
+            "--format", $Format
+        )
 
-    try {
-        & python $pythonScript @arguments
-    }
-    catch {
-        Write-Host "Error executing random_quote.py: $_" -ForegroundColor Red
+        try {
+            & python $pythonScript @arguments
+        }
+        catch {
+            Write-Host "Error executing random_quote.py: $_" -ForegroundColor Red
+        }
     }
 }
 
