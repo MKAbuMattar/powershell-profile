@@ -614,6 +614,46 @@ function Resolve-PackageManager {
     }
 }
 
+function Install-CoreutilsStep {
+    <#
+    .SYNOPSIS
+        Installs Microsoft coreutils, if it is not already present.
+
+    .DESCRIPTION
+        Optional, and deliberately so: coreutils takes over grep, head, tail, touch, sed and
+        another 25 names. That is usually what someone wants from it, but it is a change worth
+        opting into rather than inheriting.
+
+        The installed profile can then report and manage it through the Coreutils module:
+        Show-CoreutilsConflict, Get-CoreutilsUtility, Disable-CoreutilsUtility.
+    #>
+    [CmdletBinding(SupportsShouldProcess)]
+    [OutputType([void])]
+    param()
+
+    if (Get-Command -Name 'coreutils-manager' -CommandType Application -ErrorAction SilentlyContinue) {
+        Write-SetupLog 'Microsoft coreutils is already installed.'
+        return
+    }
+
+    if (-not (Get-Command -Name winget -CommandType Application -ErrorAction SilentlyContinue)) {
+        Write-SetupLog 'winget is not available, so coreutils cannot be installed. Skipping.' -Level WARNING
+        return
+    }
+
+    if (-not $PSCmdlet.ShouldProcess('Microsoft.Coreutils', 'winget install')) { return }
+
+    Write-SetupLog 'Installing Microsoft coreutils...'
+    & winget install --exact --id 'Microsoft.Coreutils' --accept-source-agreements --accept-package-agreements
+
+    if ($LASTEXITCODE -ne 0) {
+        Write-SetupLog "winget exited with code $LASTEXITCODE." -Level WARNING
+        return
+    }
+
+    Write-SetupLog 'coreutils installed. Run Show-CoreutilsConflict after restarting to see which names it took.'
+}
+
 function Install-ProfileTool {
     <#
     .SYNOPSIS
@@ -718,7 +758,7 @@ function Install-MKAbuMattarProfile {
 
         [string]$Branch = 'main',
 
-        [ValidateSet('Modules', 'Profile', 'Starship', 'FastFetch', 'Figlet', 'WindowsTerminal', 'Font', 'Tools', 'GalleryModules')]
+        [ValidateSet('Modules', 'Profile', 'Starship', 'FastFetch', 'Figlet', 'WindowsTerminal', 'Font', 'Tools', 'Coreutils', 'GalleryModules')]
         [string[]]$Step,
 
         [switch]$IncludeOptional,
@@ -730,7 +770,7 @@ function Install-MKAbuMattarProfile {
     )
     $defaultSteps = @('Modules', 'Profile', 'Starship', 'FastFetch', 'Figlet', 'WindowsTerminal', 'GalleryModules')
     if (-not $Step) {
-        $Step = if ($IncludeOptional) { $defaultSteps + @('Font', 'Tools') } else { $defaultSteps }
+        $Step = if ($IncludeOptional) { $defaultSteps + @('Font', 'Tools', 'Coreutils') } else { $defaultSteps }
     }
 
     Write-Host ''
@@ -747,7 +787,6 @@ function Install-MKAbuMattarProfile {
 
     try {
         $repository = Get-RepositoryArchive -Branch $Branch
-        $workspace = Split-Path -Parent $repository
 
         $configTargets = @{
             Starship        = @{
@@ -779,6 +818,7 @@ function Install-MKAbuMattarProfile {
                 'GalleryModules' { Install-GalleryModule }
                 'Font' { Install-CascadiaCodeFont }
                 'Tools' { Install-ProfileTool -Manager (Resolve-PackageManager -Preference $PackageManager) }
+                'Coreutils' { Install-CoreutilsStep }
                 default {
                     $target = $configTargets[$name]
                     if ($target) {

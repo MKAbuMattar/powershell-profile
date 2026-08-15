@@ -14,6 +14,7 @@
     # Functions that exist to support other functions in the same module. They stay internal and
     # are never written into FunctionsToExport.
     PrivateFunctions = @(
+        'Invoke-CoreutilsManager'
         'Get-GitHubDirectoryFiles'
         'Get-DockerComposeCommand'
         'Get-PipCommand'

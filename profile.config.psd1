@@ -14,6 +14,7 @@
     # Core modules. These are not tool-gated and load in the order given.
     #-----------------------------------------------------------------------------------------------
     Modules               = @(
+        'Coreutils'
         'Directory'
         'Environment'
         'Logging'
