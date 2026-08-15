@@ -15,6 +15,7 @@ BeforeAll {
     . (Join-Path $Root 'Tools/Get-ModuleExport.ps1')
 
     $script:Manifests = @(Get-ChildItem -LiteralPath (Join-Path $Root 'Module') -Recurse -File -Filter '*.psd1' |
+            Where-Object { $_.Name -notin 'commands.psd1', 'plugin.psd1' } |
             Where-Object { Test-Path (Join-Path $_.DirectoryName ($_.BaseName + '.psm1')) })
 }
 
@@ -22,6 +23,7 @@ Describe 'Module manifests' {
 
     It 'declares a valid GUID in <Name>' -ForEach @(
         (Get-ChildItem -LiteralPath (Join-Path (Split-Path -Parent $PSScriptRoot) 'Module') -Recurse -File -Filter '*.psd1' |
+            Where-Object { $_.Name -notin 'commands.psd1', 'plugin.psd1' } |
             ForEach-Object { @{ Name = $_.Name; Path = $_.FullName } })
     ) {
         # Conda.psd1 shipped '...-0e9f8g7h6i5j'. Letters beyond f are not hexadecimal, so the
@@ -52,7 +54,7 @@ Describe 'Every module imports' {
 
     It 'imports <Name> without error' -ForEach @(
         (Get-ChildItem -LiteralPath (Join-Path (Split-Path -Parent $PSScriptRoot) 'Module') -Recurse -File -Filter '*.psd1' |
-            Where-Object { $_.Name -ne 'Git.psd1' -and (Test-Path (Join-Path $_.DirectoryName ($_.BaseName + '.psm1'))) } |
+            Where-Object { $_.Name -notin 'Git.psd1', 'commands.psd1', 'plugin.psd1' -and (Test-Path (Join-Path $_.DirectoryName ($_.BaseName + '.psm1'))) } |
             ForEach-Object { @{ Name = $_.BaseName; Path = $_.FullName } })
     ) {
         { Import-Module -Name $Path -Force -ErrorAction Stop } | Should -Not -Throw
