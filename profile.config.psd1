@@ -127,6 +127,10 @@
     #
     # Set to $true to remove those built-in aliases so the Git functions win, matching zsh.
     # Get-Command, Get-Member and friends remain available by their full cmdlet names.
+    #
+    # This setting does not cover gca, gcd and gcv. Those three lose to the GCP plugin, which
+    # exports the same names for gcloud, and an alias outranks a function the same way. Disable
+    # the GCP plugin above to get the Git versions back. Tests/Plugin.Tests.ps1 pins both sets.
     AllowBuiltinShadowing = $false
 
     #-----------------------------------------------------------------------------------------------

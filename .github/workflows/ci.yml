@@ -40,6 +40,10 @@ jobs:
         shell: pwsh
         run: ./Tools/Test-Duplicate.ps1
 
+      - name: Verify generated wrappers match their command table
+        shell: pwsh
+        run: ./Tools/Test-PluginCommand.ps1
+
       - name: Verify README command tables match the code
         shell: pwsh
         run: ./Tools/Test-Readme.ps1
