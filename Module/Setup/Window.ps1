@@ -387,6 +387,23 @@ function Show-ProfileSetupWindow {
         $control[$name] = $found
     }
 
+    # Resolved here, once, and called through these variables inside the handlers below.
+    #
+    # A closure looks a command up by name when it runs, against whatever session state it was
+    # bound to. That state depends on how this file was loaded: as a module, dot-sourced, or piped
+    # into Invoke-Expression from the built installer. Get one of those wrong and every handler
+    # fails with "the term is not recognized" while the window still opens, which looks like a
+    # window that loaded nothing rather than a scope problem.
+    #
+    # GetNewClosure captures a variable by value, so a CommandInfo captured now resolves the same
+    # way wherever the handler later runs.
+    $command = @{}
+    foreach ($name in 'Get-ProfileSetupState', 'Get-ProfileSetupMenuOrder', 'ConvertTo-ProfileSetupRow', 'Invoke-ProfileSetup', 'Uninstall-ProfileSetup') {
+        $found = Get-Command -Name $name -ErrorAction SilentlyContinue
+        if (-not $found) { throw "The setup window needs $name and it is not loaded." }
+        $command[$name] = $found
+    }
+
     $control.TargetText.Text = 'Installing into ' + (Get-ProfileSetupPath -InstallPath $InstallPath).InstallPath
 
     $writeLog = {
@@ -397,10 +414,13 @@ function Show-ProfileSetupWindow {
     }.GetNewClosure()
 
     $refresh = {
+        $state = & $command['Get-ProfileSetupState'] @common
+        $ordered = & $command['Get-ProfileSetupMenuOrder'] -State $state
+        $shaped = & $command['ConvertTo-ProfileSetupRow'] -State $ordered
+
         $rows = [System.Collections.ObjectModel.ObservableCollection[object]]::new()
-        foreach ($row in (ConvertTo-ProfileSetupRow -State (Get-ProfileSetupMenuOrder -State (Get-ProfileSetupState @common)))) {
-            $rows.Add($row)
-        }
+        foreach ($row in $shaped) { $rows.Add($row) }
+
         $control.UnitGrid.ItemsSource = $rows
     }.GetNewClosure()
 
@@ -417,42 +437,65 @@ function Show-ProfileSetupWindow {
         & $writeLog ''
     }.GetNewClosure()
 
-    $control.RefreshButton.Add_Click({ & $refresh }.GetNewClosure())
+    # Every handler reports its own failure into the log pane. An exception raised on the WPF
+    # dispatcher otherwise disappears: the button appears to do nothing at all.
+    $guard = {
+        param([scriptblock]$Action, [string]$What)
+
+        try { & $Action }
+        catch { & $writeLog ("  {0} failed: {1}" -f $What, $_.Exception.Message) }
+    }.GetNewClosure()
+
+    $control.RefreshButton.Add_Click({ & $guard $refresh 'Refresh' }.GetNewClosure())
 
     $control.ClearButton.Add_Click({
-            foreach ($row in $control.UnitGrid.ItemsSource) { $row.Selected = $false }
-            $control.UnitGrid.Items.Refresh()
+            & $guard {
+                foreach ($row in $control.UnitGrid.ItemsSource) { $row.Selected = $false }
+                $control.UnitGrid.Items.Refresh()
+            } 'Clear'
         }.GetNewClosure())
 
     $control.SelectMissingButton.Add_Click({
-            foreach ($row in $control.UnitGrid.ItemsSource) { $row.Selected = -not $row.Present }
-            $control.UnitGrid.Items.Refresh()
+            & $guard {
+                foreach ($row in $control.UnitGrid.ItemsSource) { $row.Selected = -not $row.Present }
+                $control.UnitGrid.Items.Refresh()
+            } 'Tick everything missing'
         }.GetNewClosure())
 
     $control.InstallButton.Add_Click({
-            $ids = & $selectedIds
-            if (-not $ids.Count) { & $writeLog 'Nothing is ticked.'; return }
+            & $guard {
+                $ids = & $selectedIds
+                if (-not $ids.Count) { & $writeLog 'Nothing is ticked.'; return }
 
-            & $writeLog ("Installing {0} item(s)..." -f $ids.Count)
-            $results = Invoke-ProfileSetup -Id $ids -Repository $Repository -PackageManager $PackageManager @common -Confirm:$false
-            & $report $results
-            & $refresh
+                & $writeLog ("Installing {0} item(s)..." -f $ids.Count)
+                $results = & $command['Invoke-ProfileSetup'] -Id $ids -Repository $Repository -PackageManager $PackageManager @common -Confirm:$false
+                & $report $results
+                & $refresh
+            } 'Install'
         }.GetNewClosure())
 
     $control.RemoveButton.Add_Click({
-            $ids = & $selectedIds
-            if (-not $ids.Count) { & $writeLog 'Nothing is ticked.'; return }
+            & $guard {
+                $ids = & $selectedIds
+                if (-not $ids.Count) { & $writeLog 'Nothing is ticked.'; return }
 
-            & $writeLog ("Removing {0} item(s)..." -f $ids.Count)
-            $results = Uninstall-ProfileSetup -Id $ids @common -Confirm:$false
-            & $report $results
-            & $refresh
+                & $writeLog ("Removing {0} item(s)..." -f $ids.Count)
+                $results = & $command['Uninstall-ProfileSetup'] -Id $ids @common -Confirm:$false
+                & $report $results
+                & $refresh
+            } 'Remove'
         }.GetNewClosure())
 
     $control.CloseButton.Add_Click({ $window.Close() }.GetNewClosure())
 
-    & $refresh
-    & $writeLog 'Tick what you want, then press Install or Remove.'
+    & $guard $refresh 'Loading the list'
+
+    if (-not $control.UnitGrid.Items.Count) {
+        & $writeLog 'The list came back empty. Press Refresh, or run Show-ProfileSetup for the console version.'
+    }
+    else {
+        & $writeLog ('{0} items. Tick what you want, then press Install or Remove.' -f $control.UnitGrid.Items.Count)
+    }
 
     $null = $window.ShowDialog()
 }

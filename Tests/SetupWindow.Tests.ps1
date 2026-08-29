@@ -183,3 +183,50 @@ Describe 'ConvertTo-ProfileSetupRow' {
         @(ConvertTo-ProfileSetupRow -State @()).Count | Should -Be 0
     }
 }
+
+Describe 'The window handlers do not depend on name resolution' {
+
+    BeforeAll {
+        $script:WindowSource = Get-Content -LiteralPath (Join-Path $script:Root 'Module/Setup/Window.ps1') -Raw
+
+        # Only the wiring block matters. Above it are the function definitions and their
+        # comment-based help, which name these commands legitimately.
+        $start = $script:WindowSource.IndexOf('$reader = [System.Xml.XmlNodeReader]')
+        $script:Wiring = $script:WindowSource.Substring($start)
+    }
+
+    It 'resolves every command it calls before building the closures' {
+        # A closure looks a command up by name when it runs, against whatever session state it was
+        # bound to, and that state depends on how the file was loaded: module, dot-sourced, or
+        # piped into Invoke-Expression. Get it wrong and every handler fails with "the term is not
+        # recognized" while the window still opens, so it reads as a window that loaded nothing.
+        #
+        # Resolving up front and calling through the captured CommandInfo removes the dependency.
+        foreach ($name in 'Get-ProfileSetupState', 'Get-ProfileSetupMenuOrder', 'ConvertTo-ProfileSetupRow', 'Invoke-ProfileSetup', 'Uninstall-ProfileSetup') {
+            $script:WindowSource | Should -Match ([regex]::Escape("'$name'")) -Because "$name must be resolved into the command table"
+        }
+    }
+
+    It 'never calls <Name> by bare name inside a handler' -ForEach @(
+        @{ Name = 'Get-ProfileSetupState' }
+        @{ Name = 'Get-ProfileSetupMenuOrder' }
+        @{ Name = 'ConvertTo-ProfileSetupRow' }
+        @{ Name = 'Invoke-ProfileSetup' }
+        @{ Name = 'Uninstall-ProfileSetup' }
+    ) {
+        # Matches the command name used as a command, rather than quoted in the lookup table.
+        $bare = [regex]::Matches($script:Wiring, "(?<![\w'`"-])$([regex]::Escape($Name))(?![\w'`"-])")
+
+        @($bare).Count | Should -Be 0 -Because "$Name is called by name in the wiring, which breaks when the closure's session state differs"
+    }
+
+    It 'reports a handler failure into the log pane instead of losing it' {
+        # An exception raised on the WPF dispatcher disappears: the button appears to do nothing.
+        $script:WindowSource | Should -Match '\$guard'
+        $script:WindowSource | Should -Match 'failed: \{1\}'
+    }
+
+    It 'says so when the list comes back empty' {
+        $script:WindowSource | Should -Match 'came back empty'
+    }
+}
