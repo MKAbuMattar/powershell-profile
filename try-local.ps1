@@ -1,22 +1,18 @@
 #---------------------------------------------------------------------------------------------------
-# Try the installer against this checkout, without pushing or downloading anything.
+# Runs the built installer against this checkout instead of downloading one.
 #
-# build/profileutil.ps1 downloads the repository, because someone running it from a URL has no
-# checkout. You have one, so this loads the same built file and points the picker at it.
+# build/profileutil.ps1 is the real thing and holds all of the behaviour, including which install
+# mode a run picks. This exists only because that file downloads the repository, and you have one
+# already. It loads the same built text and points the picker at your checkout.
 #
-# Run it with no arguments:
-#
-#   ./try-local.ps1
-#
-# The first run installs into a throwaway directory, so a wrong click costs nothing while you are
-# still learning what the buttons do. Every run after that installs for real, into your profile
-# directory. Which one it picked is printed before the window opens.
-#
-# -Real and -Sandbox override that. -Terminal uses the console list instead of the window.
+#   ./try-local.ps1              first run sandboxes, every run after installs for real
+#   ./try-local.ps1 -Sandbox     a throwaway directory, whatever the marker says
+#   ./try-local.ps1 -Real        your profile directory, whatever the marker says
+#   ./try-local.ps1 -Terminal    the console list instead of the window
 #
 # The parameters are deliberately not named -Console or -Branch. The built file starts with its own
-# param($Console, $Branch), and Invoke-Expression declares those in the calling scope; a local of
-# the same name here is already compiled and PowerShell refuses to overwrite it.
+# param($Console, $Branch, $Real, $Sandbox), and Invoke-Expression declares those in the calling
+# scope; a local of the same name here is already compiled and PowerShell refuses to overwrite it.
 #---------------------------------------------------------------------------------------------------
 [CmdletBinding()]
 param(
@@ -24,18 +20,14 @@ param(
     [switch]$Terminal,
 
     [Parameter()]
-    [switch]$Real,
+    [switch]$UseReal,
 
     [Parameter()]
-    [switch]$Sandbox
+    [switch]$UseSandbox
 )
 
 $ErrorActionPreference = 'Stop'
 $repository = $PSScriptRoot
-
-if ($Real -and $Sandbox) {
-    throw 'Pass -Real or -Sandbox, not both.'
-}
 
 # The built file with its final launcher call removed, so it defines everything and opens nothing.
 # This is the same text a user would pipe into Invoke-Expression.
@@ -43,49 +35,16 @@ $built = Get-Content -LiteralPath (Join-Path $repository 'build/profileutil.ps1'
 $built = $built -replace '(?m)^Invoke-ProfileInstaller.*$', ''
 $built | Invoke-Expression
 
-# Whether this machine has run the picker before. Kept beside the install receipt rather than in
-# the repository, so a fresh clone on a machine that has used it does not start over in the
-# sandbox, and a clone carried to a new machine does.
-$marker = Join-Path (Split-Path -Parent (Get-ProfileSetupPath).Receipt) 'try-local.json'
-$seen = Test-Path -LiteralPath $marker
+# Every decision below comes from the installer, not from here. This file adds one thing: the
+# repository is the checkout it sits in rather than a download.
+$mode = Get-ProfileSetupMode -Real:$UseReal -Sandbox:$UseSandbox
+Write-ProfileSetupMode -Mode $mode
 
-$useReal = if ($Real) { $true }
-elseif ($Sandbox) { $false }
-else { $seen }
+$target = @{}
+if ($mode.InstallPath) { $target['InstallPath'] = $mode.InstallPath }
+if ($mode.ReceiptPath) { $target['ReceiptPath'] = $mode.ReceiptPath }
 
-Write-Host ''
-
-if ($useReal) {
-    $target = @{}
-    $reason = if ($Real) { 'you asked for it' } else { 'you have run this before' }
-
-    Write-Host ("Installing for real, because {0}." -f $reason) -ForegroundColor Yellow
-    Write-Host ('  ' + (Get-ProfileSetupPath).InstallPath)
-    Write-Host '  Pass -Sandbox to try it against a throwaway directory instead.'
-}
-else {
-    $scratch = Join-Path ([System.IO.Path]::GetTempPath()) ("profile-try-" + [guid]::NewGuid().ToString('N'))
-    $null = New-Item -ItemType Directory -Path $scratch -Force
-    $target = @{ InstallPath = $scratch; ReceiptPath = (Join-Path $scratch 'receipt.json') }
-
-    $reason = if ($Sandbox) { 'you asked for it' } else { 'this is the first run on this machine' }
-
-    Write-Host ("Sandbox run, because {0}." -f $reason) -ForegroundColor Cyan
-    Write-Host "  $scratch"
-    Write-Host '  Nothing outside that directory is touched. The next run installs for real.'
-}
-
-# Written after the mode is decided and before the window opens, so the next run knows this one
-# happened even if the person closes the window without installing anything.
-if (-not $seen) {
-    $parent = Split-Path -Parent $marker
-    if (-not (Test-Path -LiteralPath $parent)) { $null = New-Item -ItemType Directory -Path $parent -Force }
-
-    [PSCustomObject]@{ FirstRun = (Get-Date).ToString('o'); Repository = $repository } |
-        ConvertTo-Json | Set-Content -LiteralPath $marker -Encoding UTF8
-}
-
-Write-Host ''
+Set-ProfileSetupSeen -Repository $repository -Confirm:$false
 
 if ($Terminal -or -not (Get-ProfileSetupWindowSupport).Supported) {
     Show-ProfileSetup -Repository $repository @target

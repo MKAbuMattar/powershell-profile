@@ -315,3 +315,154 @@ Describe 'Get-ProfileSetupState' {
         @($tools | Where-Object { $_.Category -ne 'Tool' }).Count | Should -Be 0
     }
 }
+
+Describe 'Get-ProfileSetupMode' {
+
+    BeforeEach {
+        # The real marker is moved aside, so the test decides what a first run looks like and the
+        # machine's own state is put back afterwards.
+        $script:Marker = Get-ProfileSetupMarkerPath
+        $script:Stash = "$script:Marker.testing"
+        if (Test-Path -LiteralPath $script:Marker) { Move-Item -LiteralPath $script:Marker -Destination $script:Stash -Force }
+        $script:Made = [System.Collections.Generic.List[string]]::new()
+    }
+
+    AfterEach {
+        Remove-Item -LiteralPath $script:Marker -Force -ErrorAction SilentlyContinue
+        if (Test-Path -LiteralPath $script:Stash) { Move-Item -LiteralPath $script:Stash -Destination $script:Marker -Force }
+        foreach ($path in $script:Made) { Remove-Item -LiteralPath $path -Recurse -Force -ErrorAction SilentlyContinue }
+    }
+
+    It 'sandboxes the first run on a machine' {
+        # A wrong click has to cost nothing while someone is still finding out what the buttons do.
+        $mode = Get-ProfileSetupMode
+        $script:Made.Add($mode.InstallPath)
+
+        $mode.Real | Should -BeFalse
+        $mode.Reason | Should -Match 'first run'
+        $mode.InstallPath | Should -Not -BeNullOrEmpty
+        Test-Path -LiteralPath $mode.InstallPath | Should -BeTrue
+    }
+
+    It 'installs for real once the marker exists' {
+        Set-ProfileSetupSeen -Confirm:$false
+
+        $mode = Get-ProfileSetupMode
+
+        $mode.Real | Should -BeTrue
+        $mode.Reason | Should -Match 'run this before'
+        $mode.InstallPath | Should -BeNullOrEmpty -Because 'an empty path means the defaults apply'
+    }
+
+    It 'lets -Real override a first run' {
+        $mode = Get-ProfileSetupMode -Real
+
+        $mode.Real | Should -BeTrue
+        $mode.Reason | Should -Match 'asked for it'
+    }
+
+    It 'lets -Sandbox override a machine that has run it before' {
+        Set-ProfileSetupSeen -Confirm:$false
+
+        $mode = Get-ProfileSetupMode -Sandbox
+        $script:Made.Add($mode.InstallPath)
+
+        $mode.Real | Should -BeFalse
+        $mode.Reason | Should -Match 'asked for it'
+    }
+
+    It 'refuses both at once' {
+        { Get-ProfileSetupMode -Real -Sandbox } | Should -Throw '*not both*'
+    }
+
+    It 'gives each sandbox run its own directory' {
+        $first = Get-ProfileSetupMode
+        $script:Made.Add($first.InstallPath)
+
+        $second = Get-ProfileSetupMode
+        $script:Made.Add($second.InstallPath)
+
+        $second.InstallPath | Should -Not -BeExactly $first.InstallPath
+    }
+
+    It 'puts the receipt inside the sandbox' {
+        # A sandbox run that wrote to the real receipt would tell the next real run it owns things
+        # it never installed.
+        $mode = Get-ProfileSetupMode
+        $script:Made.Add($mode.InstallPath)
+
+        $mode.ReceiptPath | Should -BeLike "$($mode.InstallPath)*"
+        $mode.ReceiptPath | Should -Not -BeExactly (Get-ProfileSetupPath).Receipt
+    }
+}
+
+Describe 'Set-ProfileSetupSeen' {
+
+    BeforeEach {
+        $script:Marker = Get-ProfileSetupMarkerPath
+        $script:Stash = "$script:Marker.testing"
+        if (Test-Path -LiteralPath $script:Marker) { Move-Item -LiteralPath $script:Marker -Destination $script:Stash -Force }
+    }
+
+    AfterEach {
+        Remove-Item -LiteralPath $script:Marker -Force -ErrorAction SilentlyContinue
+        if (Test-Path -LiteralPath $script:Stash) { Move-Item -LiteralPath $script:Stash -Destination $script:Marker -Force }
+    }
+
+    It 'writes the marker and the directory holding it' {
+        Set-ProfileSetupSeen -Repository 'C:\somewhere' -Confirm:$false
+
+        Test-Path -LiteralPath $script:Marker | Should -BeTrue
+        (Get-Content -LiteralPath $script:Marker -Raw | ConvertFrom-Json).Repository | Should -BeExactly 'C:\somewhere'
+    }
+
+    It 'keeps the first run date when called again' {
+        Set-ProfileSetupSeen -Repository 'first' -Confirm:$false
+        $first = Get-Content -LiteralPath $script:Marker -Raw
+
+        Set-ProfileSetupSeen -Repository 'second' -Confirm:$false
+
+        Get-Content -LiteralPath $script:Marker -Raw | Should -BeExactly $first
+    }
+
+    It 'lives beside the receipt, not in the repository' {
+        # A fresh clone on a machine that has used the picker must not start over in the sandbox,
+        # and a clone carried to a new machine must.
+        Split-Path -Parent (Get-ProfileSetupMarkerPath) |
+            Should -BeExactly (Split-Path -Parent (Get-ProfileSetupPath).Receipt)
+
+        Get-ProfileSetupMarkerPath | Should -BeLike "$env:LOCALAPPDATA*"
+    }
+
+    It 'writes nothing under -WhatIf' {
+        Set-ProfileSetupSeen -WhatIf
+
+        Test-Path -LiteralPath $script:Marker | Should -BeFalse
+    }
+}
+
+Describe 'The built installer carries the mode decision' {
+
+    BeforeAll {
+        $script:Built = Get-Content -LiteralPath (Join-Path $script:Root 'build/profileutil.ps1') -Raw
+        $script:Wrapper = Get-Content -LiteralPath (Join-Path $script:Root 'try-local.ps1') -Raw
+    }
+
+    It 'decides the mode in the installer' {
+        # The behaviour belongs to the thing people actually run, not to a local helper script.
+        $script:Built | Should -Match 'Get-ProfileSetupMode'
+        $script:Built | Should -Match 'Set-ProfileSetupSeen'
+    }
+
+    It 'accepts -Real and -Sandbox' {
+        $script:Built | Should -Match '\[switch\]\$Real'
+        $script:Built | Should -Match '\[switch\]\$Sandbox'
+    }
+
+    It 'leaves the local wrapper with no decision of its own' {
+        # try-local.ps1 exists only because the built file downloads a repository and a checkout is
+        # already here. Anything else it decided would be behaviour a real user never gets.
+        $script:Wrapper | Should -Not -Match 'first run on this machine'
+        $script:Wrapper | Should -Match 'Get-ProfileSetupMode'
+    }
+}

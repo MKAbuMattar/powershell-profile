@@ -355,3 +355,189 @@ function Save-ProfileSetupReceipt {
 
     $document | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath $Path -Encoding UTF8
 }
+
+function Get-ProfileSetupMode {
+    <#
+    .SYNOPSIS
+        Decides whether to install for real or into a throwaway directory.
+
+    .DESCRIPTION
+        The first run on a machine goes into a throwaway directory, so a wrong click costs nothing
+        while someone is still finding out what the buttons do. Every run after that installs for
+        real. Nobody has to remember a flag on the run where forgetting it is expensive.
+
+        What makes a run the first one is a marker beside the install receipt under LOCALAPPDATA,
+        not anything in the repository. A fresh clone on a machine that has used the picker does
+        not start over in the sandbox, and the same clone carried to a new machine does.
+
+        The marker is written by Set-ProfileSetupSeen, which the caller invokes once it has decided
+        rather than as a side effect of asking.
+
+    .PARAMETER Real
+        Install for real whatever the marker says.
+
+    .PARAMETER Sandbox
+        Use a throwaway directory whatever the marker says.
+
+    .OUTPUTS
+        [PSCustomObject] Real, Reason, InstallPath, ReceiptPath, Seen. InstallPath and ReceiptPath
+        are empty for a real run, meaning the defaults apply.
+
+    .EXAMPLE
+        $mode = Get-ProfileSetupMode
+        if ($mode.Real) { 'installing for real' } else { $mode.InstallPath }
+
+    .LINK
+        https://github.com/MKAbuMattar/powershell-profile
+    #>
+    [CmdletBinding()]
+    [OutputType([PSCustomObject])]
+    param(
+        [Parameter()]
+        [switch]$Real,
+
+        [Parameter()]
+        [switch]$Sandbox
+    )
+
+    if ($Real -and $Sandbox) {
+        throw 'Ask for Real or Sandbox, not both.'
+    }
+
+    $seen = Test-Path -LiteralPath (Get-ProfileSetupMarkerPath) -PathType Leaf
+
+    $useReal = if ($Real) { $true } elseif ($Sandbox) { $false } else { $seen }
+
+    $reason = if ($Real) { 'you asked for it' }
+    elseif ($Sandbox) { 'you asked for it' }
+    elseif ($seen) { 'you have run this before' }
+    else { 'this is the first run on this machine' }
+
+    if ($useReal) {
+        return [PSCustomObject]@{
+            Real = $true; Reason = $reason; Seen = $seen
+            InstallPath = ''; ReceiptPath = ''
+        }
+    }
+
+    $scratch = Join-Path ([System.IO.Path]::GetTempPath()) ("profile-try-" + [guid]::NewGuid().ToString('N'))
+    $null = New-Item -ItemType Directory -Path $scratch -Force
+
+    [PSCustomObject]@{
+        Real = $false; Reason = $reason; Seen = $seen
+        InstallPath = $scratch; ReceiptPath = (Join-Path $scratch 'receipt.json')
+    }
+}
+
+function Get-ProfileSetupMarkerPath {
+    <#
+    .SYNOPSIS
+        Where the record of having run the picker lives.
+
+    .DESCRIPTION
+        Beside the install receipt, for the same reason the receipt is there: it describes the
+        machine, not the checkout, and removing the Module tree must not erase it.
+
+    .OUTPUTS
+        [string]
+
+    .EXAMPLE
+        Get-ProfileSetupMarkerPath
+
+    .LINK
+        https://github.com/MKAbuMattar/powershell-profile
+    #>
+    [CmdletBinding()]
+    [OutputType([string])]
+    param()
+
+    Join-Path (Split-Path -Parent (Get-ProfileSetupPath).Receipt) 'first-run.json'
+}
+
+function Set-ProfileSetupSeen {
+    <#
+    .SYNOPSIS
+        Records that the picker has been run on this machine.
+
+    .DESCRIPTION
+        Called once the mode is decided and before the picker opens, so closing the window without
+        installing anything still counts. Someone who has seen the list has seen it.
+
+    .PARAMETER Repository
+        Where it was run from, kept for diagnosis.
+
+    .OUTPUTS
+        None.
+
+    .EXAMPLE
+        Set-ProfileSetupSeen -Repository $checkout
+
+    .LINK
+        https://github.com/MKAbuMattar/powershell-profile
+    #>
+    [CmdletBinding(SupportsShouldProcess)]
+    [OutputType([void])]
+    param(
+        [Parameter(Position = 0)]
+        [string]$Repository
+    )
+
+    $marker = Get-ProfileSetupMarkerPath
+    if (Test-Path -LiteralPath $marker -PathType Leaf) { return }
+
+    if (-not $PSCmdlet.ShouldProcess($marker, 'Record the first run')) { return }
+
+    $parent = Split-Path -Parent $marker
+    if ($parent -and -not (Test-Path -LiteralPath $parent)) {
+        $null = New-Item -ItemType Directory -Path $parent -Force
+    }
+
+    [PSCustomObject]@{
+        FirstRun   = (Get-Date).ToString('o')
+        Repository = if ($Repository) { $Repository } else { '' }
+    } | ConvertTo-Json | Set-Content -LiteralPath $marker -Encoding UTF8
+}
+
+function Write-ProfileSetupMode {
+    <#
+    .SYNOPSIS
+        Prints which mode was chosen, why, and how to override it.
+
+    .DESCRIPTION
+        A picker that quietly writes to a different place than last time would be worse than one
+        that asks, so the choice is stated before anything opens.
+
+    .PARAMETER Mode
+        A result from Get-ProfileSetupMode.
+
+    .OUTPUTS
+        None.
+
+    .EXAMPLE
+        Write-ProfileSetupMode -Mode (Get-ProfileSetupMode)
+
+    .LINK
+        https://github.com/MKAbuMattar/powershell-profile
+    #>
+    [CmdletBinding()]
+    [OutputType([void])]
+    param(
+        [Parameter(Mandatory, Position = 0)]
+        [PSCustomObject]$Mode
+    )
+
+    Write-Host ''
+
+    if ($Mode.Real) {
+        Write-Host ("Installing for real, because {0}." -f $Mode.Reason)
+        Write-Host ('  ' + (Get-ProfileSetupPath).InstallPath)
+        Write-Host '  Run it with -Sandbox to try it against a throwaway directory instead.'
+    }
+    else {
+        Write-Host ("Sandbox run, because {0}." -f $Mode.Reason)
+        Write-Host ('  ' + $Mode.InstallPath)
+        Write-Host '  Nothing outside that directory is touched. The next run installs for real.'
+    }
+
+    Write-Host ''
+}
