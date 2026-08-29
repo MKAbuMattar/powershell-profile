@@ -60,11 +60,21 @@
         'Get-ProfileSetupReceipt',
         'Add-ProfileSetupReceiptEntry',
         'Remove-ProfileSetupReceiptEntry',
-        'Save-ProfileSetupReceipt'
+        'Save-ProfileSetupReceipt',
+        'Resolve-ProfileSetupManager',
+        'Copy-ProfileSetupItem',
+        'Install-ProfileSetupUnit',
+        'Install-ProfileSetupFont',
+        'Invoke-ProfileSetup',
+        'Remove-ProfileSetupUnit',
+        'Uninstall-ProfileSetup'
     )
     CmdletsToExport      = @()
     VariablesToExport    = @()
-    AliasesToExport      = @()
+    AliasesToExport      = @(
+        'profile-install',
+        'profile-uninstall'
+    )
     PrivateData          = @{
         PSData = @{
             Tags                       = @(

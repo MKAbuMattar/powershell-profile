@@ -50,3 +50,5 @@
 
 . (Join-Path $PSScriptRoot 'Catalog.ps1')
 . (Join-Path $PSScriptRoot 'State.ps1')
+. (Join-Path $PSScriptRoot 'Install.ps1')
+. (Join-Path $PSScriptRoot 'Uninstall.ps1')

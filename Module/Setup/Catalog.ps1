@@ -16,6 +16,7 @@
 #   Required      Core rows the profile cannot run without. Never offered for removal.
 #   Kind          how Get-ProfileSetupState probes for it and how it is installed
 #   Detect        the argument the probe needs: a command name, a path, or a module name
+#   Source        for File and Tree, the path inside the repository to copy from
 #   Winget        package id, for Kind = Package
 #   Chocolatey    package id, for Kind = Package
 #   Step          the setup.ps1 step that installs it, where one exists
@@ -26,7 +27,7 @@
 #   Module    a PowerShell Gallery module. Present when Get-Module -ListAvailable finds it.
 #   File      a file the installer copies. Present when the path exists.
 #   Tree      a directory the installer copies. Present when the directory exists.
-#   Font      a font file in the Windows font directory.
+#   Font      a font, asked for by installed family name.
 #
 # GitHub: https://github.com/MKAbuMattar/powershell-profile
 #---------------------------------------------------------------------------------------------------
@@ -129,92 +130,92 @@ function Get-ProfileSetupCatalog {
         [PSCustomObject]@{
             Id = 'module-tree'; Name = 'Profile modules'; Category = 'Core'; Required = $true
             Description = 'The Module directory the profile loads at every start.'
-            Kind = 'Tree'; Detect = $path.ModuleTree; Step = 'Modules'; Winget = $null; Chocolatey = $null
+            Kind = 'Tree'; Detect = $path.ModuleTree; Source = 'Module'; Step = 'Modules'; Winget = $null; Chocolatey = $null
         }
         [PSCustomObject]@{
             Id = 'tool-tree'; Name = 'Maintenance scripts'; Category = 'Core'; Required = $true
             Description = 'The Tools directory. The loader reads its export policy from here.'
-            Kind = 'Tree'; Detect = $path.ToolTree; Step = 'Modules'; Winget = $null; Chocolatey = $null
+            Kind = 'Tree'; Detect = $path.ToolTree; Source = 'Tools'; Step = 'Modules'; Winget = $null; Chocolatey = $null
         }
         [PSCustomObject]@{
             Id = 'profile'; Name = 'PowerShell profile'; Category = 'Core'; Required = $true
             Description = 'Microsoft.PowerShell_profile.ps1, installed over $PROFILE.'
-            Kind = 'File'; Detect = $path.Profile; Step = 'Profile'; Winget = $null; Chocolatey = $null
+            Kind = 'File'; Detect = $path.Profile; Source = 'Microsoft.PowerShell_profile.ps1'; Step = 'Profile'; Winget = $null; Chocolatey = $null
         }
         [PSCustomObject]@{
             Id = 'config'; Name = 'Load configuration'; Category = 'Core'; Required = $true
             Description = 'profile.config.psd1, which decides what loads.'
-            Kind = 'File'; Detect = $path.Config; Step = 'Modules'; Winget = $null; Chocolatey = $null
+            Kind = 'File'; Detect = $path.Config; Source = 'profile.config.psd1'; Step = 'Modules'; Winget = $null; Chocolatey = $null
         }
 
         [PSCustomObject]@{
             Id = 'starship-config'; Name = 'Starship configuration'; Category = 'Config'; Required = $false
             Description = 'The prompt layout at ~/.config/starship.toml.'
-            Kind = 'File'; Detect = $path.Starship; Step = 'Starship'; Winget = $null; Chocolatey = $null
+            Kind = 'File'; Detect = $path.Starship; Source = '.config/starship.toml'; Step = 'Starship'; Winget = $null; Chocolatey = $null
         }
         [PSCustomObject]@{
             Id = 'fastfetch-config'; Name = 'FastFetch configuration'; Category = 'Config'; Required = $false
             Description = 'The system summary layout at ~/.config/fastfetch/config.jsonc.'
-            Kind = 'File'; Detect = $path.FastFetch; Step = 'FastFetch'; Winget = $null; Chocolatey = $null
+            Kind = 'File'; Detect = $path.FastFetch; Source = '.config/fastfetch/config.jsonc'; Step = 'FastFetch'; Winget = $null; Chocolatey = $null
         }
         [PSCustomObject]@{
             Id = 'figlet-font'; Name = 'Figlet banner font'; Category = 'Config'; Required = $false
             Description = 'ANSI_Shadow.flf, used for banner text.'
-            Kind = 'File'; Detect = $path.Figlet; Step = 'Figlet'; Winget = $null; Chocolatey = $null
+            Kind = 'File'; Detect = $path.Figlet; Source = '.config/.figlet/ANSI_Shadow.flf'; Step = 'Figlet'; Winget = $null; Chocolatey = $null
         }
         [PSCustomObject]@{
             Id = 'windows-terminal'; Name = 'Windows Terminal settings'; Category = 'Config'; Required = $false
             Description = 'Replaces settings.json. Your existing file is backed up first.'
-            Kind = 'File'; Detect = $path.WindowsTerminal; Step = 'WindowsTerminal'; Winget = $null; Chocolatey = $null
+            Kind = 'File'; Detect = $path.WindowsTerminal; Source = '.config/windows-terminal/settings.json'; Step = 'WindowsTerminal'; Winget = $null; Chocolatey = $null
         }
 
         [PSCustomObject]@{
             Id = 'starship'; Name = 'Starship'; Category = 'Tool'; Required = $false
             Description = 'The prompt itself. Without it the profile falls back to the default prompt.'
-            Kind = 'Package'; Detect = 'starship'; Step = 'Tools'; Winget = 'Starship.Starship'; Chocolatey = 'starship'
+            Kind = 'Package'; Detect = 'starship'; Source = $null; Step = 'Tools'; Winget = 'Starship.Starship'; Chocolatey = 'starship'
         }
         [PSCustomObject]@{
             Id = 'zoxide'; Name = 'zoxide'; Category = 'Tool'; Required = $false
             Description = 'Directory jumping. Replaces cd with a version that learns.'
-            Kind = 'Package'; Detect = 'zoxide'; Step = 'Tools'; Winget = 'ajeetdsouza.zoxide'; Chocolatey = 'zoxide'
+            Kind = 'Package'; Detect = 'zoxide'; Source = $null; Step = 'Tools'; Winget = 'ajeetdsouza.zoxide'; Chocolatey = 'zoxide'
         }
         [PSCustomObject]@{
             Id = 'fzf'; Name = 'fzf'; Category = 'Tool'; Required = $false
             Description = 'Fuzzy finder, used by the history and file pickers.'
-            Kind = 'Package'; Detect = 'fzf'; Step = 'Tools'; Winget = 'junegunn.fzf'; Chocolatey = 'fzf'
+            Kind = 'Package'; Detect = 'fzf'; Source = $null; Step = 'Tools'; Winget = 'junegunn.fzf'; Chocolatey = 'fzf'
         }
         [PSCustomObject]@{
             Id = 'fastfetch'; Name = 'FastFetch'; Category = 'Tool'; Required = $false
             Description = 'System summary printed at start, if you enable it in the profile.'
-            Kind = 'Package'; Detect = 'fastfetch'; Step = 'Tools'; Winget = 'Fastfetch-cli.Fastfetch'; Chocolatey = 'fastfetch'
+            Kind = 'Package'; Detect = 'fastfetch'; Source = $null; Step = 'Tools'; Winget = 'Fastfetch-cli.Fastfetch'; Chocolatey = 'fastfetch'
         }
 
         [PSCustomObject]@{
             Id = 'coreutils'; Name = 'Microsoft coreutils'; Category = 'System'; Required = $false
             Description = 'GNU tools as native commands. Takes the grep, head, tail, touch and sed names.'
-            Kind = 'Package'; Detect = 'coreutils'; Step = 'Coreutils'; Winget = 'Microsoft.Coreutils'; Chocolatey = $null
+            Kind = 'Package'; Detect = 'coreutils'; Source = $null; Step = 'Coreutils'; Winget = 'Microsoft.Coreutils'; Chocolatey = $null
         }
 
         [PSCustomObject]@{
             Id = 'terminal-icons'; Name = 'Terminal-Icons'; Category = 'Module'; Required = $false
             Description = 'File-type icons in Get-ChildItem. Costs about 250 ms, so it loads after the first prompt.'
-            Kind = 'Module'; Detect = 'Terminal-Icons'; Step = 'GalleryModules'; Winget = $null; Chocolatey = $null
+            Kind = 'Module'; Detect = 'Terminal-Icons'; Source = $null; Step = 'GalleryModules'; Winget = $null; Chocolatey = $null
         }
         [PSCustomObject]@{
             Id = 'psreadline'; Name = 'PSReadLine'; Category = 'Module'; Required = $false
             Description = 'Line editing, history and prediction. Ships with PowerShell; this updates it.'
-            Kind = 'Module'; Detect = 'PSReadLine'; Step = 'GalleryModules'; Winget = $null; Chocolatey = $null
+            Kind = 'Module'; Detect = 'PSReadLine'; Source = $null; Step = 'GalleryModules'; Winget = $null; Chocolatey = $null
         }
         [PSCustomObject]@{
             Id = 'completion-predictor'; Name = 'CompletionPredictor'; Category = 'Module'; Required = $false
             Description = 'Predictions drawn from your command history.'
-            Kind = 'Module'; Detect = 'CompletionPredictor'; Step = 'GalleryModules'; Winget = $null; Chocolatey = $null
+            Kind = 'Module'; Detect = 'CompletionPredictor'; Source = $null; Step = 'GalleryModules'; Winget = $null; Chocolatey = $null
         }
 
         [PSCustomObject]@{
             Id = 'cascadia-code'; Name = 'CascadiaCode Nerd Font'; Category = 'Font'; Required = $false
             Description = 'The glyphs the prompt draws with. Without it the prompt shows boxes.'
-            Kind = 'Font'; Detect = 'CaskaydiaCove NF'; Step = 'Font'; Winget = $null; Chocolatey = $null
+            Kind = 'Font'; Detect = 'CaskaydiaCove NF'; Source = $null; Step = 'Font'; Winget = $null; Chocolatey = $null
         }
     )
 
