@@ -63,7 +63,14 @@ foreach ($Module in $ModuleList) {
     $ModuleName = $Module.Name
 
     if (Test-Path $ModulePath) {
-        Import-Module $ModulePath -Force -ErrorAction SilentlyContinue
+        # Silencing this hid a broken Core.psm1 completely: 23 functions would simply not exist
+        # and nothing would say why.
+        try {
+            Import-Module $ModulePath -Force -ErrorAction Stop
+        }
+        catch {
+            Write-Warning "$ModuleName module failed to import from ${ModulePath}: $($_.Exception.Message)"
+        }
     }
     else {
         Write-Warning "$ModuleName module not found at: $ModulePath"

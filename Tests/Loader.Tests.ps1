@@ -346,3 +346,64 @@ Describe 'Pipeline binding' {
         }
     }
 }
+
+Describe 'Gallery module failures' {
+
+    BeforeAll {
+        Import-Module (Join-Path $script:Root 'Module/Loader/Loader.psd1') -Force -DisableNameChecking
+    }
+
+    It 'tells a broken module apart from a missing one' {
+        # A silenced Import-Module reported 'missing' for a module that is installed but does not
+        # parse, which is how the WebSearch syntax error stayed hidden. The two now differ, so the
+        # warning names the real problem instead of blaming the install.
+        $scratch = Join-Path ([System.IO.Path]::GetTempPath()) "gallery-test-$([guid]::NewGuid())"
+        $broken = Join-Path $scratch 'BrokenSample'
+        New-Item -ItemType Directory -Path $broken -Force | Out-Null
+
+        $originalModulePath = $env:PSModulePath
+
+        try {
+            Set-Content -LiteralPath (Join-Path $broken 'BrokenSample.psm1') -Encoding UTF8 -Value 'function Broken { if ( }'
+
+            $manifest = @(
+                '@{'
+                "    RootModule        = 'BrokenSample.psm1'"
+                "    ModuleVersion     = '1.0.0'"
+                "    GUID              = '$([guid]::NewGuid())'"
+                "    Author            = 'test'"
+                "    FunctionsToExport = @('Broken')"
+                '}'
+            ) -join [Environment]::NewLine
+            Set-Content -LiteralPath (Join-Path $broken 'BrokenSample.psd1') -Value $manifest -Encoding UTF8
+
+            $config = @(
+                '@{'
+                '    Modules         = @()'
+                '    Plugins         = @()'
+                '    Utilities       = @()'
+                "    ExternalModules = @('BrokenSample', 'NoSuchModuleAnywhere')"
+                '    TrackTimings    = $true'
+                '}'
+            ) -join [Environment]::NewLine
+            Set-Content -LiteralPath (Join-Path $scratch 'profile.config.psd1') -Value $config -Encoding UTF8
+
+            $env:PSModulePath = "$scratch$([System.IO.Path]::PathSeparator)$originalModulePath"
+
+            $warnings = @()
+            Import-ProfileModule -RepositoryRoot $scratch -WarningVariable warnings -WarningAction SilentlyContinue
+
+            $report = @(Measure-ProfileLoad -All 6> $null | Where-Object { $_.Kind -eq 'External' })
+
+            ($report | Where-Object { $_.Name -eq 'BrokenSample' }).Status | Should -BeExactly 'failed'
+            ($report | Where-Object { $_.Name -eq 'NoSuchModuleAnywhere' }).Status | Should -BeExactly 'missing'
+
+            ($warnings -join "`n") | Should -Match 'BrokenSample.*failed to import'
+            ($warnings -join "`n") | Should -Match 'NoSuchModuleAnywhere.*not installed'
+        }
+        finally {
+            $env:PSModulePath = $originalModulePath
+            Remove-Item -LiteralPath $scratch -Recurse -Force -ErrorAction SilentlyContinue
+        }
+    }
+}

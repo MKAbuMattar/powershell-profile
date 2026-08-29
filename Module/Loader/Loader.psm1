@@ -488,13 +488,33 @@ function Import-ProfileModule {
 
         $stopwatch = if ($track) { [System.Diagnostics.Stopwatch]::StartNew() } else { $null }
 
-        Import-Module -Name $name -Global -ErrorAction SilentlyContinue
-        $status = if (Get-Module -Name $name) { 'loaded' } else { 'missing' }
+        # A silenced import reports 'missing' for a module that is installed but broken, which is
+        # how a syntax error in WebSearch.psm1 went unnoticed. The two are separated here so the
+        # warning names the real problem.
+        $failure = $null
+        try {
+            Import-Module -Name $name -Global -ErrorAction Stop
+        }
+        catch {
+            # Modules_ModuleNotFound means it is not installed. Anything else means it is
+            # installed and did not import, which is a different problem with a different fix.
+            # The error id is used rather than the message because the message is localised.
+            if ($_.FullyQualifiedErrorId -notlike 'Modules_ModuleNotFound*') {
+                $failure = $_.Exception.Message
+            }
+        }
+
+        $status = if (Get-Module -Name $name) { 'loaded' } elseif ($failure) { 'failed' } else { 'missing' }
 
         if ($stopwatch) { $stopwatch.Stop() }
 
-        if ($status -eq 'missing' -and $report) {
-            Write-Warning "Gallery module '$name' is not installed. Run Install-ProfileDependency to add it."
+        if ($report) {
+            if ($status -eq 'missing') {
+                Write-Warning "Gallery module '$name' is not installed. Run Install-ProfileDependency to add it."
+            }
+            elseif ($status -eq 'failed') {
+                Write-Warning "Gallery module '$name' is installed but failed to import: $failure"
+            }
         }
 
         $script:LoadReport.Add([PSCustomObject]@{
@@ -508,7 +528,14 @@ function Import-ProfileModule {
     if ($config.LoadChocolateyProfile -and $env:ChocolateyInstall) {
         $chocolatey = Join-Path -Path $env:ChocolateyInstall -ChildPath 'helpers\chocolateyProfile.psm1'
         if (Test-Path -LiteralPath $chocolatey) {
-            Import-Module -Name $chocolatey -Global -ErrorAction SilentlyContinue
+            try {
+                Import-Module -Name $chocolatey -Global -ErrorAction Stop
+            }
+            catch {
+                if ($report) {
+                    Write-Warning "The Chocolatey helper module failed to import: $($_.Exception.Message)"
+                }
+            }
         }
     }
 
