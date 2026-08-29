@@ -24,6 +24,10 @@ jobs:
         shell: pwsh
         run: ./Tools/Test-Syntax.ps1
 
+      - name: Verify every version matches VERSION
+        shell: pwsh
+        run: ./Tools/Test-Version.ps1
+
       - name: Verify manifests match their modules
         shell: pwsh
         run: ./Tools/Test-Manifest.ps1

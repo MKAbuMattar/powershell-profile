@@ -37,12 +37,12 @@
 #
 # GitHub: https://github.com/MKAbuMattar/powershell-profile
 #
-# Version: 4.2.0
+# Version: 5.1.0
 #---------------------------------------------------------------------------------------------------
 
 @{
     RootModule           = 'Update.psm1'
-    ModuleVersion        = '4.2.0'
+    ModuleVersion        = '5.1.0'
     CompatiblePSEditions = @(
         'Core'
     )
@@ -56,6 +56,7 @@
         'Update-LocalProfileModuleDirectory',
         'Get-ForeignProfileSection',
         'Update-Profile',
+        'ConvertTo-ProfileVersion',
         'Update-PowerShell',
         'Update-WindowsTerminalConfig'
     )

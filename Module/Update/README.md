@@ -63,12 +63,13 @@ This project is licensed under the MIT License. See the [LICENSE](../../LICENSE)
 
 | Command | Alias | Description |
 | --- | --- | --- |
+| `ConvertTo-ProfileVersion` |  | Parses a version string into a [version], dropping any prerelease suffix. |
 | `Get-ForeignProfileSection` |  | Extracts blocks that another installer injected into a profile file. |
 | `Update-LocalProfileModuleDirectory` | `update-local-module` | Updates the local Module directory from the repository. |
-| `Update-PowerShell` | `update-ps1` | Checks for updates to PowerShell and upgrades to the latest version if available. |
+| `Update-PowerShell` | `update-ps1` | Upgrades PowerShell when the latest GitHub release is newer than the running build. |
 | `Update-Profile` |  | Updates the local profile from GitHub, preserving any third-party section. |
 | `Update-WindowsTerminalConfig` | `update-terminal-config` | Update the Windows Terminal configuration by downloading the settings.json file from the GitHub repository. |
 
-5 command(s).
+6 command(s).
 
 <!-- END GENERATED COMMANDS -->

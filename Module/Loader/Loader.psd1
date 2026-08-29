@@ -11,12 +11,12 @@
 #
 # GitHub: https://github.com/MKAbuMattar/powershell-profile
 #
-# Version: 5.0.0
+# Version: 5.1.0
 #---------------------------------------------------------------------------------------------------
 
 @{
     RootModule           = 'Loader.psm1'
-    ModuleVersion        = '5.0.0'
+    ModuleVersion        = '5.1.0'
     CompatiblePSEditions = @(
         'Core'
     )

@@ -37,7 +37,7 @@
 #
 # GitHub: https://github.com/MKAbuMattar/powershell-profile
 #
-# Version: 4.2.0
+# Version: 5.1.0
 #---------------------------------------------------------------------------------------------------
 
 
@@ -318,61 +318,160 @@ function Update-Profile {
     }
 }
 
+function ConvertTo-ProfileVersion {
+    <#
+    .SYNOPSIS
+        Parses a version string into a [version], dropping any prerelease suffix.
+
+    .DESCRIPTION
+        GitHub tags and $PSVersionTable both carry text a [version] cast rejects: a leading 'v',
+        and a prerelease suffix such as '-preview.3' or '-rc.1'. This strips both and returns the
+        numeric part, or $null when there is nothing numeric to return.
+
+        The comparison this feeds used to be a string compare, which ordered '7.9.0' above
+        '7.10.0' and so reported every 7.10 and later release as already installed.
+
+    .PARAMETER Text
+        The version string to parse.
+
+    .OUTPUTS
+        [version] The parsed version, or $null when the text holds no version.
+
+    .EXAMPLE
+        ConvertTo-ProfileVersion 'v7.6.0-preview.3'
+        Returns 7.6.0.
+
+    .LINK
+        https://github.com/MKAbuMattar/powershell-profile
+    #>
+    [CmdletBinding()]
+    [OutputType([version])]
+    param(
+        [Parameter(Position = 0, ValueFromPipeline)]
+        [AllowNull()]
+        [AllowEmptyString()]
+        [string]$Text
+    )
+
+    process {
+        if ([string]::IsNullOrWhiteSpace($Text)) { return $null }
+
+        $match = [regex]::Match($Text, '\d+(\.\d+){0,3}')
+        if (-not $match.Success) { return $null }
+
+        # [version] rejects a bare major, so '6' becomes '6.0'.
+        $value = $match.Value
+        if ($value -notmatch '\.') { $value = "$value.0" }
+
+        [version]$value
+    }
+}
+
 function Update-PowerShell {
     <#
     .SYNOPSIS
-        Checks for updates to PowerShell and upgrades to the latest version if available.
+        Upgrades PowerShell when the latest GitHub release is newer than the running build.
 
     .DESCRIPTION
-        This function checks for updates to PowerShell by querying the GitHub releases. If updates are found, it upgrades PowerShell to the latest version using the Windows Package Manager (winget). It provides information about the update process and whether the system is already up to date.
+        Compares $PSVersionTable.PSVersion against the latest PowerShell/PowerShell release and
+        runs a package manager when the release is newer.
 
-    .PARAMETER None
-        This function does not accept any parameters.
+        Two things were wrong here before. The comparison was a string compare, so '7.9.0' sorted
+        above '7.10.0' and the function reported an up-to-date shell forever once the minor
+        version reached 10. And the upgrade ran `choco upgrade powershell`, which is the Windows
+        PowerShell 5.1 (WMF) package, not PowerShell 7. This prefers winget, whose
+        Microsoft.PowerShell package is PowerShell 7, and falls back to the Chocolatey
+        powershell-core package.
+
+    .PARAMETER PackageManager
+        Which package manager to upgrade with. Auto picks winget when it is on PATH, otherwise
+        Chocolatey.
 
     .OUTPUTS
-        This function does not return any output.
+        None.
 
     .EXAMPLE
         Update-PowerShell
-        Checks for updates to PowerShell and upgrades to the latest version if available.
+        Upgrades when a newer release exists, otherwise reports the shell as current.
+
+    .EXAMPLE
+        Update-PowerShell -WhatIf
+        Reports which version it would install without installing it.
 
     .NOTES
-        The PowerShell update function is disabled by default. To enable it, uncomment the line that invokes the function at the end of the script.
+        Automatic invocation is off by default. Set $global:AutoUpdatePowerShell = $true to
+        enable it.
+
+    .LINK
+        https://github.com/MKAbuMattar/powershell-profile
     #>
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess)]
     [Alias("update-ps1")]
     [OutputType([void])]
     param (
-        # This function does not accept any parameters
+        [Parameter(Position = 0)]
+        [ValidateSet('Auto', 'Winget', 'Chocolatey')]
+        [string]$PackageManager = 'Auto'
     )
 
     if (-not (Test-GitHubConnection)) {
-        Write-LogMessage -Message "Skipping PowerShell update check due to GitHub.com not responding within 1 second." -Level "WARNING"
+        Write-LogMessage -Message "Skipping PowerShell update check because github.com did not respond within 1 second." -Level "WARNING"
         return
     }
 
     try {
         Write-LogMessage -Message "Checking for PowerShell updates..." -Level "INFO"
-        $updateNeeded = $false
-        $currentVersion = $PSVersionTable.PSVersion.ToString()
+
+        $currentVersion = ConvertTo-ProfileVersion $PSVersionTable.PSVersion.ToString()
+
         $gitHubApiUrl = "https://api.github.com/repos/PowerShell/PowerShell/releases/latest"
-        $latestReleaseInfo = Invoke-RestMethod -Uri $gitHubApiUrl
-        $latestVersion = $latestReleaseInfo.tag_name.Trim('v')
-        if ($currentVersion -lt $latestVersion) {
-            $updateNeeded = $true
+        $latestReleaseInfo = Invoke-RestMethod -Uri $gitHubApiUrl -TimeoutSec 10
+        $latestVersion = ConvertTo-ProfileVersion $latestReleaseInfo.tag_name
+
+        if (-not $currentVersion -or -not $latestVersion) {
+            Write-LogMessage -Message "Could not read a version to compare; skipping." -Level "WARNING"
+            return
         }
 
-        if ($updateNeeded) {
-            Write-LogMessage -Message "Updating PowerShell..." -Level "INFO"
-            choco upgrade powershell -y
-            Write-LogMessage -Message "PowerShell has been updated. Please restart your shell to reflect changes" -Level "INFO"
+        if ($currentVersion -ge $latestVersion) {
+            Write-LogMessage -Message "PowerShell $currentVersion is up to date." -Level "INFO"
+            return
         }
-        else {
-            Write-LogMessage -Message "Your PowerShell is up to date." -Level "INFO"
+
+        $manager = $PackageManager
+        if ($manager -eq 'Auto') {
+            $manager = if (Get-Command -Name winget -CommandType Application -ErrorAction SilentlyContinue) {
+                'Winget'
+            }
+            else {
+                'Chocolatey'
+            }
         }
+
+        $target = "PowerShell $latestVersion via $manager"
+        if (-not $PSCmdlet.ShouldProcess($target, 'Upgrade')) { return }
+
+        Write-LogMessage -Message "Updating PowerShell $currentVersion to $latestVersion..." -Level "INFO"
+
+        switch ($manager) {
+            'Winget' {
+                & winget upgrade --id Microsoft.PowerShell --exact --silent --accept-source-agreements --accept-package-agreements
+            }
+            'Chocolatey' {
+                # powershell-core is PowerShell 7. The powershell package is Windows PowerShell 5.1.
+                & choco upgrade powershell-core -y
+            }
+        }
+
+        if ($LASTEXITCODE -ne 0) {
+            Write-LogMessage -Message "$manager exited with code $LASTEXITCODE. PowerShell was not updated." -Level "WARNING"
+            return
+        }
+
+        Write-LogMessage -Message "PowerShell updated to $latestVersion. Restart your shell to use it." -Level "INFO"
     }
     catch {
-        Write-LogMessage -Message "Failed to update PowerShell" -Level "WARNING"
+        Write-LogMessage -Message "Unable to check for PowerShell updates: $($_.Exception.Message)" -Level "WARNING"
     }
 }
 

@@ -1,6 +1,6 @@
 @{
     RootModule           = 'Core.psm1'
-    ModuleVersion        = '4.2.0'
+    ModuleVersion        = '5.1.0'
     CompatiblePSEditions = @(
         'Core'
     )

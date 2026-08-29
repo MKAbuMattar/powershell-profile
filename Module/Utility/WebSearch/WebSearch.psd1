@@ -37,11 +37,11 @@
 #
 # GitHub: https://github.com/MKAbuMattar/powershell-profile
 #
-# Version: 4.2.0
+# Version: 5.1.0
 #---------------------------------------------------------------------------------------------------
 @{
     RootModule        = 'WebSearch.psm1'
-    ModuleVersion     = '4.2.0'
+    ModuleVersion     = '5.1.0'
     CompatiblePSEditions = @(
         'Core'
     )

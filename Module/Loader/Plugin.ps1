@@ -460,7 +460,7 @@ $toolLine
     Module                = '$Name.psd1'
 
     # Refuse to load against an older profile.
-    MinimumProfileVersion = '5.1.0'
+    MinimumProfileVersion = '$script:ProfileVersion'
 
     # Commands that import this plugin on first use instead of at startup. Leave empty to load
     # normally; a plugin that fails should usually fail at startup, not halfway through a command.
