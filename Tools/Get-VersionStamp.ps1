@@ -102,17 +102,21 @@ function Get-VersionStamp {
         $updated = $original
 
         # Header comment, as written by every module file and by the profile itself.
-        $updated = [regex]::Replace($updated, '(?m)^(#\s*Version:\s*)\d+\.\d+\.\d+\s*$', "`${1}$text")
+        #
+        # No pattern here matches a line terminator. An earlier version ended with \s*$, and in
+        # multiline mode \s* consumed the CR of a CRLF pair before $ matched, so every stamped
+        # file came back with mixed line endings.
+        $updated = [regex]::Replace($updated, '(?m)^(#[ \t]*Version:[ \t]*)\d+\.\d+\.\d+', "`${1}$text")
 
         # Manifest key, in .psd1 only. Module/Loader/Plugin.ps1 carries a ModuleVersion inside the
         # here-string it scaffolds a new plugin from, and a user's plugin starts at its own 1.0.0
         # rather than at the profile version.
         if ($file.Extension -eq '.psd1') {
-            $updated = [regex]::Replace($updated, "(?m)^(\s*ModuleVersion\s*=\s*)'[^']*'", "`${1}'$text'")
+            $updated = [regex]::Replace($updated, "(?m)^([ \t]*ModuleVersion[ \t]*=[ \t]*)'[^']*'", "`${1}'$text'")
         }
 
         # The constant the loader compares MinimumProfileVersion against.
-        $updated = [regex]::Replace($updated, "(?m)^(\s*\`$script:ProfileVersion\s*=\s*)'[^']*'", "`${1}'$text'")
+        $updated = [regex]::Replace($updated, "(?m)^([ \t]*\`$script:ProfileVersion[ \t]*=[ \t]*)'[^']*'", "`${1}'$text'")
 
         if ($updated -eq $original) { continue }
 

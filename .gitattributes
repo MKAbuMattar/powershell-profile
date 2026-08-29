@@ -1,0 +1,29 @@
+# Line endings are declared here rather than left to each contributor's core.autocrlf.
+#
+# Without this the working tree depends on a local git setting, so a tool that rewrites a file
+# in place can turn one CRLF file into a mixed-ending file and nobody sees it in the diff.
+
+* text=auto
+
+# PowerShell sources and the configuration this profile installs are Windows-only and check out
+# with CRLF.
+*.ps1        text eol=crlf
+*.psm1       text eol=crlf
+*.psd1       text eol=crlf
+*.psrc       text eol=crlf
+*.json       text eol=crlf
+*.jsonc      text eol=crlf
+*.toml       text eol=crlf
+VERSION      text eol=crlf
+
+# Shell scripts and CI definitions run on Linux runners and need LF.
+*.sh         text eol=lf
+*.yml        text eol=lf
+*.yaml       text eol=lf
+
+# Binary assets: never touch these.
+*.flf        binary
+*.ttf        binary
+*.zip        binary
+*.png        binary
+*.ico        binary
