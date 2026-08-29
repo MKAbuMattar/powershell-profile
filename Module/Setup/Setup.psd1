@@ -67,13 +67,18 @@
         'Install-ProfileSetupFont',
         'Invoke-ProfileSetup',
         'Remove-ProfileSetupUnit',
-        'Uninstall-ProfileSetup'
+        'Uninstall-ProfileSetup',
+        'Get-ProfileSetupMenuOrder',
+        'Format-ProfileSetupMenu',
+        'Resolve-ProfileSetupSelection',
+        'Show-ProfileSetup'
     )
     CmdletsToExport      = @()
     VariablesToExport    = @()
     AliasesToExport      = @(
         'profile-install',
-        'profile-uninstall'
+        'profile-uninstall',
+        'profile-setup'
     )
     PrivateData          = @{
         PSData = @{
