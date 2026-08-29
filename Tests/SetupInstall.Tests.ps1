@@ -333,3 +333,101 @@ Describe 'Uninstall-ProfileSetup' {
         @((Get-ProfileSetupReceipt -Path $script:Receipt).Entries).Count | Should -Be $before
     }
 }
+
+Describe 'Update-ProfileSetup' {
+
+    BeforeEach {
+        $script:Scratch = New-Scratch
+        $script:Receipt = Join-Path $script:Scratch 'receipt.json'
+    }
+
+    AfterEach {
+        Remove-Item -LiteralPath $script:Scratch -Recurse -Force -ErrorAction SilentlyContinue
+    }
+
+    It 'refuses to touch anything the receipt does not list' {
+        # The bug this check exists for. Several units point at absolute user paths rather than at
+        # anything under InstallPath: $PROFILE, ~/.config/starship.toml, the Windows Terminal
+        # settings. Refreshing on Present alone reached past the scratch install path and
+        # overwrote the real ones.
+        $results = @(Update-ProfileSetup -Repository $script:Root -InstallPath $script:Scratch -ReceiptPath $script:Receipt -Confirm:$false)
+
+        @($results | Where-Object { $_.Status -ne 'skipped' }).Count | Should -Be 0
+        @($results | Where-Object { $_.Message -match 'not ours to refresh' }).Count | Should -BeGreaterThan 0
+    }
+
+    It 'never writes outside the install path when it owns nothing' {
+        # Named separately from the message check, because the message could be right while the
+        # write still happened.
+        $profileBackup = "$PROFILE.profile-backup"
+        Test-Path -LiteralPath $profileBackup | Should -BeFalse -Because 'the test starts clean'
+
+        Update-ProfileSetup -Repository $script:Root -InstallPath $script:Scratch -ReceiptPath $script:Receipt -Confirm:$false | Out-Null
+
+        Test-Path -LiteralPath $profileBackup | Should -BeFalse -Because 'an unowned $PROFILE must not be replaced'
+    }
+
+    It 'refreshes a unit it does own' {
+        Invoke-ProfileSetup -Id config -Repository $script:Root -InstallPath $script:Scratch -ReceiptPath $script:Receipt -Confirm:$false | Out-Null
+
+        $result = @(Update-ProfileSetup -Repository $script:Root -InstallPath $script:Scratch -ReceiptPath $script:Receipt -IncludeConfig -Confirm:$false) |
+            Where-Object { $_.Id -eq 'config' }
+
+        $result.Status | Should -BeExactly 'refreshed'
+    }
+
+    It 'keeps profile.config.psd1 unless asked' {
+        # It holds the choices about what loads at every shell start. Those are the user's, and an
+        # update that silently reset them would be worse than one that did nothing.
+        Invoke-ProfileSetup -Id config -Repository $script:Root -InstallPath $script:Scratch -ReceiptPath $script:Receipt -Confirm:$false | Out-Null
+
+        $target = Join-Path $script:Scratch 'profile.config.psd1'
+        Add-Content -LiteralPath $target -Value '# a choice the user made'
+
+        $result = @(Update-ProfileSetup -Repository $script:Root -InstallPath $script:Scratch -ReceiptPath $script:Receipt -Confirm:$false) |
+            Where-Object { $_.Id -eq 'config' }
+
+        $result.Status | Should -BeExactly 'skipped'
+        $result.Message | Should -Match 'IncludeConfig'
+        Get-Content -LiteralPath $target -Raw | Should -Match 'a choice the user made'
+    }
+
+    It 'replaces profile.config.psd1 under -IncludeConfig' {
+        Invoke-ProfileSetup -Id config -Repository $script:Root -InstallPath $script:Scratch -ReceiptPath $script:Receipt -Confirm:$false | Out-Null
+
+        $target = Join-Path $script:Scratch 'profile.config.psd1'
+        Add-Content -LiteralPath $target -Value '# a choice the user made'
+
+        Update-ProfileSetup -Repository $script:Root -InstallPath $script:Scratch -ReceiptPath $script:Receipt -IncludeConfig -Confirm:$false | Out-Null
+
+        Get-Content -LiteralPath $target -Raw | Should -Not -Match 'a choice the user made'
+    }
+
+    It 'adds nothing that was not there' {
+        # The difference between update and install. A machine that never wanted FastFetch must
+        # not acquire it on an update.
+        Invoke-ProfileSetup -Id config -Repository $script:Root -InstallPath $script:Scratch -ReceiptPath $script:Receipt -Confirm:$false | Out-Null
+
+        Update-ProfileSetup -Repository $script:Root -InstallPath $script:Scratch -ReceiptPath $script:Receipt -Confirm:$false | Out-Null
+
+        Test-Path -LiteralPath (Join-Path $script:Scratch 'Module') | Should -BeFalse
+        Test-Path -LiteralPath (Join-Path $script:Scratch 'Tools') | Should -BeFalse
+    }
+
+    It 'leaves a package alone, because winget updates those' {
+        $results = @(Update-ProfileSetup -Repository $script:Root -InstallPath $script:Scratch -ReceiptPath $script:Receipt -Confirm:$false)
+
+        @($results | Where-Object { $_.Id -in 'fzf', 'starship', 'zoxide', 'terminal-icons' }).Count | Should -Be 0
+    }
+
+    It 'writes nothing under -WhatIf' {
+        Invoke-ProfileSetup -Id config -Repository $script:Root -InstallPath $script:Scratch -ReceiptPath $script:Receipt -Confirm:$false | Out-Null
+
+        $target = Join-Path $script:Scratch 'profile.config.psd1'
+        Add-Content -LiteralPath $target -Value '# a choice the user made'
+
+        Update-ProfileSetup -Repository $script:Root -InstallPath $script:Scratch -ReceiptPath $script:Receipt -IncludeConfig -WhatIf | Out-Null
+
+        Get-Content -LiteralPath $target -Raw | Should -Match 'a choice the user made'
+    }
+}

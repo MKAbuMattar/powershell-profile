@@ -192,27 +192,88 @@ function Set-ProfileConfigEntry {
     return $true
 }
 
+function Get-ProfileComponentSource {
+    <#
+    .SYNOPSIS
+        Finds a Module tree to read the available components from.
+
+    .DESCRIPTION
+        The installed tree first, then the repository the installer was pointed at. Before the
+        first install there is no installed tree, and reading the repository instead is what lets
+        the picker show the real list rather than a page of rows saying nothing was found.
+
+    .PARAMETER InstallPath
+        Where the Module tree would be once installed.
+
+    .PARAMETER Repository
+        A checkout or extracted archive to fall back to.
+
+    .OUTPUTS
+        [PSCustomObject] Path and Origin, or nothing when neither has a Module tree.
+
+    .EXAMPLE
+        Get-ProfileComponentSource -Repository $PSScriptRoot
+
+    .LINK
+        https://github.com/MKAbuMattar/powershell-profile
+    #>
+    [CmdletBinding()]
+    [OutputType([PSCustomObject])]
+    param(
+        [Parameter()]
+        [string]$InstallPath,
+
+        [Parameter()]
+        [string]$Repository
+    )
+
+    $installed = (Get-ProfileSetupPath -InstallPath $InstallPath).ModuleTree
+    if (Test-Path -LiteralPath $installed -PathType Container) {
+        return [PSCustomObject]@{ Path = $installed; Origin = 'installed' }
+    }
+
+    if ($Repository) {
+        $candidate = Join-Path $Repository 'Module'
+        if (Test-Path -LiteralPath $candidate -PathType Container) {
+            return [PSCustomObject]@{ Path = $candidate; Origin = 'repository' }
+        }
+    }
+
+    return $null
+}
+
 function Get-ProfileConfigState {
     <#
     .SYNOPSIS
         Returns everything the profile can load, with whether it is turned on.
 
     .DESCRIPTION
-        Joins what is on disk against what profile.config.psd1 lists. A plugin present in the
-        Module tree but absent from the file is reported as available and off, so the picker can
-        offer something the configuration has never mentioned.
+        Joins the components on disk against what profile.config.psd1 lists, sorted by list and
+        then by name so the same component is in the same place every time the window opens.
+
+        On disk means the installed Module tree, or the repository the installer was pointed at
+        when nothing is installed yet. Without that fallback every row on a first run reads
+        "not in the Module tree", which is true and useless: nothing is, because nothing is
+        installed.
+
+        Note carries only what is worth saying. A component that is present and configured gets
+        none, because a note on every row is a note nobody reads.
 
     .PARAMETER InstallPath
         Where the Module tree lives.
+
+    .PARAMETER Repository
+        A checkout or extracted archive to read the available components from when nothing is
+        installed yet.
 
     .PARAMETER Path
         The configuration file. Defaults to the one under InstallPath.
 
     .OUTPUTS
-        [PSCustomObject[]] Key, Name, Enabled, Installed, Description.
+        [PSCustomObject[]] Key, Name, Enabled, Installed, Origin, Description.
 
     .EXAMPLE
-        Get-ProfileConfigState | Where-Object Key -eq 'Plugins'
+        Get-ProfileConfigState -Repository $PSScriptRoot | Where-Object Key -eq 'Plugins'
 
     .LINK
         https://github.com/MKAbuMattar/powershell-profile
@@ -222,6 +283,9 @@ function Get-ProfileConfigState {
     param(
         [Parameter()]
         [string]$InstallPath,
+
+        [Parameter()]
+        [string]$Repository,
 
         [Parameter()]
         [string]$Path
@@ -235,23 +299,21 @@ function Get-ProfileConfigState {
         $configured["$($entry.Key)/$($entry.Name)"] = $entry
     }
 
-    # What the Module tree actually contains, so the list is not limited to what the file mentions.
-    $onDisk = [ordered]@{
-        Modules   = @()
-        Plugins   = @()
-        Utilities = @()
-    }
+    $source = Get-ProfileComponentSource -InstallPath $InstallPath -Repository $Repository
 
-    if (Test-Path -LiteralPath $paths.ModuleTree) {
-        $onDisk.Plugins = @(Get-ChildItem -LiteralPath (Join-Path $paths.ModuleTree 'Plugins') -Directory -ErrorAction SilentlyContinue |
+    $onDisk = [ordered]@{ Modules = @(); Plugins = @(); Utilities = @() }
+
+    if ($source) {
+        $onDisk.Plugins = @(Get-ChildItem -LiteralPath (Join-Path $source.Path 'Plugins') -Directory -ErrorAction SilentlyContinue |
                 ForEach-Object { $_.Name })
-        $onDisk.Utilities = @(Get-ChildItem -LiteralPath (Join-Path $paths.ModuleTree 'Utility') -Directory -ErrorAction SilentlyContinue |
+        $onDisk.Utilities = @(Get-ChildItem -LiteralPath (Join-Path $source.Path 'Utility') -Directory -ErrorAction SilentlyContinue |
                 ForEach-Object { $_.Name })
-        $onDisk.Modules = @(Get-ChildItem -LiteralPath $paths.ModuleTree -Directory -ErrorAction SilentlyContinue |
-                Where-Object { $_.Name -notin 'Plugins', 'Utility', 'Loader' } |
+        $onDisk.Modules = @(Get-ChildItem -LiteralPath $source.Path -Directory -ErrorAction SilentlyContinue |
+                Where-Object { $_.Name -notin 'Plugins', 'Utility', 'Loader', 'Setup' } |
                 ForEach-Object { $_.Name })
     }
 
+    $rows = [System.Collections.Generic.List[PSCustomObject]]::new()
     $seen = @{}
 
     foreach ($key in $onDisk.Keys) {
@@ -259,26 +321,35 @@ function Get-ProfileConfigState {
             $entry = $configured["$key/$name"]
             $seen["$key/$name"] = $true
 
-            [PSCustomObject]@{
-                Key         = $key
-                Name        = $name
-                Enabled     = [bool]($entry -and $entry.Enabled)
-                Installed   = $true
-                Description = ''
-            }
+            $rows.Add([PSCustomObject]@{
+                    Key         = $key
+                    Name        = $name
+                    Enabled     = [bool]($entry -and $entry.Enabled)
+                    Installed   = $true
+                    Origin      = $source.Origin
+                    Description = if ($entry) { '' } else { 'Available, not yet named in the configuration.' }
+                })
         }
     }
 
-    # Anything the file names that is not on disk: a Gallery module, or a plugin removed since.
     foreach ($entry in $configured.Values) {
         if ($seen["$($entry.Key)/$($entry.Name)"]) { continue }
 
-        [PSCustomObject]@{
-            Key         = $entry.Key
-            Name        = $entry.Name
-            Enabled     = $entry.Enabled
-            Installed   = ($entry.Key -eq 'ExternalModules')
-            Description = if ($entry.Key -eq 'ExternalModules') { 'From the PowerShell Gallery.' } else { 'Named in the configuration but not in the Module tree.' }
-        }
+        $gallery = $entry.Key -in 'ExternalModules', 'DeferExternalModules'
+
+        $rows.Add([PSCustomObject]@{
+                Key         = $entry.Key
+                Name        = $entry.Name
+                Enabled     = $entry.Enabled
+                Installed   = $gallery
+                Origin      = if ($gallery) { 'gallery' } else { 'missing' }
+                Description = if ($gallery) { 'From the PowerShell Gallery.' }
+                elseif ($source) { 'Named in the configuration but not in the Module tree.' }
+                else { 'The Module tree is not installed yet.' }
+            })
     }
+
+    # Sorted so a component keeps its place between one opening of the window and the next.
+    $order = @{ Modules = 0; Plugins = 1; Utilities = 2; ExternalModules = 3; DeferExternalModules = 4 }
+    $rows | Sort-Object -Property @{ Expression = { $order[$_.Key] } }, Name
 }

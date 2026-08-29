@@ -964,27 +964,88 @@ function Set-ProfileConfigEntry {
     return $true
 }
 
+function Get-ProfileComponentSource {
+    <#
+    .SYNOPSIS
+        Finds a Module tree to read the available components from.
+
+    .DESCRIPTION
+        The installed tree first, then the repository the installer was pointed at. Before the
+        first install there is no installed tree, and reading the repository instead is what lets
+        the picker show the real list rather than a page of rows saying nothing was found.
+
+    .PARAMETER InstallPath
+        Where the Module tree would be once installed.
+
+    .PARAMETER Repository
+        A checkout or extracted archive to fall back to.
+
+    .OUTPUTS
+        [PSCustomObject] Path and Origin, or nothing when neither has a Module tree.
+
+    .EXAMPLE
+        Get-ProfileComponentSource -Repository $PSScriptRoot
+
+    .LINK
+        https://github.com/MKAbuMattar/powershell-profile
+    #>
+    [CmdletBinding()]
+    [OutputType([PSCustomObject])]
+    param(
+        [Parameter()]
+        [string]$InstallPath,
+
+        [Parameter()]
+        [string]$Repository
+    )
+
+    $installed = (Get-ProfileSetupPath -InstallPath $InstallPath).ModuleTree
+    if (Test-Path -LiteralPath $installed -PathType Container) {
+        return [PSCustomObject]@{ Path = $installed; Origin = 'installed' }
+    }
+
+    if ($Repository) {
+        $candidate = Join-Path $Repository 'Module'
+        if (Test-Path -LiteralPath $candidate -PathType Container) {
+            return [PSCustomObject]@{ Path = $candidate; Origin = 'repository' }
+        }
+    }
+
+    return $null
+}
+
 function Get-ProfileConfigState {
     <#
     .SYNOPSIS
         Returns everything the profile can load, with whether it is turned on.
 
     .DESCRIPTION
-        Joins what is on disk against what profile.config.psd1 lists. A plugin present in the
-        Module tree but absent from the file is reported as available and off, so the picker can
-        offer something the configuration has never mentioned.
+        Joins the components on disk against what profile.config.psd1 lists, sorted by list and
+        then by name so the same component is in the same place every time the window opens.
+
+        On disk means the installed Module tree, or the repository the installer was pointed at
+        when nothing is installed yet. Without that fallback every row on a first run reads
+        "not in the Module tree", which is true and useless: nothing is, because nothing is
+        installed.
+
+        Note carries only what is worth saying. A component that is present and configured gets
+        none, because a note on every row is a note nobody reads.
 
     .PARAMETER InstallPath
         Where the Module tree lives.
+
+    .PARAMETER Repository
+        A checkout or extracted archive to read the available components from when nothing is
+        installed yet.
 
     .PARAMETER Path
         The configuration file. Defaults to the one under InstallPath.
 
     .OUTPUTS
-        [PSCustomObject[]] Key, Name, Enabled, Installed, Description.
+        [PSCustomObject[]] Key, Name, Enabled, Installed, Origin, Description.
 
     .EXAMPLE
-        Get-ProfileConfigState | Where-Object Key -eq 'Plugins'
+        Get-ProfileConfigState -Repository $PSScriptRoot | Where-Object Key -eq 'Plugins'
 
     .LINK
         https://github.com/MKAbuMattar/powershell-profile
@@ -994,6 +1055,9 @@ function Get-ProfileConfigState {
     param(
         [Parameter()]
         [string]$InstallPath,
+
+        [Parameter()]
+        [string]$Repository,
 
         [Parameter()]
         [string]$Path
@@ -1007,23 +1071,21 @@ function Get-ProfileConfigState {
         $configured["$($entry.Key)/$($entry.Name)"] = $entry
     }
 
-    # What the Module tree actually contains, so the list is not limited to what the file mentions.
-    $onDisk = [ordered]@{
-        Modules   = @()
-        Plugins   = @()
-        Utilities = @()
-    }
+    $source = Get-ProfileComponentSource -InstallPath $InstallPath -Repository $Repository
 
-    if (Test-Path -LiteralPath $paths.ModuleTree) {
-        $onDisk.Plugins = @(Get-ChildItem -LiteralPath (Join-Path $paths.ModuleTree 'Plugins') -Directory -ErrorAction SilentlyContinue |
+    $onDisk = [ordered]@{ Modules = @(); Plugins = @(); Utilities = @() }
+
+    if ($source) {
+        $onDisk.Plugins = @(Get-ChildItem -LiteralPath (Join-Path $source.Path 'Plugins') -Directory -ErrorAction SilentlyContinue |
                 ForEach-Object { $_.Name })
-        $onDisk.Utilities = @(Get-ChildItem -LiteralPath (Join-Path $paths.ModuleTree 'Utility') -Directory -ErrorAction SilentlyContinue |
+        $onDisk.Utilities = @(Get-ChildItem -LiteralPath (Join-Path $source.Path 'Utility') -Directory -ErrorAction SilentlyContinue |
                 ForEach-Object { $_.Name })
-        $onDisk.Modules = @(Get-ChildItem -LiteralPath $paths.ModuleTree -Directory -ErrorAction SilentlyContinue |
-                Where-Object { $_.Name -notin 'Plugins', 'Utility', 'Loader' } |
+        $onDisk.Modules = @(Get-ChildItem -LiteralPath $source.Path -Directory -ErrorAction SilentlyContinue |
+                Where-Object { $_.Name -notin 'Plugins', 'Utility', 'Loader', 'Setup' } |
                 ForEach-Object { $_.Name })
     }
 
+    $rows = [System.Collections.Generic.List[PSCustomObject]]::new()
     $seen = @{}
 
     foreach ($key in $onDisk.Keys) {
@@ -1031,28 +1093,37 @@ function Get-ProfileConfigState {
             $entry = $configured["$key/$name"]
             $seen["$key/$name"] = $true
 
-            [PSCustomObject]@{
-                Key         = $key
-                Name        = $name
-                Enabled     = [bool]($entry -and $entry.Enabled)
-                Installed   = $true
-                Description = ''
-            }
+            $rows.Add([PSCustomObject]@{
+                    Key         = $key
+                    Name        = $name
+                    Enabled     = [bool]($entry -and $entry.Enabled)
+                    Installed   = $true
+                    Origin      = $source.Origin
+                    Description = if ($entry) { '' } else { 'Available, not yet named in the configuration.' }
+                })
         }
     }
 
-    # Anything the file names that is not on disk: a Gallery module, or a plugin removed since.
     foreach ($entry in $configured.Values) {
         if ($seen["$($entry.Key)/$($entry.Name)"]) { continue }
 
-        [PSCustomObject]@{
-            Key         = $entry.Key
-            Name        = $entry.Name
-            Enabled     = $entry.Enabled
-            Installed   = ($entry.Key -eq 'ExternalModules')
-            Description = if ($entry.Key -eq 'ExternalModules') { 'From the PowerShell Gallery.' } else { 'Named in the configuration but not in the Module tree.' }
-        }
+        $gallery = $entry.Key -in 'ExternalModules', 'DeferExternalModules'
+
+        $rows.Add([PSCustomObject]@{
+                Key         = $entry.Key
+                Name        = $entry.Name
+                Enabled     = $entry.Enabled
+                Installed   = $gallery
+                Origin      = if ($gallery) { 'gallery' } else { 'missing' }
+                Description = if ($gallery) { 'From the PowerShell Gallery.' }
+                elseif ($source) { 'Named in the configuration but not in the Module tree.' }
+                else { 'The Module tree is not installed yet.' }
+            })
     }
+
+    # Sorted so a component keeps its place between one opening of the window and the next.
+    $order = @{ Modules = 0; Plugins = 1; Utilities = 2; ExternalModules = 3; DeferExternalModules = 4 }
+    $rows | Sort-Object -Property @{ Expression = { $order[$_.Key] } }, Name
 }
 
 
@@ -1480,6 +1551,120 @@ function Invoke-ProfileSetup {
 
             $result
         }
+    }
+}
+
+function Update-ProfileSetup {
+    <#
+    .SYNOPSIS
+        Refreshes what is already installed, and adds nothing.
+
+    .DESCRIPTION
+        Install and update are different jobs and the difference matters.
+
+        Invoke-ProfileSetup adds what a person picked. Running it again to pick up a new version
+        would either report everything as already present and do nothing, or with -Force reinstall
+        the lot, including the units the person deliberately left out.
+
+        This refreshes the units that are already there, and only those: the Module tree, the
+        maintenance scripts, the profile, and any configuration file this installer owns. Nothing
+        absent is added, so a machine that never wanted FastFetch does not acquire it on an update.
+
+        profile.config.psd1 is never overwritten. It holds the choices about what loads at every
+        shell start, which are the user's, not the repository's. -IncludeConfig overrides that and
+        says so in the result.
+
+    .PARAMETER Repository
+        A checkout or extracted archive to refresh from.
+
+    .PARAMETER InstallPath
+        Where the Module tree lives.
+
+    .PARAMETER ReceiptPath
+        Override the receipt location. For tests.
+
+    .PARAMETER IncludeConfig
+        Replace profile.config.psd1 as well. The current one is backed up first.
+
+    .OUTPUTS
+        [PSCustomObject[]] One result per unit: Id, Status, Backup, Message.
+
+    .EXAMPLE
+        Update-ProfileSetup -Repository $checkout
+        Refreshes the installed pieces from that checkout.
+
+    .EXAMPLE
+        Update-ProfileSetup -Repository $checkout -WhatIf
+        Reports what it would refresh.
+
+    .LINK
+        https://github.com/MKAbuMattar/powershell-profile
+    #>
+    [CmdletBinding(SupportsShouldProcess)]
+    [Alias('profile-update')]
+    [OutputType([PSCustomObject[]])]
+    param(
+        [Parameter(Mandatory, Position = 0)]
+        [string]$Repository,
+
+        [Parameter()]
+        [string]$InstallPath,
+
+        [Parameter()]
+        [string]$ReceiptPath,
+
+        [Parameter()]
+        [switch]$IncludeConfig
+    )
+
+    $filter = @{}
+    if ($InstallPath) { $filter['InstallPath'] = $InstallPath }
+    if ($ReceiptPath) { $filter['ReceiptPath'] = $ReceiptPath }
+
+    $catalog = @{}
+    $catalogFilter = @{}
+    if ($InstallPath) { $catalogFilter['InstallPath'] = $InstallPath }
+    foreach ($unit in (Get-ProfileSetupCatalog @catalogFilter)) { $catalog[$unit.Id] = $unit }
+
+    foreach ($row in (Get-ProfileSetupState @filter)) {
+
+        # Only what is copied from the repository can be refreshed from it. A package or a Gallery
+        # module is updated by winget or Install-Module, not by this.
+        if ($catalog[$row.Id].Kind -notin 'File', 'Tree') { continue }
+
+        # Owned, not merely present. Several units point at absolute user paths rather than at
+        # anything under InstallPath: $PROFILE, ~/.config/starship.toml, the Windows Terminal
+        # settings. Refreshing on Present alone reaches straight past a scratch install path and
+        # overwrites the real ones, which is what it did before this check existed.
+        if (-not $row.Owned) {
+            [PSCustomObject]@{
+                Id = $row.Id; Status = 'skipped'; Backup = ''
+                Message = 'This installer did not install it, so it is not ours to refresh.'
+            }
+            continue
+        }
+
+        if (-not $row.Present) {
+            [PSCustomObject]@{ Id = $row.Id; Status = 'skipped'; Backup = ''; Message = 'Not installed, so there is nothing to refresh.' }
+            continue
+        }
+
+        if ($row.Id -eq 'config' -and -not $IncludeConfig) {
+            [PSCustomObject]@{
+                Id = 'config'; Status = 'skipped'; Backup = ''
+                Message = 'Your choices about what loads are kept. Pass -IncludeConfig to replace them.'
+            }
+            continue
+        }
+
+        $result = Install-ProfileSetupUnit -Unit $catalog[$row.Id] -Repository $Repository
+
+        if ($result.Status -eq 'installed') {
+            $result.Status = 'refreshed'
+            Add-ProfileSetupReceiptEntry -Id $row.Id -Backup $result.Backup -Path $ReceiptPath
+        }
+
+        $result
     }
 }
 
@@ -2694,8 +2879,13 @@ function Show-ProfileSetupWindow {
 
     # The configuration functions take InstallPath but not ReceiptPath: they read and write
     # profile.config.psd1, which has nothing to do with what the installer owns.
-    $configCommon = @{}
-    if ($InstallPath) { $configCommon['InstallPath'] = $InstallPath }
+    # Reading takes the repository so the available components are known before anything is
+    # installed. Writing takes the file itself: Set-ProfileConfigEntry edits profile.config.psd1
+    # by path and has no idea what an install path is.
+    $configRead = @{ Repository = $Repository }
+    if ($InstallPath) { $configRead['InstallPath'] = $InstallPath }
+
+    $configWrite = @{ Path = (Get-ProfileSetupPath -InstallPath $InstallPath).Config }
 
     $reader = [System.Xml.XmlNodeReader]::new([xml](Get-ProfileSetupWindowXaml))
     $window = [Windows.Markup.XamlReader]::Load($reader)
@@ -2766,7 +2956,7 @@ function Show-ProfileSetupWindow {
 
     $refreshConfig = {
         $rows = [System.Collections.ObjectModel.ObservableCollection[object]]::new()
-        foreach ($row in (& $command['Get-ProfileConfigState'] @configCommon)) { $rows.Add($row) }
+        foreach ($row in (& $command['Get-ProfileConfigState'] @configRead)) { $rows.Add($row) }
         $control.ConfigGrid.ItemsSource = $rows
     }.GetNewClosure()
 
@@ -2881,7 +3071,7 @@ function Show-ProfileSetupWindow {
 
                 $changed = 0
                 foreach ($row in $rows) {
-                    if (& $command['Set-ProfileConfigEntry'] -Key $row.Key -Name $row.Name -Enabled ([bool]$row.Enabled) @configCommon -Confirm:$false) {
+                    if (& $command['Set-ProfileConfigEntry'] -Key $row.Key -Name $row.Name -Enabled ([bool]$row.Enabled) @configWrite -Confirm:$false) {
                         $changed++
                         & $writeLog ("  {0,-22} {1}" -f $row.Name, $(if ($row.Enabled) { 'loads' } else { 'does not load' }))
                     }

@@ -420,3 +420,117 @@ function Invoke-ProfileSetup {
         }
     }
 }
+
+function Update-ProfileSetup {
+    <#
+    .SYNOPSIS
+        Refreshes what is already installed, and adds nothing.
+
+    .DESCRIPTION
+        Install and update are different jobs and the difference matters.
+
+        Invoke-ProfileSetup adds what a person picked. Running it again to pick up a new version
+        would either report everything as already present and do nothing, or with -Force reinstall
+        the lot, including the units the person deliberately left out.
+
+        This refreshes the units that are already there, and only those: the Module tree, the
+        maintenance scripts, the profile, and any configuration file this installer owns. Nothing
+        absent is added, so a machine that never wanted FastFetch does not acquire it on an update.
+
+        profile.config.psd1 is never overwritten. It holds the choices about what loads at every
+        shell start, which are the user's, not the repository's. -IncludeConfig overrides that and
+        says so in the result.
+
+    .PARAMETER Repository
+        A checkout or extracted archive to refresh from.
+
+    .PARAMETER InstallPath
+        Where the Module tree lives.
+
+    .PARAMETER ReceiptPath
+        Override the receipt location. For tests.
+
+    .PARAMETER IncludeConfig
+        Replace profile.config.psd1 as well. The current one is backed up first.
+
+    .OUTPUTS
+        [PSCustomObject[]] One result per unit: Id, Status, Backup, Message.
+
+    .EXAMPLE
+        Update-ProfileSetup -Repository $checkout
+        Refreshes the installed pieces from that checkout.
+
+    .EXAMPLE
+        Update-ProfileSetup -Repository $checkout -WhatIf
+        Reports what it would refresh.
+
+    .LINK
+        https://github.com/MKAbuMattar/powershell-profile
+    #>
+    [CmdletBinding(SupportsShouldProcess)]
+    [Alias('profile-update')]
+    [OutputType([PSCustomObject[]])]
+    param(
+        [Parameter(Mandatory, Position = 0)]
+        [string]$Repository,
+
+        [Parameter()]
+        [string]$InstallPath,
+
+        [Parameter()]
+        [string]$ReceiptPath,
+
+        [Parameter()]
+        [switch]$IncludeConfig
+    )
+
+    $filter = @{}
+    if ($InstallPath) { $filter['InstallPath'] = $InstallPath }
+    if ($ReceiptPath) { $filter['ReceiptPath'] = $ReceiptPath }
+
+    $catalog = @{}
+    $catalogFilter = @{}
+    if ($InstallPath) { $catalogFilter['InstallPath'] = $InstallPath }
+    foreach ($unit in (Get-ProfileSetupCatalog @catalogFilter)) { $catalog[$unit.Id] = $unit }
+
+    foreach ($row in (Get-ProfileSetupState @filter)) {
+
+        # Only what is copied from the repository can be refreshed from it. A package or a Gallery
+        # module is updated by winget or Install-Module, not by this.
+        if ($catalog[$row.Id].Kind -notin 'File', 'Tree') { continue }
+
+        # Owned, not merely present. Several units point at absolute user paths rather than at
+        # anything under InstallPath: $PROFILE, ~/.config/starship.toml, the Windows Terminal
+        # settings. Refreshing on Present alone reaches straight past a scratch install path and
+        # overwrites the real ones, which is what it did before this check existed.
+        if (-not $row.Owned) {
+            [PSCustomObject]@{
+                Id = $row.Id; Status = 'skipped'; Backup = ''
+                Message = 'This installer did not install it, so it is not ours to refresh.'
+            }
+            continue
+        }
+
+        if (-not $row.Present) {
+            [PSCustomObject]@{ Id = $row.Id; Status = 'skipped'; Backup = ''; Message = 'Not installed, so there is nothing to refresh.' }
+            continue
+        }
+
+        if ($row.Id -eq 'config' -and -not $IncludeConfig) {
+            [PSCustomObject]@{
+                Id = 'config'; Status = 'skipped'; Backup = ''
+                Message = 'Your choices about what loads are kept. Pass -IncludeConfig to replace them.'
+            }
+            continue
+        }
+
+        $result = Install-ProfileSetupUnit -Unit $catalog[$row.Id] -Repository $Repository
+
+        if ($result.Status -eq 'installed') {
+            $result.Status = 'refreshed'
+            Add-ProfileSetupReceiptEntry -Id $row.Id -Backup $result.Backup -Path $ReceiptPath
+        }
+
+        $result
+    }
+}

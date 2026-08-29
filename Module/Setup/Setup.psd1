@@ -65,12 +65,14 @@
         'Save-ProfileSetupReceipt',
         'Get-ProfileConfigEntry',
         'Set-ProfileConfigEntry',
+        'Get-ProfileComponentSource',
         'Get-ProfileConfigState',
         'Resolve-ProfileSetupManager',
         'Copy-ProfileSetupItem',
         'Install-ProfileSetupUnit',
         'Install-ProfileSetupFont',
         'Invoke-ProfileSetup',
+        'Update-ProfileSetup',
         'Remove-ProfileSetupUnit',
         'Uninstall-ProfileSetup',
         'Get-ProfileSetupMenuOrder',
@@ -86,6 +88,7 @@
     VariablesToExport    = @()
     AliasesToExport      = @(
         'profile-install',
+        'profile-update',
         'profile-uninstall',
         'profile-setup',
         'profile-setup-gui'

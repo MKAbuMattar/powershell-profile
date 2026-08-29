@@ -555,8 +555,13 @@ function Show-ProfileSetupWindow {
 
     # The configuration functions take InstallPath but not ReceiptPath: they read and write
     # profile.config.psd1, which has nothing to do with what the installer owns.
-    $configCommon = @{}
-    if ($InstallPath) { $configCommon['InstallPath'] = $InstallPath }
+    # Reading takes the repository so the available components are known before anything is
+    # installed. Writing takes the file itself: Set-ProfileConfigEntry edits profile.config.psd1
+    # by path and has no idea what an install path is.
+    $configRead = @{ Repository = $Repository }
+    if ($InstallPath) { $configRead['InstallPath'] = $InstallPath }
+
+    $configWrite = @{ Path = (Get-ProfileSetupPath -InstallPath $InstallPath).Config }
 
     $reader = [System.Xml.XmlNodeReader]::new([xml](Get-ProfileSetupWindowXaml))
     $window = [Windows.Markup.XamlReader]::Load($reader)
@@ -627,7 +632,7 @@ function Show-ProfileSetupWindow {
 
     $refreshConfig = {
         $rows = [System.Collections.ObjectModel.ObservableCollection[object]]::new()
-        foreach ($row in (& $command['Get-ProfileConfigState'] @configCommon)) { $rows.Add($row) }
+        foreach ($row in (& $command['Get-ProfileConfigState'] @configRead)) { $rows.Add($row) }
         $control.ConfigGrid.ItemsSource = $rows
     }.GetNewClosure()
 
@@ -742,7 +747,7 @@ function Show-ProfileSetupWindow {
 
                 $changed = 0
                 foreach ($row in $rows) {
-                    if (& $command['Set-ProfileConfigEntry'] -Key $row.Key -Name $row.Name -Enabled ([bool]$row.Enabled) @configCommon -Confirm:$false) {
+                    if (& $command['Set-ProfileConfigEntry'] -Key $row.Key -Name $row.Name -Enabled ([bool]$row.Enabled) @configWrite -Confirm:$false) {
                         $changed++
                         & $writeLog ("  {0,-22} {1}" -f $row.Name, $(if ($row.Enabled) { 'loads' } else { 'does not load' }))
                     }
