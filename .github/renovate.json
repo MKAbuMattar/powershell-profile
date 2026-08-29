@@ -1,17 +1,47 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:recommended", "customManagers:biomeVersions"],
+  "extends": ["config:recommended"],
   "labels": ["renovate"],
   "dependencyDashboard": true,
-  "lockFileMaintenance": {
-    "enabled": true
+  "github-actions": {
+    "enabled": true,
+    "pinDigests": false
   },
   "packageRules": [
     {
-      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
-      "groupName": "all non-major dependencies",
-      "groupSlug": "all-minor-patch",
+      "description": "Group the workflow action bumps, which are the only dependencies Renovate can see natively here.",
+      "matchManagers": ["github-actions"],
+      "matchUpdateTypes": ["minor", "patch", "digest"],
+      "groupName": "github actions",
+      "groupSlug": "github-actions",
       "automerge": true
+    },
+    {
+      "description": "A major action bump can change inputs, so it gets a pull request to read rather than an automerge.",
+      "matchManagers": ["github-actions"],
+      "matchUpdateTypes": ["major"],
+      "automerge": false
+    },
+    {
+      "description": "Gallery modules are named in profile.config.psd1 with no version to compare against, so a bump is a note on the dashboard rather than a merge.",
+      "matchManagers": ["custom.regex"],
+      "automerge": false
+    }
+  ],
+  "customManagers": [
+    {
+      "description": "Minimum Pester and PSScriptAnalyzer versions asserted in Tools and CI.",
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/^\\.github/workflows/.+\\.ya?ml$/",
+        "/^Tools/.+\\.ps1$/"
+      ],
+      "matchStrings": [
+        "-MinimumVersion\\s+'?(?<currentValue>\\d+\\.\\d+(\\.\\d+)?)'?\\s+(?:-Scope|-Force)?[^\\n]*?(?<depName>Pester|PSScriptAnalyzer)",
+        "(?<depName>Pester|PSScriptAnalyzer)[^\\n]*?-MinimumVersion\\s+'?(?<currentValue>\\d+\\.\\d+(\\.\\d+)?)'?"
+      ],
+      "datasourceTemplate": "nuget",
+      "registryUrlTemplate": "https://www.powershellgallery.com/api/v2/"
     }
   ]
 }
