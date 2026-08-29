@@ -11,6 +11,32 @@ A modular PowerShell profile: plugins for the tools I use, utilities backed by s
 - [Development](#development)
 - [Contributing](#contributing)
 
+## Pick what you want (Windows)
+
+```powershell
+irm "https://raw.githubusercontent.com/MKAbuMattar/powershell-profile/main/build/profileutil.ps1" | iex
+```
+
+Opens a window listing everything the profile can install, with a tick box against each one and
+a note saying whether this installer put it there. Install and Remove act on what you tick.
+On a host without a desktop it falls back to the same list in the console.
+
+Removal only ever takes back what this installer added. A tool you already had is marked
+`already yours` and is left alone, and a config file it replaced is restored rather than deleted.
+
+To force the console list, or to install from a branch:
+
+```powershell
+$util = [scriptblock]::Create((irm "https://raw.githubusercontent.com/MKAbuMattar/powershell-profile/main/build/profileutil.ps1"))
+
+& $util                       # window where possible, console otherwise
+& $util -Console              # the console list, even with a desktop
+& $util -Branch develop       # install from another branch
+```
+
+Once the profile is installed, the same picker is a command: `Show-ProfileSetupWindow`, or
+`Show-ProfileSetup` for the console version.
+
 ## Quick Setup (Windows)
 
 ```powershell

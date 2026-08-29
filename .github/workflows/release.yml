@@ -51,8 +51,14 @@ jobs:
           git archive --format=tar.gz --prefix="$prefix/" -o "$name" HEAD
           echo "name=$name" >> "$GITHUB_OUTPUT"
 
+      # The one-file installer ships as its own asset so it can be piped into Invoke-Expression
+      # without a clone. It is committed as well, so raw.githubusercontent serves it from main.
+      - name: Verify the built installer is current
+        shell: pwsh
+        run: ./Tools/Test-Installer.ps1
+
       - name: Write SHA256SUMS
-        run: sha256sum "${{ steps.archive.outputs.name }}" > SHA256SUMS
+        run: sha256sum "${{ steps.archive.outputs.name }}" build/profileutil.ps1 > SHA256SUMS
 
       - name: Show what will be published
         run: cat SHA256SUMS
@@ -63,5 +69,6 @@ jobs:
           tag_name: ${{ steps.tag.outputs.name }}
           files: |
             ${{ steps.archive.outputs.name }}
+            build/profileutil.ps1
             SHA256SUMS
           generate_release_notes: true

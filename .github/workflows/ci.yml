@@ -44,6 +44,10 @@ jobs:
         shell: pwsh
         run: ./Tools/Test-PluginCommand.ps1
 
+      - name: Verify the built installer matches Module/Setup
+        shell: pwsh
+        run: ./Tools/Test-Installer.ps1
+
       - name: Verify README command tables match the code
         shell: pwsh
         run: ./Tools/Test-Readme.ps1
