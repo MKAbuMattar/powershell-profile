@@ -92,31 +92,31 @@ Describe 'Format-ProfileSetupMenu' {
             New-Row -Id 'second' -Category 'Core'
         )
 
-        $lines = Format-ProfileSetupMenu -State $rows
+        $lines = Format-ProfileSetupMenu -State $rows -Plain
 
         ($lines -join "`n") | Should -Match '1\. \[.\] first'
         ($lines -join "`n") | Should -Match '2\. \[.\] second'
     }
 
     It 'marks an owned and present unit with x' {
-        $lines = Format-ProfileSetupMenu -State @(New-Row -Id 'a' -Category 'Tool' -Present -Owned)
+        $lines = Format-ProfileSetupMenu -State @(New-Row -Id 'a' -Category 'Tool' -Present -Owned) -Plain
         ($lines -join "`n") | Should -Match '\[x\] a'
     }
 
     It 'marks a present unit someone else installed with =' {
         # The distinction the whole design rests on, so it has to be visible on the line.
-        $lines = Format-ProfileSetupMenu -State @(New-Row -Id 'a' -Category 'Tool' -Present)
+        $lines = Format-ProfileSetupMenu -State @(New-Row -Id 'a' -Category 'Tool' -Present) -Plain
         ($lines -join "`n") | Should -Match '\[=\] a'
         ($lines -join "`n") | Should -Match 'already on this machine'
     }
 
     It 'marks an absent unit with a blank box' {
-        $lines = Format-ProfileSetupMenu -State @(New-Row -Id 'a' -Category 'Tool')
+        $lines = Format-ProfileSetupMenu -State @(New-Row -Id 'a' -Category 'Tool') -Plain
         ($lines -join "`n") | Should -Match '\[ \] a'
     }
 
     It 'marks a unit that is recorded but gone with a bang' {
-        $lines = Format-ProfileSetupMenu -State @(New-Row -Id 'a' -Category 'Tool' -Owned)
+        $lines = Format-ProfileSetupMenu -State @(New-Row -Id 'a' -Category 'Tool' -Owned) -Plain
         ($lines -join "`n") | Should -Match '\[!\] a'
         ($lines -join "`n") | Should -Match 'recorded, but missing'
     }
@@ -128,19 +128,19 @@ Describe 'Format-ProfileSetupMenu' {
             New-Row -Id 'c' -Category 'Tool'
         )
 
-        $lines = @(Format-ProfileSetupMenu -State $rows)
+        $lines = @(Format-ProfileSetupMenu -State $rows -Plain)
 
         @($lines | Where-Object { $_ -eq 'CORE' }).Count | Should -Be 1
         @($lines | Where-Object { $_ -eq 'TOOL' }).Count | Should -Be 1
     }
 
     It 'shows the description under each unit' {
-        $lines = Format-ProfileSetupMenu -State @(New-Row -Id 'a' -Category 'Tool')
+        $lines = Format-ProfileSetupMenu -State @(New-Row -Id 'a' -Category 'Tool') -Plain
         ($lines -join "`n") | Should -Match 'Description of a\.'
     }
 
     It 'handles an empty list' {
-        @(Format-ProfileSetupMenu -State @()).Count | Should -Be 0
+        @(Format-ProfileSetupMenu -State @() -Plain).Count | Should -Be 0
     }
 }
 
@@ -234,7 +234,7 @@ Describe 'The menu and the selection agree' {
         # Drives the real catalog rather than fixtures, because this is the pairing that breaks
         # when a category is added or the sort order is changed.
         $state = Get-ProfileSetupMenuOrder -State (Get-ProfileSetupState)
-        $lines = @(Format-ProfileSetupMenu -State $state)
+        $lines = @(Format-ProfileSetupMenu -State $state -Plain)
 
         for ($n = 1; $n -le $state.Count; $n++) {
             $expected = $state[$n - 1]

@@ -88,8 +88,21 @@ function Format-ProfileSetupMenu {
     param(
         [Parameter(Mandatory, Position = 0)]
         [AllowEmptyCollection()]
-        [PSCustomObject[]]$State
+        [PSCustomObject[]]$State,
+
+        [Parameter()]
+        [switch]$Plain
     )
+
+    # Colour is opt-out so a test reads the words rather than the escape sequences, and so a
+    # redirected host gets plain text. The palette is the night set from the brand identity.
+    $brand = Get-ProfileSetupBrand -Mode Night
+    $ink = if ($Plain -or -not (Test-ProfileSetupColor)) {
+        @{ Reset = ''; Heading = ''; Accent = ''; Body = ''; Secondary = ''; Positive = '' }
+    }
+    else {
+        $brand.Ansi
+    }
 
     $lines = [System.Collections.Generic.List[string]]::new()
     $index = 0
@@ -101,7 +114,7 @@ function Format-ProfileSetupMenu {
         if ($row.Category -ne $category) {
             $category = $row.Category
             $lines.Add('')
-            $lines.Add($category.ToUpper())
+            $lines.Add(('{0}{1}{2}' -f $ink.Heading, $category.ToUpper(), $ink.Reset))
         }
 
         $marker = if ($row.Owned -and $row.Present) { '[x]' }
@@ -115,8 +128,13 @@ function Format-ProfileSetupMenu {
         elseif ($row.Present) { 'already on this machine' }
         else { '' }
 
-        $lines.Add(('{0,3}. {1} {2,-28} {3}' -f $index, $marker, $row.Name, $note).TrimEnd())
-        $lines.Add(('      {0}' -f $row.Description))
+        $markerInk = if ($row.Owned -and $row.Present) { $ink.Positive }
+        elseif ($row.Owned) { $ink.Accent }
+        elseif ($row.Present) { $ink.Secondary }
+        else { $ink.Body }
+
+        $lines.Add(('{0,3}. {1}{2}{3} {4,-28} {5}{6}{7}' -f $index, $markerInk, $marker, $ink.Reset, $row.Name, $ink.Secondary, $note, $ink.Reset).TrimEnd())
+        $lines.Add(('      {0}{1}{2}' -f $ink.Body, $row.Description, $ink.Reset))
     }
 
     return @($lines)
@@ -286,14 +304,23 @@ function Show-ProfileSetup {
     if ($InstallPath) { $common['InstallPath'] = $InstallPath }
     if ($ReceiptPath) { $common['ReceiptPath'] = $ReceiptPath }
 
+    # The identity palette, or empty strings on a host that would print the escape sequences as
+    # literal text. Every use is a format argument, so blanking them removes the colour and
+    # changes nothing else.
+    $brand = Get-ProfileSetupBrand -Mode Night
+    $reset = if (Test-ProfileSetupColor) { $brand.Ansi.Reset } else { '' }
+    if (-not $reset) {
+        foreach ($key in @($brand.Ansi.Keys)) { $brand.Ansi[$key] = '' }
+    }
+
     while ($true) {
         # Ordered once, then used for both the menu and the selection, so a number on screen and
         # the row it resolves to cannot drift apart.
         $state = Get-ProfileSetupMenuOrder -State (Get-ProfileSetupState @common)
 
         Write-Host ''
-        Write-Host 'MKAbuMattar PowerShell profile setup'
-        Write-Host ('Installing into {0}' -f (Get-ProfileSetupPath -InstallPath $InstallPath).InstallPath)
+        Write-Host ("{0}MKAbuMattar PowerShell profile setup{1}" -f $brand.Ansi.Heading, $reset)
+        Write-Host ("{0}Installing into {1}{2}" -f $brand.Ansi.Secondary, (Get-ProfileSetupPath -InstallPath $InstallPath).InstallPath, $reset)
 
         foreach ($line in (Format-ProfileSetupMenu -State $state)) { Write-Host $line }
 
@@ -312,7 +339,7 @@ function Show-ProfileSetup {
         $selection = Resolve-ProfileSetupSelection -InputText $answer -State $state
 
         if ($selection.Unknown.Count) {
-            Write-Host ("Not understood: {0}" -f ($selection.Unknown -join ', ')) -ForegroundColor Yellow
+            Write-Host ("{0}Not understood: {1}{2}" -f $brand.Ansi.Accent, ($selection.Unknown -join ', '), $reset)
         }
 
         if (-not $selection.Id.Count) { continue }
@@ -336,15 +363,15 @@ function Show-ProfileSetup {
 
         Write-Host ''
         foreach ($result in $results) {
-            $colour = switch ($result.Status) {
-                'installed' { 'Green' }
-                'restored' { 'Green' }
-                'removed' { 'Green' }
-                'present' { 'DarkGray' }
-                'skipped' { 'Yellow' }
-                default { 'Red' }
+            $ink = switch ($result.Status) {
+                'installed' { $brand.Ansi.Positive }
+                'restored' { $brand.Ansi.Positive }
+                'removed' { $brand.Ansi.Positive }
+                'present' { $brand.Ansi.Secondary }
+                'skipped' { $brand.Ansi.Accent }
+                default { $brand.Ansi.Tertiary }
             }
-            Write-Host ("  {0,-22} {1,-10} {2}" -f $result.Id, $result.Status, $result.Message) -ForegroundColor $colour
+            Write-Host ("{0}  {1,-22} {2,-10} {3}{4}" -f $ink, $result.Id, $result.Status, $result.Message, $reset)
         }
     }
 }

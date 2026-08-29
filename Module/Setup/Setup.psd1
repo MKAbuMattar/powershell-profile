@@ -53,6 +53,8 @@
     Description          = 'This module describes what the profile installs, reports what is present, and records what the installer added so it can be removed.'
     PowerShellVersion    = '7.0'
     FunctionsToExport    = @(
+        'Get-ProfileSetupBrand',
+        'Test-ProfileSetupColor',
         'Get-ProfileSetupPath',
         'Get-ProfileSetupCatalog',
         'Test-ProfileSetupPresent',
@@ -71,14 +73,19 @@
         'Get-ProfileSetupMenuOrder',
         'Format-ProfileSetupMenu',
         'Resolve-ProfileSetupSelection',
-        'Show-ProfileSetup'
+        'Show-ProfileSetup',
+        'Get-ProfileSetupWindowSupport',
+        'Get-ProfileSetupWindowXaml',
+        'ConvertTo-ProfileSetupRow',
+        'Show-ProfileSetupWindow'
     )
     CmdletsToExport      = @()
     VariablesToExport    = @()
     AliasesToExport      = @(
         'profile-install',
         'profile-uninstall',
-        'profile-setup'
+        'profile-setup',
+        'profile-setup-gui'
     )
     PrivateData          = @{
         PSData = @{
