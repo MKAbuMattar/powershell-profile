@@ -53,6 +53,9 @@
     Description          = 'This module provides functions to update the local profile module directory, profile, and PowerShell.'
     PowerShellVersion    = '7.0'
     FunctionsToExport    = @(
+        'Get-ProfileRelease',
+        'Save-ProfileArchive',
+        'Expand-ProfileArchive',
         'Update-LocalProfileModuleDirectory',
         'Get-ForeignProfileSection',
         'Update-Profile',

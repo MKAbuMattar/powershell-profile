@@ -41,6 +41,185 @@
 #---------------------------------------------------------------------------------------------------
 
 
+$script:ProfileRepository = 'MKAbuMattar/powershell-profile'
+
+function Get-ProfileRelease {
+    <#
+    .SYNOPSIS
+        Resolves a published release to the archive and checksum it ships.
+
+    .DESCRIPTION
+        Returns the tag, the release archive asset and the SHA256SUMS asset for a release, so a
+        caller can download the archive and check it against a digest published alongside it.
+
+        The update path used to fetch a branch tarball from codeload with nothing to check it
+        against. Anyone able to push to main could put code in every user's shell on the next
+        start, and a corrupted download was indistinguishable from a good one. A release tag does
+        not move, and its checksum asset is produced by the release workflow from the same archive
+        it publishes.
+
+    .PARAMETER Tag
+        Release tag to resolve. Omit for the latest release.
+
+    .OUTPUTS
+        [PSCustomObject] Tag, ArchiveName, ArchiveUrl, ChecksumUrl.
+
+    .EXAMPLE
+        Get-ProfileRelease
+        Resolves the latest release.
+
+    .EXAMPLE
+        Get-ProfileRelease -Tag v5.1.0
+        Resolves that tag.
+
+    .LINK
+        https://github.com/MKAbuMattar/powershell-profile
+    #>
+    [CmdletBinding()]
+    [OutputType([PSCustomObject])]
+    param(
+        [Parameter(Position = 0)]
+        [string]$Tag
+    )
+
+    $endpoint = if ($Tag) {
+        "https://api.github.com/repos/$script:ProfileRepository/releases/tags/$Tag"
+    }
+    else {
+        "https://api.github.com/repos/$script:ProfileRepository/releases/latest"
+    }
+
+    $release = Invoke-RestMethod -Uri $endpoint -TimeoutSec 20 -Headers @{ Accept = 'application/vnd.github+json' }
+
+    $archive = $release.assets | Where-Object { $_.name -like '*.tar.gz' } | Select-Object -First 1
+    $checksum = $release.assets | Where-Object { $_.name -eq 'SHA256SUMS' } | Select-Object -First 1
+
+    if (-not $archive) {
+        throw "Release $($release.tag_name) publishes no .tar.gz asset. Nothing to install."
+    }
+
+    if (-not $checksum) {
+        throw "Release $($release.tag_name) publishes no SHA256SUMS asset, so the archive cannot be verified."
+    }
+
+    [PSCustomObject]@{
+        Tag         = $release.tag_name
+        ArchiveName = $archive.name
+        ArchiveUrl  = $archive.browser_download_url
+        ChecksumUrl = $checksum.browser_download_url
+    }
+}
+
+function Save-ProfileArchive {
+    <#
+    .SYNOPSIS
+        Downloads a release archive and refuses to return it unless its digest matches.
+
+    .DESCRIPTION
+        Downloads the archive and the SHA256SUMS asset, finds the line naming the archive, and
+        compares it against the digest of what arrived. A mismatch throws and the file is deleted,
+        so a caller cannot act on an archive that failed the check.
+
+    .PARAMETER Release
+        A release from Get-ProfileRelease.
+
+    .PARAMETER Path
+        Where to write the archive.
+
+    .OUTPUTS
+        [string] The path to the verified archive.
+
+    .EXAMPLE
+        Save-ProfileArchive -Release (Get-ProfileRelease) -Path $archive
+
+    .LINK
+        https://github.com/MKAbuMattar/powershell-profile
+    #>
+    [CmdletBinding()]
+    [OutputType([string])]
+    param(
+        [Parameter(Mandatory, Position = 0)]
+        [PSCustomObject]$Release,
+
+        [Parameter(Mandatory, Position = 1)]
+        [string]$Path
+    )
+
+    Write-LogMessage -Message "Downloading $($Release.ArchiveName) from $($Release.Tag)..." -Level "INFO"
+    Invoke-WebRequest -Uri $Release.ArchiveUrl -OutFile $Path -UseBasicParsing
+
+    $sums = (Invoke-WebRequest -Uri $Release.ChecksumUrl -UseBasicParsing).Content
+    if ($sums -is [byte[]]) { $sums = [System.Text.Encoding]::UTF8.GetString($sums) }
+
+    $expected = $null
+    foreach ($line in ($sums -split "`r?`n")) {
+        # sha256sum output: the digest, whitespace, an optional binary marker, then the name.
+        if ($line -match '^\s*([0-9a-fA-F]{64})\s+\*?(.+?)\s*$' -and $Matches[2] -eq $Release.ArchiveName) {
+            $expected = $Matches[1]
+            break
+        }
+    }
+
+    if (-not $expected) {
+        Remove-Item -LiteralPath $Path -Force -ErrorAction SilentlyContinue
+        throw "SHA256SUMS for $($Release.Tag) does not list $($Release.ArchiveName)."
+    }
+
+    $actual = (Get-FileHash -LiteralPath $Path -Algorithm SHA256).Hash
+
+    if ($actual -ne $expected.ToUpperInvariant()) {
+        Remove-Item -LiteralPath $Path -Force -ErrorAction SilentlyContinue
+        throw "Checksum mismatch for $($Release.ArchiveName): expected $expected, got $actual. The archive was discarded."
+    }
+
+    Write-LogMessage -Message "Checksum verified." -Level "INFO"
+    return $Path
+}
+
+function Expand-ProfileArchive {
+    <#
+    .SYNOPSIS
+        Extracts a profile archive and returns the directory it contains.
+
+    .PARAMETER Path
+        The archive to extract.
+
+    .PARAMETER Destination
+        An existing directory to extract into.
+
+    .OUTPUTS
+        [string] Full path to the single top-level directory in the archive.
+
+    .EXAMPLE
+        Expand-ProfileArchive -Path $archive -Destination $workspace
+
+    .LINK
+        https://github.com/MKAbuMattar/powershell-profile
+    #>
+    [CmdletBinding()]
+    [OutputType([string])]
+    param(
+        [Parameter(Mandatory, Position = 0)]
+        [string]$Path,
+
+        [Parameter(Mandatory, Position = 1)]
+        [string]$Destination
+    )
+
+    # tar ships with Windows 10 1803 and later, and with every supported PowerShell host.
+    & tar -xzf $Path -C $Destination
+    if ($LASTEXITCODE -ne 0) {
+        throw "tar exited with code $LASTEXITCODE while extracting the archive."
+    }
+
+    $extracted = Get-ChildItem -LiteralPath $Destination -Directory | Select-Object -First 1
+    if (-not $extracted) {
+        throw "The archive did not contain the expected directory."
+    }
+
+    return $extracted.FullName
+}
+
 function Update-LocalProfileModuleDirectory {
     <#
     .SYNOPSIS
@@ -59,14 +238,25 @@ function Update-LocalProfileModuleDirectory {
         One archive request replaces all of it. When the profile lives in a git clone, use
         `git pull` instead: this function is for installs made by setup.ps1, which are not clones.
 
+        The archive comes from a published release and its SHA-256 is checked against the
+        SHA256SUMS asset of that release before anything is extracted. Fetching a branch tarball
+        is still possible with -Branch, but there is nothing to verify it against, so it needs
+        -AllowUnverified as well and says so in the log.
+
         The existing Module directory is moved aside before the new one is put in place, so a
         failed download cannot leave a half-updated tree.
 
     .PARAMETER LocalPath
         Directory holding the Module tree. Defaults to the profile directory.
 
+    .PARAMETER Tag
+        Release tag to install. Omit for the latest release.
+
     .PARAMETER Branch
-        Repository branch to fetch. Defaults to main.
+        Fetch this branch instead of a release. Unverified, and requires -AllowUnverified.
+
+    .PARAMETER AllowUnverified
+        Permit a -Branch download, which no checksum covers.
 
     .INPUTS
         [string] A path.
@@ -79,7 +269,15 @@ function Update-LocalProfileModuleDirectory {
 
     .EXAMPLE
         Update-LocalProfileModuleDirectory
-        Refreshes the Module directory from the main branch.
+        Refreshes the Module directory from the latest release, after checking its digest.
+
+    .EXAMPLE
+        Update-LocalProfileModuleDirectory -Tag v5.1.0
+        Installs that release.
+
+    .EXAMPLE
+        Update-LocalProfileModuleDirectory -Branch develop -AllowUnverified
+        Fetches a branch tarball, which nothing checks.
 
     .EXAMPLE
         Update-LocalProfileModuleDirectory -WhatIf
@@ -96,7 +294,13 @@ function Update-LocalProfileModuleDirectory {
         [string]$LocalPath = (Split-Path -Parent $PROFILE),
 
         [Parameter(Position = 1)]
-        [string]$Branch = 'main'
+        [string]$Tag,
+
+        [Parameter()]
+        [string]$Branch,
+
+        [Parameter()]
+        [switch]$AllowUnverified
     )
 
     process {
@@ -118,28 +322,30 @@ function Update-LocalProfileModuleDirectory {
             return
         }
 
+        if ($Branch -and -not $AllowUnverified) {
+            Write-LogMessage -Message "A branch tarball has no published checksum. Re-run with -AllowUnverified to fetch it anyway, or omit -Branch to install the latest release." -Level "WARNING"
+            return
+        }
+
         $workspace = Join-Path ([System.IO.Path]::GetTempPath()) ("profile-update-" + [guid]::NewGuid().ToString('N'))
         $archive = "$workspace.tar.gz"
 
         try {
             $null = New-Item -ItemType Directory -Path $workspace -Force
 
-            $url = "https://codeload.github.com/MKAbuMattar/powershell-profile/tar.gz/refs/heads/$Branch"
-            Write-LogMessage -Message "Downloading $Branch as a single archive..."
-            Invoke-WebRequest -Uri $url -OutFile $archive -UseBasicParsing
-
-            # tar ships with Windows 10 1803 and later, and with every supported PowerShell host.
-            & tar -xzf $archive -C $workspace
-            if ($LASTEXITCODE -ne 0) {
-                throw "tar exited with code $LASTEXITCODE while extracting the archive."
+            if ($Branch) {
+                $url = "https://codeload.github.com/$script:ProfileRepository/tar.gz/refs/heads/$Branch"
+                Write-LogMessage -Message "Downloading branch $Branch. Nothing verifies this archive." -Level "WARNING"
+                Invoke-WebRequest -Uri $url -OutFile $archive -UseBasicParsing
+            }
+            else {
+                $release = Get-ProfileRelease -Tag $Tag
+                $null = Save-ProfileArchive -Release $release -Path $archive
             }
 
-            $extracted = Get-ChildItem -LiteralPath $workspace -Directory | Select-Object -First 1
-            if (-not $extracted) {
-                throw "The archive did not contain the expected directory."
-            }
+            $extractedRoot = Expand-ProfileArchive -Path $archive -Destination $workspace
 
-            $sourceModule = Join-Path $extracted.FullName 'Module'
+            $sourceModule = Join-Path $extractedRoot 'Module'
             if (-not (Test-Path -LiteralPath $sourceModule)) {
                 throw "The archive did not contain a Module directory."
             }
@@ -239,8 +445,16 @@ function Update-Profile {
 
         The previous copy is kept alongside the profile with a .bak extension.
 
+        The new profile is taken from a release archive whose SHA-256 is checked against the
+        SHA256SUMS asset published with it. It used to come from raw.githubusercontent on main,
+        which is a moving target with nothing to verify it against, and this file runs in full at
+        every shell start.
+
     .PARAMETER Path
         Profile file to update. Defaults to $PROFILE.
+
+    .PARAMETER Tag
+        Release tag to take the profile from. Omit for the latest release.
 
     .INPUTS
         None.
@@ -250,7 +464,11 @@ function Update-Profile {
 
     .EXAMPLE
         Update-Profile
-        Updates $PROFILE if the repository copy differs.
+        Updates $PROFILE if the latest release differs from it.
+
+    .EXAMPLE
+        Update-Profile -Tag v5.1.0
+        Takes the profile from that release.
 
     .EXAMPLE
         Update-Profile -WhatIf
@@ -267,7 +485,10 @@ function Update-Profile {
     [OutputType([void])]
     param (
         [Parameter(Position = 0)]
-        [string]$Path = $PROFILE
+        [string]$Path = $PROFILE,
+
+        [Parameter(Position = 1)]
+        [string]$Tag
     )
 
     if (-not (Test-GitHubConnection)) {
@@ -275,13 +496,22 @@ function Update-Profile {
         return
     }
 
-    $url = "https://raw.githubusercontent.com/MKAbuMattar/powershell-profile/main/Microsoft.PowerShell_profile.ps1"
-    $temp = Join-Path ([System.IO.Path]::GetTempPath()) "Microsoft.PowerShell_profile.$PID.ps1"
+    $workspace = Join-Path ([System.IO.Path]::GetTempPath()) ("profile-file-" + [guid]::NewGuid().ToString('N'))
+    $temp = "$workspace.tar.gz"
 
     try {
-        Invoke-WebRequest -Uri $url -OutFile $temp -UseBasicParsing
+        $null = New-Item -ItemType Directory -Path $workspace -Force
 
-        $incoming = Get-Content -LiteralPath $temp -Raw
+        $release = Get-ProfileRelease -Tag $Tag
+        $null = Save-ProfileArchive -Release $release -Path $temp
+        $extractedRoot = Expand-ProfileArchive -Path $temp -Destination $workspace
+
+        $source = Join-Path $extractedRoot 'Microsoft.PowerShell_profile.ps1'
+        if (-not (Test-Path -LiteralPath $source)) {
+            throw "Release $($release.Tag) does not contain Microsoft.PowerShell_profile.ps1."
+        }
+
+        $incoming = Get-Content -LiteralPath $source -Raw
         $current = if (Test-Path -LiteralPath $Path) { Get-Content -LiteralPath $Path -Raw } else { '' }
 
         $foreign = Get-ForeignProfileSection -Path $Path
@@ -314,7 +544,8 @@ function Update-Profile {
         Write-LogMessage -Message "Unable to check for profile updates: $($_.Exception.Message)" -Level "WARNING"
     }
     finally {
-        Remove-Item -LiteralPath $temp -ErrorAction SilentlyContinue
+        Remove-Item -LiteralPath $workspace -Recurse -Force -ErrorAction SilentlyContinue
+        Remove-Item -LiteralPath $temp -Force -ErrorAction SilentlyContinue
     }
 }
 

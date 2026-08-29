@@ -1,0 +1,67 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Tag to build and publish
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Publish archive and checksums
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.tag || github.ref }}
+          fetch-depth: 0
+
+      - name: Resolve the tag
+        id: tag
+        run: echo "name=${{ github.event.inputs.tag || github.ref_name }}" >> "$GITHUB_OUTPUT"
+
+      - name: Refuse a tag that disagrees with VERSION
+        run: |
+          declared="$(tr -d '[:space:]' < VERSION)"
+          tagged="${{ steps.tag.outputs.name }}"
+          tagged="${tagged#v}"
+          if [ "$declared" != "$tagged" ]; then
+            echo "VERSION says $declared but the tag says $tagged." >&2
+            echo "Run ./Tools/Update-Version.ps1 -Version $tagged and re-tag." >&2
+            exit 1
+          fi
+          echo "VERSION and tag agree on $declared."
+
+      # The update path in Module/Update verifies this digest before it extracts anything, so the
+      # archive and SHA256SUMS have to be produced together from the same bytes.
+      - name: Build the archive
+        id: archive
+        run: |
+          name="powershell-profile-${{ steps.tag.outputs.name }}.tar.gz"
+          prefix="powershell-profile-${{ steps.tag.outputs.name }}"
+          git archive --format=tar.gz --prefix="$prefix/" -o "$name" HEAD
+          echo "name=$name" >> "$GITHUB_OUTPUT"
+
+      - name: Write SHA256SUMS
+        run: sha256sum "${{ steps.archive.outputs.name }}" > SHA256SUMS
+
+      - name: Show what will be published
+        run: cat SHA256SUMS
+
+      - name: Publish the release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.tag.outputs.name }}
+          files: |
+            ${{ steps.archive.outputs.name }}
+            SHA256SUMS
+          generate_release_notes: true
