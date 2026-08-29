@@ -466,3 +466,89 @@ Describe 'The built installer carries the mode decision' {
         $script:Wrapper | Should -Match 'Get-ProfileSetupMode'
     }
 }
+
+Describe 'The built installer binds its own arguments' {
+
+    BeforeAll {
+        $script:BuiltPath = Join-Path $script:Root 'build/profileutil.ps1'
+        $script:BuiltAst = [System.Management.Automation.Language.Parser]::ParseFile($script:BuiltPath, [ref]$null, [ref]$null)
+
+        $script:BuiltFunction = @{}
+        foreach ($fn in $script:BuiltAst.FindAll({ param($n) $n -is [System.Management.Automation.Language.FunctionDefinitionAst] }, $true)) {
+            $script:BuiltFunction[$fn.Name] = @($fn.Body.ParamBlock.Parameters | ForEach-Object { $_.Name.VariablePath.UserPath })
+        }
+    }
+
+    It 'passes only parameters Invoke-ProfileInstaller declares' {
+        # The failure this catches: -Real and -Sandbox were added to the wrong function, because a
+        # line search for the $Branch parameter matched Get-ProfileInstallerRepository first. The
+        # file parsed, the tail read correctly, and `& $util` died on "A parameter cannot be found
+        # that matches parameter name 'Real'". Reading the file cannot see that; comparing the call
+        # against the declaration can.
+        $call = $script:BuiltAst.FindAll({
+                param($n)
+                $n -is [System.Management.Automation.Language.CommandAst] -and
+                $n.GetCommandName() -eq 'Invoke-ProfileInstaller'
+            }, $true) | Select-Object -Last 1
+
+        $call | Should -Not -BeNullOrEmpty -Because 'the built file has to call its own launcher'
+
+        $passed = @(
+            $call.CommandElements |
+                Where-Object { $_ -is [System.Management.Automation.Language.CommandParameterAst] } |
+                ForEach-Object { $_.ParameterName }
+        )
+
+        $passed.Count | Should -BeGreaterThan 0
+
+        foreach ($name in $passed) {
+            $script:BuiltFunction['Invoke-ProfileInstaller'] |
+                Should -Contain $name -Because "the final call passes -$name"
+        }
+    }
+
+    It 'declares every switch the top-level param block accepts' {
+        # Anything the script takes has to reach the launcher, or passing it does nothing.
+        $top = $script:BuiltAst.ParamBlock
+        $top | Should -Not -BeNullOrEmpty
+
+        $names = @($top.Parameters | ForEach-Object { $_.Name.VariablePath.UserPath })
+
+        foreach ($name in $names) {
+            $script:BuiltFunction['Invoke-ProfileInstaller'] |
+                Should -Contain $name -Because "the script accepts -$name"
+        }
+    }
+
+    It 'keeps the download helper to its own parameter' {
+        # It fetches an archive for a branch. A mode switch on it is a sign the wrong function was
+        # edited.
+        $script:BuiltFunction['Get-ProfileInstallerRepository'] | Should -Be @('Branch')
+    }
+
+    It 'accepts <Argument> when PowerShell binds it' -ForEach @(
+        @{ Argument = '-Console' }
+        @{ Argument = '-Real' }
+        @{ Argument = '-Sandbox' }
+        @{ Argument = '-Branch' }
+    ) {
+        # Asks PowerShell, rather than reading the text. The launcher is defined from the built
+        # file's own source into a throwaway scope, and its parameter list is the one the binder
+        # would use.
+        $definition = $script:BuiltAst.FindAll({
+                param($n)
+                $n -is [System.Management.Automation.Language.FunctionDefinitionAst] -and
+                $n.Name -eq 'Invoke-ProfileInstaller'
+            }, $true) | Select-Object -First 1
+
+        $name = 'Probe-ProfileInstaller-' + [guid]::NewGuid().ToString('N')
+        New-Item -Path "function:$name" -Value ([scriptblock]::Create($definition.Body.Extent.Text.Trim('{', '}'))) | Out-Null
+
+        try {
+            (Get-Command -Name $name).Parameters.Keys | Should -Contain $Argument.TrimStart('-')
+        }
+        finally {
+            Remove-Item -LiteralPath "function:$name" -Force -ErrorAction SilentlyContinue
+        }
+    }
+}

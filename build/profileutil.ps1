@@ -3326,13 +3326,7 @@ function Get-ProfileInstallerRepository {
     [OutputType([string])]
     param(
         [Parameter(Position = 0)]
-        [string]$Branch = 'main',
-
-        [Parameter()]
-        [switch]$Real,
-
-        [Parameter()]
-        [switch]$Sandbox
+        [string]$Branch = 'main'
     )
 
     $workspace = Join-Path ([System.IO.Path]::GetTempPath()) ("profile-installer-" + [guid]::NewGuid().ToString('N'))
@@ -3378,7 +3372,13 @@ function Invoke-ProfileInstaller {
         [switch]$Console,
 
         [Parameter()]
-        [string]$Branch = 'main'
+        [string]$Branch = 'main',
+
+        [Parameter()]
+        [switch]$Real,
+
+        [Parameter()]
+        [switch]$Sandbox
     )
 
     # The first run on a machine goes into a throwaway directory, so a wrong click costs
