@@ -93,10 +93,17 @@ function Get-ProfileSetupWindowXaml {
 <Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="PowerShell profile setup"
-        Height="660" Width="920"
+        Height="720" Width="1040"
+        MinHeight="520" MinWidth="820"
         WindowStartupLocation="CenterScreen"
+        WindowStyle="None"
+        ResizeMode="CanResize"
+        AllowsTransparency="False"
         Background="#FF2B2233">
 
+    <!-- Background is the literal Black Iris rather than {StaticResource Ground}: an attribute
+         on Window itself is resolved before Window.Resources exists, and a StaticResource there
+         throws at parse time. -->
     <Window.Resources>
         <!-- The night palette from https://mkabumattar.com/identity/. Get-ProfileSetupBrand holds
              the same values for the console picker, so the two surfaces cannot drift apart. -->
@@ -107,6 +114,7 @@ function Get-ProfileSetupWindowXaml {
         <SolidColorBrush x:Key="Body"      Color="#FFD9C9B0"/>
         <SolidColorBrush x:Key="Accent"    Color="#FFD9A36A"/>
         <SolidColorBrush x:Key="Secondary" Color="#FFB9875E"/>
+        <SolidColorBrush x:Key="Tertiary"  Color="#FFC76B6B"/>
 
         <!-- Archivo, Public Sans and JetBrains Mono are the identity's three faces. Each names a
              fallback, because WPF drops to a serif when a family is missing and that reads as a
@@ -160,40 +168,102 @@ function Get-ProfileSetupWindowXaml {
             <Setter Property="BorderBrush" Value="{StaticResource Accent}"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
         </Style>
-    </Window.Resources>
 
-    <Grid Margin="18">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="170"/>
-        </Grid.RowDefinitions>
+        <!-- The title bar buttons: square, flat, no border until hovered. Close turns Petra Rose
+             so the destructive one is the only coloured thing in the strip. -->
+        <Style x:Key="ChromeButton" TargetType="Button">
+            <Setter Property="Width" Value="46"/>
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="Margin" Value="0"/>
+            <Setter Property="Foreground" Value="{StaticResource Body}"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="FontFamily" Value="Segoe MDL2 Assets"/>
+            <Setter Property="FontSize" Value="10"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Chrome" Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Chrome" Property="Background" Value="{StaticResource Line}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
 
-        <StackPanel Grid.Row="0" Margin="0,0,0,14">
-            <TextBlock Text="PowerShell profile setup" FontSize="22" Style="{StaticResource DisplayText}"/>
-            <TextBlock x:Name="TargetText" FontSize="12" Foreground="{StaticResource Secondary}" Margin="0,5,0,0"
-                       FontFamily="JetBrains Mono, Cascadia Mono, Consolas"/>
-            <TextBlock FontSize="12" Margin="0,8,0,0"
-                       Text="Only what this installer added can be removed. Anything already on your machine is left alone."/>
-        </StackPanel>
+        <Style x:Key="CloseChromeButton" TargetType="Button" BasedOn="{StaticResource ChromeButton}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Chrome" Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Chrome" Property="Background" Value="{StaticResource Tertiary}"/>
+                                <Setter Property="Foreground" Value="{StaticResource Heading}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
 
-        <Border Grid.Row="1" BorderBrush="{StaticResource Line}" BorderThickness="1" Background="{StaticResource Surface}">
-            <DataGrid x:Name="UnitGrid"
-                      AutoGenerateColumns="False"
-                      HeadersVisibility="Column"
-                      GridLinesVisibility="Horizontal"
-                      HorizontalGridLinesBrush="{StaticResource Line}"
-                      Background="{StaticResource Surface}"
-                      RowBackground="{StaticResource Surface}"
-                      AlternatingRowBackground="{StaticResource Ground}"
-                      Foreground="{StaticResource Body}"
-                      BorderThickness="0"
-                      FontFamily="Public Sans, Segoe UI"
-                      CanUserAddRows="False"
-                      CanUserDeleteRows="False"
-                      SelectionMode="Single">
-                <DataGrid.ColumnHeaderStyle>
+        <Style TargetType="TabItem">
+            <Setter Property="FontFamily" Value="Archivo, Segoe UI"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Foreground" Value="{StaticResource Body}"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabItem">
+                        <Border x:Name="Tab"
+                                Background="Transparent"
+                                BorderBrush="Transparent"
+                                BorderThickness="0,0,0,2"
+                                Padding="18,10">
+                            <ContentPresenter ContentSource="Header" HorizontalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Tab" Property="BorderBrush" Value="{StaticResource Accent}"/>
+                                <Setter Property="Foreground" Value="{StaticResource Heading}"/>
+                                <Setter Property="FontWeight" Value="SemiBold"/>
+                            </Trigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsMouseOver" Value="True"/>
+                                    <Condition Property="IsSelected" Value="False"/>
+                                </MultiTrigger.Conditions>
+                                <Setter TargetName="Tab" Property="BorderBrush" Value="{StaticResource Line}"/>
+                            </MultiTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="UnitGridStyle" TargetType="DataGrid">
+            <Setter Property="AutoGenerateColumns" Value="False"/>
+            <Setter Property="HeadersVisibility" Value="Column"/>
+            <Setter Property="GridLinesVisibility" Value="Horizontal"/>
+            <Setter Property="HorizontalGridLinesBrush" Value="{StaticResource Line}"/>
+            <Setter Property="Background" Value="{StaticResource Surface}"/>
+            <Setter Property="RowBackground" Value="{StaticResource Surface}"/>
+            <Setter Property="AlternatingRowBackground" Value="{StaticResource Ground}"/>
+            <Setter Property="Foreground" Value="{StaticResource Body}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontFamily" Value="Public Sans, Segoe UI"/>
+            <Setter Property="CanUserAddRows" Value="False"/>
+            <Setter Property="CanUserDeleteRows" Value="False"/>
+            <Setter Property="SelectionMode" Value="Single"/>
+            <Setter Property="ColumnHeaderStyle">
+                <Setter.Value>
                     <Style TargetType="DataGridColumnHeader">
                         <Setter Property="Background" Value="{StaticResource Ground}"/>
                         <Setter Property="Foreground" Value="{StaticResource Heading}"/>
@@ -203,8 +273,10 @@ function Get-ProfileSetupWindowXaml {
                         <Setter Property="BorderBrush" Value="{StaticResource Line}"/>
                         <Setter Property="BorderThickness" Value="0,0,0,1"/>
                     </Style>
-                </DataGrid.ColumnHeaderStyle>
-                <DataGrid.CellStyle>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="CellStyle">
+                <Setter.Value>
                     <Style TargetType="DataGridCell">
                         <Setter Property="BorderThickness" Value="0"/>
                         <Setter Property="Padding" Value="6,5"/>
@@ -215,41 +287,145 @@ function Get-ProfileSetupWindowXaml {
                             </Trigger>
                         </Style.Triggers>
                     </Style>
-                </DataGrid.CellStyle>
-                <DataGrid.Columns>
-                    <DataGridCheckBoxColumn Header="" Binding="{Binding Selected, Mode=TwoWay}" Width="36"/>
-                    <DataGridTextColumn Header="Name" Binding="{Binding Name}" IsReadOnly="True" Width="200"/>
-                    <DataGridTextColumn Header="Group" Binding="{Binding Category}" IsReadOnly="True" Width="80"/>
-                    <DataGridTextColumn Header="State" Binding="{Binding StateText}" IsReadOnly="True" Width="150"/>
-                    <DataGridTextColumn Header="What it is" Binding="{Binding Description}" IsReadOnly="True" Width="*"/>
-                </DataGrid.Columns>
-            </DataGrid>
-        </Border>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
 
-        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,14,0,14">
-            <Button x:Name="InstallButton" Content="Install selected" Style="{StaticResource PrimaryButton}"/>
-            <Button x:Name="RemoveButton" Content="Remove selected"/>
-            <Button x:Name="SelectMissingButton" Content="Tick everything missing"/>
-            <Button x:Name="ClearButton" Content="Clear"/>
-            <Button x:Name="RefreshButton" Content="Refresh"/>
-            <Button x:Name="CloseButton" Content="Close"/>
-        </StackPanel>
+    <Border BorderBrush="{StaticResource Line}" BorderThickness="1">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="150"/>
+            </Grid.RowDefinitions>
 
-        <Border Grid.Row="3" BorderBrush="{StaticResource Line}" BorderThickness="1" Background="#FF241D2B">
-            <ScrollViewer x:Name="LogScroller" VerticalScrollBarVisibility="Auto">
-                <TextBox x:Name="LogBox"
-                         Background="Transparent"
-                         Foreground="{StaticResource Body}"
-                         BorderThickness="0"
-                         Padding="10,8"
-                         FontFamily="JetBrains Mono, Cascadia Mono, Consolas"
-                         FontSize="12"
-                         IsReadOnly="True"
-                         TextWrapping="Wrap"
-                         VerticalScrollBarVisibility="Disabled"/>
-            </ScrollViewer>
-        </Border>
-    </Grid>
+            <!-- Title bar. WindowStyle is None, so this replaces the system one: TitleBar handles
+                 the drag and the double-click, and the three buttons do what the system buttons
+                 would have. -->
+            <Border x:Name="TitleBar" Grid.Row="0" Background="{StaticResource Surface}" BorderBrush="{StaticResource Line}" BorderThickness="0,0,0,1">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" Orientation="Horizontal" Margin="14,0,0,0" VerticalAlignment="Center">
+                        <Border Width="12" Height="12" Background="{StaticResource Accent}" Margin="0,0,10,0"/>
+                        <TextBlock Text="PowerShell profile setup" FontSize="12" Style="{StaticResource DisplayText}" VerticalAlignment="Center"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1" Orientation="Horizontal">
+                        <Button x:Name="MinimiseButton" Content="&#xE921;" Style="{StaticResource ChromeButton}" ToolTip="Minimise"/>
+                        <Button x:Name="MaximiseButton" Content="&#xE922;" Style="{StaticResource ChromeButton}" ToolTip="Maximise"/>
+                        <Button x:Name="ChromeCloseButton" Content="&#xE8BB;" Style="{StaticResource CloseChromeButton}" ToolTip="Close"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <StackPanel Grid.Row="1" Margin="18,16,18,10">
+                <TextBlock Text="PowerShell profile setup" FontSize="22" Style="{StaticResource DisplayText}"/>
+                <TextBlock x:Name="TargetText" FontSize="12" Foreground="{StaticResource Secondary}" Margin="0,5,0,0"
+                           FontFamily="JetBrains Mono, Cascadia Mono, Consolas"/>
+            </StackPanel>
+
+            <TabControl x:Name="Tabs" Grid.Row="2" Margin="18,0,18,0"
+                        Background="Transparent" BorderThickness="0" Padding="0,12,0,0">
+
+                <TabItem Header="Tools">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" Margin="0,0,0,10" FontSize="12"
+                                   Text="Command-line tools the profile drives. Anything already on your machine reads as yours and is left alone."/>
+                        <Border Grid.Row="1" BorderBrush="{StaticResource Line}" BorderThickness="1" Background="{StaticResource Surface}">
+                            <DataGrid x:Name="ToolGrid" Style="{StaticResource UnitGridStyle}">
+                                <DataGrid.Columns>
+                                    <DataGridCheckBoxColumn Header="" Binding="{Binding Selected, Mode=TwoWay}" Width="36"/>
+                                    <DataGridTextColumn Header="Name" Binding="{Binding Name}" IsReadOnly="True" Width="200"/>
+                                    <DataGridTextColumn Header="Group" Binding="{Binding Category}" IsReadOnly="True" Width="80"/>
+                                    <DataGridTextColumn Header="State" Binding="{Binding StateText}" IsReadOnly="True" Width="150"/>
+                                    <DataGridTextColumn Header="What it is" Binding="{Binding Description}" IsReadOnly="True" Width="*"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </Border>
+                    </Grid>
+                </TabItem>
+
+                <TabItem Header="Profile">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" Margin="0,0,0,10" FontSize="12"
+                                   Text="The profile itself and the configuration files it reads. A file this replaces is backed up and put back if you remove it."/>
+                        <Border Grid.Row="1" BorderBrush="{StaticResource Line}" BorderThickness="1" Background="{StaticResource Surface}">
+                            <DataGrid x:Name="ProfileGrid" Style="{StaticResource UnitGridStyle}">
+                                <DataGrid.Columns>
+                                    <DataGridCheckBoxColumn Header="" Binding="{Binding Selected, Mode=TwoWay}" Width="36"/>
+                                    <DataGridTextColumn Header="Name" Binding="{Binding Name}" IsReadOnly="True" Width="200"/>
+                                    <DataGridTextColumn Header="Group" Binding="{Binding Category}" IsReadOnly="True" Width="80"/>
+                                    <DataGridTextColumn Header="State" Binding="{Binding StateText}" IsReadOnly="True" Width="150"/>
+                                    <DataGridTextColumn Header="What it is" Binding="{Binding Description}" IsReadOnly="True" Width="*"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </Border>
+                    </Grid>
+                </TabItem>
+
+                <TabItem Header="What loads">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" Margin="0,0,0,10" FontSize="12"
+                                   Text="What the profile imports at every shell start. Ticking writes profile.config.psd1 and takes effect on the next shell. Fewer ticks means a faster start."/>
+                        <Border Grid.Row="1" BorderBrush="{StaticResource Line}" BorderThickness="1" Background="{StaticResource Surface}">
+                            <DataGrid x:Name="ConfigGrid" Style="{StaticResource UnitGridStyle}">
+                                <DataGrid.Columns>
+                                    <DataGridCheckBoxColumn Header="" Binding="{Binding Enabled, Mode=TwoWay}" Width="36"/>
+                                    <DataGridTextColumn Header="Name" Binding="{Binding Name}" IsReadOnly="True" Width="220"/>
+                                    <DataGridTextColumn Header="List" Binding="{Binding Key}" IsReadOnly="True" Width="150"/>
+                                    <DataGridTextColumn Header="Note" Binding="{Binding Description}" IsReadOnly="True" Width="*"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </Border>
+                    </Grid>
+                </TabItem>
+            </TabControl>
+
+            <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="18,14,18,14">
+                <Button x:Name="InstallButton" Content="Install selected" Style="{StaticResource PrimaryButton}"/>
+                <Button x:Name="RemoveButton" Content="Remove selected"/>
+                <Button x:Name="SaveConfigButton" Content="Save what loads"/>
+                <Button x:Name="SelectMissingButton" Content="Tick everything missing"/>
+                <Button x:Name="ClearButton" Content="Clear"/>
+                <Button x:Name="RefreshButton" Content="Refresh"/>
+                <Button x:Name="CloseButton" Content="Close"/>
+            </StackPanel>
+
+            <Border Grid.Row="4" Margin="18,0,18,18" BorderBrush="{StaticResource Line}" BorderThickness="1" Background="#FF241D2B">
+                <ScrollViewer x:Name="LogScroller" VerticalScrollBarVisibility="Auto">
+                    <TextBox x:Name="LogBox"
+                             Background="Transparent"
+                             Foreground="{StaticResource Body}"
+                             BorderThickness="0"
+                             Padding="10,8"
+                             FontFamily="JetBrains Mono, Cascadia Mono, Consolas"
+                             FontSize="12"
+                             IsReadOnly="True"
+                             TextWrapping="Wrap"
+                             VerticalScrollBarVisibility="Disabled"/>
+                </ScrollViewer>
+            </Border>
+        </Grid>
+    </Border>
 </Window>
 '@
 }
@@ -377,11 +553,19 @@ function Show-ProfileSetupWindow {
     if ($InstallPath) { $common['InstallPath'] = $InstallPath }
     if ($ReceiptPath) { $common['ReceiptPath'] = $ReceiptPath }
 
+    # The configuration functions take InstallPath but not ReceiptPath: they read and write
+    # profile.config.psd1, which has nothing to do with what the installer owns.
+    $configCommon = @{}
+    if ($InstallPath) { $configCommon['InstallPath'] = $InstallPath }
+
     $reader = [System.Xml.XmlNodeReader]::new([xml](Get-ProfileSetupWindowXaml))
     $window = [Windows.Markup.XamlReader]::Load($reader)
 
     $control = @{}
-    foreach ($name in 'TargetText', 'UnitGrid', 'InstallButton', 'RemoveButton', 'SelectMissingButton', 'ClearButton', 'RefreshButton', 'CloseButton', 'LogBox') {
+    foreach ($name in 'TitleBar', 'MinimiseButton', 'MaximiseButton', 'ChromeCloseButton',
+        'TargetText', 'Tabs', 'ToolGrid', 'ProfileGrid', 'ConfigGrid',
+        'InstallButton', 'RemoveButton', 'SaveConfigButton', 'SelectMissingButton',
+        'ClearButton', 'RefreshButton', 'CloseButton', 'LogBox') {
         $found = $window.FindName($name)
         if (-not $found) { throw "The window layout has no control named '$name'." }
         $control[$name] = $found
@@ -398,7 +582,8 @@ function Show-ProfileSetupWindow {
     # GetNewClosure captures a variable by value, so a CommandInfo captured now resolves the same
     # way wherever the handler later runs.
     $command = @{}
-    foreach ($name in 'Get-ProfileSetupState', 'Get-ProfileSetupMenuOrder', 'ConvertTo-ProfileSetupRow', 'Invoke-ProfileSetup', 'Uninstall-ProfileSetup') {
+    foreach ($name in 'Get-ProfileSetupState', 'Get-ProfileSetupMenuOrder', 'ConvertTo-ProfileSetupRow',
+        'Invoke-ProfileSetup', 'Uninstall-ProfileSetup', 'Get-ProfileConfigState', 'Set-ProfileConfigEntry') {
         $found = Get-Command -Name $name -ErrorAction SilentlyContinue
         if (-not $found) { throw "The setup window needs $name and it is not loaded." }
         $command[$name] = $found
@@ -413,19 +598,52 @@ function Show-ProfileSetupWindow {
         $control.LogBox.ScrollToEnd()
     }.GetNewClosure()
 
+    # Every handler reports its own failure into the log pane. An exception raised on the WPF
+    # dispatcher otherwise disappears: the button appears to do nothing at all.
+    $guard = {
+        param([scriptblock]$Action, [string]$What)
+
+        try { & $Action }
+        catch { & $writeLog ("  {0} failed: {1}" -f $What, $_.Exception.Message) }
+    }.GetNewClosure()
+
+    # Tools and Profile show the same catalog split in two, so a person installing a tool is not
+    # scrolling past the profile's own files to find it.
     $refresh = {
         $state = & $command['Get-ProfileSetupState'] @common
         $ordered = & $command['Get-ProfileSetupMenuOrder'] -State $state
         $shaped = & $command['ConvertTo-ProfileSetupRow'] -State $ordered
 
-        $rows = [System.Collections.ObjectModel.ObservableCollection[object]]::new()
-        foreach ($row in $shaped) { $rows.Add($row) }
+        $tools = [System.Collections.ObjectModel.ObservableCollection[object]]::new()
+        $profile = [System.Collections.ObjectModel.ObservableCollection[object]]::new()
 
-        $control.UnitGrid.ItemsSource = $rows
+        foreach ($row in $shaped) {
+            if ($row.Category -in 'Tool', 'System', 'Font') { $tools.Add($row) } else { $profile.Add($row) }
+        }
+
+        $control.ToolGrid.ItemsSource = $tools
+        $control.ProfileGrid.ItemsSource = $profile
+    }.GetNewClosure()
+
+    $refreshConfig = {
+        $rows = [System.Collections.ObjectModel.ObservableCollection[object]]::new()
+        foreach ($row in (& $command['Get-ProfileConfigState'] @configCommon)) { $rows.Add($row) }
+        $control.ConfigGrid.ItemsSource = $rows
+    }.GetNewClosure()
+
+    # The grid on the tab that is showing. Install and Remove act on what the person is looking at.
+    $activeGrid = {
+        switch ($control.Tabs.SelectedIndex) {
+            0 { $control.ToolGrid }
+            1 { $control.ProfileGrid }
+            default { $null }
+        }
     }.GetNewClosure()
 
     $selectedIds = {
-        @($control.UnitGrid.ItemsSource | Where-Object { $_.Selected } | ForEach-Object { $_.Id })
+        $grid = & $activeGrid
+        if (-not $grid) { return @() }
+        @($grid.ItemsSource | Where-Object { $_.Selected } | ForEach-Object { $_.Id })
     }.GetNewClosure()
 
     $report = {
@@ -437,64 +655,129 @@ function Show-ProfileSetupWindow {
         & $writeLog ''
     }.GetNewClosure()
 
-    # Every handler reports its own failure into the log pane. An exception raised on the WPF
-    # dispatcher otherwise disappears: the button appears to do nothing at all.
-    $guard = {
-        param([scriptblock]$Action, [string]$What)
+    #-----------------------------------------------------------------------------------------------
+    # Title bar. WindowStyle is None, so the drag, the double-click and the three buttons are wired
+    # here rather than provided by the system.
+    #-----------------------------------------------------------------------------------------------
+    $control.TitleBar.Add_MouseLeftButtonDown({
+            param($Sender, $EventArgs)
 
-        try { & $Action }
-        catch { & $writeLog ("  {0} failed: {1}" -f $What, $_.Exception.Message) }
-    }.GetNewClosure()
+            if ($EventArgs.ClickCount -eq 2) {
+                $window.WindowState = if ($window.WindowState -eq 'Maximized') { 'Normal' } else { 'Maximized' }
+            }
+            else {
+                $window.DragMove()
+            }
+        }.GetNewClosure())
 
-    $control.RefreshButton.Add_Click({ & $guard $refresh 'Refresh' }.GetNewClosure())
+    $control.MinimiseButton.Add_Click({ $window.WindowState = 'Minimized' }.GetNewClosure())
+
+    $control.MaximiseButton.Add_Click({
+            $window.WindowState = if ($window.WindowState -eq 'Maximized') { 'Normal' } else { 'Maximized' }
+        }.GetNewClosure())
+
+    $control.ChromeCloseButton.Add_Click({ $window.Close() }.GetNewClosure())
+    $control.CloseButton.Add_Click({ $window.Close() }.GetNewClosure())
+
+    #-----------------------------------------------------------------------------------------------
+    # Actions
+    #-----------------------------------------------------------------------------------------------
+    $control.RefreshButton.Add_Click({
+            & $guard { & $refresh; & $refreshConfig } 'Refresh'
+        }.GetNewClosure())
 
     $control.ClearButton.Add_Click({
             & $guard {
-                foreach ($row in $control.UnitGrid.ItemsSource) { $row.Selected = $false }
-                $control.UnitGrid.Items.Refresh()
+                $grid = & $activeGrid
+                if (-not $grid) { & $writeLog 'Nothing to clear on this tab.'; return }
+
+                foreach ($row in $grid.ItemsSource) { $row.Selected = $false }
+                $grid.Items.Refresh()
             } 'Clear'
         }.GetNewClosure())
 
     $control.SelectMissingButton.Add_Click({
             & $guard {
-                foreach ($row in $control.UnitGrid.ItemsSource) { $row.Selected = -not $row.Present }
-                $control.UnitGrid.Items.Refresh()
+                $grid = & $activeGrid
+                if (-not $grid) { & $writeLog 'That tab has nothing to install.'; return }
+
+                foreach ($row in $grid.ItemsSource) { $row.Selected = -not $row.Present }
+                $grid.Items.Refresh()
             } 'Tick everything missing'
         }.GetNewClosure())
 
     $control.InstallButton.Add_Click({
             & $guard {
                 $ids = & $selectedIds
-                if (-not $ids.Count) { & $writeLog 'Nothing is ticked.'; return }
+                if (-not $ids.Count) { & $writeLog 'Nothing is ticked on this tab.'; return }
 
                 & $writeLog ("Installing {0} item(s)..." -f $ids.Count)
                 $results = & $command['Invoke-ProfileSetup'] -Id $ids -Repository $Repository -PackageManager $PackageManager @common -Confirm:$false
                 & $report $results
                 & $refresh
+                & $refreshConfig
             } 'Install'
         }.GetNewClosure())
 
     $control.RemoveButton.Add_Click({
             & $guard {
                 $ids = & $selectedIds
-                if (-not $ids.Count) { & $writeLog 'Nothing is ticked.'; return }
+                if (-not $ids.Count) { & $writeLog 'Nothing is ticked on this tab.'; return }
 
                 & $writeLog ("Removing {0} item(s)..." -f $ids.Count)
                 $results = & $command['Uninstall-ProfileSetup'] -Id $ids @common -Confirm:$false
                 & $report $results
                 & $refresh
+                & $refreshConfig
             } 'Remove'
         }.GetNewClosure())
 
-    $control.CloseButton.Add_Click({ $window.Close() }.GetNewClosure())
+    $control.SaveConfigButton.Add_Click({
+            & $guard {
+                $rows = @($control.ConfigGrid.ItemsSource)
+                if (-not $rows.Count) { & $writeLog 'There is no configuration to save yet.'; return }
+
+                # Commit the cell being edited, otherwise the tick just clicked is not in the row.
+                $null = $control.ConfigGrid.CommitEdit()
+
+                $changed = 0
+                foreach ($row in $rows) {
+                    if (& $command['Set-ProfileConfigEntry'] -Key $row.Key -Name $row.Name -Enabled ([bool]$row.Enabled) @configCommon -Confirm:$false) {
+                        $changed++
+                        & $writeLog ("  {0,-22} {1}" -f $row.Name, $(if ($row.Enabled) { 'loads' } else { 'does not load' }))
+                    }
+                }
+
+                if ($changed) {
+                    & $writeLog ("{0} change(s) written. They take effect in the next shell." -f $changed)
+                }
+                else {
+                    & $writeLog 'Nothing changed.'
+                }
+                & $writeLog ''
+                & $refreshConfig
+            } 'Save what loads'
+        }.GetNewClosure())
 
     & $guard $refresh 'Loading the list'
+    & $guard $refreshConfig 'Loading the configuration'
 
-    if (-not $control.UnitGrid.Items.Count) {
+    $toolCount = @($control.ToolGrid.ItemsSource).Count
+    $profileCount = @($control.ProfileGrid.ItemsSource).Count
+    $configCount = @($control.ConfigGrid.ItemsSource).Count
+
+    if (-not ($toolCount + $profileCount)) {
         & $writeLog 'The list came back empty. Press Refresh, or run Show-ProfileSetup for the console version.'
     }
     else {
-        & $writeLog ('{0} items. Tick what you want, then press Install or Remove.' -f $control.UnitGrid.Items.Count)
+        & $writeLog ('{0} tools, {1} profile items, {2} loadable components.' -f $toolCount, $profileCount, $configCount)
+
+        if (-not $configCount) {
+            # No Module tree and no profile.config.psd1 at the target yet, which is what a first
+            # run looks like. Saying so beats an empty tab with no explanation.
+            & $writeLog 'What loads is empty until the profile is installed. Install it on the Profile tab first.'
+        }
+        & $writeLog 'Tick what you want, then press Install, Remove, or Save what loads.'
     }
 
     $null = $window.ShowDialog()

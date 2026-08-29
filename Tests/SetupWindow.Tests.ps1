@@ -23,8 +23,10 @@ BeforeAll {
 
     # The controls Show-ProfileSetupWindow looks up. Keep in step with the list in Window.ps1.
     $script:RequiredControls = @(
-        'TargetText', 'UnitGrid', 'InstallButton', 'RemoveButton',
-        'SelectMissingButton', 'ClearButton', 'RefreshButton', 'CloseButton', 'LogBox'
+        'TitleBar', 'MinimiseButton', 'MaximiseButton', 'ChromeCloseButton',
+        'TargetText', 'Tabs', 'ToolGrid', 'ProfileGrid', 'ConfigGrid',
+        'InstallButton', 'RemoveButton', 'SaveConfigButton', 'SelectMissingButton',
+        'ClearButton', 'RefreshButton', 'CloseButton', 'LogBox'
     )
 
     function New-Row {
@@ -102,17 +104,34 @@ Describe 'Get-ProfileSetupWindowXaml' {
         }
     }
 
-    It 'binds the grid columns to properties the row shaper produces' {
-        $shaped = @(ConvertTo-ProfileSetupRow -State @(New-Row -Id 'a'))[0]
+    It 'binds the <Grid> columns to properties its rows actually have' -ForEach @(
+        @{ Grid = 'ToolGrid'; Source = 'unit' }
+        @{ Grid = 'ProfileGrid'; Source = 'unit' }
+        @{ Grid = 'ConfigGrid'; Source = 'config' }
+    ) {
+        # A binding to a property the rows do not carry renders an empty column and says nothing
+        # about why, so each grid is checked against the shape that feeds it.
+        $available = if ($Source -eq 'unit') {
+            @(ConvertTo-ProfileSetupRow -State @(New-Row -Id 'a'))[0].PSObject.Properties.Name
+        }
+        else {
+            @('Key', 'Name', 'Enabled', 'Installed', 'Description')
+        }
+
+        $node = $script:Xaml.SelectNodes('//*[local-name()="DataGrid"]') |
+            Where-Object { $_.GetAttribute('Name', 'http://schemas.microsoft.com/winfx/2006/xaml') -eq $Grid }
+
+        $node | Should -Not -BeNullOrEmpty
+
         $bound = @(
-            $script:Xaml.SelectNodes('//*[@Binding]') |
-                ForEach-Object { $_.GetAttribute('Binding') } |
-                ForEach-Object { if ($_ -match '\{Binding\s+([A-Za-z]+)') { $Matches[1] } }
+            [regex]::Matches($node.InnerXml, '\{Binding\s+([A-Za-z]+)') |
+                ForEach-Object { $_.Groups[1].Value } |
+                Sort-Object -Unique
         )
 
         $bound.Count | Should -BeGreaterThan 0
         foreach ($property in $bound) {
-            $shaped.PSObject.Properties.Name | Should -Contain $property
+            $available | Should -Contain $property -Because "$Grid binds to $property"
         }
     }
 
@@ -202,7 +221,7 @@ Describe 'The window handlers do not depend on name resolution' {
         # recognized" while the window still opens, so it reads as a window that loaded nothing.
         #
         # Resolving up front and calling through the captured CommandInfo removes the dependency.
-        foreach ($name in 'Get-ProfileSetupState', 'Get-ProfileSetupMenuOrder', 'ConvertTo-ProfileSetupRow', 'Invoke-ProfileSetup', 'Uninstall-ProfileSetup') {
+        foreach ($name in 'Get-ProfileSetupState', 'Get-ProfileSetupMenuOrder', 'ConvertTo-ProfileSetupRow', 'Invoke-ProfileSetup', 'Uninstall-ProfileSetup', 'Get-ProfileConfigState', 'Set-ProfileConfigEntry') {
             $script:WindowSource | Should -Match ([regex]::Escape("'$name'")) -Because "$name must be resolved into the command table"
         }
     }
@@ -213,6 +232,8 @@ Describe 'The window handlers do not depend on name resolution' {
         @{ Name = 'ConvertTo-ProfileSetupRow' }
         @{ Name = 'Invoke-ProfileSetup' }
         @{ Name = 'Uninstall-ProfileSetup' }
+        @{ Name = 'Get-ProfileConfigState' }
+        @{ Name = 'Set-ProfileConfigEntry' }
     ) {
         # Matches the command name used as a command, rather than quoted in the lookup table.
         $bare = [regex]::Matches($script:Wiring, "(?<![\w'`"-])$([regex]::Escape($Name))(?![\w'`"-])")
@@ -228,5 +249,76 @@ Describe 'The window handlers do not depend on name resolution' {
 
     It 'says so when the list comes back empty' {
         $script:WindowSource | Should -Match 'came back empty'
+    }
+}
+
+Describe 'The window has a tab per job' {
+
+    BeforeAll {
+        $script:TabXaml = [xml](Get-ProfileSetupWindowXaml)
+    }
+
+    It 'carries three tabs, named for what each one does' {
+        $headers = @(
+            $script:TabXaml.SelectNodes('//*[local-name()="TabItem"]') |
+                ForEach-Object { $_.GetAttribute('Header') }
+        )
+
+        $headers | Should -Be @('Tools', 'Profile', 'What loads')
+    }
+
+    It 'gives each tab its own grid' {
+        # One grid per tab, so Install acts on what the person is looking at rather than on a
+        # single list they have to scroll.
+        foreach ($name in 'ToolGrid', 'ProfileGrid', 'ConfigGrid') {
+            $script:RequiredControls | Should -Contain $name
+        }
+    }
+
+    It 'binds the What loads grid to Enabled, not Selected' {
+        # That tab writes profile.config.psd1 rather than installing anything, so its tick is the
+        # entry's own on and off rather than a selection to act on.
+        $configGrid = $script:TabXaml.SelectNodes('//*[local-name()="DataGrid"]') |
+            Where-Object { $_.GetAttribute('Name', 'http://schemas.microsoft.com/winfx/2006/xaml') -eq 'ConfigGrid' }
+
+        $configGrid | Should -Not -BeNullOrEmpty
+        $configGrid.InnerXml | Should -Match 'Binding Enabled, Mode=TwoWay'
+    }
+}
+
+Describe 'The window draws its own title bar' {
+
+    BeforeAll {
+        $script:ChromeXaml = Get-ProfileSetupWindowXaml
+    }
+
+    It 'turns the system title bar off' {
+        $script:ChromeXaml | Should -Match 'WindowStyle="None"'
+    }
+
+    It 'stays resizable without the system frame' {
+        $script:ChromeXaml | Should -Match 'ResizeMode="CanResize"'
+    }
+
+    It 'provides the three buttons the system one would have' {
+        foreach ($name in 'MinimiseButton', 'MaximiseButton', 'ChromeCloseButton') {
+            $script:ChromeXaml | Should -Match ('x:Name="{0}"' -f $name)
+        }
+    }
+
+    It 'wires the drag and the double-click itself' {
+        # WindowStyle None removes the system behaviour along with the system chrome, so moving
+        # and maximising the window have to be handled.
+        $source = Get-Content -LiteralPath (Join-Path $script:Root 'Module/Setup/Window.ps1') -Raw
+
+        $source | Should -Match 'DragMove'
+        $source | Should -Match 'ClickCount -eq 2'
+    }
+
+    It 'colours the close button with the brand tertiary' {
+        # The only coloured thing in the strip, so the destructive button reads as one.
+        $brand = Get-ProfileSetupBrand -Mode Night
+        $script:ChromeXaml | Should -Match 'CloseChromeButton'
+        $script:ChromeXaml | Should -Match ([regex]::Escape('#FF' + $brand.Hex.Tertiary.TrimStart('#')))
     }
 }

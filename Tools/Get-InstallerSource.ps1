@@ -19,6 +19,7 @@ $script:InstallerPart = @(
     'Brand.ps1'
     'Catalog.ps1'
     'State.ps1'
+    'Config.ps1'
     'Install.ps1'
     'Uninstall.ps1'
     'Picker.ps1'

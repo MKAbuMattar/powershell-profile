@@ -51,6 +51,7 @@
 . (Join-Path $PSScriptRoot 'Brand.ps1')
 . (Join-Path $PSScriptRoot 'Catalog.ps1')
 . (Join-Path $PSScriptRoot 'State.ps1')
+. (Join-Path $PSScriptRoot 'Config.ps1')
 . (Join-Path $PSScriptRoot 'Install.ps1')
 . (Join-Path $PSScriptRoot 'Uninstall.ps1')
 . (Join-Path $PSScriptRoot 'Picker.ps1')
