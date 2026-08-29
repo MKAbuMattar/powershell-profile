@@ -57,13 +57,14 @@
     DotNetFrameworkVersion = '4.5'
     CLRVersion             = '4.0'
     FunctionsToExport      = @(
+        'Invoke-NpmExecute',
+        'Invoke-NpmVersion',
         'Invoke-NpmInstallGlobal',
         'Invoke-NpmInstallSave',
         'Invoke-NpmInstallDev',
         'Invoke-NpmInstallForce',
         'Invoke-NpmInstall',
         'Invoke-NpmUninstall',
-        'Invoke-NpmExecute',
         'Invoke-NpmStart',
         'Invoke-NpmTest',
         'Invoke-NpmRun',
@@ -72,7 +73,6 @@
         'Invoke-NpmRunScript',
         'Invoke-NpmOutdated',
         'Invoke-NpmUpdate',
-        'Invoke-NpmVersion',
         'Invoke-NpmList',
         'Invoke-NpmListTopLevel',
         'Invoke-NpmInfo',
@@ -96,11 +96,12 @@
     CmdletsToExport        = @()
     VariablesToExport      = @()
     AliasesToExport        = @(
+        'npmE',
+        'npmV',
         'npmg',
         'npmS',
         'npmD',
         'npmF',
-        'npmE',
         'npmst',
         'npmt',
         'npmR',
@@ -109,7 +110,6 @@
         'npmrs',
         'npmO',
         'npmU',
-        'npmV',
         'npmL',
         'npmL0',
         'npmi',

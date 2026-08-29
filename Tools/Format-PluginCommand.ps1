@@ -42,6 +42,21 @@ function Format-PluginCommandModule {
         [Parameter(Mandatory)][AllowEmptyCollection()][object[]]$Command
     )
 
+    function Get-RowField {
+        <#
+        .SYNOPSIS
+            Reads an optional key from a table row.
+
+        .DESCRIPTION
+            Rows arrive as hashtables from Import-PowerShellDataFile and most omit the optional
+            keys. Set-StrictMode is on, so the key is tested before it is read.
+        #>
+        param($Row, [string]$Key)
+
+        if ($Row -is [hashtable] -and $Row.ContainsKey($Key)) { return $Row[$Key] }
+        return $null
+    }
+
     $lines = [System.Collections.Generic.List[string]]::new()
 
     $lines.Add('#---------------------------------------------------------------------------------------------------')
@@ -61,6 +76,12 @@ function Format-PluginCommandModule {
         $arguments = @($row.Args)
         $aliases = @($row.Aliases)
 
+        # An optional leading parameter, so a wrapper can keep a named first argument such as
+        # -PackageName instead of collecting everything into -Arguments. Rows without it generate
+        # exactly what they did before this key existed.
+        $leading = Get-RowField -Row $row -Key 'Param'
+        $leadingHelp = Get-RowField -Row $row -Key 'ParamHelp'
+
         $invocation = if ($arguments.Count) {
             "& $Tool " + ($arguments -join ' ') + ' @Arguments'
         }
@@ -79,6 +100,13 @@ function Format-PluginCommandModule {
         $lines.Add('    .DESCRIPTION')
         $lines.Add("        Runs ``$shown`` with any additional arguments appended.")
         $lines.Add('')
+
+        if ($leading) {
+            $lines.Add("    .PARAMETER $leading")
+            $lines.Add('        ' + $(if ($leadingHelp) { $leadingHelp } else { "First argument to ``$shown``." }))
+            $lines.Add('')
+        }
+
         $lines.Add('    .PARAMETER Arguments')
         $lines.Add("        Passed to ``$shown`` unchanged.")
         $lines.Add('')
@@ -103,11 +131,31 @@ function Format-PluginCommandModule {
 
         $lines.Add('    [OutputType([void])]')
         $lines.Add('    param(')
+
+        if ($leading) {
+            $lines.Add('        [Parameter(Position = 0)]')
+            $lines.Add("        [string]`$$leading,")
+            $lines.Add('')
+        }
+
         $lines.Add('        [Parameter(ValueFromRemainingArguments)]')
         $lines.Add('        [string[]]$Arguments')
         $lines.Add('    )')
         $lines.Add('')
-        $lines.Add("    $invocation")
+
+        if ($leading) {
+            # Built up rather than splatted inline, because an unbound leading parameter must not
+            # reach the tool as an empty argument.
+            $lines.Add('    $all = @(' + (($arguments | ForEach-Object { "'$_'" }) -join ', ') + ')')
+            $lines.Add("    if (`$$leading) { `$all += `$$leading }")
+            $lines.Add('    if ($Arguments) { $all += $Arguments }')
+            $lines.Add('')
+            $lines.Add("    & $Tool @all")
+        }
+        else {
+            $lines.Add("    $invocation")
+        }
+
         $lines.Add('}')
         $lines.Add('')
     }
